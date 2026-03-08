@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SF Stairways</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    /* ── Header ── */
+    #header {
+      background: #1e293b;
+      color: #fff;
+      padding: 10px 14px 8px;
+      flex-shrink: 0;
+    }
+
+    #header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    #header h1 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    #settings-btn {
+      background: none;
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff;
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    #settings-btn:hover { background: rgba(255,255,255,0.1); }
+
+    #stats-bar {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      margin-bottom: 8px;
+      min-height: 1.2em;
+    }
+
+    #retry-btn {
+      display: none;
+      margin-left: 8px;
+      background: #ef4444;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+
+    /* ── Toggle ── */
+    #toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    #view-toggle {
+      display: flex;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+
+    .toggle-btn {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.6);
+      padding: 5px 14px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .toggle-btn.active {
+      background: #3b82f6;
+      color: #fff;
+    }
+    .toggle-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    #legend {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .legend-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 3px;
+    }
+    .legend-dot.walked  { background: #22c55e; border: 1.5px solid #16a34a; }
+    .legend-dot.target  { background: #ef4444; border: 1.5px solid #dc2626; }
+    .legend-dot.all     { background: #94a3b8; border: 1.5px solid #64748b; }
+
+    /* ── Map ── */
+    #map { flex: 1; }
+
+    /* ── Error Banner ── */
+    #error-banner {
+      display: none;
+      background: #7f1d1d;
+      color: #fecaca;
+      padding: 8px 14px;
+      font-size: 0.82rem;
+      text-align: center;
+    }
+
+    /* ── Modals ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .modal-header h2 { font-size: 1rem; font-weight: 700; color: #1e293b; }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: #64748b;
+      padding: 2px 6px;
+    }
+
+    .modal p { font-size: 0.85rem; color: #475569; margin-bottom: 12px; line-height: 1.5; }
+
+    .token-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .token-row input {
+      flex: 1;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 7px 10px;
+      font-size: 0.85rem;
+      font-family: monospace;
+    }
+    .token-row button {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 7px 10px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .modal-note {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      margin-bottom: 12px;
+    }
+
+    .modal-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: #3b82f6;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 18px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn-primary:hover { background: #2563eb; }
+
+    .modal-link {
+      font-size: 0.8rem;
+      color: #3b82f6;
+      text-decoration: none;
+    }
+    .modal-link:hover { text-decoration: underline; }
+
+    #token-status { font-size: 0.82rem; margin-left: 4px; }
+
+    /* ── Popup styles ── */
+    .popup-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 2px; }
+    .popup-sub   { font-size: 0.8rem; color: #64748b; margin-bottom: 6px; }
+    .popup-meta  { font-size: 0.82rem; color: #475569; margin-bottom: 8px; }
+
+    .popup-form  { margin-top: 8px; }
+    .popup-form label { display: block; font-size: 0.78rem; color: #64748b; margin-bottom: 2px; margin-top: 6px; }
+    .popup-form input[type=date],
+    .popup-form input[type=number],
+    .popup-form input[type=text] {
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      padding: 5px 8px;
+      font-size: 0.82rem;
+    }
+
+    .popup-btns { display: flex; gap: 6px; margin-top: 10px; }
+
+    .pop-btn {
+      flex: 1;
+      border: none;
+      border-radius: 5px;
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .pop-btn.primary  { background: #22c55e; color: #fff; }
+    .pop-btn.primary:hover { background: #16a34a; }
+    .pop-btn.secondary { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+    .pop-btn.secondary:hover { background: #e2e8f0; }
+    .pop-btn.danger   { background: #3b82f6; color: #fff; flex: none; }
+    .pop-btn.danger:hover { background: #2563eb; }
+    .pop-btn.add      { background: #3b82f6; color: #fff; }
+    .pop-btn.add:hover { background: #2563eb; }
+
+    .pop-saving { font-size: 0.78rem; color: #64748b; margin-top: 6px; }
+
+    .leaflet-popup-content { min-width: 200px; }
+  </style>
+</head>
+<body>
+
+<div id="error-banner"></div>
+
+<div id="header">
+  <div id="header-top">
+    <h1>🪜 SF Stairways</h1>
+    <button id="settings-btn">⚙ Settings</button>
+  </div>
+  <div id="stats-bar">
+    Loading…
+    <button id="retry-btn">Retry</button>
+  </div>
+  <div id="toggle-row">
+    <div id="view-toggle">
+      <button class="toggle-btn active" id="btn-target">🎯 Target List</button>
+      <button class="toggle-btn" id="btn-all">🗺 Show All SF</button>
+    </div>
+    <div id="legend">
+      <span><span class="legend-dot walked"></span>walked</span>
+      <span><span class="legend-dot target"></span>target</span>
+      <span id="legend-all" style="display:none"><span class="legend-dot all"></span>all SF</span>
+    </div>
+  </div>
+</div>
+
+<div id="map"></div>
+
+<!-- Settings Modal -->
+<div class="modal-overlay" id="settings-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>⚙ GitHub Settings</h2>
+      <button class="modal-close" id="settings-close">✕</button>
+    </div>
+    <p>To save walks from this page, enter a GitHub Personal Access Token with repo write access.</p>
+    <div class="token-row">
+      <input type="password" id="token-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" />
+      <button id="token-eye" title="Show/hide token">👁</button>
+    </div>
+    <p class="modal-note">Token is stored in your browser only. Never shared or sent anywhere except GitHub.</p>
+    <div class="modal-actions">
+      <button class="btn-primary" id="save-token-btn">Save Token</button>
+      <a class="modal-link" href="https://github.com/settings/tokens/new?description=sf-stairways&scopes=repo" target="_blank" rel="noopener">How to create a token ↗</a>
+      <span id="token-status"></span>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// ── Config ──────────────────────────────────────────────────────────────────
+const CONFIG = {
+  githubOwner: 'o4dvasq',
+  githubRepo:  'sf-stairways',
+  dataPath:    'data/target_list.json',
+  branch:      'main'
+};
+
+// ── State ────────────────────────────────────────────────────────────────────
+let targetList = [];
+let allStairways = [];
+let pendingChanges = false;
+let showingAll = false;
+
+// ── Map init ─────────────────────────────────────────────────────────────────
+const map = L.map('map');
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  maxZoom: 19
+}).addTo(map);
+
+// Custom panes for z-ordering
+map.createPane('walkedPane');
+map.createPane('targetPane');
+map.createPane('cityPane');
+map.getPane('walkedPane').style.zIndex = 650;
+map.getPane('targetPane').style.zIndex = 640;
+map.getPane('cityPane').style.zIndex   = 630;
+
+const targetMarkers = L.layerGroup().addTo(map);
+const cityLayer     = L.layerGroup(); // not added until Show All
+
+// ── Utility ──────────────────────────────────────────────────────────────────
+function today() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function formatDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso + 'T00:00:00');
+  return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+}
+
+function showError(msg) {
+  const el = document.getElementById('error-banner');
+  el.textContent = msg;
+  el.style.display = msg ? 'block' : 'none';
+}
+
+// ── Stats bar ─────────────────────────────────────────────────────────────────
+function renderStats() {
+  const walked     = targetList.filter(s => s.walked);
+  const stepsKnown = walked.filter(s => s.step_count != null);
+  const totalSteps = stepsKnown.reduce((sum, s) => sum + s.step_count, 0);
+
+  let text;
+  if (walked.length === 0) {
+    text = `0 of ${targetList.length} on target list  ·  Start climbing!`;
+  } else if (stepsKnown.length === 0) {
+    text = `${walked.length} of ${targetList.length} target walked`;
+  } else {
+    text = `${walked.length} of ${targetList.length} target walked  ·  ${totalSteps.toLocaleString()} steps climbed`;
+  }
+
+  const bar = document.getElementById('stats-bar');
+  bar.childNodes[0].textContent = text;
+}
+
+// ── GitHub API ────────────────────────────────────────────────────────────────
+async function saveTargetList(updatedList) {
+  const token = localStorage.getItem('gh_token');
+  if (!token) {
+    openSettingsModal(true);
+    return false;
+  }
+
+  const baseUrl = `https://api.github.com/repos/${CONFIG.githubOwner}/${CONFIG.githubRepo}/contents/${CONFIG.dataPath}`;
+  const headers  = { Authorization: `token ${token}`, 'Content-Type': 'application/json' };
+
+  try {
+    const getRes = await fetch(baseUrl, { headers });
+    if (getRes.status === 401) {
+      localStorage.removeItem('gh_token');
+      openSettingsModal(true, 'Token rejected — please re-enter');
+      return false;
+    }
+    if (!getRes.ok) throw new Error(`GET failed: ${getRes.status}`);
+    const { sha } = await getRes.json();
+
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(updatedList, null, 2))));
+    const putRes = await fetch(baseUrl, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify({
+        message: `Log walk: ${today()}`,
+        content,
+        sha,
+        branch: CONFIG.branch
+      })
+    });
+
+    if (putRes.status === 401) {
+      localStorage.removeItem('gh_token');
+      openSettingsModal(true, 'Token rejected — please re-enter');
+      return false;
+    }
+    if (putRes.status === 409) {
+      showError('Someone else updated the file — please reload and try again');
+      return false;
+    }
+    if (!putRes.ok) throw new Error(`PUT failed: ${putRes.status}`);
+
+    // Committed — clear pending
+    pendingChanges = false;
+    document.getElementById('retry-btn').style.display = 'none';
+    showError('');
+    return true;
+
+  } catch (err) {
+    console.error('GitHub save error:', err);
+    pendingChanges = true;
+    document.getElementById('retry-btn').style.display = 'inline-block';
+    showError("Couldn't reach GitHub — change saved locally, retry when online");
+    return false;
+  }
+}
+
+// ── Markers ──────────────────────────────────────────────────────────────────
+function makeTargetMarker(item) {
+  if (item.lat == null || item.lng == null) return null;
+
+  const isWalked = item.walked;
+  const marker = L.circleMarker([item.lat, item.lng], {
+    radius:      10,
+    fillColor:   isWalked ? '#22c55e' : '#ef4444',
+    color:       isWalked ? '#16a34a' : '#dc2626',
+    weight:      2,
+    fillOpacity: 0.9,
+    pane:        isWalked ? 'walkedPane' : 'targetPane'
+  });
+
+  marker.bindPopup(() => buildTargetPopup(item, marker), { maxWidth: 280, minWidth: 210 });
+  return marker;
+}
+
+function buildTargetPopup(item, marker) {
+  const div = document.createElement('div');
+
+  if (item.walked) {
+    div.innerHTML = `
+      <div class="popup-title">🟢 ${item.name}</div>
+      <div class="popup-sub">${item.neighborhood}</div>
+      <div class="popup-meta">
+        ✅ Walked: ${formatDate(item.date_walked)}<br>
+        ${item.step_count != null ? item.step_count + ' steps' : ''}
+      </div>
+      <div class="popup-btns">
+        <button class="pop-btn danger" id="pp-edit-btn">✏️ Edit</button>
+      </div>
+      <div id="pp-form"></div>
+    `;
+    setTimeout(() => {
+      const editBtn = div.querySelector('#pp-edit-btn');
+      if (editBtn) editBtn.addEventListener('click', () => showWalkForm(div, item, marker));
+    }, 0);
+  } else {
+    div.innerHTML = `
+      <div class="popup-title">🔴 ${item.name}</div>
+      <div class="popup-sub">${item.neighborhood} · On your target list</div>
+      <div class="popup-meta">
+        ${item.step_count != null ? item.step_count + ' steps<br>' : ''}
+        ${item.notes ? item.notes : ''}
+      </div>
+      <div class="popup-btns">
+        <button class="pop-btn primary" id="pp-walk-btn">✅ Mark as Walked</button>
+      </div>
+      <div id="pp-form"></div>
+    `;
+    setTimeout(() => {
+      const walkBtn = div.querySelector('#pp-walk-btn');
+      if (walkBtn) walkBtn.addEventListener('click', () => showWalkForm(div, item, marker));
+    }, 0);
+  }
+
+  return div;
+}
+
+function showWalkForm(container, item, marker) {
+  const formDiv = container.querySelector('#pp-form');
+  const btnsDiv = container.querySelector('.popup-btns');
+  if (btnsDiv) btnsDiv.style.display = 'none';
+
+  formDiv.innerHTML = `
+    <div class="popup-form">
+      <label>Date</label>
+      <input type="date" id="pp-date" value="${item.date_walked || today()}" />
+      <label>Steps</label>
+      <input type="number" id="pp-steps" value="${item.step_count ?? ''}" placeholder="optional" min="0" />
+      <div class="popup-btns">
+        <button class="pop-btn primary" id="pp-save">Save</button>
+        <button class="pop-btn secondary" id="pp-cancel">Cancel</button>
+      </div>
+      <div class="pop-saving" id="pp-saving"></div>
+    </div>
+  `;
+
+  formDiv.querySelector('#pp-cancel').addEventListener('click', () => {
+    marker.closePopup();
+  });
+
+  formDiv.querySelector('#pp-save').addEventListener('click', async () => {
+    const date  = formDiv.querySelector('#pp-date').value;
+    const steps = formDiv.querySelector('#pp-steps').value;
+    const saving = formDiv.querySelector('#pp-saving');
+
+    saving.textContent = 'Saving…';
+    formDiv.querySelector('#pp-save').disabled = true;
+
+    item.walked      = true;
+    item.date_walked = date || today();
+    item.step_count  = steps ? parseInt(steps, 10) : item.step_count;
+
+    const ok = await saveTargetList(targetList);
+    if (ok || pendingChanges) {
+      // Update in memory regardless; show error if offline
+      renderStats();
+      refreshTargetMarkers();
+      marker.closePopup();
+    } else {
+      saving.textContent = 'Save failed — check settings';
+      formDiv.querySelector('#pp-save').disabled = false;
+      item.walked      = false;
+      item.date_walked = null;
+    }
+  });
+}
+
+function makeCityMarker(stairway) {
+  if (stairway.lat == null || stairway.lng == null) return null;
+
+  const marker = L.circleMarker([stairway.lat, stairway.lng], {
+    radius:      6,
+    fillColor:   '#94a3b8',
+    color:       '#64748b',
+    weight:      1.5,
+    fillOpacity: 0.75,
+    pane:        'cityPane'
+  });
+
+  marker.bindPopup(() => buildCityPopup(stairway, marker), { maxWidth: 280, minWidth: 210 });
+  return marker;
+}
+
+function buildCityPopup(stairway, marker) {
+  const div = document.createElement('div');
+  const heightStr = stairway.height_ft != null ? `↕ ${stairway.height_ft} ft` : '';
+  const subParts  = [stairway.neighborhood, heightStr].filter(Boolean);
+
+  div.innerHTML = `
+    <div class="popup-title">${stairway.name}</div>
+    <div class="popup-sub">${subParts.join(' · ')}</div>
+    <div class="popup-btns">
+      <button class="pop-btn add" id="pp-add-btn">+ Add to Target List</button>
+      ${stairway.source_url ? `<a href="${stairway.source_url}" target="_blank" rel="noopener" style="font-size:0.78rem;color:#3b82f6;align-self:center;margin-left:4px;">sfstairways.com ↗</a>` : ''}
+    </div>
+    <div id="pp-form"></div>
+  `;
+
+  setTimeout(() => {
+    const addBtn = div.querySelector('#pp-add-btn');
+    if (addBtn) addBtn.addEventListener('click', () => showAddForm(div, stairway, marker));
+  }, 0);
+
+  return div;
+}
+
+function showAddForm(container, stairway, marker) {
+  const formDiv = container.querySelector('#pp-form');
+  const btnsDiv = container.querySelector('.popup-btns');
+  if (btnsDiv) btnsDiv.style.display = 'none';
+
+  formDiv.innerHTML = `
+    <div class="popup-form">
+      <label>Steps (if known)</label>
+      <input type="number" id="pp-steps" placeholder="" min="0" />
+      <label>Notes</label>
+      <input type="text" id="pp-notes" placeholder="" />
+      <div class="popup-btns">
+        <button class="pop-btn add" id="pp-add">Add</button>
+        <button class="pop-btn secondary" id="pp-cancel">Cancel</button>
+      </div>
+      <div class="pop-saving" id="pp-saving"></div>
+    </div>
+  `;
+
+  formDiv.querySelector('#pp-cancel').addEventListener('click', () => marker.closePopup());
+
+  formDiv.querySelector('#pp-add').addEventListener('click', async () => {
+    const steps  = formDiv.querySelector('#pp-steps').value;
+    const notes  = formDiv.querySelector('#pp-notes').value.trim();
+    const saving = formDiv.querySelector('#pp-saving');
+
+    saving.textContent = 'Saving…';
+    formDiv.querySelector('#pp-add').disabled = true;
+
+    const newItem = {
+      id:          stairway.id,
+      name:        stairway.name,
+      neighborhood: stairway.neighborhood || '',
+      lat:         stairway.lat,
+      lng:         stairway.lng,
+      step_count:  steps ? parseInt(steps, 10) : null,
+      walked:      false,
+      date_walked: null,
+      notes:       notes || null
+    };
+
+    targetList.push(newItem);
+    const ok = await saveTargetList(targetList);
+    if (ok || pendingChanges) {
+      renderStats();
+      addTargetMarker(newItem);
+      marker.closePopup();
+    } else {
+      saving.textContent = 'Save failed — check settings';
+      formDiv.querySelector('#pp-add').disabled = false;
+      targetList.pop();
+    }
+  });
+}
+
+// ── Render layers ─────────────────────────────────────────────────────────────
+function refreshTargetMarkers() {
+  targetMarkers.clearLayers();
+  for (const item of targetList) {
+    const m = makeTargetMarker(item);
+    if (m) targetMarkers.addLayer(m);
+  }
+}
+
+function addTargetMarker(item) {
+  const m = makeTargetMarker(item);
+  if (m) targetMarkers.addLayer(m);
+}
+
+function renderCityLayer() {
+  cityLayer.clearLayers();
+  const targetIds = new Set(targetList.map(t => t.id));
+  for (const s of allStairways) {
+    if (s.closed) continue;
+    if (targetIds.has(s.id)) continue; // don't overlap with colored markers
+    const m = makeCityMarker(s);
+    if (m) cityLayer.addLayer(m);
+  }
+}
+
+// ── Toggle ────────────────────────────────────────────────────────────────────
+document.getElementById('btn-target').addEventListener('click', () => {
+  showingAll = false;
+  document.getElementById('btn-target').classList.add('active');
+  document.getElementById('btn-all').classList.remove('active');
+  map.removeLayer(cityLayer);
+  document.getElementById('legend-all').style.display = 'none';
+});
+
+document.getElementById('btn-all').addEventListener('click', () => {
+  showingAll = true;
+  document.getElementById('btn-all').classList.add('active');
+  document.getElementById('btn-target').classList.remove('active');
+  renderCityLayer();
+  cityLayer.addTo(map);
+  document.getElementById('legend-all').style.display = '';
+});
+
+// ── Retry ─────────────────────────────────────────────────────────────────────
+document.getElementById('retry-btn').addEventListener('click', async () => {
+  const ok = await saveTargetList(targetList);
+  if (ok) showError('');
+});
+
+// ── Settings Modal ────────────────────────────────────────────────────────────
+let pendingSaveMessage = null;
+
+function openSettingsModal(auto = false, message = null) {
+  const modal = document.getElementById('settings-modal');
+  modal.classList.add('open');
+  const input = document.getElementById('token-input');
+  const stored = localStorage.getItem('gh_token');
+  if (stored) input.value = stored;
+  const status = document.getElementById('token-status');
+  status.textContent = message || '';
+  status.style.color = message ? '#ef4444' : '';
+}
+
+document.getElementById('settings-btn').addEventListener('click', () => openSettingsModal());
+
+document.getElementById('settings-close').addEventListener('click', () => {
+  document.getElementById('settings-modal').classList.remove('open');
+});
+
+document.getElementById('settings-modal').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('settings-modal')) {
+    document.getElementById('settings-modal').classList.remove('open');
+  }
+});
+
+document.getElementById('token-eye').addEventListener('click', () => {
+  const input = document.getElementById('token-input');
+  input.type = input.type === 'password' ? 'text' : 'password';
+});
+
+document.getElementById('save-token-btn').addEventListener('click', async () => {
+  const input  = document.getElementById('token-input');
+  const status = document.getElementById('token-status');
+  const token  = input.value.trim();
+  if (!token) { status.textContent = '❌ Please enter a token'; status.style.color = '#ef4444'; return; }
+
+  status.textContent = 'Validating…'; status.style.color = '#64748b';
+
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${CONFIG.githubOwner}/${CONFIG.githubRepo}`,
+      { headers: { Authorization: `token ${token}` } }
+    );
+    if (res.status === 401) {
+      status.textContent = '❌ Invalid token'; status.style.color = '#ef4444'; return;
+    }
+    if (res.status === 404) {
+      // Repo not found but token valid — accept
+    }
+    localStorage.setItem('gh_token', token);
+    status.textContent = '✅ Token saved'; status.style.color = '#16a34a';
+    setTimeout(() => document.getElementById('settings-modal').classList.remove('open'), 800);
+  } catch {
+    status.textContent = '⚠️ Network error — token saved anyway'; status.style.color = '#d97706';
+    localStorage.setItem('gh_token', token);
+    setTimeout(() => document.getElementById('settings-modal').classList.remove('open'), 1200);
+  }
+});
+
+// ── Bootstrap ─────────────────────────────────────────────────────────────────
+async function init() {
+  let allFailed = false;
+
+  const [targetResult, cityResult] = await Promise.allSettled([
+    fetch('./data/target_list.json').then(r => { if (!r.ok) throw new Error(); return r.json(); }),
+    fetch('./data/all_stairways.json').then(r => { if (!r.ok) throw new Error(); return r.json(); })
+  ]);
+
+  if (targetResult.status === 'rejected') {
+    document.getElementById('stats-bar').childNodes[0].textContent = 'Failed to load target list.';
+    const banner = document.getElementById('error-banner');
+    banner.textContent = 'Could not load target_list.json — map unavailable';
+    banner.style.display = 'block';
+    return;
+  }
+
+  targetList = targetResult.value;
+
+  if (cityResult.status === 'rejected' || cityResult.value.length === 0) {
+    const allBtn = document.getElementById('btn-all');
+    allBtn.disabled = true;
+    allBtn.title = 'Run scripts/scrape_stairways.py to generate city data';
+    allStairways = [];
+  } else {
+    allStairways = cityResult.value;
+  }
+
+  renderStats();
+  refreshTargetMarkers();
+
+  // Fit to target list bounds on initial load
+  const validTargets = targetList.filter(t => t.lat != null && t.lng != null);
+  if (validTargets.length > 0) {
+    const bounds = L.latLngBounds(validTargets.map(t => [t.lat, t.lng]));
+    map.fitBounds(bounds, { padding: [30, 30] });
+  } else {
+    map.setView([37.7749, -122.4194], 13);
+  }
+}
+
+init();
+</script>
+</body>
+</html>

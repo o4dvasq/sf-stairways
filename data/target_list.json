@@ -1,0 +1,134 @@
+[
+  {
+    "id": "16th-avenue-tiled-steps",
+    "name": "16th Avenue Tiled Steps",
+    "neighborhood": "Golden Gate Heights",
+    "lat": 37.7562,
+    "lng": -122.4732,
+    "step_count": 163,
+    "walked": false,
+    "date_walked": null,
+    "notes": "Mosaic sea-to-stars theme. Ocean views from top."
+  },
+  {
+    "id": "hidden-garden-steps",
+    "name": "Hidden Garden Steps",
+    "neighborhood": "Inner Sunset",
+    "lat": 37.7598,
+    "lng": -122.4736,
+    "step_count": 148,
+    "walked": false,
+    "date_walked": null,
+    "notes": "Mosaic garden/insect theme."
+  },
+  {
+    "id": "lincoln-park-steps",
+    "name": "Lincoln Park Steps",
+    "neighborhood": "Lincoln Park",
+    "lat": 37.7835,
+    "lng": -122.4935,
+    "step_count": null,
+    "walked": false,
+    "date_walked": null,
+    "notes": null
+  },
+  {
+    "id": "vulcan-stairway",
+    "name": "Vulcan Stairway",
+    "neighborhood": "Corona Heights",
+    "lat": 37.7635,
+    "lng": -122.4420,
+    "step_count": null,
+    "walked": false,
+    "date_walked": null,
+    "notes": null
+  },
+  {
+    "id": "saturn-street-steps",
+    "name": "Saturn Street Steps",
+    "neighborhood": "Corona Heights",
+    "lat": 37.7627,
+    "lng": -122.4405,
+    "step_count": null,
+    "walked": false,
+    "date_walked": null,
+    "notes": null
+  },
+  {
+    "id": "pemberton-place-steps",
+    "name": "Pemberton Place Steps",
+    "neighborhood": "Corona Heights",
+    "lat": 37.7585,
+    "lng": -122.4468,
+    "step_count": null,
+    "walked": false,
+    "date_walked": null,
+    "notes": null
+  },
+  {
+    "id": "lyon-street-steps",
+    "name": "Lyon Street Steps",
+    "neighborhood": "Pacific Heights",
+    "lat": 37.7918,
+    "lng": -122.4461,
+    "step_count": 332,
+    "walked": false,
+    "date_walked": null,
+    "notes": null
+  },
+  {
+    "id": "filbert-steps",
+    "name": "Filbert Steps",
+    "neighborhood": "Telegraph Hill",
+    "lat": 37.8025,
+    "lng": -122.4031,
+    "step_count": 200,
+    "walked": false,
+    "date_walked": null,
+    "notes": null
+  },
+  {
+    "id": "esmeralda-avenue-steps",
+    "name": "Esmeralda Avenue Steps",
+    "neighborhood": "Bernal Heights",
+    "lat": 37.7423,
+    "lng": -122.4143,
+    "step_count": null,
+    "walked": false,
+    "date_walked": null,
+    "notes": null
+  },
+  {
+    "id": "tompkins-stairway-garden",
+    "name": "Tompkins Stairway Garden",
+    "neighborhood": "Bernal Heights",
+    "lat": 37.7397,
+    "lng": -122.4149,
+    "step_count": null,
+    "walked": false,
+    "date_walked": null,
+    "notes": null
+  },
+  {
+    "id": "arelious-walker-steps",
+    "name": "Arelious Walker / Flights of Fancy",
+    "neighborhood": "Bayview",
+    "lat": 37.7285,
+    "lng": -122.3889,
+    "step_count": 87,
+    "walked": false,
+    "date_walked": null,
+    "notes": null
+  },
+  {
+    "id": "arbol-lane",
+    "name": "Arbol Lane",
+    "neighborhood": "Twin Peaks",
+    "lat": 37.7788,
+    "lng": -122.4441,
+    "step_count": null,
+    "walked": false,
+    "date_walked": null,
+    "notes": null
+  }
+]
