@@ -49,9 +49,9 @@
     "neighborhood": "Corona Heights",
     "lat": 37.7627,
     "lng": -122.4405,
-    "step_count": null,
-    "walked": false,
-    "date_walked": null,
+    "step_count": 77,
+    "walked": true,
+    "date_walked": "2026-03-09",
     "notes": null
   },
   {
