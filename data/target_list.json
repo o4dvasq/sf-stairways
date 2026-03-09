@@ -61,8 +61,8 @@
     "lat": 37.7585,
     "lng": -122.4468,
     "step_count": null,
-    "walked": false,
-    "date_walked": null,
+    "walked": true,
+    "date_walked": "2026-03-09",
     "notes": null
   },
   {
