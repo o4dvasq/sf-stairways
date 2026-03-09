@@ -17,8 +17,8 @@
     "lat": 37.7598,
     "lng": -122.4736,
     "step_count": 148,
-    "walked": false,
-    "date_walked": null,
+    "walked": true,
+    "date_walked": "2026-03-09",
     "notes": "Mosaic garden/insect theme."
   },
   {
