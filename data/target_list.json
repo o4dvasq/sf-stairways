@@ -28,8 +28,8 @@
     "lat": 37.7835,
     "lng": -122.4935,
     "step_count": null,
-    "walked": false,
-    "date_walked": null,
+    "walked": true,
+    "date_walked": "2026-03-09",
     "notes": null
   },
   {
@@ -37,7 +37,7 @@
     "name": "Vulcan Stairway",
     "neighborhood": "Corona Heights",
     "lat": 37.7635,
-    "lng": -122.4420,
+    "lng": -122.442,
     "step_count": null,
     "walked": false,
     "date_walked": null,
