@@ -6,8 +6,8 @@
     "lat": 37.7562,
     "lng": -122.4732,
     "step_count": 163,
-    "walked": false,
-    "date_walked": null,
+    "walked": true,
+    "date_walked": "2026-03-09",
     "notes": "Mosaic sea-to-stars theme. Ocean views from top."
   },
   {
