@@ -27,7 +27,7 @@
     "neighborhood": "Lincoln Park",
     "lat": 37.7835,
     "lng": -122.4935,
-    "step_count": null,
+    "step_count": 30,
     "walked": true,
     "date_walked": "2026-03-09",
     "notes": null
