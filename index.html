@@ -133,6 +133,27 @@
       text-align: center;
     }
 
+    /* ── Toast ── */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #1e293b;
+      color: #fff;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s;
+      z-index: 10000;
+    }
+    #toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
     /* ── Modals ── */
     .modal-overlay {
       display: none;
@@ -174,6 +195,34 @@
 
     .modal p { font-size: 0.85rem; color: #475569; margin-bottom: 12px; line-height: 1.5; }
 
+    .modal-section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 14px 0 8px;
+      padding-top: 14px;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .modal-field {
+      margin-bottom: 8px;
+    }
+    .modal-field label {
+      display: block;
+      font-size: 0.78rem;
+      color: #64748b;
+      margin-bottom: 3px;
+    }
+    .modal-field input {
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 7px 10px;
+      font-size: 0.85rem;
+    }
+
     .token-row {
       display: flex;
       gap: 6px;
@@ -199,7 +248,8 @@
     .modal-note {
       font-size: 0.75rem;
       color: #94a3b8;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
+      line-height: 1.4;
     }
 
     .modal-actions {
@@ -207,6 +257,7 @@
       align-items: center;
       gap: 10px;
       flex-wrap: wrap;
+      margin-top: 16px;
     }
 
     .btn-primary {
@@ -228,12 +279,22 @@
     }
     .modal-link:hover { text-decoration: underline; }
 
-    #token-status { font-size: 0.82rem; margin-left: 4px; }
+    #settings-status { font-size: 0.82rem; margin-left: 4px; }
 
     /* ── Popup styles ── */
     .popup-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 2px; }
     .popup-sub   { font-size: 0.8rem; color: #64748b; margin-bottom: 6px; }
     .popup-meta  { font-size: 0.82rem; color: #475569; margin-bottom: 8px; }
+
+    .popup-photo {
+      display: block;
+      width: 100%;
+      max-width: 220px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      object-fit: cover;
+    }
 
     .popup-form  { margin-top: 8px; }
     .popup-form label { display: block; font-size: 0.78rem; color: #64748b; margin-bottom: 2px; margin-top: 6px; }
@@ -247,7 +308,7 @@
       font-size: 0.82rem;
     }
 
-    .popup-btns { display: flex; gap: 6px; margin-top: 10px; }
+    .popup-btns { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
 
     .pop-btn {
       flex: 1;
@@ -258,18 +319,20 @@
       cursor: pointer;
       font-weight: 600;
     }
-    .pop-btn.primary  { background: #22c55e; color: #fff; }
+    .pop-btn.primary   { background: #22c55e; color: #fff; }
     .pop-btn.primary:hover { background: #16a34a; }
     .pop-btn.secondary { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
     .pop-btn.secondary:hover { background: #e2e8f0; }
-    .pop-btn.danger   { background: #3b82f6; color: #fff; flex: none; }
-    .pop-btn.danger:hover { background: #2563eb; }
-    .pop-btn.add      { background: #3b82f6; color: #fff; }
+    .pop-btn.edit      { background: #3b82f6; color: #fff; flex: none; }
+    .pop-btn.edit:hover { background: #2563eb; }
+    .pop-btn.photo     { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; flex: none; }
+    .pop-btn.photo:hover { background: #e2e8f0; }
+    .pop-btn.add       { background: #3b82f6; color: #fff; }
     .pop-btn.add:hover { background: #2563eb; }
 
     .pop-saving { font-size: 0.78rem; color: #64748b; margin-top: 6px; }
 
-    .leaflet-popup-content { min-width: 200px; }
+    .leaflet-popup-content { min-width: 210px; }
   </style>
 </head>
 <body>
@@ -299,43 +362,67 @@
 </div>
 
 <div id="map"></div>
+<div id="toast"></div>
+<input type="file" id="photo-file-input" accept="image/*" capture="environment" style="display:none" />
 
 <!-- Settings Modal -->
 <div class="modal-overlay" id="settings-modal">
   <div class="modal">
     <div class="modal-header">
-      <h2>⚙ GitHub Settings</h2>
+      <h2>⚙ Settings</h2>
       <button class="modal-close" id="settings-close">✕</button>
     </div>
-    <p>To save walks from this page, enter a GitHub Personal Access Token with repo write access.</p>
+
+    <!-- GitHub token -->
+    <p>GitHub Personal Access Token with repo write access.</p>
     <div class="token-row">
       <input type="password" id="token-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" />
       <button id="token-eye" title="Show/hide token">👁</button>
     </div>
-    <p class="modal-note">Token is stored in your browser only. Never shared or sent anywhere except GitHub.</p>
-    <div class="modal-actions">
-      <button class="btn-primary" id="save-token-btn">Save Token</button>
+    <p class="modal-note">
+      Token stored in your browser only. Never shared or sent anywhere except GitHub.<br>
       <a class="modal-link" href="https://github.com/settings/tokens/new?description=sf-stairways&scopes=repo" target="_blank" rel="noopener">How to create a token ↗</a>
-      <span id="token-status"></span>
+    </p>
+
+    <!-- Cloudinary -->
+    <div class="modal-section-label">📷 Photo Storage (Cloudinary)</div>
+    <div class="modal-field">
+      <label>Cloud Name</label>
+      <input type="text" id="cloudinary-cloud-name" placeholder="dny5gc6yz" autocomplete="off" />
+    </div>
+    <div class="modal-field">
+      <label>Upload Preset</label>
+      <input type="text" id="cloudinary-upload-preset" placeholder="Stairways" autocomplete="off" />
+    </div>
+    <p class="modal-note">
+      Free account at <a class="modal-link" href="https://cloudinary.com" target="_blank" rel="noopener">cloudinary.com</a>.
+      Create an unsigned upload preset in Settings → Upload → Upload Presets.
+    </p>
+
+    <div class="modal-actions">
+      <button class="btn-primary" id="save-settings-btn">Save Settings</button>
+      <span id="settings-status"></span>
     </div>
   </div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-// ── Config ──────────────────────────────────────────────────────────────────
+// ── Config ───────────────────────────────────────────────────────────────────
 const CONFIG = {
-  githubOwner: 'o4dvasq',
-  githubRepo:  'sf-stairways',
-  dataPath:    'data/target_list.json',
-  branch:      'main'
+  githubOwner:            'o4dvasq',
+  githubRepo:             'sf-stairways',
+  dataPath:               'data/target_list.json',
+  branch:                 'main',
+  defaultCloudName:       'dny5gc6yz',
+  defaultUploadPreset:    'Stairways'
 };
 
 // ── State ────────────────────────────────────────────────────────────────────
-let targetList = [];
+let targetList   = [];
 let allStairways = [];
 let pendingChanges = false;
-let showingAll = false;
+let showingAll   = false;
 
 // ── Map init ─────────────────────────────────────────────────────────────────
 const map = L.map('map');
@@ -345,7 +432,6 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 19
 }).addTo(map);
 
-// Custom panes for z-ordering
 map.createPane('walkedPane');
 map.createPane('targetPane');
 map.createPane('cityPane');
@@ -354,7 +440,7 @@ map.getPane('targetPane').style.zIndex = 640;
 map.getPane('cityPane').style.zIndex   = 630;
 
 const targetMarkers = L.layerGroup().addTo(map);
-const cityLayer     = L.layerGroup(); // not added until Show All
+const cityLayer     = L.layerGroup();
 
 // ── Utility ──────────────────────────────────────────────────────────────────
 function today() {
@@ -373,6 +459,54 @@ function showError(msg) {
   el.style.display = msg ? 'block' : 'none';
 }
 
+let toastTimer = null;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+// ── Cloudinary helpers ────────────────────────────────────────────────────────
+function getCloudinaryConfig() {
+  return {
+    cloudName: localStorage.getItem('cloudinary_cloud_name') || CONFIG.defaultCloudName,
+    preset:    localStorage.getItem('cloudinary_upload_preset') || CONFIG.defaultUploadPreset
+  };
+}
+
+async function uploadToCloudinary(file) {
+  const { cloudName, preset } = getCloudinaryConfig();
+
+  if (file.size > 10 * 1024 * 1024) {
+    throw Object.assign(new Error('too-large'), { code: 'too-large' });
+  }
+
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', preset);
+  formData.append('folder', 'sf-stairways');
+
+  let res;
+  try {
+    res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+      method: 'POST',
+      body: formData
+    });
+  } catch {
+    throw Object.assign(new Error('no-connection'), { code: 'no-connection' });
+  }
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw Object.assign(new Error(body.error?.message || `Upload failed: ${res.status}`), { code: 'upload-failed' });
+  }
+
+  const data = await res.json();
+  return data.secure_url;
+}
+
 // ── Stats bar ─────────────────────────────────────────────────────────────────
 function renderStats() {
   const walked     = targetList.filter(s => s.walked);
@@ -388,8 +522,7 @@ function renderStats() {
     text = `${walked.length} of ${targetList.length} target walked  ·  ${totalSteps.toLocaleString()} steps climbed`;
   }
 
-  const bar = document.getElementById('stats-bar');
-  bar.childNodes[0].textContent = text;
+  document.getElementById('stats-bar').childNodes[0].textContent = text;
 }
 
 // ── GitHub API ────────────────────────────────────────────────────────────────
@@ -401,7 +534,7 @@ async function saveTargetList(updatedList) {
   }
 
   const baseUrl = `https://api.github.com/repos/${CONFIG.githubOwner}/${CONFIG.githubRepo}/contents/${CONFIG.dataPath}`;
-  const headers  = { Authorization: `token ${token}`, 'Content-Type': 'application/json' };
+  const headers = { Authorization: `token ${token}`, 'Content-Type': 'application/json' };
 
   try {
     const getRes = await fetch(baseUrl, { headers });
@@ -436,7 +569,6 @@ async function saveTargetList(updatedList) {
     }
     if (!putRes.ok) throw new Error(`PUT failed: ${putRes.status}`);
 
-    // Committed — clear pending
     pendingChanges = false;
     document.getElementById('retry-btn').style.display = 'none';
     showError('');
@@ -451,18 +583,25 @@ async function saveTargetList(updatedList) {
   }
 }
 
+// ── Cloudinary thumbnail URL ──────────────────────────────────────────────────
+// Inserts Cloudinary transform for a ~400px-wide thumbnail, leaves full URL for the link.
+function thumbUrl(url) {
+  if (!url) return null;
+  // Insert transform before /upload/ in the URL
+  return url.replace('/upload/', '/upload/c_fill,w_400,h_300/');
+}
+
 // ── Markers ──────────────────────────────────────────────────────────────────
 function makeTargetMarker(item) {
   if (item.lat == null || item.lng == null) return null;
 
-  const isWalked = item.walked;
   const marker = L.circleMarker([item.lat, item.lng], {
     radius:      10,
-    fillColor:   isWalked ? '#22c55e' : '#ef4444',
-    color:       isWalked ? '#16a34a' : '#dc2626',
+    fillColor:   item.walked ? '#22c55e' : '#ef4444',
+    color:       item.walked ? '#16a34a' : '#dc2626',
     weight:      2,
     fillOpacity: 0.9,
-    pane:        isWalked ? 'walkedPane' : 'targetPane'
+    pane:        item.walked ? 'walkedPane' : 'targetPane'
   });
 
   marker.bindPopup(() => buildTargetPopup(item, marker), { maxWidth: 280, minWidth: 210 });
@@ -473,6 +612,14 @@ function buildTargetPopup(item, marker) {
   const div = document.createElement('div');
 
   if (item.walked) {
+    const photoHtml = item.photo_url
+      ? `<a href="${item.photo_url}" target="_blank" rel="noopener">
+           <img class="popup-photo" src="${thumbUrl(item.photo_url)}" alt="Photo of ${item.name}" />
+         </a>`
+      : '';
+
+    const photoLabel = item.photo_url ? '📷 Change Photo' : '📷 Add Photo';
+
     div.innerHTML = `
       <div class="popup-title">🟢 ${item.name}</div>
       <div class="popup-sub">${item.neighborhood}</div>
@@ -480,15 +627,22 @@ function buildTargetPopup(item, marker) {
         ✅ Walked: ${formatDate(item.date_walked)}<br>
         ${item.step_count != null ? item.step_count + ' steps' : ''}
       </div>
+      ${photoHtml}
       <div class="popup-btns">
-        <button class="pop-btn danger" id="pp-edit-btn">✏️ Edit</button>
+        <button class="pop-btn edit" id="pp-edit-btn">✏️ Edit</button>
+        <button class="pop-btn photo" id="pp-photo-btn">${photoLabel}</button>
       </div>
+      <div class="pop-saving" id="pp-photo-status"></div>
       <div id="pp-form"></div>
     `;
+
     setTimeout(() => {
-      const editBtn = div.querySelector('#pp-edit-btn');
-      if (editBtn) editBtn.addEventListener('click', () => showWalkForm(div, item, marker));
+      div.querySelector('#pp-edit-btn')
+         .addEventListener('click', () => showWalkForm(div, item, marker));
+      div.querySelector('#pp-photo-btn')
+         .addEventListener('click', () => triggerPhotoUpload(item, marker, div.querySelector('#pp-photo-status')));
     }, 0);
+
   } else {
     div.innerHTML = `
       <div class="popup-title">🔴 ${item.name}</div>
@@ -503,8 +657,8 @@ function buildTargetPopup(item, marker) {
       <div id="pp-form"></div>
     `;
     setTimeout(() => {
-      const walkBtn = div.querySelector('#pp-walk-btn');
-      if (walkBtn) walkBtn.addEventListener('click', () => showWalkForm(div, item, marker));
+      div.querySelector('#pp-walk-btn')
+         .addEventListener('click', () => showWalkForm(div, item, marker));
     }, 0);
   }
 
@@ -514,7 +668,9 @@ function buildTargetPopup(item, marker) {
 function showWalkForm(container, item, marker) {
   const formDiv = container.querySelector('#pp-form');
   const btnsDiv = container.querySelector('.popup-btns');
+  const statusEl = container.querySelector('#pp-photo-status');
   if (btnsDiv) btnsDiv.style.display = 'none';
+  if (statusEl) statusEl.style.display = 'none';
 
   formDiv.innerHTML = `
     <div class="popup-form">
@@ -530,13 +686,11 @@ function showWalkForm(container, item, marker) {
     </div>
   `;
 
-  formDiv.querySelector('#pp-cancel').addEventListener('click', () => {
-    marker.closePopup();
-  });
+  formDiv.querySelector('#pp-cancel').addEventListener('click', () => marker.closePopup());
 
   formDiv.querySelector('#pp-save').addEventListener('click', async () => {
-    const date  = formDiv.querySelector('#pp-date').value;
-    const steps = formDiv.querySelector('#pp-steps').value;
+    const date   = formDiv.querySelector('#pp-date').value;
+    const steps  = formDiv.querySelector('#pp-steps').value;
     const saving = formDiv.querySelector('#pp-saving');
 
     saving.textContent = 'Saving…';
@@ -548,7 +702,6 @@ function showWalkForm(container, item, marker) {
 
     const ok = await saveTargetList(targetList);
     if (ok || pendingChanges) {
-      // Update in memory regardless; show error if offline
       renderStats();
       refreshTargetMarkers();
       marker.closePopup();
@@ -561,6 +714,48 @@ function showWalkForm(container, item, marker) {
   });
 }
 
+// ── Photo upload ──────────────────────────────────────────────────────────────
+function triggerPhotoUpload(item, marker, statusEl) {
+  const { cloudName, preset } = getCloudinaryConfig();
+  if (!cloudName || !preset) {
+    statusEl.textContent = 'Set up Cloudinary in ⚙ Settings first.';
+    return;
+  }
+
+  const fileInput = document.getElementById('photo-file-input');
+  fileInput.value = '';
+
+  const handleFile = async (e) => {
+    fileInput.removeEventListener('change', handleFile);
+    const file = e.target.files[0];
+    if (!file) return;
+
+    statusEl.textContent = 'Uploading…';
+
+    try {
+      const url = await uploadToCloudinary(file);
+      item.photo_url = url;
+      await saveTargetList(targetList);
+      showToast('Photo saved ✅');
+      // Reopen popup to show thumbnail
+      marker.closePopup();
+      setTimeout(() => marker.openPopup(), 50);
+    } catch (err) {
+      if (err.code === 'too-large') {
+        statusEl.textContent = 'Photo is too large. Please use a compressed image.';
+      } else if (err.code === 'no-connection') {
+        statusEl.textContent = 'No connection — try again when online';
+      } else {
+        statusEl.textContent = 'Photo upload failed — check your Cloudinary settings';
+      }
+    }
+  };
+
+  fileInput.addEventListener('change', handleFile);
+  fileInput.click();
+}
+
+// ── City markers ──────────────────────────────────────────────────────────────
 function makeCityMarker(stairway) {
   if (stairway.lat == null || stairway.lng == null) return null;
 
@@ -593,8 +788,8 @@ function buildCityPopup(stairway, marker) {
   `;
 
   setTimeout(() => {
-    const addBtn = div.querySelector('#pp-add-btn');
-    if (addBtn) addBtn.addEventListener('click', () => showAddForm(div, stairway, marker));
+    div.querySelector('#pp-add-btn')
+       .addEventListener('click', () => showAddForm(div, stairway, marker));
   }, 0);
 
   return div;
@@ -630,15 +825,16 @@ function showAddForm(container, stairway, marker) {
     formDiv.querySelector('#pp-add').disabled = true;
 
     const newItem = {
-      id:          stairway.id,
-      name:        stairway.name,
+      id:           stairway.id,
+      name:         stairway.name,
       neighborhood: stairway.neighborhood || '',
-      lat:         stairway.lat,
-      lng:         stairway.lng,
-      step_count:  steps ? parseInt(steps, 10) : null,
-      walked:      false,
-      date_walked: null,
-      notes:       notes || null
+      lat:          stairway.lat,
+      lng:          stairway.lng,
+      step_count:   steps ? parseInt(steps, 10) : null,
+      walked:       false,
+      date_walked:  null,
+      photo_url:    null,
+      notes:        notes || null
     };
 
     targetList.push(newItem);
@@ -674,7 +870,7 @@ function renderCityLayer() {
   const targetIds = new Set(targetList.map(t => t.id));
   for (const s of allStairways) {
     if (s.closed) continue;
-    if (targetIds.has(s.id)) continue; // don't overlap with colored markers
+    if (targetIds.has(s.id)) continue;
     const m = makeCityMarker(s);
     if (m) cityLayer.addLayer(m);
   }
@@ -705,15 +901,20 @@ document.getElementById('retry-btn').addEventListener('click', async () => {
 });
 
 // ── Settings Modal ────────────────────────────────────────────────────────────
-let pendingSaveMessage = null;
-
 function openSettingsModal(auto = false, message = null) {
-  const modal = document.getElementById('settings-modal');
-  modal.classList.add('open');
-  const input = document.getElementById('token-input');
+  document.getElementById('settings-modal').classList.add('open');
+
+  // GitHub token
   const stored = localStorage.getItem('gh_token');
-  if (stored) input.value = stored;
-  const status = document.getElementById('token-status');
+  if (stored) document.getElementById('token-input').value = stored;
+
+  // Cloudinary — use stored value, or fall back to hardcoded defaults
+  const cloudName = localStorage.getItem('cloudinary_cloud_name') || CONFIG.defaultCloudName;
+  const preset    = localStorage.getItem('cloudinary_upload_preset') || CONFIG.defaultUploadPreset;
+  document.getElementById('cloudinary-cloud-name').value    = cloudName;
+  document.getElementById('cloudinary-upload-preset').value = preset;
+
+  const status = document.getElementById('settings-status');
   status.textContent = message || '';
   status.style.color = message ? '#ef4444' : '';
 }
@@ -735,11 +936,20 @@ document.getElementById('token-eye').addEventListener('click', () => {
   input.type = input.type === 'password' ? 'text' : 'password';
 });
 
-document.getElementById('save-token-btn').addEventListener('click', async () => {
-  const input  = document.getElementById('token-input');
-  const status = document.getElementById('token-status');
-  const token  = input.value.trim();
-  if (!token) { status.textContent = '❌ Please enter a token'; status.style.color = '#ef4444'; return; }
+document.getElementById('save-settings-btn').addEventListener('click', async () => {
+  const token     = document.getElementById('token-input').value.trim();
+  const cloudName = document.getElementById('cloudinary-cloud-name').value.trim();
+  const preset    = document.getElementById('cloudinary-upload-preset').value.trim();
+  const status    = document.getElementById('settings-status');
+
+  // Save Cloudinary settings immediately (no validation needed — unsigned)
+  if (cloudName) localStorage.setItem('cloudinary_cloud_name', cloudName);
+  if (preset)    localStorage.setItem('cloudinary_upload_preset', preset);
+
+  // Validate and save GitHub token
+  if (!token) {
+    status.textContent = '❌ Please enter a GitHub token'; status.style.color = '#ef4444'; return;
+  }
 
   status.textContent = 'Validating…'; status.style.color = '#64748b';
 
@@ -751,23 +961,18 @@ document.getElementById('save-token-btn').addEventListener('click', async () => 
     if (res.status === 401) {
       status.textContent = '❌ Invalid token'; status.style.color = '#ef4444'; return;
     }
-    if (res.status === 404) {
-      // Repo not found but token valid — accept
-    }
     localStorage.setItem('gh_token', token);
-    status.textContent = '✅ Token saved'; status.style.color = '#16a34a';
+    status.textContent = '✅ Settings saved'; status.style.color = '#16a34a';
     setTimeout(() => document.getElementById('settings-modal').classList.remove('open'), 800);
   } catch {
-    status.textContent = '⚠️ Network error — token saved anyway'; status.style.color = '#d97706';
     localStorage.setItem('gh_token', token);
+    status.textContent = '⚠️ Network error — settings saved anyway'; status.style.color = '#d97706';
     setTimeout(() => document.getElementById('settings-modal').classList.remove('open'), 1200);
   }
 });
 
 // ── Bootstrap ─────────────────────────────────────────────────────────────────
 async function init() {
-  let allFailed = false;
-
   const [targetResult, cityResult] = await Promise.allSettled([
     fetch('./data/target_list.json').then(r => { if (!r.ok) throw new Error(); return r.json(); }),
     fetch('./data/all_stairways.json').then(r => { if (!r.ok) throw new Error(); return r.json(); })
@@ -782,6 +987,10 @@ async function init() {
   }
 
   targetList = targetResult.value;
+  // Migrate any legacy entries that lack photo_url
+  for (const item of targetList) {
+    if (!('photo_url' in item)) item.photo_url = null;
+  }
 
   if (cityResult.status === 'rejected' || cityResult.value.length === 0) {
     const allBtn = document.getElementById('btn-all');
@@ -795,11 +1004,9 @@ async function init() {
   renderStats();
   refreshTargetMarkers();
 
-  // Fit to target list bounds on initial load
   const validTargets = targetList.filter(t => t.lat != null && t.lng != null);
   if (validTargets.length > 0) {
-    const bounds = L.latLngBounds(validTargets.map(t => [t.lat, t.lng]));
-    map.fitBounds(bounds, { padding: [30, 30] });
+    map.fitBounds(L.latLngBounds(validTargets.map(t => [t.lat, t.lng])), { padding: [30, 30] });
   } else {
     map.setView([37.7749, -122.4194], 13);
   }

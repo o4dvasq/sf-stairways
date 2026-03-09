@@ -8,7 +8,8 @@
     "step_count": 163,
     "walked": true,
     "date_walked": "2026-03-09",
-    "notes": "Mosaic sea-to-stars theme. Ocean views from top."
+    "notes": "Mosaic sea-to-stars theme. Ocean views from top.",
+    "photo_url": null
   },
   {
     "id": "hidden-garden-steps",
@@ -19,7 +20,8 @@
     "step_count": 148,
     "walked": true,
     "date_walked": "2026-03-09",
-    "notes": "Mosaic garden/insect theme."
+    "notes": "Mosaic garden/insect theme.",
+    "photo_url": null
   },
   {
     "id": "lincoln-park-steps",
@@ -30,7 +32,8 @@
     "step_count": 30,
     "walked": true,
     "date_walked": "2026-03-09",
-    "notes": null
+    "notes": null,
+    "photo_url": null
   },
   {
     "id": "vulcan-stairway",
@@ -41,7 +44,8 @@
     "step_count": 210,
     "walked": true,
     "date_walked": "2026-03-09",
-    "notes": null
+    "notes": null,
+    "photo_url": null
   },
   {
     "id": "saturn-street-west-of-ord-street",
@@ -52,7 +56,8 @@
     "step_count": 77,
     "walked": true,
     "date_walked": "2026-03-09",
-    "notes": null
+    "notes": null,
+    "photo_url": null
   },
   {
     "id": "pemberton-place-clayton-street-to-villa-terrace",
@@ -63,7 +68,8 @@
     "step_count": 210,
     "walked": true,
     "date_walked": "2026-03-09",
-    "notes": null
+    "notes": null,
+    "photo_url": null
   },
   {
     "id": "lyon-street-vallejo-street-to-broadway",
@@ -74,7 +80,8 @@
     "step_count": 332,
     "walked": false,
     "date_walked": null,
-    "notes": null
+    "notes": null,
+    "photo_url": null
   },
   {
     "id": "filbert-street-sansome-street-to-montgomery-street",
@@ -85,7 +92,8 @@
     "step_count": 200,
     "walked": false,
     "date_walked": null,
-    "notes": null
+    "notes": null,
+    "photo_url": null
   },
   {
     "id": "esmeralda-avenue-coleridge-street-to-lundys-lane",
@@ -96,7 +104,8 @@
     "step_count": null,
     "walked": false,
     "date_walked": null,
-    "notes": null
+    "notes": null,
+    "photo_url": null
   },
   {
     "id": "tompkins-avenue-putnam-street-to-nevada-street",
@@ -107,7 +116,8 @@
     "step_count": null,
     "walked": false,
     "date_walked": null,
-    "notes": null
+    "notes": null,
+    "photo_url": null
   },
   {
     "id": "arelious-walker-drive-flights-of-fancy-mosaic-steps",
@@ -118,7 +128,8 @@
     "step_count": 87,
     "walked": false,
     "date_walked": null,
-    "notes": null
+    "notes": null,
+    "photo_url": null
   },
   {
     "id": "arbol-lane",
@@ -129,6 +140,7 @@
     "step_count": null,
     "walked": false,
     "date_walked": null,
-    "notes": null
+    "notes": null,
+    "photo_url": null
   }
 ]
