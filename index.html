@@ -604,6 +604,7 @@ function makeTargetMarker(item) {
     pane:        item.walked ? 'walkedPane' : 'targetPane'
   });
 
+  marker.bindTooltip(item.name);
   marker.bindPopup(() => buildTargetPopup(item, marker), { maxWidth: 280, minWidth: 210 });
   return marker;
 }
@@ -768,6 +769,7 @@ function makeCityMarker(stairway) {
     pane:        'cityPane'
   });
 
+  marker.bindTooltip(stairway.name);
   marker.bindPopup(() => buildCityPopup(stairway, marker), { maxWidth: 280, minWidth: 210 });
   return marker;
 }
