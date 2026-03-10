@@ -89,9 +89,9 @@
     "neighborhood": "Telegraph Hill",
     "lat": 37.8020878930906,
     "lng": -122.4040064221076,
-    "step_count": 200,
-    "walked": false,
-    "date_walked": null,
+    "step_count": 450,
+    "walked": true,
+    "date_walked": "2026-03-10",
     "notes": null,
     "photo_url": null
   },
