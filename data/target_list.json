@@ -142,5 +142,17 @@
     "date_walked": null,
     "notes": null,
     "photo_url": null
+  },
+  {
+    "id": "greenwich-street-sansome-street-to-montgomery-street",
+    "name": "Greenwich Street - Sansome Street to Montgomery Street",
+    "neighborhood": "Telegraph Hill",
+    "lat": 37.80292993022101,
+    "lng": -122.4042711506839,
+    "step_count": 350,
+    "walked": false,
+    "date_walked": null,
+    "photo_url": null,
+    "notes": null
   }
 ]
