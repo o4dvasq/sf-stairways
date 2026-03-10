@@ -150,8 +150,8 @@
     "lat": 37.80292993022101,
     "lng": -122.4042711506839,
     "step_count": 350,
-    "walked": false,
-    "date_walked": null,
+    "walked": true,
+    "date_walked": "2026-03-10",
     "photo_url": null,
     "notes": null
   }
