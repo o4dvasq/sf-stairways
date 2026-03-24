@@ -48,7 +48,7 @@ _Last updated: 2026-03-23_
 
 ### 2. App Store — Scaffold multi-user architecture
 **Current priority:** Supabase project setup + SDK integration
-- Spec ready: `docs/specs/SPEC_multi-user-backend-architecture.md`
+- Architecture spec complete: `docs/specs/implemented/SPEC_multi-user-backend-architecture.md`
 - Architecture decided: Supabase backend, Sign in with Apple, Supabase Storage → R2
 - Next: create Supabase project, run schema SQL, add supabase-swift to Xcode
 - Backlog: auth + user accounts, App Store prep (icon, metadata, TestFlight)
