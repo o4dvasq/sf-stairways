@@ -25,6 +25,16 @@ enum SeedDataService {
     private static let hasSeededKey = "com.sfstairways.hasSeededData"
 
     static func seedIfNeeded(modelContext: ModelContext) {
+        // Check for existing records first — CloudKit may have already delivered data
+        // from another device before this call, making seeding unnecessary.
+        let descriptor = FetchDescriptor<WalkRecord>()
+        let existingCount = (try? modelContext.fetchCount(descriptor)) ?? 0
+        if existingCount > 0 {
+            print("[SeedDataService] Skipping seed — \(existingCount) records already exist")
+            UserDefaults.standard.set(true, forKey: hasSeededKey)
+            return
+        }
+
         guard !UserDefaults.standard.bool(forKey: hasSeededKey) else { return }
 
         guard let url = Bundle.main.url(forResource: "target_list", withExtension: "json"),

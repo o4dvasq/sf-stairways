@@ -2,8 +2,10 @@ import SwiftUI
 import SwiftData
 
 struct ProgressTab: View {
+    @Environment(SyncStatusManager.self) private var syncManager
     @Query private var walkRecords: [WalkRecord]
     @State private var store = StairwayStore()
+    @State private var showSyncDetails = false
 
     private var walkedRecords: [WalkRecord] {
         walkRecords.filter(\.walked)
@@ -90,6 +92,40 @@ struct ProgressTab: View {
                 .padding(16)
             }
             .navigationTitle("Progress")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showSyncDetails = true
+                    } label: {
+                        Image(systemName: syncIconName)
+                            .foregroundStyle(syncIconColor)
+                    }
+                    .accessibilityLabel("iCloud sync status")
+                }
+            }
+            .sheet(isPresented: $showSyncDetails) {
+                SyncStatusSheet(manager: syncManager)
+                    .presentationDetents([.fraction(0.3)])
+            }
+        }
+    }
+
+    private var syncIconName: String {
+        switch syncManager.state {
+        case .unknown:              return "cloud"
+        case .syncing:              return "arrow.clockwise.icloud"
+        case .synced:               return "checkmark.icloud"
+        case .unavailable:          return "icloud.slash"
+        case .error:                return "exclamationmark.icloud"
+        }
+    }
+
+    private var syncIconColor: Color {
+        switch syncManager.state {
+        case .unknown:              return .secondary
+        case .syncing:              return .blue
+        case .synced:               return Color.walkedGreen
+        case .unavailable, .error:  return .red
         }
     }
 
@@ -229,6 +265,80 @@ struct ProgressTab: View {
                     }
                 }
             }
+        }
+    }
+}
+
+// MARK: - Sync Status Sheet
+
+struct SyncStatusSheet: View {
+    let manager: SyncStatusManager
+
+    var body: some View {
+        VStack(spacing: 16) {
+            HStack(spacing: 12) {
+                Image(systemName: iconName)
+                    .font(.title2)
+                    .foregroundStyle(iconColor)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(title)
+                        .font(.headline)
+                    Text(detail)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+            }
+            .padding()
+            .background(Color(.systemGray6))
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+        }
+        .padding()
+        .presentationDragIndicator(.visible)
+    }
+
+    private var iconName: String {
+        switch manager.state {
+        case .unknown:              return "cloud"
+        case .syncing:              return "arrow.clockwise.icloud"
+        case .synced:               return "checkmark.icloud.fill"
+        case .unavailable:          return "icloud.slash.fill"
+        case .error:                return "exclamationmark.icloud.fill"
+        }
+    }
+
+    private var iconColor: Color {
+        switch manager.state {
+        case .unknown:              return .secondary
+        case .syncing:              return .blue
+        case .synced:               return .green
+        case .unavailable, .error:  return .red
+        }
+    }
+
+    private var title: String {
+        switch manager.state {
+        case .unknown:              return "iCloud Sync"
+        case .syncing:              return "Syncing…"
+        case .synced:               return "Up to date"
+        case .unavailable:          return "Sync unavailable"
+        case .error:                return "Sync error"
+        }
+    }
+
+    private var detail: String {
+        switch manager.state {
+        case .unknown:
+            return "Waiting for first sync event"
+        case .syncing:
+            return "Uploading or downloading changes"
+        case .synced(let date):
+            let formatter = RelativeDateTimeFormatter()
+            return "Last synced \(formatter.localizedString(for: date, relativeTo: Date()))"
+        case .unavailable(let reason):
+            return reason
+        case .error(let message):
+            return message
         }
     }
 }

@@ -103,6 +103,46 @@ No API secret required — unsigned presets are safe for browser-side uploads.
 
 Records with `lat: null` or `lng: null` are silently skipped — no marker is rendered.
 
+## iOS App Structure
+
+Source at `ios/SFStairways/` — 22 Swift files.
+
+### Entry Point
+
+`SFStairwaysApp.swift` — creates `ModelContainer` (CloudKit-backed, falls back to local), creates `SyncStatusManager`, injects both into the SwiftUI environment.
+
+### Services
+
+| File | Role |
+|---|---|
+| `SyncStatusManager.swift` | `@Observable` — listens to `NSPersistentCloudKitContainer.eventChangedNotification`, exposes `.state` enum |
+| `SeedDataService.swift` | Seeds `WalkRecord` data from `target_list.json` on first launch; skips if records already exist (CloudKit delivery) or UserDefaults flag set |
+| `LocationManager.swift` | CLLocationManager wrapper for current location |
+| `PhotoService.swift` | Photo capture, thumbnail generation |
+
+### Models (SwiftData)
+
+| Model | Key fields |
+|---|---|
+| `WalkRecord` | `stairwayID`, `walked`, `dateWalked`, `notes`, `stepCount`, `photos: [WalkPhoto]?` |
+| `WalkPhoto` | `imageData` (externalStorage), `thumbnailData` (externalStorage), `caption`, `walkRecord` |
+| `Stairway` | Value type loaded from `all_stairways.json` bundle resource |
+
+### Views
+
+- `ContentView` — `TabView` (Map / List / Progress)
+- `MapTab` — `MKMapView` with stairway annotations, bottom sheet
+- `ListTab` — searchable, filterable stairway list with `NavigationLink` to detail
+- `ProgressTab` — completion ring, stats grid, neighborhood breakdown, recent walks; sync status icon in toolbar
+- `StairwayDetail` — walk logging, photo management
+
+### CloudKit Setup
+
+- Container: `iCloud.com.o4dvasq.sfstairways`
+- Entitlements: `aps-environment: development`, iCloud container + CloudKit service
+- Required manual Xcode step: Background Modes → Remote Notifications (enables push-triggered sync)
+- Xcode project at `~/Desktop/SFStairways/` (not version-controlled)
+
 ## Data Loading
 
 ```javascript

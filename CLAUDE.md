@@ -1,55 +1,60 @@
 # sf-stairways
 
-Interactive map for tracking personal SF stairway walks. Live at https://o4dvasq.github.io/sf-stairways/
+SF stairway exploration tracker — web app + native iOS app.
 
-## Tech Stack
+## Two Platforms
 
-- Vanilla JS + HTML/CSS — no build step, no framework
-- Leaflet.js — map rendering
-- GitHub Contents API — persisting target_list.json from the browser
-- Cloudinary — photo uploads (free tier, unsigned presets)
-- GitHub Pages — hosting
+### Web App (shipped)
+- Live at https://o4dvasq.github.io/sf-stairways/
+- Vanilla JS + HTML/CSS, Leaflet.js, GitHub Contents API, Cloudinary photos
+- Entry point: `index.html` (single-file app)
+
+### iOS App (archived, running on device)
+- Swift / SwiftUI / iOS 17+, SwiftData + CloudKit
+- Source: `ios/SFStairways/` (21 files — no .xcodeproj, configured manually in Xcode)
+- Bundle ID: `com.o4dvasq.SFStairways`
+- CloudKit container: `iCloud.com.o4dvasq.sfstairways`
+- See `docs/HANDOFF_iOS.md` for full build details and known issues
 
 ## Repo
 
 https://github.com/o4dvasq/sf-stairways
 
-## Entry Point
+## Active Workstreams
 
-`index.html` — entire app in a single file (HTML + CSS + JS)
-
-## Local Dev
-
-```
-python3 -m http.server 8080
-```
-
-Then open http://localhost:8080. GitHub API writes work locally with the same token.
+1. **Solo UX** — refine the iOS app for personal use (CloudKit sync, photo workflow, directions)
+2. **App Store** — scaffold multi-user architecture for eventual public release
 
 ## File Map
 
 ```
 sf-stairways/
-├── index.html                  ← entire app
+├── index.html                  ← web app (single file)
 ├── data/
 │   ├── target_list.json        ← personal walk log (13 stairways)
 │   └── all_stairways.json      ← all 382 SF stairways from scraper
+├── ios/SFStairways/            ← iOS app source (Swift/SwiftUI)
+│   ├── Models/                 ← Stairway, WalkRecord, WalkPhoto, StairwayStore
+│   ├── Views/                  ← Map, List, Detail, Progress tabs
+│   ├── Services/               ← LocationManager, PhotoService, SeedDataService
+│   └── Resources/              ← AppColors, bundled JSON data
 ├── scripts/
 │   └── scrape_stairways.py     ← one-time data collector
 ├── docs/
 │   ├── ARCHITECTURE.md
 │   ├── DECISIONS.md
 │   ├── PROJECT_STATE.md
+│   ├── HANDOFF_iOS.md          ← iOS build details and known issues
 │   └── specs/
 │       ├── implemented/        ← completed specs
-│       └── future/             ← backlog
+│       └── (pending specs)     ← active work
 └── README.md
 ```
 
-## Logging a Walk
+## Local Dev
 
-- **In-app:** tap a red marker → "Mark as Walked" → enter date/steps → Save
-- **Via Claude Code:** tell Claude which stairways you walked; it edits `data/target_list.json` and commits
+Web: `python3 -m http.server 8080` → http://localhost:8080
+iOS: Open Xcode project at `~/Desktop/SFStairways/`, run on device or simulator
 
 ## Workflow
 
