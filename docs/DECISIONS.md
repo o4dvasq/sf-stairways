@@ -1,5 +1,30 @@
 # Architecture Decisions — sf-stairways
 
+## Web app deprecated in favor of iOS-only
+**Date:** 2026-03-25
+
+The web app (`index.html`) was a prototype that proved out the concept: interactive map of SF stairways with walk logging. Now that the iOS app has feature parity and native advantages (camera, GPS, CloudKit sync, offline), maintaining two codebases for one user provides no value. The iOS app is the sole platform going forward. `index.html` remains in the repo for reference but receives no further development.
+
+## Three-state stairway model (Unsaved / Saved / Walked) replaces target list
+**Date:** 2026-03-25
+
+The original "target list" was a static JSON file with 13 pre-selected stairways. This was a bootstrapping mechanism, not a real feature. The three-state model makes saving dynamic: users discover stairways on the map and bookmark them for later. The existing `WalkRecord` model already supports this — a record with `walked = false` is the "Saved" state. No schema change needed. This also lays the groundwork for future gamification (progress tracking, completion percentages, streaks) without requiring another data model change.
+
+## MapKit over Mapbox for iOS
+**Date:** 2026-03-25
+
+The original web-focused spec proposed Mapbox GL JS. For iOS, MapKit is the right choice: it's free with no usage limits, already integrated, handles pin annotations natively, and integrates with Core Location. Mapbox iOS SDK would add a CocoaPod/SPM dependency, a token management requirement, and usage-based billing, all for capabilities MapKit already provides.
+
+## Pre-computed neighborhood adjacency over runtime polygon intersection
+**Date:** 2026-03-25
+
+The "Around Me" feature needs to know which SF neighborhoods border the user's current neighborhood. Computing polygon intersections at runtime (the Turf.js approach from the web spec) is unnecessary overhead on a mobile device. Instead, a Python build script pre-computes the adjacency map once and bundles it as static JSON. The app does a simple dictionary lookup at runtime. Simpler, faster, no geometry library needed in Swift.
+
+## Centroid-based neighborhood detection over GeoJSON point-in-polygon
+**Date:** 2026-03-25
+
+The spec originally called for DataSF neighborhood polygons and point-in-polygon lookup to determine the user's current neighborhood. The DataSF "Analysis Neighborhoods" dataset (37 neighborhoods) does not match the stairway data's 53 neighborhood names (sourced from sfstairways.com scraper). Rather than maintain a mapping between two neighborhood schemas, we use nearest-centroid detection: the centroid of each neighborhood is computed from its stairways' coordinates, and the user's neighborhood is the one with the nearest centroid. This is more accurate for this specific dataset, requires no external polygon data, and the Python build script generates `neighborhood_centroids.json` from `all_stairways.json` directly.
+
 ## Single-file HTML app (no build step)
 **Date:** 2026-03-22 [retroactive]
 

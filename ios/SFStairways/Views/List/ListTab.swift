@@ -11,7 +11,7 @@ struct ListTab: View {
     enum ListFilter: String, CaseIterable {
         case all = "All"
         case walked = "Walked"
-        case todo = "To do"
+        case saved = "Saved"
     }
 
     var body: some View {
@@ -51,6 +51,7 @@ struct ListTab: View {
 
     private var filteredGroups: [(name: String, stairways: [Stairway])] {
         let walkedIDs = Set(walkRecords.filter(\.walked).map(\.stairwayID))
+        let savedIDs = Set(walkRecords.filter { !$0.walked }.map(\.stairwayID))
         let searchResults = store.search(searchText)
 
         let filtered: [Stairway]
@@ -59,8 +60,8 @@ struct ListTab: View {
             filtered = searchResults
         case .walked:
             filtered = searchResults.filter { walkedIDs.contains($0.id) }
-        case .todo:
-            filtered = searchResults.filter { !walkedIDs.contains($0.id) }
+        case .saved:
+            filtered = searchResults.filter { savedIDs.contains($0.id) }
         }
 
         let grouped = Dictionary(grouping: filtered, by: \.neighborhood)

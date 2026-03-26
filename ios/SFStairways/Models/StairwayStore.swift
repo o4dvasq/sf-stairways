@@ -1,4 +1,5 @@
 import Foundation
+import MapKit
 import SwiftData
 import Observation
 
@@ -96,5 +97,44 @@ final class StairwayStore {
             $0.name.lowercased().contains(lowered) ||
             $0.neighborhood.lowercased().contains(lowered)
         }
+    }
+
+    /// Search by stairway name only. "Street" tab uses this since street info
+    /// is embedded in most stairway names (e.g. "Vulcan Street Steps").
+    func searchByName(_ query: String) -> [Stairway] {
+        guard !query.isEmpty else { return [] }
+        let lowered = query.lowercased()
+        return stairways.filter { $0.name.lowercased().contains(lowered) }
+    }
+
+    /// Search neighborhoods by name, returning groups sorted by name.
+    /// Empty query returns all neighborhoods.
+    func searchByNeighborhood(_ query: String) -> [(name: String, stairways: [Stairway])] {
+        let lowered = query.lowercased()
+        return neighborhoodGroups.filter { group in
+            query.isEmpty || group.name.lowercased().contains(lowered)
+        }
+    }
+
+    /// Returns the map region that fits all stairways in a given neighborhood.
+    func region(for neighborhood: String) -> MKCoordinateRegion? {
+        let coords = stairways(in: neighborhood).compactMap(\.coordinate)
+        guard !coords.isEmpty else { return nil }
+
+        let minLat = coords.map(\.latitude).min()!
+        let maxLat = coords.map(\.latitude).max()!
+        let minLng = coords.map(\.longitude).min()!
+        let maxLng = coords.map(\.longitude).max()!
+
+        let center = CLLocationCoordinate2D(
+            latitude: (minLat + maxLat) / 2,
+            longitude: (minLng + maxLng) / 2
+        )
+        // Add 20% padding around the bounding box
+        let span = MKCoordinateSpan(
+            latitudeDelta: max((maxLat - minLat) * 1.4, 0.01),
+            longitudeDelta: max((maxLng - minLng) * 1.4, 0.01)
+        )
+        return MKCoordinateRegion(center: center, span: span)
     }
 }

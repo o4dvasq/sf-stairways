@@ -1,15 +1,10 @@
 # Project State — sf-stairways
 
-_Last updated: 2026-03-23_
+_Last updated: 2026-03-25_
 
-## Platforms
+## Platform
 
-### Web App (shipped)
-- Interactive Leaflet.js map showing all 382 SF stairways
-- Walk logging, target list management, photo uploads via Cloudinary
-- Deployed on GitHub Pages: https://o4dvasq.github.io/sf-stairways/
-
-### iOS App (archived, running on device)
+### iOS App (sole platform)
 - Swift/SwiftUI/iOS 17+ with Map, List, and Progress tabs
 - SwiftData + CloudKit — container init with CloudKit configured; falls back to local-only with detailed error logging if CloudKit fails
 - `SyncStatusManager` tracks live CloudKit event notifications; cloud icon in Progress tab shows sync state
@@ -17,12 +12,16 @@ _Last updated: 2026-03-23_
 - Successfully archived in Xcode on 2026-03-23
 - See `docs/HANDOFF_iOS.md` for full build details
 
+### Web App (deprecated)
+- `index.html` remains in the repo for historical reference
+- No further development — see DECISIONS.md for rationale
+
 ## Current Data
 
 | Metric | Value |
 |---|---|
-| Target stairways | 13 |
-| Walked | 8 |
+| Walked stairways | 8 |
+| Saved (un-walked) | 5 |
 | With photos | 0 |
 | All SF stairways (catalog) | 382 |
 
@@ -39,12 +38,12 @@ _Last updated: 2026-03-23_
 
 ## Active Workstreams
 
-### 1. Solo UX — Refine iOS app for personal use
-**Current priority:** Verify CloudKit sync is live on device after the fix
-- Just completed: CloudKit sync fix (SyncStatusManager, seed guard, sync indicator)
-- To verify: build and run on physical device; check Progress tab cloud icon turns green
-- Manual Xcode step still needed: Background Modes → Remote Notifications capability
-- Backlog: photo workflow improvements, walking directions, web-iOS data sync
+### 1. Solo UX — Map Redesign (just completed)
+- Custom teardrop pins with three-state model (Unsaved / Saved / Walked)
+- "Around Me" neighborhood-aware filter with adjacent neighborhood highlighting
+- Bottom search bar with full-screen modal (Name / Street / Neighborhood tabs)
+- Filter chips: All / Saved / Walked / Nearby
+- See: `docs/specs/implemented/SPEC_map-redesign-ios.md`
 
 ### 2. App Store — Scaffold multi-user architecture
 **Current priority:** Supabase project setup + SDK integration
@@ -56,10 +55,11 @@ _Last updated: 2026-03-23_
 ## Known Issues
 
 - CloudKit sync may still fall back to local if Xcode target lacks Background Modes → Remote Notifications capability (manual Xcode step — not in repo)
-- No .xcodeproj in repo — Xcode project configured manually at `~/Desktop/SFStairways/`
+- New Swift files from map-redesign spec need to be manually added to Xcode project navigator
 
 ## Repository
 
-- `sf-stairways` (Dropbox) is the official project repository for both web and iOS
-- iOS source lives at `ios/SFStairways/` (22 Swift files)
-- `HANDOFF_iOS.md` in `docs/HANDOFF_iOS.md`
+- `sf-stairways` (Dropbox) is the official project repository
+- Xcode project: `ios/SFStairways.xcodeproj` (in repo)
+- iOS source: `ios/SFStairways/` (Swift/SwiftUI)
+- See `docs/HANDOFF_iOS.md` for build details

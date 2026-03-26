@@ -7,6 +7,7 @@ struct MapTab: View {
     @Query private var walkRecords: [WalkRecord]
     @State private var store = StairwayStore()
     @State private var locationManager = LocationManager()
+    @State private var aroundMe = AroundMeManager()
     @State private var selectedStairway: Stairway?
     @State private var cameraPosition: MapCameraPosition = .region(
         MKCoordinateRegion(
@@ -15,11 +16,13 @@ struct MapTab: View {
         )
     )
     @State private var filter: StairwayFilter = .all
+    @State private var showSearch: Bool = false
+    @State private var toastMessage: String? = nil
 
     enum StairwayFilter: String, CaseIterable {
         case all = "All"
+        case saved = "Saved"
         case walked = "Walked"
-        case todo = "To do"
         case nearby = "Nearby"
     }
 
@@ -34,7 +37,8 @@ struct MapTab: View {
                             StairwayAnnotation(
                                 stairway: stairway,
                                 walkRecord: walkRecord(for: stairway),
-                                isSelected: selectedStairway?.id == stairway.id
+                                isSelected: selectedStairway?.id == stairway.id,
+                                isDimmed: aroundMe.isDimmed(neighborhood: stairway.neighborhood)
                             )
                             .onTapGesture {
                                 withAnimation(.spring(response: 0.3)) {
@@ -51,6 +55,18 @@ struct MapTab: View {
                 MapCompass()
                 MapScaleView()
             }
+            .overlay(alignment: .bottomTrailing) {
+                ProgressCard(
+                    walkedCount: walkedCount,
+                    totalHeightFt: totalHeightFt,
+                    totalSteps: totalSteps
+                )
+                .padding(.trailing, 12)
+                .padding(.bottom, 120)  // above search bar
+            }
+            .safeAreaInset(edge: .bottom) {
+                bottomBar
+            }
 
             // Filter chips
             ScrollView(.horizontal, showsIndicators: false) {
@@ -64,20 +80,176 @@ struct MapTab: View {
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
             }
+
+            // "You're in [Neighborhood]" chip
+            if aroundMe.isActive, let name = aroundMe.currentNeighborhood {
+                Text("You're in \(name)")
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(Color.forestGreen.opacity(0.9))
+                    .clipShape(Capsule())
+                    .padding(.top, 60)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+            }
         }
+        .toast(message: $toastMessage)
         .sheet(item: $selectedStairway) { stairway in
             StairwayBottomSheet(
                 stairway: stairway,
                 walkRecord: walkRecord(for: stairway),
-                onToggleWalk: { toggleWalk(for: stairway) }
+                onSave: { saveStairway(stairway) },
+                onMarkWalked: { markWalked(stairway) },
+                onUnmarkWalk: { unmarkWalk(stairway) },
+                onRemove: { removeRecord(stairway) }
             )
-            .presentationDetents([.height(320), .medium])
+            .presentationDetents([.height(340), .medium])
             .presentationDragIndicator(.visible)
-            .presentationBackgroundInteraction(.enabled(upThrough: .height(320)))
+            .presentationBackgroundInteraction(.enabled(upThrough: .height(340)))
+        }
+        .fullScreenCover(isPresented: $showSearch) {
+            SearchPanel(
+                store: store,
+                walkRecords: walkRecords,
+                userLocation: locationManager.currentLocation,
+                onSelectStairway: { stairway in
+                    showSearch = false
+                    flyTo(stairway)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                        selectedStairway = stairway
+                    }
+                },
+                onSelectNeighborhood: { neighborhood in
+                    showSearch = false
+                    flyToNeighborhood(neighborhood)
+                },
+                onDismiss: { showSearch = false }
+            )
         }
         .onAppear {
             locationManager.requestPermission()
         }
+    }
+
+    // MARK: - Bottom Bar
+
+    private var bottomBar: some View {
+        VStack(spacing: 8) {
+            // Around Me button
+            HStack {
+                Spacer()
+                Button {
+                    toggleAroundMe()
+                } label: {
+                    HStack(spacing: 6) {
+                        Image(systemName: aroundMe.isActive ? "location.fill" : "location")
+                            .font(.system(size: 13, weight: .semibold))
+                        Text("Around Me")
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                    }
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 8)
+                    .background(aroundMe.isActive ? Color.forestGreen : Color(.systemBackground))
+                    .foregroundStyle(aroundMe.isActive ? .white : .primary)
+                    .clipShape(Capsule())
+                    .shadow(color: .black.opacity(0.12), radius: 4, y: 2)
+                }
+                .padding(.trailing, 16)
+            }
+
+            // Search bar
+            Button {
+                showSearch = true
+            } label: {
+                HStack(spacing: 10) {
+                    Image(systemName: "magnifyingglass")
+                        .foregroundStyle(.secondary)
+                    Text("Search stairways...")
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 13)
+                .background(Color(.systemBackground))
+                .clipShape(Capsule())
+                .shadow(color: .black.opacity(0.1), radius: 6, y: 2)
+                .padding(.horizontal, 16)
+            }
+        }
+        .padding(.bottom, 8)
+        .background(Color.clear)
+    }
+
+    // MARK: - Around Me
+
+    private func toggleAroundMe() {
+        if aroundMe.isActive {
+            withAnimation { aroundMe.deactivate() }
+            return
+        }
+
+        guard let location = locationManager.currentLocation else {
+            withAnimation { toastMessage = "Enable location in Settings to use Around Me" }
+            return
+        }
+
+        withAnimation {
+            if let errorMessage = aroundMe.activate(location: location) {
+                toastMessage = errorMessage
+            } else {
+                flyToUserLocation(location)
+            }
+        }
+    }
+
+    private func flyToUserLocation(_ location: CLLocation) {
+        let region = MKCoordinateRegion(
+            center: location.coordinate,
+            span: MKCoordinateSpan(latitudeDelta: 0.025, longitudeDelta: 0.025)
+        )
+        withAnimation { cameraPosition = .region(region) }
+    }
+
+    // MARK: - Navigation
+
+    private func flyTo(_ stairway: Stairway) {
+        guard let coord = stairway.coordinate else { return }
+        let region = MKCoordinateRegion(
+            center: coord,
+            span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+        )
+        withAnimation { cameraPosition = .region(region) }
+    }
+
+    private func flyToNeighborhood(_ neighborhood: String) {
+        guard let region = store.region(for: neighborhood) else { return }
+        withAnimation { cameraPosition = .region(region) }
+    }
+
+    // MARK: - Computed Properties
+
+    private var savedStairwayIDs: Set<String> {
+        Set(walkRecords.filter { !$0.walked }.map(\.stairwayID))
+    }
+
+    private var walkedStairwayIDs: Set<String> {
+        Set(walkRecords.filter(\.walked).map(\.stairwayID))
+    }
+
+    private var walkedCount: Int { walkedStairwayIDs.count }
+
+    private var totalHeightFt: Double {
+        store.stairways
+            .filter { walkedStairwayIDs.contains($0.id) }
+            .compactMap(\.heightFt)
+            .reduce(0, +)
+    }
+
+    private var totalSteps: Int {
+        walkRecords.filter(\.walked).compactMap(\.stepCount).reduce(0, +)
     }
 
     private var filteredStairways: [Stairway] {
@@ -85,12 +257,10 @@ struct MapTab: View {
         switch filter {
         case .all:
             return valid
+        case .saved:
+            return valid.filter { savedStairwayIDs.contains($0.id) }
         case .walked:
-            let walkedIDs = Set(walkRecords.filter(\.walked).map(\.stairwayID))
-            return valid.filter { walkedIDs.contains($0.id) }
-        case .todo:
-            let walkedIDs = Set(walkRecords.filter(\.walked).map(\.stairwayID))
-            return valid.filter { !walkedIDs.contains($0.id) && !$0.closed }
+            return valid.filter { walkedStairwayIDs.contains($0.id) }
         case .nearby:
             guard let location = locationManager.currentLocation else { return valid }
             return valid
@@ -103,14 +273,70 @@ struct MapTab: View {
         walkRecords.first { $0.stairwayID == stairway.id }
     }
 
-    private func toggleWalk(for stairway: Stairway) {
+    // MARK: - Walk Record Actions
+
+    private func saveStairway(_ stairway: Stairway) {
+        guard walkRecord(for: stairway) == nil else { return }
+        let record = WalkRecord(stairwayID: stairway.id, walked: false)
+        modelContext.insert(record)
+        try? modelContext.save()
+    }
+
+    private func markWalked(_ stairway: Stairway) {
         if let record = walkRecord(for: stairway) {
-            record.toggleWalked()
+            record.walked = true
+            record.dateWalked = record.dateWalked ?? Date()
+            record.updatedAt = Date()
         } else {
             let record = WalkRecord(stairwayID: stairway.id, walked: true, dateWalked: Date())
             modelContext.insert(record)
         }
         try? modelContext.save()
+    }
+
+    private func unmarkWalk(_ stairway: Stairway) {
+        guard let record = walkRecord(for: stairway) else { return }
+        record.walked = false
+        record.updatedAt = Date()
+        try? modelContext.save()
+    }
+
+    private func removeRecord(_ stairway: Stairway) {
+        guard let record = walkRecord(for: stairway) else { return }
+        modelContext.delete(record)
+        try? modelContext.save()
+        // Close sheet if this stairway was selected
+        if selectedStairway?.id == stairway.id {
+            selectedStairway = nil
+        }
+    }
+}
+
+// MARK: - Progress Card
+
+struct ProgressCard: View {
+    let walkedCount: Int
+    let totalHeightFt: Double
+    let totalSteps: Int
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(walkedCount > 0 ? "\(walkedCount) stairways" : "—")
+                .font(.caption)
+                .fontWeight(.semibold)
+            Text(totalHeightFt > 0 ? "\(Int(totalHeightFt).formatted()) ft" : "—")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+            Text(totalSteps > 0 ? "\(totalSteps.formatted()) steps" : "—")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 8)
+        .frame(width: 120, alignment: .leading)
+        .background(.ultraThinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .allowsHitTesting(false)
     }
 }
 

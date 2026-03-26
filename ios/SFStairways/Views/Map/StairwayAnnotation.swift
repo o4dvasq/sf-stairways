@@ -4,29 +4,19 @@ struct StairwayAnnotation: View {
     let stairway: Stairway
     let walkRecord: WalkRecord?
     var isSelected: Bool = false
+    var isDimmed: Bool = false
 
     var body: some View {
-        ZStack {
-            Circle()
-                .fill(pinColor)
-                .frame(width: isSelected ? 20 : 14, height: isSelected ? 20 : 14)
-                .overlay(
-                    Circle()
-                        .stroke(.white, lineWidth: isSelected ? 3 : 2)
-                )
-                .shadow(color: .black.opacity(0.2), radius: 2, y: 1)
-        }
-        .opacity(stairway.closed ? 0.6 : 1.0)
-        .animation(.spring(response: 0.2), value: isSelected)
+        StairwayPin(
+            state: pinState,
+            isSelected: isSelected,
+            isDimmed: isDimmed,
+            isClosed: stairway.closed
+        )
     }
 
-    private var pinColor: Color {
-        if stairway.closed {
-            return Color.closedRed
-        }
-        if let record = walkRecord, record.walked {
-            return Color.walkedGreen
-        }
-        return Color.unwalkedSlate
+    private var pinState: StairwayPin.PinState {
+        guard let record = walkRecord else { return .unsaved }
+        return record.walked ? .walked : .saved
     }
 }

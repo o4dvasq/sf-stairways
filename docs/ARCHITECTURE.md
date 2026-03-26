@@ -105,7 +105,7 @@ Records with `lat: null` or `lng: null` are silently skipped — no marker is re
 
 ## iOS App Structure
 
-Source at `ios/SFStairways/` — 22 Swift files.
+Source at `ios/SFStairways/`. **iOS is the sole active platform** — web app deprecated 2026-03-25.
 
 ### Entry Point
 
@@ -128,29 +128,53 @@ Source at `ios/SFStairways/` — 22 Swift files.
 | `WalkPhoto` | `imageData` (externalStorage), `thumbnailData` (externalStorage), `caption`, `walkRecord` |
 | `Stairway` | Value type loaded from `all_stairways.json` bundle resource |
 
+#### Three-State Stairway Model
+
+Every stairway exists in one of three states, derived from `WalkRecord`:
+- **Unsaved** — no `WalkRecord`; small muted pin
+- **Saved** — `WalkRecord.walked == false`; orange pin with stairway icon
+- **Walked** — `WalkRecord.walked == true`; green pin with checkmark
+
 ### Views
 
 - `ContentView` — `TabView` (Map / List / Progress)
-- `MapTab` — `MKMapView` with stairway annotations, bottom sheet
-- `ListTab` — searchable, filterable stairway list with `NavigationLink` to detail
+- `MapTab` — MapKit full-screen map, teardrop pins, filter chips (All/Saved/Walked/Nearby), bottom search bar, Around Me button
+- `ListTab` — searchable, filterable stairway list (All/Walked/Saved); `NavigationLink` to detail
 - `ProgressTab` — completion ring, stats grid, neighborhood breakdown, recent walks; sync status icon in toolbar
 - `StairwayDetail` — walk logging, photo management
+- `StairwayAnnotation` — delegates to `StairwayPin` with three-state + dimming support
+- `TeardropPin` — reusable SwiftUI teardrop `Shape` + `StairwayPin` view
+- `StairwayBottomSheet` — three-state action buttons (Save/Unsave/Mark Walked/Unmark/Remove)
+- `SearchPanel` — full-screen search modal with Name/Street/Neighborhood tabs
+- `AroundMeManager` — `@Observable`; nearest-centroid neighborhood detection, adjacency lookup, pin dimming state
+- `ToastView` + `.toast()` modifier — auto-dismissing toast messages
+
+### Bundled Resources
+
+| File | Purpose |
+|------|---------|
+| `all_stairways.json` | 382 SF stairways catalog (read-only) |
+| `neighborhood_centroids.json` | Avg lat/lng per neighborhood (from `scripts/build_neighborhood_adjacency.py`) |
+| `neighborhood_adjacency.json` | Neighborhood → neighbors map (≤2.5km centroid distance) |
+
+To regenerate neighborhood data: `python3 scripts/build_neighborhood_adjacency.py`
 
 ### CloudKit Setup
 
 - Container: `iCloud.com.o4dvasq.sfstairways`
 - Entitlements: `aps-environment: development`, iCloud container + CloudKit service
 - Required manual Xcode step: Background Modes → Remote Notifications (enables push-triggered sync)
-- Xcode project at `~/Desktop/SFStairways/` (not version-controlled)
+- Xcode project at `ios/SFStairways.xcodeproj` (in repo)
 
-## Data Loading
+## iOS Data Flow
 
-```javascript
-const [targetList, allStairways] = await Promise.all([
-  fetch('./data/target_list.json').then(r => r.json()),
-  fetch('./data/all_stairways.json').then(r => r.json())
-]);
+```
+all_stairways.json ──► StairwayStore ──► MapTab / ListTab / SearchPanel
+                            │
+neighborhood_centroids.json ─┬─► AroundMeManager ──► pin dimming + neighborhood chip
+neighborhood_adjacency.json ─┘
+
+SwiftData (WalkRecord) ◄──► CloudKit ──► synced across devices
 ```
 
-- `target_list.json` failure → error banner, map non-functional
-- `all_stairways.json` failure → "Show All SF" button disabled, target list still works
+`StairwayStore` loads stairway data at init and exposes search/filter/region helpers. `WalkRecord` is the only write path — all stairway state is derived from walk records.

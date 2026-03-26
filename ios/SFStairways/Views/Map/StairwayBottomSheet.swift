@@ -3,12 +3,18 @@ import SwiftUI
 struct StairwayBottomSheet: View {
     let stairway: Stairway
     let walkRecord: WalkRecord?
-    let onToggleWalk: () -> Void
+    let onSave: () -> Void
+    let onMarkWalked: () -> Void
+    let onUnmarkWalk: () -> Void
+    let onRemove: () -> Void
 
-    @State private var showDetail = false
+    private enum StairwayState {
+        case unsaved, saved, walked
+    }
 
-    private var isWalked: Bool {
-        walkRecord?.walked ?? false
+    private var state: StairwayState {
+        guard let record = walkRecord else { return .unsaved }
+        return record.walked ? .walked : .saved
     }
 
     var body: some View {
@@ -47,16 +53,7 @@ struct StairwayBottomSheet: View {
 
                     Spacer()
 
-                    Button(action: onToggleWalk) {
-                        ZStack {
-                            Circle()
-                                .fill(isWalked ? Color.walkedGreen : Color(.systemGray5))
-                                .frame(width: 48, height: 48)
-                            Image(systemName: isWalked ? "checkmark" : "plus")
-                                .font(.system(size: 20, weight: .semibold))
-                                .foregroundStyle(isWalked ? .white : .secondary)
-                        }
-                    }
+                    stateIndicator
                 }
 
                 // Photo thumbnails
@@ -78,7 +75,7 @@ struct StairwayBottomSheet: View {
                 }
 
                 // Walk date
-                if isWalked, let date = walkRecord?.dateWalked {
+                if state == .walked, let date = walkRecord?.dateWalked {
                     Text("Walked \(date.formatted(date: .long, time: .omitted))")
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -92,19 +89,119 @@ struct StairwayBottomSheet: View {
                         .lineLimit(2)
                 }
 
-                // View details button
+                // Action buttons
+                actionButtons
+
+                // View details
                 NavigationLink(destination: StairwayDetail(stairway: stairway)) {
                     Text("View details")
                         .font(.subheadline)
                         .fontWeight(.medium)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
-                        .background(Color.forestGreen)
+                        .background(detailButtonColor)
                         .foregroundStyle(.white)
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
             }
             .padding(20)
+        }
+    }
+
+    // MARK: - State Indicator
+
+    @ViewBuilder
+    private var stateIndicator: some View {
+        switch state {
+        case .unsaved:
+            EmptyView()
+        case .saved:
+            VStack(spacing: 4) {
+                ZStack {
+                    Circle()
+                        .fill(Color.brandOrange.opacity(0.15))
+                        .frame(width: 48, height: 48)
+                    Image(systemName: "bookmark.fill")
+                        .font(.system(size: 20))
+                        .foregroundStyle(Color.brandOrange)
+                }
+                Text("Saved")
+                    .font(.caption)
+                    .fontWeight(.bold)
+                    .foregroundStyle(Color.brandOrange)
+            }
+        case .walked:
+            VStack(spacing: 4) {
+                ZStack {
+                    Circle()
+                        .fill(Color.walkedGreenDim)
+                        .frame(width: 48, height: 48)
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundStyle(.white)
+                }
+                Text("Walked")
+                    .font(.caption)
+                    .fontWeight(.bold)
+                    .foregroundStyle(Color.walkedGreen)
+            }
+        }
+    }
+
+    // MARK: - Action Buttons
+
+    @ViewBuilder
+    private var actionButtons: some View {
+        switch state {
+        case .unsaved:
+            HStack(spacing: 10) {
+                ActionButton(title: "Save", icon: "bookmark", color: Color.brandOrange, action: onSave)
+                ActionButton(title: "Mark Walked", icon: "checkmark.circle", color: Color.walkedGreen, action: onMarkWalked)
+            }
+        case .saved:
+            HStack(spacing: 10) {
+                ActionButton(title: "Unsave", icon: "bookmark.slash", color: .secondary, action: onRemove)
+                ActionButton(title: "Mark Walked", icon: "checkmark.circle", color: Color.walkedGreen, action: onMarkWalked)
+            }
+        case .walked:
+            HStack(spacing: 10) {
+                ActionButton(title: "Unmark Walk", icon: "arrow.uturn.backward", color: Color.brandOrange, action: onUnmarkWalk)
+                ActionButton(title: "Remove", icon: "trash", color: .secondary, action: onRemove)
+            }
+        }
+    }
+
+    private var detailButtonColor: Color {
+        switch state {
+        case .unsaved: return Color.forestGreen
+        case .saved: return Color.brandOrange
+        case .walked: return Color.walkedGreen
+        }
+    }
+}
+
+// MARK: - Action Button
+
+private struct ActionButton: View {
+    let title: String
+    let icon: String
+    let color: Color
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 6) {
+                Image(systemName: icon)
+                    .font(.system(size: 14, weight: .semibold))
+                Text(title)
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 10)
+            .background(color.opacity(0.12))
+            .foregroundStyle(color)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
         }
     }
 }
