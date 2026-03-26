@@ -30,7 +30,8 @@ struct TeardropShape: Shape {
 
 // MARK: - Stairway Pin View
 
-/// Three-state map pin: Unsaved (small muted), Saved (orange), Walked (green).
+/// Three-state map pin: Unsaved (amber, 50% opacity), Saved (light green), Walked (green).
+/// All states display the same 3-step stair silhouette icon.
 struct StairwayPin: View {
     enum PinState {
         case unsaved, saved, walked
@@ -52,13 +53,11 @@ struct StairwayPin: View {
                     y: 1
                 )
 
-            // Icon centered in the bulb area (top pinWidth × pinWidth square)
-            if state != .unsaved {
-                Image(systemName: state == .walked ? "checkmark" : "stairs")
-                    .font(.system(size: iconSize, weight: .bold))
-                    .foregroundStyle(.white)
-                    .frame(width: pinWidth, height: pinWidth)
-            }
+            // Stair icon centered in the bulb area (top pinWidth × pinWidth square)
+            Image(systemName: "stairs")
+                .font(.system(size: iconSize, weight: .bold))
+                .foregroundStyle(.white)
+                .frame(width: pinWidth, height: pinWidth)
         }
         .opacity(opacity)
         .animation(.spring(response: 0.2), value: isSelected)
@@ -81,17 +80,17 @@ struct StairwayPin: View {
         if isClosed { return Color.unwalkedSlate }
         switch state {
         case .unsaved:
-            return Color.unwalkedSlate.opacity(0.5)
+            let base = isSelected ? Color.brandAmberDark : Color.brandAmber
+            return base.opacity(0.5)
         case .saved:
-            return isSelected ? Color.brandOrangeDark : Color.brandOrange
+            return isSelected ? Color.pinSavedDark : Color.pinSaved
         case .walked:
-            let base = Color.walkedGreen
-            return isSelected ? base.opacity(0.85) : base
+            return isSelected ? Color.walkedGreenDark : Color.walkedGreen
         }
     }
 
     private var opacity: Double {
-        if isDimmed { return 0.2 }
+        if isDimmed { return 0.3 }
         if isClosed { return 0.4 }
         return 1.0
     }
@@ -118,4 +117,5 @@ struct StairwayPin: View {
         }
     }
     .padding(40)
+    .background(Color.gray)
 }

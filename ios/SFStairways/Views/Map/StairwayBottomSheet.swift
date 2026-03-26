@@ -119,16 +119,16 @@ struct StairwayBottomSheet: View {
             VStack(spacing: 4) {
                 ZStack {
                     Circle()
-                        .fill(Color.brandOrange.opacity(0.15))
+                        .fill(Color.brandAmber.opacity(0.15))
                         .frame(width: 48, height: 48)
                     Image(systemName: "bookmark.fill")
                         .font(.system(size: 20))
-                        .foregroundStyle(Color.brandOrange)
+                        .foregroundStyle(Color.brandAmber)
                 }
                 Text("Saved")
                     .font(.caption)
                     .fontWeight(.bold)
-                    .foregroundStyle(Color.brandOrange)
+                    .foregroundStyle(Color.brandAmber)
             }
         case .walked:
             VStack(spacing: 4) {
@@ -155,7 +155,7 @@ struct StairwayBottomSheet: View {
         switch state {
         case .unsaved:
             HStack(spacing: 10) {
-                ActionButton(title: "Save", icon: "bookmark", color: Color.brandOrange, action: onSave)
+                ActionButton(title: "Save", icon: "bookmark", color: Color.brandAmber, action: onSave)
                 ActionButton(title: "Mark Walked", icon: "checkmark.circle", color: Color.walkedGreen, action: onMarkWalked)
             }
         case .saved:
@@ -165,7 +165,7 @@ struct StairwayBottomSheet: View {
             }
         case .walked:
             HStack(spacing: 10) {
-                ActionButton(title: "Unmark Walk", icon: "arrow.uturn.backward", color: Color.brandOrange, action: onUnmarkWalk)
+                ActionButton(title: "Unmark Walk", icon: "arrow.uturn.backward", color: Color.brandAmber, action: onUnmarkWalk)
                 ActionButton(title: "Remove", icon: "trash", color: .secondary, action: onRemove)
             }
         }
@@ -174,7 +174,7 @@ struct StairwayBottomSheet: View {
     private var detailButtonColor: Color {
         switch state {
         case .unsaved: return Color.forestGreen
-        case .saved: return Color.brandOrange
+        case .saved: return Color.brandAmber
         case .walked: return Color.walkedGreen
         }
     }

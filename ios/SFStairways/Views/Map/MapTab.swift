@@ -50,6 +50,7 @@ struct MapTab: View {
                 }
             }
             .mapStyle(.standard(elevation: .realistic))
+            .preferredColorScheme(.dark)
             .mapControls {
                 MapUserLocationButton()
                 MapCompass()
@@ -62,37 +63,28 @@ struct MapTab: View {
                     totalSteps: totalSteps
                 )
                 .padding(.trailing, 12)
-                .padding(.bottom, 120)  // above search bar
-            }
-            .safeAreaInset(edge: .bottom) {
-                bottomBar
+                .padding(.bottom, 24)
             }
 
-            // Filter chips
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    ForEach(StairwayFilter.allCases, id: \.self) { f in
-                        FilterChip(title: f.rawValue, isActive: filter == f) {
-                            withAnimation { filter = f }
-                        }
-                    }
+            // Top bar + filter pills + neighborhood chip stacked from the top
+            VStack(spacing: 0) {
+                topBar
+                filterRow
+
+                if aroundMe.isActive, let name = aroundMe.currentNeighborhood {
+                    Text("You're in \(name)")
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(Color.forestGreen.opacity(0.9))
+                        .clipShape(Capsule())
+                        .padding(.top, 8)
+                        .transition(.move(edge: .top).combined(with: .opacity))
                 }
-                .padding(.horizontal, 16)
-                .padding(.top, 8)
-            }
 
-            // "You're in [Neighborhood]" chip
-            if aroundMe.isActive, let name = aroundMe.currentNeighborhood {
-                Text("You're in \(name)")
-                    .font(.caption)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                    .background(Color.forestGreen.opacity(0.9))
-                    .clipShape(Capsule())
-                    .padding(.top, 60)
-                    .transition(.move(edge: .top).combined(with: .opacity))
+                Spacer()
             }
         }
         .toast(message: $toastMessage)
@@ -133,54 +125,63 @@ struct MapTab: View {
         }
     }
 
-    // MARK: - Bottom Bar
+    // MARK: - Top Bar
 
-    private var bottomBar: some View {
-        VStack(spacing: 8) {
-            // Around Me button
-            HStack {
-                Spacer()
-                Button {
-                    toggleAroundMe()
-                } label: {
-                    HStack(spacing: 6) {
-                        Image(systemName: aroundMe.isActive ? "location.fill" : "location")
-                            .font(.system(size: 13, weight: .semibold))
-                        Text("Around Me")
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                    }
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 8)
-                    .background(aroundMe.isActive ? Color.forestGreen : Color(.systemBackground))
-                    .foregroundStyle(aroundMe.isActive ? .white : .primary)
-                    .clipShape(Capsule())
-                    .shadow(color: .black.opacity(0.12), radius: 4, y: 2)
-                }
-                .padding(.trailing, 16)
-            }
+    private var topBar: some View {
+        HStack(spacing: 12) {
+            Text("SF Stairways")
+                .font(.headline)
+                .fontWeight(.bold)
+                .foregroundStyle(Color.brandAmber)
 
-            // Search bar
+            Spacer()
+
+            // Search button
             Button {
                 showSearch = true
             } label: {
-                HStack(spacing: 10) {
-                    Image(systemName: "magnifyingglass")
-                        .foregroundStyle(.secondary)
-                    Text("Search stairways...")
-                        .foregroundStyle(.secondary)
-                    Spacer()
-                }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 13)
-                .background(Color(.systemBackground))
-                .clipShape(Capsule())
-                .shadow(color: .black.opacity(0.1), radius: 6, y: 2)
-                .padding(.horizontal, 16)
+                Image(systemName: "magnifyingglass")
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(.primary)
+                    .frame(width: 32, height: 32)
+                    .background(Color(.systemGray5))
+                    .clipShape(Circle())
+            }
+
+            // Around Me button
+            Button {
+                toggleAroundMe()
+            } label: {
+                Image(systemName: "location.fill")
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(aroundMe.isActive ? .white : .primary)
+                    .frame(width: 32, height: 32)
+                    .background(aroundMe.isActive ? Color.brandAmber : Color(.systemGray5))
+                    .clipShape(Circle())
             }
         }
-        .padding(.bottom, 8)
-        .background(Color.clear)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+        .background(
+            Color.white
+                .shadow(.drop(color: .black.opacity(0.1), radius: 4, y: 2))
+        )
+    }
+
+    // MARK: - Filter Row
+
+    private var filterRow: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                ForEach(StairwayFilter.allCases, id: \.self) { f in
+                    FilterChip(title: f.rawValue, isActive: filter == f) {
+                        withAnimation { filter = f }
+                    }
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
+        }
     }
 
     // MARK: - Around Me
@@ -305,7 +306,6 @@ struct MapTab: View {
         guard let record = walkRecord(for: stairway) else { return }
         modelContext.delete(record)
         try? modelContext.save()
-        // Close sheet if this stairway was selected
         if selectedStairway?.id == stairway.id {
             selectedStairway = nil
         }
@@ -354,13 +354,9 @@ struct FilterChip: View {
                 .fontWeight(.medium)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 7)
-                .background(isActive ? Color.forestGreen : Color(.systemBackground))
-                .foregroundStyle(isActive ? .white : .secondary)
+                .background(isActive ? Color.pillActive : Color.pillInactive)
+                .foregroundStyle(.white)
                 .clipShape(Capsule())
-                .overlay(
-                    Capsule()
-                        .stroke(isActive ? Color.clear : Color(.separator), lineWidth: 0.5)
-                )
         }
     }
 }

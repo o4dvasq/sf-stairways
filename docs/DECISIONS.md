@@ -74,3 +74,18 @@ SwiftData with CloudKit still posts `NSPersistentCloudKitContainer.eventChangedN
 **Date:** 2026-03-22 [retroactive]
 
 `scripts/scrape_stairways.py` is a one-time script that builds `data/all_stairways.json`. It first attempts to extract lat/lng from each stairway's page on sfstairways.com (Google Maps embeds, JS variables, JSON-LD). If that fails, it falls back to Nominatim geocoding. Records with no coordinates get `lat: null, lng: null` and are silently skipped by the app. The result is committed to the repo — no live scraping at runtime.
+
+## Map Visual Refresh v2: amber palette, unified stair icon, top bar, dark map
+**Date:** 2026-03-26
+
+Four related visual decisions bundled in one session:
+
+**Amber replaces orange for pins.** The original saved-pin color (#E8602C orange) was too warm/harsh against the map. Warm amber (#D4882B) reads more like a "destination" marker and meshes better with the yellow-to-brown app icon gradient. `brandOrange`/`brandOrangeDark` removed from AppColors; `brandAmber`/`brandAmberDark` replace them everywhere.
+
+**Light green (#81C784) for saved, green (#4CAF50) for walked.** Differentiating saved vs. walked visually was the goal of the three-state model, but the original palette (orange saved, green walked) reads as a traffic-light signal (bad vs. good) rather than a progress continuum. Light green saved → full green walked communicates "on the way there" more naturally.
+
+**Unified stair icon on all three pin states.** The original design showed no icon for unsaved, a stair icon for saved, and a checkmark for walked. The checkmark was borrowed from task-manager conventions that don't apply here — this is a discovery app, not a to-do list. The stair icon is the brand mark; showing it on every pin reinforces identity and makes all states visually consistent. The 50% opacity on unsaved pins already signals "not engaged" without needing to remove the icon entirely.
+
+**White top bar replaces bottom search bar.** Bottom-anchored search bars are native on iOS but they compete with the home indicator and feel like a navigation bar in the wrong place. Moving search + Around Me to a top bar frees the bottom of the screen for the detail sheet, which slides up from below. The white top bar also provides natural contrast against the dark map — the design reads as layers (dark base → white controls → map content).
+
+**Dark map via `.preferredColorScheme(.dark)` scoped to the Map view.** Applied directly to the `Map` SwiftUI view so only the map renders in dark mode — the rest of the UI (sheets, search panel, list tab) is unaffected. MapKit's standard dark basemap (charcoal/slate streets on near-black) is accepted as-is per the spec constraint that no custom tile overlay be introduced.

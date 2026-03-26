@@ -131,14 +131,16 @@ Source at `ios/SFStairways/`. **iOS is the sole active platform** — web app de
 #### Three-State Stairway Model
 
 Every stairway exists in one of three states, derived from `WalkRecord`:
-- **Unsaved** — no `WalkRecord`; small muted pin
-- **Saved** — `WalkRecord.walked == false`; orange pin with stairway icon
-- **Walked** — `WalkRecord.walked == true`; green pin with checkmark
+- **Unsaved** — no `WalkRecord`; amber (#D4882B) teardrop pin at 50% opacity, 3-step stair icon (24×30pt)
+- **Saved** — `WalkRecord.walked == false`; light green (#81C784) pin, 3-step stair icon (28×35pt)
+- **Walked** — `WalkRecord.walked == true`; green (#4CAF50) pin, 3-step stair icon (28×35pt)
+
+All three states use the same `"stairs"` SF Symbol. Selected pins darken one step and scale to 34×42pt. Dimmed pins (Around Me active, out of zone) render at 30% opacity.
 
 ### Views
 
 - `ContentView` — `TabView` (Map / List / Progress)
-- `MapTab` — MapKit full-screen map, teardrop pins, filter chips (All/Saved/Walked/Nearby), bottom search bar, Around Me button
+- `MapTab` — MapKit full-screen map (dark appearance), white top bar with amber logo + search/Around Me circle buttons, filter pills (All/Saved/Walked/Nearby) with dark-inactive/amber-active styling, no bottom bar
 - `ListTab` — searchable, filterable stairway list (All/Walked/Saved); `NavigationLink` to detail
 - `ProgressTab` — completion ring, stats grid, neighborhood breakdown, recent walks; sync status icon in toolbar
 - `StairwayDetail` — walk logging, photo management

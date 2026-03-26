@@ -1,6 +1,6 @@
 # Project State — sf-stairways
 
-_Last updated: 2026-03-25_
+_Last updated: 2026-03-26_
 
 ## Platform
 
@@ -38,10 +38,20 @@ _Last updated: 2026-03-25_
 
 ## Active Workstreams
 
-### 1. Solo UX — Map Redesign (just completed)
+### 1. Solo UX — Map Visual Refresh v2 (just completed)
+- White top bar below Dynamic Island with amber logo, search circle button, Around Me circle button
+- Filter pills repositioned below top bar — dark (#333) inactive, amber (#D4882B) active
+- Bottom search bar and Around Me capsule removed
+- Pin color palette: amber (#D4882B @ 50%) unsaved, light green (#81C784) saved, green (#4CAF50) walked
+- Unified 3-step stair silhouette icon on all pin states (no more checkmark/blank)
+- Dark map via `.preferredColorScheme(.dark)` on MapKit Map view
+- App icon v8: solid white 3-step stair, equal riser/tread sizing, gradient background retained
+- See: `docs/specs/implemented/SPEC_map-visual-refresh-v2.md`
+
+### Previous completions
 - Custom teardrop pins with three-state model (Unsaved / Saved / Walked)
 - "Around Me" neighborhood-aware filter with adjacent neighborhood highlighting
-- Bottom search bar with full-screen modal (Name / Street / Neighborhood tabs)
+- Full-screen search panel (Name / Street / Neighborhood tabs)
 - Filter chips: All / Saved / Walked / Nearby
 - See: `docs/specs/implemented/SPEC_map-redesign-ios.md`
 
