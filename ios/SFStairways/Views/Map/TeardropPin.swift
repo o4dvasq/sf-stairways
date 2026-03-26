@@ -1,5 +1,40 @@
 import SwiftUI
 
+// MARK: - Stair Shape
+
+/// 3-step ascending stair silhouette — matches the app icon.
+/// Steps ascend from bottom-left to top-right.
+struct StairShape: Shape {
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        let w = rect.width
+        let h = rect.height
+        let stepW = w / 3.0
+        let stepH = h / 3.0
+
+        // Start at bottom-left
+        path.move(to: CGPoint(x: 0, y: h))
+
+        // Step 1: up one, right one
+        path.addLine(to: CGPoint(x: 0, y: h - stepH))
+        path.addLine(to: CGPoint(x: stepW, y: h - stepH))
+
+        // Step 2: up one, right one
+        path.addLine(to: CGPoint(x: stepW, y: h - 2 * stepH))
+        path.addLine(to: CGPoint(x: 2 * stepW, y: h - 2 * stepH))
+
+        // Step 3: up one, right one
+        path.addLine(to: CGPoint(x: 2 * stepW, y: 0))
+        path.addLine(to: CGPoint(x: w, y: 0))
+
+        // Close: down the right side, across bottom
+        path.addLine(to: CGPoint(x: w, y: h))
+        path.closeSubpath()
+
+        return path
+    }
+}
+
 // MARK: - Teardrop Shape
 
 /// Classic map-pin teardrop: a full circle bulb on top tapering to a point at the bottom.
@@ -30,7 +65,7 @@ struct TeardropShape: Shape {
 
 // MARK: - Stairway Pin View
 
-/// Three-state map pin: Unsaved (amber, 50% opacity), Saved (light green), Walked (green).
+/// Three-state map pin: Unsaved (amber), Saved (light green), Walked (green).
 /// All states display the same 3-step stair silhouette icon.
 struct StairwayPin: View {
     enum PinState {
@@ -47,16 +82,13 @@ struct StairwayPin: View {
             TeardropShape()
                 .fill(fillColor)
                 .frame(width: pinWidth, height: pinHeight)
-                .shadow(
-                    color: .black.opacity(isSelected ? 0.35 : 0.2),
-                    radius: isSelected ? 4 : 2,
-                    y: 1
-                )
+                .shadow(color: .white.opacity(0.3), radius: 3, y: 0)
+                .shadow(color: .black.opacity(0.3), radius: 2, y: 2)
 
             // Stair icon centered in the bulb area (top pinWidth × pinWidth square)
-            Image(systemName: "stairs")
-                .font(.system(size: iconSize, weight: .bold))
-                .foregroundStyle(.white)
+            StairShape()
+                .fill(.white)
+                .frame(width: iconSize, height: iconSize)
                 .frame(width: pinWidth, height: pinWidth)
         }
         .opacity(opacity)
@@ -65,23 +97,22 @@ struct StairwayPin: View {
     }
 
     private var pinWidth: CGFloat {
-        if isSelected { return 34 }
-        return state == .unsaved ? 24 : 28
+        if isSelected { return 52 }
+        return state == .unsaved ? 38 : 44
     }
 
     private var pinHeight: CGFloat {
-        if isSelected { return 42 }
-        return state == .unsaved ? 30 : 35
+        if isSelected { return 65 }
+        return state == .unsaved ? 48 : 55
     }
 
-    private var iconSize: CGFloat { pinWidth * 0.38 }
+    private var iconSize: CGFloat { pinWidth * 0.42 }
 
     private var fillColor: Color {
         if isClosed { return Color.unwalkedSlate }
         switch state {
         case .unsaved:
-            let base = isSelected ? Color.brandAmberDark : Color.brandAmber
-            return base.opacity(0.5)
+            return isSelected ? Color.brandAmberDark : Color.brandAmber
         case .saved:
             return isSelected ? Color.pinSavedDark : Color.pinSaved
         case .walked:

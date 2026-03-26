@@ -89,3 +89,14 @@ Four related visual decisions bundled in one session:
 **White top bar replaces bottom search bar.** Bottom-anchored search bars are native on iOS but they compete with the home indicator and feel like a navigation bar in the wrong place. Moving search + Around Me to a top bar frees the bottom of the screen for the detail sheet, which slides up from below. The white top bar also provides natural contrast against the dark map — the design reads as layers (dark base → white controls → map content).
 
 **Dark map via `.preferredColorScheme(.dark)` scoped to the Map view.** Applied directly to the `Map` SwiftUI view so only the map renders in dark mode — the rest of the UI (sheets, search panel, list tab) is unaffected. MapKit's standard dark basemap (charcoal/slate streets on near-black) is accepted as-is per the spec constraint that no custom tile overlay be introduced.
+
+## Pin Visibility Fix: custom StairShape, 2x sizes, full opacity unsaved
+**Date:** 2026-03-26
+
+**Custom `StairShape` over SF Symbol `"stairs"`.** The SF Symbol `"stairs"` renders as 5 descending steps — the wrong count and the wrong direction. A custom SwiftUI `Shape` (added to `TeardropPin.swift`) draws exactly 3 ascending steps (left-to-right, climbing up), matching the app icon silhouette. The shape is a solid-fill path: no stroke, no scaling ambiguity, crisp at any pin size.
+
+**Pin sizes doubled.** The original 24–34pt range was too small on a dark map where there is no white background to provide contrast. New range: 38pt (unsaved), 44pt (saved/walked), 52pt (selected). Icon ratio bumped from 38% to 42% of pin width. At these sizes the stair icon is legible even at city-wide zoom.
+
+**Full opacity on unsaved pins.** `Color.brandAmber.opacity(0.5)` on unsaved pins was nearly invisible on the dark map — transparency that reads as "de-emphasized" on white reads as "ghost" on dark. States are now differentiated by hue only (amber / light green / green), not transparency. Transparency is reserved for the `isDimmed` and `isClosed` states via the `opacity` modifier on the outer container.
+
+**Shadow updated for dark backgrounds.** Single dark shadow (`radius: 2, opacity: 0.2`) was invisible on a dark map. Replaced with a two-layer shadow: white glow (radius 3, opacity 0.3) for lift, plus black drop (radius 2, opacity 0.3, y: 2) for depth.

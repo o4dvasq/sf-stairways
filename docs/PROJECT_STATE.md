@@ -38,22 +38,21 @@ _Last updated: 2026-03-26_
 
 ## Active Workstreams
 
-### 1. Solo UX — Map Visual Refresh v2 (just completed)
-- White top bar below Dynamic Island with amber logo, search circle button, Around Me circle button
-- Filter pills repositioned below top bar — dark (#333) inactive, amber (#D4882B) active
-- Bottom search bar and Around Me capsule removed
-- Pin color palette: amber (#D4882B @ 50%) unsaved, light green (#81C784) saved, green (#4CAF50) walked
-- Unified 3-step stair silhouette icon on all pin states (no more checkmark/blank)
-- Dark map via `.preferredColorScheme(.dark)` on MapKit Map view
-- App icon v8: solid white 3-step stair, equal riser/tread sizing, gradient background retained
-- See: `docs/specs/implemented/SPEC_map-visual-refresh-v2.md`
+### 1. Solo UX — Pin Visibility Fix (just completed)
+- Custom `StairShape` SwiftUI `Shape` replaces `Image(systemName: "stairs")` — exactly 3 ascending steps, solid fill
+- Pin sizes doubled: unsaved 38pt, saved/walked 44pt, selected 52pt (was 24/28/34)
+- Icon size ratio bumped from 38% to 42% of pin width
+- Unsaved pin fill changed from `Color.brandAmber.opacity(0.5)` → `Color.brandAmber` (full opacity)
+- Shadow updated to white glow + black drop for dark map contrast
+- See: `docs/specs/implemented/SPEC_pin-visibility-fix.md`
 
 ### Previous completions
+- Map Visual Refresh v2: amber pins, dark map, white top bar, unified stair icon
 - Custom teardrop pins with three-state model (Unsaved / Saved / Walked)
 - "Around Me" neighborhood-aware filter with adjacent neighborhood highlighting
 - Full-screen search panel (Name / Street / Neighborhood tabs)
 - Filter chips: All / Saved / Walked / Nearby
-- See: `docs/specs/implemented/SPEC_map-redesign-ios.md`
+- See: `docs/specs/implemented/` for full spec history
 
 ### 2. App Store — Scaffold multi-user architecture
 **Current priority:** Supabase project setup + SDK integration
