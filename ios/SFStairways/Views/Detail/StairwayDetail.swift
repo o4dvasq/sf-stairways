@@ -3,6 +3,7 @@ import SwiftData
 
 struct StairwayDetail: View {
     let stairway: Stairway
+    let locationManager: LocationManager
 
     @Environment(\.modelContext) private var modelContext
     @Query private var walkRecords: [WalkRecord]
@@ -37,6 +38,9 @@ struct StairwayDetail: View {
 
                     // Walk status
                     walkStatusCard
+
+                    // Hard Mode toggle
+                    hardModeSection
 
                     // Notes
                     notesSection
@@ -200,6 +204,62 @@ struct StairwayDetail: View {
         .frame(maxWidth: .infinity)
     }
 
+    // MARK: - Hard Mode
+
+    private var isWalkToggleDisabled: Bool {
+        guard walkRecord?.hardMode == true else { return false }
+        return !locationManager.isWithinRadius(150, ofLatitude: stairway.lat ?? 0, longitude: stairway.lng ?? 0)
+    }
+
+    private var hardModeBinding: Binding<Bool> {
+        Binding(
+            get: { walkRecord?.hardMode ?? false },
+            set: { newValue in
+                if let record = walkRecord {
+                    if newValue && record.walked {
+                        record.proximityVerified = false
+                    }
+                    record.hardMode = newValue
+                    record.updatedAt = Date()
+                } else if newValue {
+                    let record = WalkRecord(stairwayID: stairway.id, walked: false)
+                    record.hardMode = true
+                    modelContext.insert(record)
+                }
+                try? modelContext.save()
+            }
+        )
+    }
+
+    @ViewBuilder
+    private var hardModeSection: some View {
+        if !stairway.closed {
+            VStack(alignment: .leading, spacing: 8) {
+                Divider()
+                HStack {
+                    Image(systemName: "lock.fill")
+                        .foregroundColor(Color.forestGreen)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Hard Mode")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                        Text("Require proximity to mark walked")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    Spacer()
+                    Toggle("", isOn: hardModeBinding)
+                        .labelsHidden()
+                }
+                if walkRecord?.hardMode == true && locationManager.currentLocation == nil {
+                    Text("Location required for Hard Mode")
+                        .font(.caption2)
+                        .foregroundColor(Color.unwalkedSlate)
+                }
+            }
+        }
+    }
+
     // MARK: - Walk Status
 
     private var walkStatusCard: some View {
@@ -238,6 +298,8 @@ struct StairwayDetail: View {
                 .clipShape(RoundedRectangle(cornerRadius: 10))
             }
             .buttonStyle(.plain)
+            .opacity(isWalkToggleDisabled ? 0.4 : 1.0)
+            .disabled(isWalkToggleDisabled)
 
             if editingDate, let record = walkRecord {
                 DatePicker(

@@ -99,6 +99,19 @@ The floating progress card gained a `brandOrange` header bar ("Progress" in whit
 
 `accentAmber` (#E8A838) is reserved for splash screen only; it will be reintroduced for unverified badges in the Hard Mode spec.
 
+## Hard Mode: per-stairway proximity-gated walk verification
+**Date:** 2026-03-26
+
+Hard Mode is an opt-in per-stairway feature that gates the Mark Walked action on the user being within 150m of the stairway. This was designed as purely client-side (no server verification, no CLRegion geofencing) to keep it lightweight and offline-capable.
+
+**Why per-stairway rather than global.** A global Hard Mode toggle would be disruptive — enabling it would suddenly disable Mark Walked for all stairways and could create a poor experience if the user is away from home. Per-stairway allows selective enforcement on stairways the user specifically wants to verify in-person.
+
+**Why proximity is checked at render time, not via geofence events.** CLRegion geofencing adds background entitlements, battery impact, and region limit (20 regions). For a 150m check on a stairway the user is actively viewing, render-time evaluation against `LocationManager.currentLocation` (updated every 50m) is sufficient and introduces no background activity.
+
+**`proximityVerified: Bool?` instead of `Bool`.** The three-value semantics — nil (Hard Mode never enabled), false (pre-existing unverified walk), true (verified in-person) — carry historical meaning that a plain Bool would collapse. `nil` means "Hard Mode was never involved"; `false` means "Hard Mode was retroactively applied to an existing walk." Callers distinguish these with `showUnverifiedBadge` (requires `hardMode && walked && proximityVerified == false`), not by inspecting the raw value directly.
+
+**Unverified badge uses `accentAmber` (#E8A838), distinct from `brandAmber` (#D4882B).** The badge needs to read on top of a green walked pin. Using the same amber as unsaved pins would create confusion ("is this an unsaved pin?"). `accentAmber` was already defined for the splash screen and is visually distinct at 12pt.
+
 ## Pin Visibility Fix: custom StairShape, 2x sizes, full opacity unsaved
 **Date:** 2026-03-26
 

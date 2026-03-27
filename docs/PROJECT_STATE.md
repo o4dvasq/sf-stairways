@@ -38,16 +38,20 @@ _Last updated: 2026-03-26_
 
 ## Active Workstreams
 
-### 1. Solo UX — Nav Bar Redesign + Pin Icon Fix + Progress Card Header (just completed)
-- `brandOrange` (#E8602C) added to AppColors.swift as the unified app brand color
-- `topBarBackground` and `topBarText` semantic tokens updated to `brandOrange` / white
-- Top nav bar: orange background, white "SF Stairways" title, white icons with translucent circle backgrounds, no drop shadow
-- `accentAmber` usage confirmed splash-screen only; all other orange UI now uses `brandOrange`
-- Progress card: `brandOrange` header bar with white "Progress" text, clipped to card corner radius
-- StairShape pin positioning already correct (ZStack .top + pinWidth square frame centers icon in bulb)
-- See: `docs/specs/implemented/SPEC_nav-pin-progress-visual.md`
+### 1. Solo UX — Hard Mode (just completed)
+- Per-stairway Hard Mode opt-in: requires user to be within 150m to mark a stairway as walked
+- `WalkRecord` gains `hardMode: Bool` and `proximityVerified: Bool?` fields (additive SwiftData migration, CloudKit synced)
+- `LocationManager.isWithinRadius(_:ofLatitude:longitude:)` — stateless proximity check at render time
+- Hard Mode toggle appears in `StairwayBottomSheet` and `StairwayDetail` for non-closed stairways
+- Mark Walked button disables (opacity 0.4) when Hard Mode active and user is out of range
+- Walks via Hard Mode set `proximityVerified = true`; pre-existing walks on opted-in stairways get `proximityVerified = false` (unverified)
+- Unverified badge: 12pt amber circle with exclamation mark overlaid at top-right of map pin bulb
+- "Location required for Hard Mode" label shown when location is unavailable
+- Sheet height bumped from 340 to 390 to accommodate toggle row
+- See: `docs/specs/implemented/SPEC_hard-mode.md`
 
 ### Previous completions
+- Nav Bar Redesign + Progress Card Header: `brandOrange` top bar, progress card header bar
 - Pin Visibility Fix: custom StairShape, 2x pin sizes, full-opacity unsaved
 - Map Visual Refresh v2: amber pins, dark map, top bar, unified stair icon
 - Custom teardrop pins with three-state model (Unsaved / Saved / Walked)
@@ -64,7 +68,7 @@ _Last updated: 2026-03-26_
 - Backlog: auth + user accounts, App Store prep (icon, metadata, TestFlight)
 
 ### 3. Pending specs
-- `SPEC_hard-mode.md` — Hard Mode feature (backlog)
+- (none — specs directory is clean)
 
 ## Known Issues
 

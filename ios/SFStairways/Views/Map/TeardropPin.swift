@@ -76,6 +76,7 @@ struct StairwayPin: View {
     var isSelected: Bool = false
     var isDimmed: Bool = false
     var isClosed: Bool = false
+    var showUnverifiedBadge: Bool = false
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -90,6 +91,19 @@ struct StairwayPin: View {
                 .fill(.white)
                 .frame(width: iconSize, height: iconSize)
                 .frame(width: pinWidth, height: pinWidth)
+
+            // Unverified badge: amber circle with exclamation at top-right of bulb
+            if showUnverifiedBadge {
+                Circle()
+                    .fill(Color.accentAmber)
+                    .frame(width: 12, height: 12)
+                    .overlay(
+                        Image(systemName: "exclamationmark")
+                            .font(.system(size: 7, weight: .bold))
+                            .foregroundColor(.white)
+                    )
+                    .offset(x: pinWidth * 0.30, y: 2)
+            }
         }
         .opacity(opacity)
         .animation(.spring(response: 0.2), value: isSelected)

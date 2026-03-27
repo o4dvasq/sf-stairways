@@ -47,4 +47,14 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("Location error: \(error.localizedDescription)")
     }
+
+    // MARK: - Proximity
+
+    /// Returns true if the user is within `meters` of the given coordinate.
+    /// Returns false if location is unavailable.
+    func isWithinRadius(_ meters: Double, ofLatitude lat: Double, longitude lng: Double) -> Bool {
+        guard let currentLocation else { return false }
+        let target = CLLocation(latitude: lat, longitude: lng)
+        return currentLocation.distance(from: target) <= meters
+    }
 }

@@ -3,10 +3,12 @@ import SwiftUI
 struct StairwayBottomSheet: View {
     let stairway: Stairway
     let walkRecord: WalkRecord?
+    let locationManager: LocationManager
     let onSave: () -> Void
     let onMarkWalked: () -> Void
     let onUnmarkWalk: () -> Void
     let onRemove: () -> Void
+    let onToggleHardMode: (Bool) -> Void
 
     private enum StairwayState {
         case unsaved, saved, walked
@@ -92,8 +94,14 @@ struct StairwayBottomSheet: View {
                 // Action buttons
                 actionButtons
 
+                // Location required label (Hard Mode, no location)
+                locationRequiredLabel
+
+                // Hard Mode toggle
+                hardModeToggle
+
                 // View details
-                NavigationLink(destination: StairwayDetail(stairway: stairway)) {
+                NavigationLink(destination: StairwayDetail(stairway: stairway, locationManager: locationManager)) {
                     Text("View details")
                         .font(.subheadline)
                         .fontWeight(.medium)
@@ -105,6 +113,51 @@ struct StairwayBottomSheet: View {
                 }
             }
             .padding(20)
+        }
+    }
+
+    // MARK: - Hard Mode
+
+    private var isMarkWalkedDisabled: Bool {
+        guard walkRecord?.hardMode == true else { return false }
+        return !locationManager.isWithinRadius(150, ofLatitude: stairway.lat ?? 0, longitude: stairway.lng ?? 0)
+    }
+
+    @ViewBuilder
+    private var locationRequiredLabel: some View {
+        if walkRecord?.hardMode == true && locationManager.currentLocation == nil {
+            Text("Location required for Hard Mode")
+                .font(.caption2)
+                .foregroundColor(Color.unwalkedSlate)
+        }
+    }
+
+    private var hardModeBinding: Binding<Bool> {
+        Binding(
+            get: { walkRecord?.hardMode ?? false },
+            set: { newValue in onToggleHardMode(newValue) }
+        )
+    }
+
+    @ViewBuilder
+    private var hardModeToggle: some View {
+        if !stairway.closed {
+            VStack(alignment: .leading, spacing: 4) {
+                Divider()
+                HStack {
+                    Image(systemName: "lock.fill")
+                        .foregroundColor(Color.forestGreen)
+                    Text("Hard Mode")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                    Spacer()
+                    Toggle("", isOn: hardModeBinding)
+                        .labelsHidden()
+                }
+                Text("Require proximity to mark walked")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
         }
     }
 
@@ -157,11 +210,15 @@ struct StairwayBottomSheet: View {
             HStack(spacing: 10) {
                 ActionButton(title: "Save", icon: "bookmark", color: Color.brandAmber, action: onSave)
                 ActionButton(title: "Mark Walked", icon: "checkmark.circle", color: Color.walkedGreen, action: onMarkWalked)
+                    .opacity(isMarkWalkedDisabled ? 0.4 : 1.0)
+                    .disabled(isMarkWalkedDisabled)
             }
         case .saved:
             HStack(spacing: 10) {
                 ActionButton(title: "Unsave", icon: "bookmark.slash", color: .secondary, action: onRemove)
                 ActionButton(title: "Mark Walked", icon: "checkmark.circle", color: Color.walkedGreen, action: onMarkWalked)
+                    .opacity(isMarkWalkedDisabled ? 0.4 : 1.0)
+                    .disabled(isMarkWalkedDisabled)
             }
         case .walked:
             HStack(spacing: 10) {

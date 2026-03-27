@@ -92,14 +92,16 @@ struct MapTab: View {
             StairwayBottomSheet(
                 stairway: stairway,
                 walkRecord: walkRecord(for: stairway),
+                locationManager: locationManager,
                 onSave: { saveStairway(stairway) },
                 onMarkWalked: { markWalked(stairway) },
                 onUnmarkWalk: { unmarkWalk(stairway) },
-                onRemove: { removeRecord(stairway) }
+                onRemove: { removeRecord(stairway) },
+                onToggleHardMode: { enabled in toggleHardMode(stairway, enabled: enabled) }
             )
-            .presentationDetents([.height(340), .medium])
+            .presentationDetents([.height(390), .medium])
             .presentationDragIndicator(.visible)
-            .presentationBackgroundInteraction(.enabled(upThrough: .height(340)))
+            .presentationBackgroundInteraction(.enabled(upThrough: .height(390)))
         }
         .fullScreenCover(isPresented: $showSearch) {
             SearchPanel(
@@ -287,6 +289,9 @@ struct MapTab: View {
         if let record = walkRecord(for: stairway) {
             record.walked = true
             record.dateWalked = record.dateWalked ?? Date()
+            if record.hardMode {
+                record.proximityVerified = true
+            }
             record.updatedAt = Date()
         } else {
             let record = WalkRecord(stairwayID: stairway.id, walked: true, dateWalked: Date())
@@ -299,6 +304,21 @@ struct MapTab: View {
         guard let record = walkRecord(for: stairway) else { return }
         record.walked = false
         record.updatedAt = Date()
+        try? modelContext.save()
+    }
+
+    private func toggleHardMode(_ stairway: Stairway, enabled: Bool) {
+        if let record = walkRecord(for: stairway) {
+            if enabled && record.walked {
+                record.proximityVerified = false
+            }
+            record.hardMode = enabled
+            record.updatedAt = Date()
+        } else if enabled {
+            let record = WalkRecord(stairwayID: stairway.id, walked: false)
+            record.hardMode = true
+            modelContext.insert(record)
+        }
         try? modelContext.save()
     }
 

@@ -117,14 +117,14 @@ Source at `ios/SFStairways/`. **iOS is the sole active platform** — web app de
 |---|---|
 | `SyncStatusManager.swift` | `@Observable` — listens to `NSPersistentCloudKitContainer.eventChangedNotification`, exposes `.state` enum |
 | `SeedDataService.swift` | Seeds `WalkRecord` data from `target_list.json` on first launch; skips if records already exist (CloudKit delivery) or UserDefaults flag set |
-| `LocationManager.swift` | CLLocationManager wrapper for current location |
+| `LocationManager.swift` | CLLocationManager wrapper for current location; `isWithinRadius(_:ofLatitude:longitude:)` for Hard Mode proximity check |
 | `PhotoService.swift` | Photo capture, thumbnail generation |
 
 ### Models (SwiftData)
 
 | Model | Key fields |
 |---|---|
-| `WalkRecord` | `stairwayID`, `walked`, `dateWalked`, `notes`, `stepCount`, `photos: [WalkPhoto]?` |
+| `WalkRecord` | `stairwayID`, `walked`, `dateWalked`, `notes`, `stepCount`, `photos: [WalkPhoto]?`, `hardMode: Bool`, `proximityVerified: Bool?` |
 | `WalkPhoto` | `imageData` (externalStorage), `thumbnailData` (externalStorage), `caption`, `walkRecord` |
 | `Stairway` | Value type loaded from `all_stairways.json` bundle resource |
 
@@ -137,16 +137,18 @@ Every stairway exists in one of three states, derived from `WalkRecord`:
 
 All three states use the custom `StairShape` (3-step ascending silhouette, solid white fill). Icon is 42% of pin width, centered in the circular bulb via `ZStack(alignment: .top)` + pinWidth square frame. Selected pins darken one step and scale to 52×65pt. Dimmed pins (Around Me active, out of zone) render at 30% opacity. Closed stairways use `unwalkedSlate` at 40% opacity.
 
+**Unverified badge:** Walked pins with `hardMode = true` and `proximityVerified = false` display a 12pt amber (`accentAmber` #E8A838) circle with an exclamation mark at the top-right of the bulb. Computed via `WalkRecord.showUnverifiedBadge`, passed through `StairwayAnnotation` to `StairwayPin.showUnverifiedBadge`.
+
 ### Views
 
 - `ContentView` — `TabView` (Map / List / Progress)
 - `MapTab` — MapKit full-screen map (dark appearance), `brandOrange` top bar with white title + white icon buttons (translucent circle backgrounds), filter pills (All/Saved/Walked/Nearby) with dark-inactive/amber-active styling, floating `ProgressCard` (bottom-right) with `brandOrange` header bar
 - `ListTab` — searchable, filterable stairway list (All/Walked/Saved); `NavigationLink` to detail
 - `ProgressTab` — completion ring, stats grid, neighborhood breakdown, recent walks; sync status icon in toolbar
-- `StairwayDetail` — walk logging, photo management
-- `StairwayAnnotation` — delegates to `StairwayPin` with three-state + dimming support
-- `TeardropPin` — reusable SwiftUI teardrop `Shape` + `StairwayPin` view
-- `StairwayBottomSheet` — three-state action buttons (Save/Unsave/Mark Walked/Unmark/Remove)
+- `StairwayDetail` — walk logging, photo management, Hard Mode toggle
+- `StairwayAnnotation` — delegates to `StairwayPin` with three-state + dimming + unverified badge support
+- `TeardropPin` — reusable SwiftUI teardrop `Shape` + `StairwayPin` view; `showUnverifiedBadge` amber overlay
+- `StairwayBottomSheet` — three-state action buttons; Hard Mode toggle row; proximity-gated Mark Walked
 - `SearchPanel` — full-screen search modal with Name/Street/Neighborhood tabs
 - `AroundMeManager` — `@Observable`; nearest-centroid neighborhood detection, adjacency lookup, pin dimming state
 - `ToastView` + `.toast()` modifier — auto-dismissing toast messages
