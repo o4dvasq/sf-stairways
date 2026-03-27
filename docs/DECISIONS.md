@@ -147,6 +147,17 @@ State information is still fully preserved in the data model and surfaces in the
 
 The stair icon was also removed from the MapTab nav bar in this same session — the orange bar is now plain, consistent with the icon-free pin design.
 
+## Supabase iOS integration: AuthManager as @Observable NSObject
+**Date:** 2026-03-27
+
+`AuthManager` is an `@Observable final class` that also subclasses `NSObject`. The `NSObject` inheritance is required to conform to `ASAuthorizationControllerDelegate` and `ASAuthorizationControllerPresentationContextProviding` — both are ObjC protocols that require `NSObject`. `@Observable` and `NSObject` are compatible; the observation machinery is implemented via property-wrapper expansion, not class hierarchy.
+
+**Session restore on init rather than via `.task` modifier.** Session restoration is triggered from `AuthManager.init()` via a detached `Task`. This avoids the view-lifecycle coupling of `.task {}` — `AuthManager` is created in `SFStairwaysApp.init()` alongside `SyncStatusManager`, so the Keychain check begins immediately, before any view appears. `isLoading = true` during the async check prevents the UI from flashing a "not signed in" state before the session is confirmed.
+
+**Auth state changes subscribed via `authStateChanges` async stream.** Supabase SDK exposes `supabase.auth.authStateChanges` as an `AsyncStream` of `(AuthChangeEvent, Session?)` pairs. This handles token refresh, sign-out from another device, and session expiry automatically without polling. The stream subscription runs in a retained `Task` stored on `AuthManager` and is cancelled in `deinit`.
+
+**`SettingsView` is a sheet, not a tab.** Auth settings are placed behind a gear icon in the ProgressTab toolbar rather than as a fourth tab. A tab implies a primary feature; settings are secondary. The iCloud sync status was previously only in a sheet triggered by the cloud icon — the gear icon brings the two system-level concerns (iCloud + Supabase auth) together in one place and cleans up the toolbar.
+
 ## Pin Visibility Fix: custom StairShape, 2x sizes, full opacity unsaved
 **Date:** 2026-03-26
 

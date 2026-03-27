@@ -31,8 +31,9 @@ sf-stairways/
 │   ├── SFStairways.entitlements
 │   └── SFStairways/            ← iOS app source (Swift/SwiftUI)
 │       ├── Models/             ← Stairway, WalkRecord, WalkPhoto, StairwayOverride, StairwayStore
-│       ├── Views/              ← Map, List, Detail, Progress, SplashView
-│       ├── Services/           ← LocationManager, PhotoService, SeedDataService, SyncStatusManager
+│       ├── Views/              ← Map, List, Detail, Progress, Settings, SplashView
+│       ├── Services/           ← LocationManager, PhotoService, SeedDataService, SyncStatusManager, SupabaseManager, AuthManager
+│       ├── Config/             ← Supabase.plist (gitignored — not in repo)
 │       ├── Resources/          ← AppColors, bundled JSON data
 │       └── Assets.xcassets/    ← App icon, accent color
 ├── scripts/

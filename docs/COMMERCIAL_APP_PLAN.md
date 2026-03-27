@@ -8,7 +8,7 @@
 
 ## 1. Vision
 
-Transform the current personal SF stairway tracking site (vanilla JS + Leaflet on GitHub Pages) into a commercial iOS/Android app where anyone can discover, track, photograph, rate, and share their San Francisco stairway walks.
+Transform the current personal SF stairway tracking site (vanilla JS + Leaflet on GitHub Pages) into a commercial iOS app where anyone can discover, track, photograph, rate, and share their San Francisco stairway walks. iOS only — no Android, no expansion beyond SF.
 
 ## 2. Current State
 
@@ -22,7 +22,7 @@ What carries forward:
 
 ## 3. Business Model
 
-- **$4.99 one-time purchase** on both App Store and Google Play.
+- **$4.99 one-time purchase** on the iOS App Store. iOS only.
 - No ads. No subscriptions. No in-app purchases.
 - Revenue is simple: unit sales. No recurring infrastructure to justify a subscription.
 
@@ -73,19 +73,19 @@ User selects their preferred mode in settings. Can switch anytime.
 
 ## 5. Technical Architecture
 
-### 5.1 Frontend — React Native (Expo)
+### 5.1 Frontend — React Native (Expo), iOS Only
 
-- React Native with Expo for iOS + Android from a single JS/TS codebase.
-- React Native Maps (wraps Apple Maps on iOS, Google Maps on Android).
+- React Native with Expo, targeting iOS only.
+- React Native Maps (wraps Apple Maps on iOS).
 - Expo Location for GPS/geofencing (hard mode).
 - Expo Image Picker for photo capture.
 - Native share sheet via Expo Sharing.
 
-Why not PWA: Apple's App Store policies make PWA distribution unreliable. A native wrapper via Expo gives full App Store access, push notifications, and proper GPS APIs.
+Why Expo over pure Swift/SwiftUI: JS/TS codebase is closer to the existing vanilla JS app, faster to prototype, and Expo handles the build/submit pipeline. If performance or native feel becomes an issue later, can eject or rewrite specific screens in Swift.
 
 ### 5.2 Backend — Supabase
 
-- **Auth:** Supabase Auth with Apple Sign-In (required for App Store) + Google Sign-In.
+- **Auth:** Supabase Auth with Apple Sign-In (required for App Store). No Google Sign-In.
 - **Database:** Postgres via Supabase. Tables: `stairways` (reference data), `walks` (user walk logs), `photos`, `ratings`, `users`, `achievements`.
 - **File storage:** Supabase Storage for photos (replaces Cloudinary). Or keep Cloudinary if its free tier is sufficient.
 - **API:** Supabase auto-generates a REST API from the Postgres schema. Row-level security (RLS) policies handle authorization — users can only edit their own walks, photos, and ratings.
@@ -158,12 +158,6 @@ Required because the app has user-generated photos and reviews visible to other 
 - **App Review** — expect 1–3 rounds of review. Common rejection reasons: missing moderation for UGC, unclear privacy policy, broken deep links.
 - No IAP needed since it's a one-time paid app (Apple takes 30% of the $4.99, so you net ~$3.49 per sale).
 
-### Google (Android)
-
-- Google Play Developer account: **$25 one-time**.
-- Similar privacy/data deletion requirements, but generally more relaxed review process.
-- Google takes 15% on the first $1M in revenue (then 30%).
-
 ## 9. Cost Estimates
 
 ### Ongoing costs (monthly, at low-to-moderate scale)
@@ -179,7 +173,7 @@ Required because the app has user-generated photos and reviews visible to other 
 
 ### Revenue math
 
-At $4.99 per download (netting ~$3.49 after Apple's cut):
+At $4.99 per download (netting ~$3.49 after Apple's 30% cut):
 
 - 100 downloads → ~$349
 - 1,000 downloads → ~$3,490
@@ -187,38 +181,63 @@ At $4.99 per download (netting ~$3.49 after Apple's cut):
 
 Break-even on annual costs (~$120/year) requires about 35 downloads.
 
-## 10. Phased Roadmap
+## 10. Development Strategy — Solo-First
 
-### Phase 1 — MVP (8–12 weeks)
+The app ships as a polished single-player experience. Multi-user social features (shared photo galleries, community ratings, reviews visible to others) are built into the backend from day one but not exposed in the UI until the single-player experience is solid. This means:
 
-- Expo/React Native project setup.
-- Supabase backend: auth, database, storage.
-- Map with all 382 stairways.
-- Walk logging (easy mode only).
-- Photo upload and per-stairway gallery.
-- 1–5 star ratings.
-- Basic content moderation (automated + report button).
-- App Store and Google Play submission.
+- The Supabase schema supports multi-user from the start (user_id on every table, RLS policies in place).
+- Content moderation infrastructure is built but dormant until social features go live.
+- The user never sees other users' data in the solo phase — their photos, ratings, and walks are private to them.
+- Flipping to multi-user is a UI change, not a backend migration.
 
-### Phase 2 — Hard Mode + Social (4–6 weeks after launch)
+## 11. Phased Roadmap
 
-- GPS-verified walk logging (hard mode).
-- Star vs. circle marker distinction.
-- Achievement/badge system.
-- Social sharing with shareable card images.
-- Deep links.
+### Phase 1 — Solo MVP (8–12 weeks)
 
-### Phase 3 — Community (ongoing)
+- Expo/React Native project setup, iOS only.
+- Supabase backend: auth (Apple Sign-In), database, storage.
+- Map with all 382 stairways (Apple Maps).
+- Walk logging — both easy mode (green circle) and hard mode (gold star).
+- Mode selection in settings, switchable anytime.
+- GPS geofencing for hard mode (~50–100m radius, graceful degradation).
+- Personal photo uploads tied to stairways.
+- Personal 1–5 star ratings.
+- "Learn More" outbound links on stairway detail cards.
+- Achievement badges (10 walked, neighborhood complete, etc.) with easy/hard distinction.
+- Social sharing via native share sheet (shareable card image + stats).
+- App Store submission.
 
-- User reviews/descriptions.
-- "Top review" surfacing.
-- Neighborhood completion tracking.
-- Leaderboards (optional — can be polarizing).
+### Phase 2 — Social Layer (when solo experience is polished)
+
+- Shared photo galleries — see photos other users posted at the same stairway.
+- Community ratings (aggregate averages from all users).
+- Content moderation goes live (automated NSFW + report button).
+- User reviews/descriptions visible to others.
+- Deep links so shared achievements link back into the app.
+
+### Phase 3 — Engagement (based on user feedback)
+
+- "Top review" surfacing per stairway.
+- Neighborhood completion tracking and stats.
+- Leaderboards (optional — evaluate whether this fits the vibe).
 - Push notifications for nearby stairways (opt-in).
+- Walking routes (curated multi-stairway loops, e.g., "Telegraph Hill Loop").
 
-## 11. Open Questions
+## 12. Decisions Made
 
-- **Expand beyond SF?** The data model supports any city, but the brand is "SF Stairways." Revisit after validating demand in SF.
-- **Offline support?** Stairway data could be bundled in the app for offline use. Photos require connectivity. Worth considering for hikers in low-signal areas.
-- **User profiles?** Public profiles showing walks/photos/achievements could drive engagement but add complexity and moderation surface area.
-- **Walking routes?** Curated multi-stairway walking routes (e.g., "Telegraph Hill Loop") would be a compelling feature but require significant editorial effort.
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| Platform | iOS only | Focus. One App Store to deal with. Revisit Android later if demand exists. |
+| Pricing | $4.99 one-time | Simple. No subscription fatigue. Covers costs easily. |
+| Auth | Apple Sign-In only | Required by Apple anyway. No Google, keeps it simple. |
+| Multi-user | Backend-ready, UI later | Ship a great solo experience first. Social layer is a UI flip, not a rewrite. |
+| Offline support | Not in scope | Requires connectivity. Keeps architecture simple. |
+| Expansion beyond SF | Not in scope | Brand is "SF Stairways." SF only. |
+| User profiles | Not in scope | Adds moderation surface area. Revisit if social layer takes off. |
+| Content | Original + UGC + links | No copied content. Factual data + original descriptions + outbound links + user reviews. |
+
+## 13. Open Questions
+
+- **Walking routes?** Curated multi-stairway walking routes (e.g., "Telegraph Hill Loop") would be compelling but require editorial effort. Could be a Phase 3 feature or a user-submitted feature.
+- **SwiftUI rewrite?** If Expo/React Native feels sluggish or un-native, a SwiftUI rewrite for iOS-only could be worth it. Evaluate after Phase 1.
+- **Monetization for social features?** If social features drive significant engagement, could justify a small IAP or tip jar. Not planned for now.

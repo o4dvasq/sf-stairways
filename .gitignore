@@ -19,3 +19,11 @@ node_modules/
 
 # Dropbox conflict copies
 *conflicted copy*
+
+# Xcode
+ios/SFStairways.xcodeproj/project.xcworkspace/xcuserdata/
+ios/SFStairways.xcodeproj/xcuserdata/
+*.xcuserstate
+
+# Supabase credentials (never commit)
+ios/SFStairways/Config/Supabase.plist

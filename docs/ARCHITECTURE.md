@@ -119,6 +119,8 @@ Source at `ios/SFStairways/`. **iOS is the sole active platform** — web app de
 | `SeedDataService.swift` | Seeds `WalkRecord` data from `target_list.json` on first launch; skips if records already exist (CloudKit delivery) or UserDefaults flag set |
 | `LocationManager.swift` | CLLocationManager wrapper for current location; `isWithinRadius(_:ofLatitude:longitude:)` for Hard Mode proximity check |
 | `PhotoService.swift` | Photo capture, thumbnail generation |
+| `SupabaseManager.swift` | Singleton Supabase client; reads project URL + anon key from `Config/Supabase.plist` (gitignored); crashes with clear message if plist is missing |
+| `AuthManager.swift` | `@Observable` — wraps Supabase Auth session; restores session from Keychain on init; handles Sign in with Apple via `ASAuthorizationController` → Supabase `signInWithIdToken`; injected via `.environment()` |
 
 ### Models (SwiftData)
 
@@ -149,7 +151,8 @@ For any stat display (stair count, height): use `StairwayOverride` value if non-
 - `ContentView` — `TabView` (Map / List / Progress)
 - `MapTab` — MapKit full-screen map (dark appearance), plain `brandOrange` top bar with trailing icon buttons (search, Around Me), filter pills (All/Saved/Walked/Nearby), floating `ProgressCard` (bottom-right, 120pt wide) with `brandOrange` header
 - `ListTab` — searchable, filterable stairway list (All/Walked/Saved); `NavigationLink` to detail; queries `StairwayOverride` and passes to each row
-- `ProgressTab` — completion ring, stats grid, neighborhood breakdown, recent walks; sync status icon in toolbar; height stat uses `resolvedHeightFt`
+- `ProgressTab` — completion ring, stats grid, neighborhood breakdown, recent walks; toolbar has sync icon + gear icon; height stat uses `resolvedHeightFt`
+- `SettingsView` — sheet from gear icon in ProgressTab toolbar; Account section (Sign in with Apple / signed-in state + Sign Out); iCloud Sync section (mirrors sync status)
 - `StairwayDetail` — focused mini-map at top (non-interactive, 200pt), walk logging, Save button in toolbar (when unsaved), curator data section (walked-only, inline editable fields), Hard Mode toggle, notes, photo grid
 - `StairwayAnnotation` — delegates to `StairwayPin` with three-state + dimming + unverified badge support
 - `TeardropPin` — reusable SwiftUI teardrop `Shape` + `StairwayPin` view; `showUnverifiedBadge` amber overlay
@@ -187,6 +190,10 @@ SwiftData (WalkRecord)       ◄──► CloudKit ──► synced across devic
 SwiftData (StairwayOverride) ◄──► CloudKit ──► synced across devices
          │
          └──► resolvedStepCount / resolvedHeightFt ──► stats display everywhere
+
+Supabase.plist (gitignored) ──► SupabaseManager ──► AuthManager ──► SettingsView
+                                                          │
+                                              session (Keychain) + auth state changes
 ```
 
-`StairwayStore` loads stairway data at init and exposes search/filter/region/resolver helpers. `WalkRecord` and `StairwayOverride` are independent write paths, both keyed by `stairwayID`. All stairway state is derived from these two models.
+`StairwayStore` loads stairway data at init and exposes search/filter/region/resolver helpers. `WalkRecord` and `StairwayOverride` are independent write paths, both keyed by `stairwayID`. `AuthManager` manages the Supabase session independently of SwiftData — the two persistence layers coexist without interaction in the current phase.
