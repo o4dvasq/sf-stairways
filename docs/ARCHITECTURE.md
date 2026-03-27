@@ -131,21 +131,21 @@ Source at `ios/SFStairways/`. **iOS is the sole active platform** — web app de
 #### Three-State Stairway Model
 
 Every stairway exists in one of three states, derived from `WalkRecord`:
-- **Unsaved** — no `WalkRecord`; amber (#D4882B) teardrop pin, full opacity, custom `StairShape` icon (38×48pt)
-- **Saved** — `WalkRecord.walked == false`; light green (#81C784) pin, custom `StairShape` icon (44×55pt)
-- **Walked** — `WalkRecord.walked == true`; green (#4CAF50) pin, custom `StairShape` icon (44×55pt)
+- **Unsaved** — no `WalkRecord`; amber (#D4882B) solid teardrop pin, 30×38pt
+- **Saved** — `WalkRecord.walked == false`; light green (#81C784) solid teardrop pin, 36×45pt
+- **Walked** — `WalkRecord.walked == true`; green (#4CAF50) solid teardrop pin, 36×45pt
 
-All three states use the custom `StairShape` (3-step ascending silhouette, solid white fill). Icon is 42% of pin width, centered in the circular bulb via `ZStack(alignment: .top)` + pinWidth square frame. Selected pins darken one step and scale to 52×65pt. Dimmed pins (Around Me active, out of zone) render at 30% opacity. Closed stairways use `unwalkedSlate` at 40% opacity.
+Pins are solid teardrop shapes with no icon inside — state is communicated by color only. Selected pins darken one step and scale to 42×53pt. Dimmed pins (Around Me active, out of zone) render at 30% opacity. Closed stairways use `unwalkedSlate` at 40% opacity.
 
-**Unverified badge:** Walked pins with `hardMode = true` and `proximityVerified = false` display a 12pt amber (`accentAmber` #E8A838) circle with an exclamation mark at the top-right of the bulb. Computed via `WalkRecord.showUnverifiedBadge`, passed through `StairwayAnnotation` to `StairwayPin.showUnverifiedBadge`.
+**Unverified badge:** Walked pins with `hardMode = true` and `proximityVerified = false` display a 10pt amber (`accentAmber` #E8A838) circle with an exclamation mark at the top-right of the bulb. Computed via `WalkRecord.showUnverifiedBadge`, passed through `StairwayAnnotation` to `StairwayPin.showUnverifiedBadge`.
 
 ### Views
 
 - `ContentView` — `TabView` (Map / List / Progress)
-- `MapTab` — MapKit full-screen map (dark appearance), `brandOrange` top bar with white title + white icon buttons (translucent circle backgrounds), filter pills (All/Saved/Walked/Nearby) with dark-inactive/amber-active styling, floating `ProgressCard` (bottom-right) with `brandOrange` header bar
+- `MapTab` — MapKit full-screen map (dark appearance), `brandOrange` top bar with centered `StairShape` icon + trailing icon buttons (translucent circle backgrounds), filter pills (All/Saved/Walked/Nearby), floating `ProgressCard` (bottom-right, 120pt wide) with `brandOrange` header
 - `ListTab` — searchable, filterable stairway list (All/Walked/Saved); `NavigationLink` to detail
 - `ProgressTab` — completion ring, stats grid, neighborhood breakdown, recent walks; sync status icon in toolbar
-- `StairwayDetail` — walk logging, photo management, Hard Mode toggle
+- `StairwayDetail` — focused mini-map at top (non-interactive, 200pt), walk logging, Save button in toolbar (when unsaved), photo management, Hard Mode toggle
 - `StairwayAnnotation` — delegates to `StairwayPin` with three-state + dimming + unverified badge support
 - `TeardropPin` — reusable SwiftUI teardrop `Shape` + `StairwayPin` view; `showUnverifiedBadge` amber overlay
 - `StairwayBottomSheet` — three-state action buttons; Hard Mode toggle row; proximity-gated Mark Walked

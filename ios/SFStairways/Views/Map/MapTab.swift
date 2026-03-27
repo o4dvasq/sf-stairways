@@ -130,43 +130,42 @@ struct MapTab: View {
     // MARK: - Top Bar
 
     private var topBar: some View {
-        HStack(spacing: 12) {
-            Text("SF Stairways")
-                .font(.headline)
-                .fontWeight(.bold)
-                .foregroundStyle(Color.white)
+        ZStack {
+            // Stair icon centered
+            StairShape()
+                .fill(Color.white)
+                .frame(width: 26, height: 26)
 
-            Spacer()
+            // Buttons pinned to trailing edge
+            HStack {
+                Spacer()
+                HStack(spacing: 8) {
+                    Button {
+                        showSearch = true
+                    } label: {
+                        Image(systemName: "magnifyingglass")
+                            .font(.system(size: 15, weight: .semibold))
+                            .foregroundStyle(.white)
+                            .frame(width: 32, height: 32)
+                            .background(Color.white.opacity(0.2))
+                            .clipShape(Circle())
+                    }
 
-            // TODO: Add standalone staircase logo asset (28×28pt) centered here.
-            // iOS does not support rendering the app icon via Image("AppIcon").
-
-            // Search button
-            Button {
-                showSearch = true
-            } label: {
-                Image(systemName: "magnifyingglass")
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(.white)
-                    .frame(width: 32, height: 32)
-                    .background(Color.white.opacity(0.2))
-                    .clipShape(Circle())
+                    Button {
+                        toggleAroundMe()
+                    } label: {
+                        Image(systemName: "location.fill")
+                            .font(.system(size: 15, weight: .semibold))
+                            .foregroundStyle(.white)
+                            .frame(width: 32, height: 32)
+                            .background(aroundMe.isActive ? Color.white.opacity(0.35) : Color.white.opacity(0.2))
+                            .clipShape(Circle())
+                    }
+                }
             }
-
-            // Around Me button
-            Button {
-                toggleAroundMe()
-            } label: {
-                Image(systemName: "location.fill")
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(.white)
-                    .frame(width: 32, height: 32)
-                    .background(aroundMe.isActive ? Color.white.opacity(0.35) : Color.white.opacity(0.2))
-                    .clipShape(Circle())
-            }
+            .padding(.horizontal, 16)
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 10)
+        .padding(.vertical, 6)
         .background(Color.topBarBackground)
     }
 
@@ -341,16 +340,14 @@ struct ProgressCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack {
-                Text("Progress")
-                    .font(.caption)
-                    .fontWeight(.semibold)
-                    .foregroundColor(.white)
-                Spacer()
-            }
-            .padding(.horizontal, 8)
-            .padding(.vertical, 4)
-            .background(Color.brandOrange)
+            Text("Progress")
+                .font(.caption)
+                .fontWeight(.semibold)
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(Color.brandOrange)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(walkedCount > 0 ? "\(walkedCount) stairways" : "—")
@@ -365,9 +362,9 @@ struct ProgressCard: View {
             }
             .padding(.horizontal, 10)
             .padding(.vertical, 8)
-            .frame(width: 120, alignment: .leading)
             .background(.ultraThinMaterial)
         }
+        .frame(width: 120)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .allowsHitTesting(false)
     }

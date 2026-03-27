@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import MapKit
 
 struct StairwayDetail: View {
     let stairway: Stairway
@@ -26,8 +27,8 @@ struct StairwayDetail: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                // Photo carousel
-                photoCarousel
+                // Focused map showing stairway location
+                detailMap
 
                 VStack(alignment: .leading, spacing: 20) {
                     // Header
@@ -73,19 +74,28 @@ struct StairwayDetail: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Menu {
-                    Button {
-                        showCamera = true
-                    } label: {
-                        Label("Take Photo", systemImage: "camera")
+                HStack(spacing: 12) {
+                    if walkRecord == nil {
+                        Button("Save") {
+                            saveStairway()
+                        }
+                        .fontWeight(.semibold)
+                        .foregroundStyle(Color.brandOrange)
                     }
-                    Button {
-                        showPhotoPicker = true
+                    Menu {
+                        Button {
+                            showCamera = true
+                        } label: {
+                            Label("Take Photo", systemImage: "camera")
+                        }
+                        Button {
+                            showPhotoPicker = true
+                        } label: {
+                            Label("Choose from Library", systemImage: "photo.on.rectangle")
+                        }
                     } label: {
-                        Label("Choose from Library", systemImage: "photo.on.rectangle")
+                        Image(systemName: "camera")
                     }
-                } label: {
-                    Image(systemName: "camera")
                 }
             }
         }
@@ -110,42 +120,31 @@ struct StairwayDetail: View {
         }
     }
 
-    // MARK: - Photo Carousel
+    // MARK: - Detail Map
 
     @ViewBuilder
-    private var photoCarousel: some View {
-        let photos = walkRecord?.photoArray ?? []
-        if photos.isEmpty {
+    private var detailMap: some View {
+        if let lat = stairway.lat, let lng = stairway.lng {
+            let coord = CLLocationCoordinate2D(latitude: lat, longitude: lng)
+            let region = MKCoordinateRegion(
+                center: coord,
+                span: MKCoordinateSpan(latitudeDelta: 0.004, longitudeDelta: 0.004)
+            )
+            Map(initialPosition: .region(region)) {
+                Marker(stairway.name, coordinate: coord)
+                    .tint(Color.brandOrange)
+            }
+            .frame(height: 200)
+            .allowsHitTesting(false)
+        } else {
             ZStack {
                 Rectangle()
                     .fill(Color(.systemGray5))
-                    .frame(height: 220)
-                VStack(spacing: 8) {
-                    Image(systemName: "camera")
-                        .font(.system(size: 32))
-                        .foregroundStyle(.tertiary)
-                    Text("No photos yet")
-                        .font(.subheadline)
-                        .foregroundStyle(.tertiary)
-                }
+                    .frame(height: 200)
+                Text("Location unavailable")
+                    .font(.subheadline)
+                    .foregroundStyle(.tertiary)
             }
-        } else {
-            TabView {
-                ForEach(photos) { photo in
-                    if let image = photo.fullImage {
-                        Image(uiImage: image)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(height: 220)
-                            .clipped()
-                            .onTapGesture {
-                                selectedPhoto = photo
-                            }
-                    }
-                }
-            }
-            .frame(height: 220)
-            .tabViewStyle(.page)
         }
     }
 
@@ -412,6 +411,13 @@ struct StairwayDetail: View {
     }
 
     // MARK: - Actions
+
+    private func saveStairway() {
+        guard walkRecord == nil else { return }
+        let record = WalkRecord(stairwayID: stairway.id, walked: false)
+        modelContext.insert(record)
+        try? modelContext.save()
+    }
 
     private func toggleWalk() {
         if let record = walkRecord {

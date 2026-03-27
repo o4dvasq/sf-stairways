@@ -86,20 +86,14 @@ struct StairwayPin: View {
                 .shadow(color: .white.opacity(0.3), radius: 3, y: 0)
                 .shadow(color: .black.opacity(0.3), radius: 2, y: 2)
 
-            // Stair icon centered in the bulb area (top pinWidth × pinWidth square)
-            StairShape()
-                .fill(.white)
-                .frame(width: iconSize, height: iconSize)
-                .frame(width: pinWidth, height: pinWidth)
-
             // Unverified badge: amber circle with exclamation at top-right of bulb
             if showUnverifiedBadge {
                 Circle()
                     .fill(Color.accentAmber)
-                    .frame(width: 12, height: 12)
+                    .frame(width: 10, height: 10)
                     .overlay(
                         Image(systemName: "exclamationmark")
-                            .font(.system(size: 7, weight: .bold))
+                            .font(.system(size: 6, weight: .bold))
                             .foregroundColor(.white)
                     )
                     .offset(x: pinWidth * 0.30, y: 2)
@@ -111,16 +105,14 @@ struct StairwayPin: View {
     }
 
     private var pinWidth: CGFloat {
-        if isSelected { return 52 }
-        return state == .unsaved ? 38 : 44
+        if isSelected { return 42 }
+        return state == .unsaved ? 30 : 36
     }
 
     private var pinHeight: CGFloat {
-        if isSelected { return 65 }
-        return state == .unsaved ? 48 : 55
+        if isSelected { return 53 }
+        return state == .unsaved ? 38 : 45
     }
-
-    private var iconSize: CGFloat { pinWidth * 0.42 }
 
     private var fillColor: Color {
         if isClosed { return Color.unwalkedSlate }

@@ -112,6 +112,19 @@ Hard Mode is an opt-in per-stairway feature that gates the Mark Walked action on
 
 **Unverified badge uses `accentAmber` (#E8A838), distinct from `brandAmber` (#D4882B).** The badge needs to read on top of a green walked pin. Using the same amber as unsaved pins would create confusion ("is this an unsaved pin?"). `accentAmber` was already defined for the splash screen and is visually distinct at 12pt.
 
+## UI Improvements v2: slimmer nav bar, icon-free pins, detail mini-map, Save action
+**Date:** 2026-03-27
+
+**Nav bar icon instead of text.** "SF Stairways" text was removed and replaced with a centered white `StairShape` icon (26×26pt) in the orange top bar. The text added no information the user doesn't already know from the app icon. The stair silhouette reinforces brand identity and keeps the bar uncluttered. Bar height reduced (10→6pt vertical padding) to give more map real estate.
+
+**Icon removed from pins.** The `StairShape` icon inside the pin bulb was removed. At the reduced pin sizes the icon was visually noisy without providing meaningful state information — state is already communicated by pin color (amber / light green / green). Solid teardrop shapes are simpler and cleaner at small sizes.
+
+**ProgressCard width corrected.** The orange "Progress" title bar was expanding to full screen width because the outer `VStack` had no width constraint and the header `HStack` contained a `Spacer`. Fixed by moving `frame(width: 120)` to the outer `VStack` so both the header and content rows are constrained to 120pt.
+
+**StairwayDetail: mini-map replaces photo carousel.** The photo carousel at the top of the detail screen was a placeholder (showed "No photos yet" for most stairways). A non-interactive `Map` showing the stairway's location is more immediately useful — the user can orient themselves before navigating. Map is `allowsHitTesting(false)` to prevent accidental gestures in a scroll context. Falls back to a grey placeholder for the small number of stairways without coordinates.
+
+**Save button added to StairwayDetail toolbar.** The only way to save a stairway was via the map bottom sheet. The detail screen (reached via the list) had no save action. A "Save" button now appears in the toolbar when `walkRecord == nil`, creating a `WalkRecord(walked: false)` on tap. Disappears once the record exists.
+
 ## Pin Visibility Fix: custom StairShape, 2x sizes, full opacity unsaved
 **Date:** 2026-03-26
 

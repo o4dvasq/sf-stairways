@@ -1,6 +1,6 @@
 # Project State — sf-stairways
 
-_Last updated: 2026-03-26_
+_Last updated: 2026-03-27_
 
 ## Platform
 
@@ -38,19 +38,20 @@ _Last updated: 2026-03-26_
 
 ## Active Workstreams
 
-### 1. Solo UX — Hard Mode (just completed)
-- Per-stairway Hard Mode opt-in: requires user to be within 150m to mark a stairway as walked
-- `WalkRecord` gains `hardMode: Bool` and `proximityVerified: Bool?` fields (additive SwiftData migration, CloudKit synced)
-- `LocationManager.isWithinRadius(_:ofLatitude:longitude:)` — stateless proximity check at render time
-- Hard Mode toggle appears in `StairwayBottomSheet` and `StairwayDetail` for non-closed stairways
-- Mark Walked button disables (opacity 0.4) when Hard Mode active and user is out of range
-- Walks via Hard Mode set `proximityVerified = true`; pre-existing walks on opted-in stairways get `proximityVerified = false` (unverified)
-- Unverified badge: 12pt amber circle with exclamation mark overlaid at top-right of map pin bulb
-- "Location required for Hard Mode" label shown when location is unavailable
-- Sheet height bumped from 340 to 390 to accommodate toggle row
-- See: `docs/specs/implemented/SPEC_hard-mode.md`
+### 1. Solo UX — UI Improvements v2 (just completed)
+
+Five targeted UI polish changes:
+
+- **Slimmer nav bar**: `brandOrange` top bar reduced to 6pt vertical padding. White `StairShape` icon centered via ZStack. "SF Stairways" text removed.
+- **Cleaner map pins**: `StairShape` icon removed from pin bulb — pins are now solid color teardrop only. All pin sizes reduced ~20% (unsaved 30×38pt, saved/walked 36×45pt, selected 42×53pt).
+- **ProgressCard width fix**: outer VStack fixed at 120pt; orange "Progress" header now matches the grey content box width instead of expanding to full screen width.
+- **StairwayDetail mini-map**: photo carousel at top replaced with a non-interactive `Map` (200pt height, `latitudeDelta: 0.004`) showing an orange `Marker` at the stairway's location. Placeholder shown if coordinates unavailable.
+- **StairwayDetail Save button**: "Save" button in toolbar visible when `walkRecord == nil`. Creates `WalkRecord(walked: false)` on tap.
+
+See: `docs/specs/implemented/SPEC_ui-improvements-v2.md`
 
 ### Previous completions
+- Hard Mode: per-stairway proximity-gated walk verification with unverified badge
 - Nav Bar Redesign + Progress Card Header: `brandOrange` top bar, progress card header bar
 - Pin Visibility Fix: custom StairShape, 2x pin sizes, full-opacity unsaved
 - Map Visual Refresh v2: amber pins, dark map, top bar, unified stair icon
@@ -73,7 +74,6 @@ _Last updated: 2026-03-26_
 ## Known Issues
 
 - CloudKit sync may still fall back to local if Xcode target lacks Background Modes → Remote Notifications capability (manual Xcode step — not in repo)
-- No standalone staircase logo asset for nav bar center logo — TODO comment in MapTab.swift. Only AppIcon.appiconset exists; iOS does not support rendering via `Image("AppIcon")`.
 
 ## Repository
 
