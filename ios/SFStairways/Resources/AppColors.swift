@@ -2,7 +2,10 @@ import SwiftUI
 
 extension Color {
     static let forestGreen = Color(red: 45/255, green: 95/255, blue: 63/255)
-    static let accentAmber = Color(red: 232/255, green: 168/255, blue: 56/255)
+    static let accentAmber = Color(red: 232/255, green: 168/255, blue: 56/255)        // splash screen only
+
+    // Brand colors
+    static let brandOrange = Color(red: 0.91, green: 0.376, blue: 0.173)             // #E8602C — app brand
 
     // Pin colors
     static let brandAmber = Color(red: 212/255, green: 136/255, blue: 43/255)         // #D4882B — unsaved pins
@@ -19,8 +22,8 @@ extension Color {
     // Surface colors
     static let pillActive = Color(red: 212/255, green: 136/255, blue: 43/255)         // #D4882B — active filter pill
     static let pillInactive = Color(red: 51/255, green: 51/255, blue: 51/255)         // #333333 — inactive filter pill
-    static let topBarBackground = Color.white
-    static let topBarText = Color(red: 26/255, green: 26/255, blue: 26/255)           // #1A1A1A
+    static let topBarBackground = Color.brandOrange                                    // #E8602C
+    static let topBarText = Color.white
 }
 
 extension ShapeStyle where Self == Color {

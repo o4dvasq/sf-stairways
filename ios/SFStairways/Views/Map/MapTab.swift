@@ -132,9 +132,12 @@ struct MapTab: View {
             Text("SF Stairways")
                 .font(.headline)
                 .fontWeight(.bold)
-                .foregroundStyle(Color.brandAmber)
+                .foregroundStyle(Color.white)
 
             Spacer()
+
+            // TODO: Add standalone staircase logo asset (28×28pt) centered here.
+            // iOS does not support rendering the app icon via Image("AppIcon").
 
             // Search button
             Button {
@@ -142,9 +145,9 @@ struct MapTab: View {
             } label: {
                 Image(systemName: "magnifyingglass")
                     .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(.white)
                     .frame(width: 32, height: 32)
-                    .background(Color(.systemGray5))
+                    .background(Color.white.opacity(0.2))
                     .clipShape(Circle())
             }
 
@@ -154,18 +157,15 @@ struct MapTab: View {
             } label: {
                 Image(systemName: "location.fill")
                     .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(aroundMe.isActive ? .white : .primary)
+                    .foregroundStyle(.white)
                     .frame(width: 32, height: 32)
-                    .background(aroundMe.isActive ? Color.brandAmber : Color(.systemGray5))
+                    .background(aroundMe.isActive ? Color.white.opacity(0.35) : Color.white.opacity(0.2))
                     .clipShape(Circle())
             }
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
-        .background(
-            Color.white
-                .shadow(.drop(color: .black.opacity(0.1), radius: 4, y: 2))
-        )
+        .background(Color.topBarBackground)
     }
 
     // MARK: - Filter Row
@@ -320,21 +320,34 @@ struct ProgressCard: View {
     let totalSteps: Int
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(walkedCount > 0 ? "\(walkedCount) stairways" : "—")
-                .font(.caption)
-                .fontWeight(.semibold)
-            Text(totalHeightFt > 0 ? "\(Int(totalHeightFt).formatted()) ft" : "—")
-                .font(.caption2)
-                .foregroundStyle(.secondary)
-            Text(totalSteps > 0 ? "\(totalSteps.formatted()) steps" : "—")
-                .font(.caption2)
-                .foregroundStyle(.secondary)
+        VStack(alignment: .leading, spacing: 0) {
+            HStack {
+                Text("Progress")
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.white)
+                Spacer()
+            }
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(Color.brandOrange)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(walkedCount > 0 ? "\(walkedCount) stairways" : "—")
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                Text(totalHeightFt > 0 ? "\(Int(totalHeightFt).formatted()) ft" : "—")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                Text(totalSteps > 0 ? "\(totalSteps.formatted()) steps" : "—")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 8)
+            .frame(width: 120, alignment: .leading)
+            .background(.ultraThinMaterial)
         }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 8)
-        .frame(width: 120, alignment: .leading)
-        .background(.ultraThinMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .allowsHitTesting(false)
     }

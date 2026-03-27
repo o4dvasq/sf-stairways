@@ -131,16 +131,16 @@ Source at `ios/SFStairways/`. **iOS is the sole active platform** — web app de
 #### Three-State Stairway Model
 
 Every stairway exists in one of three states, derived from `WalkRecord`:
-- **Unsaved** — no `WalkRecord`; amber (#D4882B) teardrop pin at 50% opacity, 3-step stair icon (24×30pt)
-- **Saved** — `WalkRecord.walked == false`; light green (#81C784) pin, 3-step stair icon (28×35pt)
-- **Walked** — `WalkRecord.walked == true`; green (#4CAF50) pin, 3-step stair icon (28×35pt)
+- **Unsaved** — no `WalkRecord`; amber (#D4882B) teardrop pin, full opacity, custom `StairShape` icon (38×48pt)
+- **Saved** — `WalkRecord.walked == false`; light green (#81C784) pin, custom `StairShape` icon (44×55pt)
+- **Walked** — `WalkRecord.walked == true`; green (#4CAF50) pin, custom `StairShape` icon (44×55pt)
 
-All three states use the same `"stairs"` SF Symbol. Selected pins darken one step and scale to 34×42pt. Dimmed pins (Around Me active, out of zone) render at 30% opacity.
+All three states use the custom `StairShape` (3-step ascending silhouette, solid white fill). Icon is 42% of pin width, centered in the circular bulb via `ZStack(alignment: .top)` + pinWidth square frame. Selected pins darken one step and scale to 52×65pt. Dimmed pins (Around Me active, out of zone) render at 30% opacity. Closed stairways use `unwalkedSlate` at 40% opacity.
 
 ### Views
 
 - `ContentView` — `TabView` (Map / List / Progress)
-- `MapTab` — MapKit full-screen map (dark appearance), white top bar with amber logo + search/Around Me circle buttons, filter pills (All/Saved/Walked/Nearby) with dark-inactive/amber-active styling, no bottom bar
+- `MapTab` — MapKit full-screen map (dark appearance), `brandOrange` top bar with white title + white icon buttons (translucent circle backgrounds), filter pills (All/Saved/Walked/Nearby) with dark-inactive/amber-active styling, floating `ProgressCard` (bottom-right) with `brandOrange` header bar
 - `ListTab` — searchable, filterable stairway list (All/Walked/Saved); `NavigationLink` to detail
 - `ProgressTab` — completion ring, stats grid, neighborhood breakdown, recent walks; sync status icon in toolbar
 - `StairwayDetail` — walk logging, photo management

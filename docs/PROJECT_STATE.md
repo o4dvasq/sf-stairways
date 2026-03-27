@@ -38,16 +38,18 @@ _Last updated: 2026-03-26_
 
 ## Active Workstreams
 
-### 1. Solo UX — Pin Visibility Fix (just completed)
-- Custom `StairShape` SwiftUI `Shape` replaces `Image(systemName: "stairs")` — exactly 3 ascending steps, solid fill
-- Pin sizes doubled: unsaved 38pt, saved/walked 44pt, selected 52pt (was 24/28/34)
-- Icon size ratio bumped from 38% to 42% of pin width
-- Unsaved pin fill changed from `Color.brandAmber.opacity(0.5)` → `Color.brandAmber` (full opacity)
-- Shadow updated to white glow + black drop for dark map contrast
-- See: `docs/specs/implemented/SPEC_pin-visibility-fix.md`
+### 1. Solo UX — Nav Bar Redesign + Pin Icon Fix + Progress Card Header (just completed)
+- `brandOrange` (#E8602C) added to AppColors.swift as the unified app brand color
+- `topBarBackground` and `topBarText` semantic tokens updated to `brandOrange` / white
+- Top nav bar: orange background, white "SF Stairways" title, white icons with translucent circle backgrounds, no drop shadow
+- `accentAmber` usage confirmed splash-screen only; all other orange UI now uses `brandOrange`
+- Progress card: `brandOrange` header bar with white "Progress" text, clipped to card corner radius
+- StairShape pin positioning already correct (ZStack .top + pinWidth square frame centers icon in bulb)
+- See: `docs/specs/implemented/SPEC_nav-pin-progress-visual.md`
 
 ### Previous completions
-- Map Visual Refresh v2: amber pins, dark map, white top bar, unified stair icon
+- Pin Visibility Fix: custom StairShape, 2x pin sizes, full-opacity unsaved
+- Map Visual Refresh v2: amber pins, dark map, top bar, unified stair icon
 - Custom teardrop pins with three-state model (Unsaved / Saved / Walked)
 - "Around Me" neighborhood-aware filter with adjacent neighborhood highlighting
 - Full-screen search panel (Name / Street / Neighborhood tabs)
@@ -61,10 +63,13 @@ _Last updated: 2026-03-26_
 - Next: create Supabase project, run schema SQL, add supabase-swift to Xcode
 - Backlog: auth + user accounts, App Store prep (icon, metadata, TestFlight)
 
+### 3. Pending specs
+- `SPEC_hard-mode.md` — Hard Mode feature (backlog)
+
 ## Known Issues
 
 - CloudKit sync may still fall back to local if Xcode target lacks Background Modes → Remote Notifications capability (manual Xcode step — not in repo)
-- New Swift files from map-redesign spec need to be manually added to Xcode project navigator
+- No standalone staircase logo asset for nav bar center logo — TODO comment in MapTab.swift. Only AppIcon.appiconset exists; iOS does not support rendering via `Image("AppIcon")`.
 
 ## Repository
 

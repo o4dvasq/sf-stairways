@@ -90,6 +90,15 @@ Four related visual decisions bundled in one session:
 
 **Dark map via `.preferredColorScheme(.dark)` scoped to the Map view.** Applied directly to the `Map` SwiftUI view so only the map renders in dark mode — the rest of the UI (sheets, search panel, list tab) is unaffected. MapKit's standard dark basemap (charcoal/slate streets on near-black) is accepted as-is per the spec constraint that no custom tile overlay be introduced.
 
+## Nav bar redesign: brandOrange unified color, progress card header
+**Date:** 2026-03-26
+
+`brandOrange` (#E8602C) is now the single orange token for all non-splash UI. The top nav bar moved from white to `brandOrange` — white-on-orange is a cleaner brand statement than the previous amber title on white, and removes the drop shadow that was needed to lift a white bar off a dark map. Button circles changed from `.systemGray5` to `Color.white.opacity(0.2)` (subtle on orange, consistent with active-state contrast).
+
+The floating progress card gained a `brandOrange` header bar ("Progress" in white). The card previously had no label, relying on icon-free stats to identify themselves. A labeled header at 4pt vertical padding adds just enough context without bloating the card.
+
+`accentAmber` (#E8A838) is reserved for splash screen only; it will be reintroduced for unverified badges in the Hard Mode spec.
+
 ## Pin Visibility Fix: custom StairShape, 2x sizes, full opacity unsaved
 **Date:** 2026-03-26
 
