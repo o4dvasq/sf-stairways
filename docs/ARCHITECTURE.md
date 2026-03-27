@@ -109,7 +109,7 @@ Source at `ios/SFStairways/`. **iOS is the sole active platform** — web app de
 
 ### Entry Point
 
-`SFStairwaysApp.swift` — creates `ModelContainer` (CloudKit-backed, falls back to local), creates `SyncStatusManager`, injects both into the SwiftUI environment.
+`SFStairwaysApp.swift` — creates `ModelContainer` (CloudKit-backed, falls back to local), creates `SyncStatusManager` and `AuthManager`, injects all three into the SwiftUI environment via `.environment()`.
 
 ### Services
 
@@ -174,8 +174,8 @@ To regenerate neighborhood data: `python3 scripts/build_neighborhood_adjacency.p
 ### CloudKit Setup
 
 - Container: `iCloud.com.o4dvasq.sfstairways`
-- Entitlements: `aps-environment: development`, iCloud container + CloudKit service
-- Required manual Xcode step: Background Modes → Remote Notifications (enables push-triggered sync)
+- Entitlements: `aps-environment: development`, iCloud container + CloudKit service, `com.apple.developer.applesignin`
+- Required manual Xcode step: Background Modes → Remote Notifications (enables push-triggered sync); Sign in with Apple capability
 - Xcode project at `ios/SFStairways.xcodeproj` (in repo)
 
 ## iOS Data Flow
