@@ -4,8 +4,10 @@ import SwiftData
 struct ProgressTab: View {
     @Environment(SyncStatusManager.self) private var syncManager
     @Query private var walkRecords: [WalkRecord]
+    @Query private var overrides: [StairwayOverride]
     @State private var store = StairwayStore()
     @State private var showSyncDetails = false
+    @State private var showSettings = false
 
     private var walkedRecords: [WalkRecord] {
         walkRecords.filter(\.walked)
@@ -28,8 +30,14 @@ struct ProgressTab: View {
         let walkedIDs = Set(walkedRecords.map(\.stairwayID))
         return store.stairways
             .filter { walkedIDs.contains($0.id) }
-            .compactMap(\.heightFt)
+            .compactMap { stairway in
+                store.resolvedHeightFt(for: stairway, override: override(for: stairway))
+            }
             .reduce(0) { $0 + Int($1) }
+    }
+
+    private func override(for stairway: Stairway) -> StairwayOverride? {
+        overrides.first { $0.stairwayID == stairway.id }
     }
 
     private var totalSteps: Int {
@@ -94,18 +102,30 @@ struct ProgressTab: View {
             .navigationTitle("Progress")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        showSyncDetails = true
-                    } label: {
-                        Image(systemName: syncIconName)
-                            .foregroundStyle(syncIconColor)
+                    HStack(spacing: 16) {
+                        Button {
+                            showSyncDetails = true
+                        } label: {
+                            Image(systemName: syncIconName)
+                                .foregroundStyle(syncIconColor)
+                        }
+                        .accessibilityLabel("iCloud sync status")
+
+                        Button {
+                            showSettings = true
+                        } label: {
+                            Image(systemName: "gearshape")
+                        }
+                        .accessibilityLabel("Settings")
                     }
-                    .accessibilityLabel("iCloud sync status")
                 }
             }
             .sheet(isPresented: $showSyncDetails) {
                 SyncStatusSheet(manager: syncManager)
                     .presentationDetents([.fraction(0.3)])
+            }
+            .sheet(isPresented: $showSettings) {
+                SettingsView()
             }
         }
     }

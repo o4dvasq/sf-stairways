@@ -125,6 +125,28 @@ Hard Mode is an opt-in per-stairway feature that gates the Mark Walked action on
 
 **Save button added to StairwayDetail toolbar.** The only way to save a stairway was via the map bottom sheet. The detail screen (reached via the list) had no save action. A "Save" button now appears in the toolbar when `walkRecord == nil`, creating a `WalkRecord(walked: false)` on tap. Disappears once the record exists.
 
+## StairwayOverride: independent model, not a WalkRecord extension
+**Date:** 2026-03-27
+
+The curator data (verified step count, height, description) is stored in a separate `StairwayOverride` model keyed by `stairwayID`, not as fields on `WalkRecord`. Two reasons:
+
+**Different ownership semantics.** `WalkRecord` is personal walk data — when did I walk it, what did I note. `StairwayOverride` is authoritative stairway facts that exist independently of any particular walk. If Oscar re-walks a stairway and creates a new `WalkRecord`, the verified stairway facts shouldn't be attached to either walk specifically.
+
+**Override persistence on unmark.** The spec requires that verified data survives if a walk is unmarked. If the override were embedded in `WalkRecord`, the delete-record path would need special logic to preserve it. As an independent model, unmarking a walk simply hides the curator section — the override record is untouched.
+
+The constraint is enforced in app logic (find-or-create by `stairwayID`) rather than a database unique constraint, since CloudKit doesn't support unique constraints on SwiftData models.
+
+## Solid orange pins: drop three-state color differentiation
+**Date:** 2026-03-27
+
+All map pins now use `brandOrange` (#E8602C) regardless of state (unsaved / saved / walked). The three-state color system (amber / light green / green) was dropped.
+
+**Why.** The three colors added visual complexity without clearly communicating actionable information at a glance. Users don't need to know at map scale whether a stairway is "saved" vs "walked" — they navigate to individual stairways and the detail/bottom-sheet tells them the state. The uniform orange palette is simpler, consistent with the app's brand color, and eliminates the need to remember color meanings.
+
+State information is still fully preserved in the data model and surfaces in the detail view, bottom sheet, and list tab. Selected pins use `brandOrangeDark` (#BF4A1F). Closed stairways retain `unwalkedSlate` for functional distinction.
+
+The stair icon was also removed from the MapTab nav bar in this same session — the orange bar is now plain, consistent with the icon-free pin design.
+
 ## Pin Visibility Fix: custom StairShape, 2x sizes, full opacity unsaved
 **Date:** 2026-03-26
 

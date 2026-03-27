@@ -6,6 +6,7 @@ extension Color {
 
     // Brand colors
     static let brandOrange = Color(red: 0.91, green: 0.376, blue: 0.173)             // #E8602C — app brand
+    static let brandOrangeDark = Color(red: 0.75, green: 0.29, blue: 0.12)          // #BF4A1F — selected pin
 
     // Pin colors
     static let brandAmber = Color(red: 212/255, green: 136/255, blue: 43/255)         // #D4882B — unsaved pins
@@ -28,6 +29,7 @@ extension Color {
 
 extension ShapeStyle where Self == Color {
     static var forestGreen: Color { .forestGreen }
+    static var brandOrangeDark: Color { .brandOrangeDark }
     static var brandAmber: Color { .brandAmber }
     static var brandAmberDark: Color { .brandAmberDark }
     static var pinSaved: Color { .pinSaved }

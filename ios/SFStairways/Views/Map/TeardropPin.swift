@@ -65,8 +65,8 @@ struct TeardropShape: Shape {
 
 // MARK: - Stairway Pin View
 
-/// Three-state map pin: Unsaved (amber), Saved (light green), Walked (green).
-/// All states display the same 3-step stair silhouette icon.
+/// Three-state map pin: all states render as solid orange teardrops.
+/// State is still tracked for data model purposes; visual distinction is selection/dimming only.
 struct StairwayPin: View {
     enum PinState {
         case unsaved, saved, walked
@@ -116,14 +116,7 @@ struct StairwayPin: View {
 
     private var fillColor: Color {
         if isClosed { return Color.unwalkedSlate }
-        switch state {
-        case .unsaved:
-            return isSelected ? Color.brandAmberDark : Color.brandAmber
-        case .saved:
-            return isSelected ? Color.pinSavedDark : Color.pinSaved
-        case .walked:
-            return isSelected ? Color.walkedGreenDark : Color.walkedGreen
-        }
+        return isSelected ? Color.brandOrangeDark : Color.brandOrange
     }
 
     private var opacity: Double {

@@ -4,6 +4,7 @@ import SwiftData
 struct ListTab: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var walkRecords: [WalkRecord]
+    @Query private var overrides: [StairwayOverride]
     @State private var store = StairwayStore()
     @State private var locationManager = LocationManager()
     @State private var searchText = ""
@@ -24,7 +25,8 @@ struct ListTab: View {
                             NavigationLink(destination: StairwayDetail(stairway: stairway, locationManager: locationManager)) {
                                 StairwayRow(
                                     stairway: stairway,
-                                    walkRecord: walkRecord(for: stairway)
+                                    walkRecord: walkRecord(for: stairway),
+                                    override: override(for: stairway)
                                 )
                             }
                         }
@@ -73,5 +75,9 @@ struct ListTab: View {
 
     private func walkRecord(for stairway: Stairway) -> WalkRecord? {
         walkRecords.first { $0.stairwayID == stairway.id }
+    }
+
+    private func override(for stairway: Stairway) -> StairwayOverride? {
+        overrides.first { $0.stairwayID == stairway.id }
     }
 }

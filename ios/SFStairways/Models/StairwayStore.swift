@@ -116,6 +116,18 @@ final class StairwayStore {
         }
     }
 
+    // MARK: - Override Resolvers
+
+    /// Returns the verified stair count if set, otherwise nil (no catalog fallback — catalog has no stair count).
+    func resolvedStepCount(for stairway: Stairway, override: StairwayOverride?) -> Int? {
+        override?.verifiedStepCount
+    }
+
+    /// Returns the verified height if set, otherwise falls back to the catalog height.
+    func resolvedHeightFt(for stairway: Stairway, override: StairwayOverride?) -> Double? {
+        override?.verifiedHeightFt ?? stairway.heightFt
+    }
+
     /// Returns the map region that fits all stairways in a given neighborhood.
     func region(for neighborhood: String) -> MKCoordinateRegion? {
         let coords = stairways(in: neighborhood).compactMap(\.coordinate)

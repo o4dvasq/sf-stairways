@@ -2,6 +2,7 @@
 
 | Description | Implemented | Spec File |
 |---|---|---|
+| Curator data layer: StairwayOverride model, verified stats with badge | 2026-03-27 | SPEC_curator-data.md |
 | UI Improvements v2: slimmer nav bar, icon-free pins, ProgressCard width fix, detail mini-map, Save button | 2026-03-27 | SPEC_ui-improvements-v2.md |
 | Hard Mode: proximity-verified walks with unverified badge | 2026-03-26 | SPEC_hard-mode.md |
 | Nav bar & Progress card header (brandOrange unified) | 2026-03-26 | SPEC_nav-pin-progress-visual.md |

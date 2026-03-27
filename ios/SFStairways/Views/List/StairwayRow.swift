@@ -3,6 +3,7 @@ import SwiftUI
 struct StairwayRow: View {
     let stairway: Stairway
     let walkRecord: WalkRecord?
+    var override: StairwayOverride? = nil
 
     private var isWalked: Bool {
         walkRecord?.walked ?? false
@@ -29,10 +30,17 @@ struct StairwayRow: View {
                 }
 
                 HStack(spacing: 6) {
-                    if let steps = walkRecord?.stepCount {
+                    // Stair count: verified overrides pedometer steps
+                    if let verifiedStairs = override?.verifiedStepCount {
+                        verifiedStatText("\(verifiedStairs) stairs")
+                    } else if let steps = walkRecord?.stepCount {
                         Text("\(steps) steps")
                     }
-                    if let height = stairway.heightFt {
+
+                    // Height: verified overrides catalog
+                    if let verifiedHeight = override?.verifiedHeightFt {
+                        verifiedStatText("\(Int(verifiedHeight)) ft")
+                    } else if let height = stairway.heightFt {
                         Text("\(Int(height)) ft")
                     }
                 }
@@ -66,5 +74,14 @@ struct StairwayRow: View {
             }
         }
         .padding(.vertical, 4)
+    }
+
+    private func verifiedStatText(_ text: String) -> some View {
+        HStack(spacing: 2) {
+            Text(text)
+            Image(systemName: "checkmark.seal.fill")
+                .font(.system(size: 8))
+                .foregroundStyle(Color.forestGreen)
+        }
     }
 }

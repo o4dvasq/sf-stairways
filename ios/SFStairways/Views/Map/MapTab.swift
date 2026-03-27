@@ -5,6 +5,7 @@ import SwiftData
 struct MapTab: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var walkRecords: [WalkRecord]
+    @Query private var overrides: [StairwayOverride]
     @State private var store = StairwayStore()
     @State private var locationManager = LocationManager()
     @State private var aroundMe = AroundMeManager()
@@ -92,6 +93,7 @@ struct MapTab: View {
             StairwayBottomSheet(
                 stairway: stairway,
                 walkRecord: walkRecord(for: stairway),
+                override: override(for: stairway),
                 locationManager: locationManager,
                 onSave: { saveStairway(stairway) },
                 onMarkWalked: { markWalked(stairway) },
@@ -131,11 +133,6 @@ struct MapTab: View {
 
     private var topBar: some View {
         ZStack {
-            // Stair icon centered
-            StairShape()
-                .fill(Color.white)
-                .frame(width: 26, height: 26)
-
             // Buttons pinned to trailing edge
             HStack {
                 Spacer()
@@ -246,8 +243,12 @@ struct MapTab: View {
     private var totalHeightFt: Double {
         store.stairways
             .filter { walkedStairwayIDs.contains($0.id) }
-            .compactMap(\.heightFt)
+            .compactMap { store.resolvedHeightFt(for: $0, override: override(for: $0)) }
             .reduce(0, +)
+    }
+
+    private func override(for stairway: Stairway) -> StairwayOverride? {
+        overrides.first { $0.stairwayID == stairway.id }
     }
 
     private var totalSteps: Int {

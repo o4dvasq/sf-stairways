@@ -8,6 +8,7 @@ struct StairwayDetail: View {
 
     @Environment(\.modelContext) private var modelContext
     @Query private var walkRecords: [WalkRecord]
+    @Query private var overrides: [StairwayOverride]
 
     @State private var showPhotoPicker = false
     @State private var showCamera = false
@@ -16,8 +17,23 @@ struct StairwayDetail: View {
     @State private var notesText = ""
     @State private var editingDate = false
 
+    // Curator fields
+    @State private var curatorStepCountText: String = ""
+    @State private var curatorHeightText: String = ""
+    @State private var curatorDescription: String = ""
+    @State private var curatorDirty = false
+    @FocusState private var curatorFocus: CuratorField?
+
+    private enum CuratorField: Hashable {
+        case stepCount, height, description
+    }
+
     private var walkRecord: WalkRecord? {
         walkRecords.first { $0.stairwayID == stairway.id }
+    }
+
+    private var currentOverride: StairwayOverride? {
+        overrides.first { $0.stairwayID == stairway.id }
     }
 
     private var isWalked: Bool {
@@ -39,6 +55,9 @@ struct StairwayDetail: View {
 
                     // Walk status
                     walkStatusCard
+
+                    // Curator data (walked stairways only)
+                    curatorSection
 
                     // Hard Mode toggle
                     hardModeSection
@@ -70,6 +89,7 @@ struct StairwayDetail: View {
                 .padding(16)
             }
         }
+        .scrollDismissesKeyboard(.interactively)
         .navigationTitle(stairway.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -117,6 +137,17 @@ struct StairwayDetail: View {
         }
         .onAppear {
             notesText = walkRecord?.notes ?? ""
+            initCuratorFields()
+        }
+        .onChange(of: curatorFocus) { _, newFocus in
+            if newFocus == nil && curatorDirty {
+                saveCuratorData()
+            }
+        }
+        .onDisappear {
+            if curatorDirty {
+                saveCuratorData()
+            }
         }
     }
 
@@ -178,24 +209,42 @@ struct StairwayDetail: View {
 
     private var statsRow: some View {
         HStack(spacing: 0) {
-            if let steps = walkRecord?.stepCount {
+            // Stair count: verified curator value overrides pedometer steps
+            if let verifiedStairs = currentOverride?.verifiedStepCount {
+                statItem(value: "\(verifiedStairs)", label: "stairs", verified: true)
+                Divider().frame(height: 30)
+            } else if let steps = walkRecord?.stepCount {
                 statItem(value: "\(steps)", label: "steps")
                 Divider().frame(height: 30)
             }
-            if let height = stairway.heightFt {
+
+            // Height: verified curator value overrides catalog
+            if let verifiedHeight = currentOverride?.verifiedHeightFt {
+                statItem(value: "\(Int(verifiedHeight))", label: "feet", verified: true)
+                Divider().frame(height: 30)
+            } else if let height = stairway.heightFt {
                 statItem(value: "\(Int(height))", label: "feet")
                 Divider().frame(height: 30)
             }
+
             let photoCount = walkRecord?.photoArray.count ?? 0
             statItem(value: "\(photoCount)", label: photoCount == 1 ? "photo" : "photos")
         }
     }
 
-    private func statItem(value: String, label: String) -> some View {
+    private func statItem(value: String, label: String, verified: Bool = false) -> some View {
         VStack(spacing: 2) {
-            Text(value)
-                .font(.title2)
-                .fontWeight(.medium)
+            HStack(alignment: .top, spacing: 2) {
+                Text(value)
+                    .font(.title2)
+                    .fontWeight(.medium)
+                if verified {
+                    Image(systemName: "checkmark.seal.fill")
+                        .font(.system(size: 9))
+                        .foregroundStyle(Color.forestGreen)
+                        .padding(.top, 4)
+                }
+            }
             Text(label)
                 .font(.caption)
                 .foregroundStyle(.secondary)
@@ -315,6 +364,81 @@ struct StairwayDetail: View {
                 )
                 .datePickerStyle(.compact)
                 .padding(.horizontal, 4)
+            }
+        }
+    }
+
+    // MARK: - Curator Section
+
+    @ViewBuilder
+    private var curatorSection: some View {
+        if isWalked {
+            VStack(alignment: .leading, spacing: 12) {
+                Divider()
+
+                HStack(spacing: 6) {
+                    Text("Stairway Info")
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                    if currentOverride?.hasAnyValue == true {
+                        Image(systemName: "checkmark.seal.fill")
+                            .font(.system(size: 12))
+                            .foregroundStyle(Color.forestGreen)
+                    }
+                }
+
+                // Stair count
+                HStack {
+                    Text("Stair count")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    TextField("Add stair count", text: $curatorStepCountText)
+                        .keyboardType(.numberPad)
+                        .multilineTextAlignment(.trailing)
+                        .frame(width: 120)
+                        .focused($curatorFocus, equals: .stepCount)
+                        .onChange(of: curatorStepCountText) { _, _ in curatorDirty = true }
+                }
+
+                // Height
+                HStack {
+                    Text("Height (ft)")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    TextField("Add height", text: $curatorHeightText)
+                        .keyboardType(.decimalPad)
+                        .multilineTextAlignment(.trailing)
+                        .frame(width: 120)
+                        .focused($curatorFocus, equals: .height)
+                        .onChange(of: curatorHeightText) { _, _ in curatorDirty = true }
+                }
+
+                // Description
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Description")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                    ZStack(alignment: .topLeading) {
+                        TextEditor(text: $curatorDescription)
+                            .font(.subheadline)
+                            .frame(minHeight: 60)
+                            .padding(8)
+                            .background(Color(.systemGray6))
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .focused($curatorFocus, equals: .description)
+                            .onChange(of: curatorDescription) { _, _ in curatorDirty = true }
+                        if curatorDescription.isEmpty {
+                            Text("Add description...")
+                                .font(.subheadline)
+                                .foregroundStyle(.tertiary)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 16)
+                                .allowsHitTesting(false)
+                        }
+                    }
+                }
             }
         }
     }
@@ -464,6 +588,47 @@ struct StairwayDetail: View {
             let record = WalkRecord(stairwayID: stairway.id, notes: notesText)
             modelContext.insert(record)
         }
+        try? modelContext.save()
+    }
+
+    // MARK: - Curator Actions
+
+    private func initCuratorFields() {
+        guard let o = currentOverride else { return }
+        curatorStepCountText = o.verifiedStepCount.map(String.init) ?? ""
+        curatorHeightText = o.verifiedHeightFt.map { "\($0)" } ?? ""
+        curatorDescription = o.stairwayDescription ?? ""
+    }
+
+    private func saveCuratorData() {
+        curatorDirty = false
+
+        let stepCount = Int(curatorStepCountText)
+        let height = Double(curatorHeightText)
+        let desc = curatorDescription.trimmingCharacters(in: .whitespacesAndNewlines)
+        let descValue: String? = desc.isEmpty ? nil : desc
+
+        // All fields cleared → delete override
+        if stepCount == nil && height == nil && descValue == nil {
+            if let existing = currentOverride {
+                modelContext.delete(existing)
+                try? modelContext.save()
+            }
+            return
+        }
+
+        // Update or create
+        let override: StairwayOverride
+        if let existing = currentOverride {
+            override = existing
+        } else {
+            override = StairwayOverride(stairwayID: stairway.id)
+            modelContext.insert(override)
+        }
+        override.verifiedStepCount = stepCount
+        override.verifiedHeightFt = height
+        override.stairwayDescription = descValue
+        override.updatedAt = Date()
         try? modelContext.save()
     }
 }

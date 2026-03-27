@@ -5,9 +5,10 @@ import SwiftData
 struct SFStairwaysApp: App {
     let modelContainer: ModelContainer
     let syncStatusManager: SyncStatusManager
+    let authManager: AuthManager
 
     init() {
-        let schema = Schema([WalkRecord.self, WalkPhoto.self])
+        let schema = Schema([WalkRecord.self, WalkPhoto.self, StairwayOverride.self])
         let manager = SyncStatusManager()
 
         // Attempt CloudKit-backed container. Common failure reasons:
@@ -44,6 +45,7 @@ struct SFStairwaysApp: App {
         }
 
         syncStatusManager = manager
+        authManager = AuthManager()
     }
 
     @State private var showSplash = true
@@ -74,5 +76,6 @@ struct SFStairwaysApp: App {
         }
         .modelContainer(modelContainer)
         .environment(syncStatusManager)
+        .environment(authManager)
     }
 }

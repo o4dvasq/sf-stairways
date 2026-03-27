@@ -3,6 +3,7 @@ import SwiftUI
 struct StairwayBottomSheet: View {
     let stairway: Stairway
     let walkRecord: WalkRecord?
+    var override: StairwayOverride? = nil
     let locationManager: LocationManager
     let onSave: () -> Void
     let onMarkWalked: () -> Void
@@ -33,12 +34,16 @@ struct StairwayBottomSheet: View {
                             .foregroundStyle(.secondary)
 
                         HStack(spacing: 12) {
-                            if let steps = walkRecord?.stepCount {
+                            if let verifiedStairs = override?.verifiedStepCount {
+                                verifiedStatText("\(verifiedStairs) stairs")
+                            } else if let steps = walkRecord?.stepCount {
                                 Text("\(steps) steps")
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }
-                            if let height = stairway.heightFt {
+                            if let verifiedHeight = override?.verifiedHeightFt {
+                                verifiedStatText("\(Int(verifiedHeight)) ft")
+                            } else if let height = stairway.heightFt {
                                 Text("\(Int(height)) ft")
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
@@ -114,6 +119,19 @@ struct StairwayBottomSheet: View {
             }
             .padding(20)
         }
+    }
+
+    // MARK: - Verified Stat
+
+    private func verifiedStatText(_ text: String) -> some View {
+        HStack(spacing: 2) {
+            Text(text)
+            Image(systemName: "checkmark.seal.fill")
+                .font(.system(size: 8))
+                .foregroundStyle(Color.forestGreen)
+        }
+        .font(.caption)
+        .foregroundStyle(.secondary)
     }
 
     // MARK: - Hard Mode

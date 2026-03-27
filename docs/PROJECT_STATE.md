@@ -38,19 +38,33 @@ _Last updated: 2026-03-27_
 
 ## Active Workstreams
 
-### 1. Solo UX — UI Improvements v2 (just completed)
+### 1. Solo UX — Curator Data Layer (just completed)
 
-Five targeted UI polish changes:
+New `StairwayOverride` SwiftData model lets Oscar record authoritative stairway measurements:
+- **Stair count** (physical stairs, not pedometer) — `verifiedStepCount: Int?`
+- **Height** (elevation gain in feet) — `verifiedHeightFt: Double?`
+- **Description** — curator blurb — `stairwayDescription: String?`
 
-- **Slimmer nav bar**: `brandOrange` top bar reduced to 6pt vertical padding. White `StairShape` icon centered via ZStack. "SF Stairways" text removed.
-- **Cleaner map pins**: `StairShape` icon removed from pin bulb — pins are now solid color teardrop only. All pin sizes reduced ~20% (unsaved 30×38pt, saved/walked 36×45pt, selected 42×53pt).
-- **ProgressCard width fix**: outer VStack fixed at 120pt; orange "Progress" header now matches the grey content box width instead of expanding to full screen width.
-- **StairwayDetail mini-map**: photo carousel at top replaced with a non-interactive `Map` (200pt height, `latitudeDelta: 0.004`) showing an orange `Marker` at the stairway's location. Placeholder shown if coordinates unavailable.
-- **StairwayDetail Save button**: "Save" button in toolbar visible when `walkRecord == nil`. Creates `WalkRecord(walked: false)` on tap.
+**Display behavior:**
+- Verified values override catalog values everywhere stats appear
+- Verified values show a `checkmark.seal.fill` badge (forestGreen) in stats row, list row, bottom sheet
+- Label changes: "stairs" (not "steps") when showing verified stair count
+- Catalog height used as fallback when no override exists
 
-See: `docs/specs/implemented/SPEC_ui-improvements-v2.md`
+**Curator section in StairwayDetail:**
+- Appears only for walked stairways
+- Inline editable fields (number pad, decimal pad, TextEditor)
+- Saves on keyboard dismiss / focus loss / view disappear
+- Creating override: first edit on any field; deleting: clearing all three fields
+- Section header "Stairway Info" with checkmark.seal.fill when any value exists
+
+**Previously completed this session:**
+- All map pins changed to solid orange (`brandOrange` / `brandOrangeDark`) — three-state color system (amber/light green/green) dropped
+- Stair icon removed from MapTab top bar — nav bar is now icon-free orange bar
+- `brandOrangeDark` (#BF4A1F) added to AppColors as selected-pin color
 
 ### Previous completions
+- UI Improvements v2: slimmer nav bar, icon-free pins, ProgressCard width fix, detail mini-map, Save button
 - Hard Mode: per-stairway proximity-gated walk verification with unverified badge
 - Nav Bar Redesign + Progress Card Header: `brandOrange` top bar, progress card header bar
 - Pin Visibility Fix: custom StairShape, 2x pin sizes, full-opacity unsaved
@@ -69,11 +83,12 @@ See: `docs/specs/implemented/SPEC_ui-improvements-v2.md`
 - Backlog: auth + user accounts, App Store prep (icon, metadata, TestFlight)
 
 ### 3. Pending specs
-- (none — specs directory is clean)
+- `SPEC_curator-social-layer.md` — photo carousel, photo likes, curator commentary, hard mode as app-level setting
 
 ## Known Issues
 
 - CloudKit sync may still fall back to local if Xcode target lacks Background Modes → Remote Notifications capability (manual Xcode step — not in repo)
+- CKErrorDomain error 2 (not authenticated) surfaces as red error icon on Progress tab — to be fixed in curator-social-layer spec
 
 ## Repository
 

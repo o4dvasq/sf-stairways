@@ -1,20 +1,14 @@
 # sf-stairways
 
-SF stairway exploration tracker — web app + native iOS app.
+SF stairway exploration tracker — native iOS app.
 
-## Two Platforms
+## iOS App
 
-### Web App (shipped)
-- Live at https://o4dvasq.github.io/sf-stairways/
-- Vanilla JS + HTML/CSS, Leaflet.js, GitHub Contents API, Cloudinary photos
-- Entry point: `index.html` (single-file app)
-
-### iOS App (archived, running on device)
 - Swift / SwiftUI / iOS 17+, SwiftData + CloudKit
-- Source: `ios/SFStairways/` (21 files — no .xcodeproj, configured manually in Xcode)
+- Source + Xcode project: `ios/` (SFStairways.xcodeproj + SFStairways/ source)
 - Bundle ID: `com.o4dvasq.SFStairways`
 - CloudKit container: `iCloud.com.o4dvasq.sfstairways`
-- See `docs/HANDOFF_iOS.md` for full build details and known issues
+- See `docs/IOS_REFERENCE.md` for full build details and known issues
 
 ## Repo
 
@@ -29,22 +23,25 @@ https://github.com/o4dvasq/sf-stairways
 
 ```
 sf-stairways/
-├── index.html                  ← web app (single file)
+├── index.html                  ← web app (deprecated, kept for reference)
 ├── data/
-│   ├── target_list.json        ← personal walk log (13 stairways)
 │   └── all_stairways.json      ← all 382 SF stairways from scraper
-├── ios/SFStairways/            ← iOS app source (Swift/SwiftUI)
-│   ├── Models/                 ← Stairway, WalkRecord, WalkPhoto, StairwayStore
-│   ├── Views/                  ← Map, List, Detail, Progress tabs
-│   ├── Services/               ← LocationManager, PhotoService, SeedDataService
-│   └── Resources/              ← AppColors, bundled JSON data
+├── ios/
+│   ├── SFStairways.xcodeproj/  ← Xcode project (open this in Xcode)
+│   ├── SFStairways.entitlements
+│   └── SFStairways/            ← iOS app source (Swift/SwiftUI)
+│       ├── Models/             ← Stairway, WalkRecord, WalkPhoto, StairwayOverride, StairwayStore
+│       ├── Views/              ← Map, List, Detail, Progress, SplashView
+│       ├── Services/           ← LocationManager, PhotoService, SeedDataService, SyncStatusManager
+│       ├── Resources/          ← AppColors, bundled JSON data
+│       └── Assets.xcassets/    ← App icon, accent color
 ├── scripts/
 │   └── scrape_stairways.py     ← one-time data collector
 ├── docs/
 │   ├── ARCHITECTURE.md
 │   ├── DECISIONS.md
 │   ├── PROJECT_STATE.md
-│   ├── HANDOFF_iOS.md          ← iOS build details and known issues
+│   ├── IOS_REFERENCE.md        ← iOS build details and known issues
 │   └── specs/
 │       ├── implemented/        ← completed specs
 │       └── (pending specs)     ← active work
@@ -53,8 +50,7 @@ sf-stairways/
 
 ## Local Dev
 
-Web: `python3 -m http.server 8080` → http://localhost:8080
-iOS: Open Xcode project at `~/Desktop/SFStairways/`, run on device or simulator
+iOS: Open `ios/SFStairways.xcodeproj` in Xcode, run on device or simulator
 
 ## Workflow
 

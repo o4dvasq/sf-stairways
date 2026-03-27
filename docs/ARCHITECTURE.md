@@ -126,26 +126,31 @@ Source at `ios/SFStairways/`. **iOS is the sole active platform** — web app de
 |---|---|
 | `WalkRecord` | `stairwayID`, `walked`, `dateWalked`, `notes`, `stepCount`, `photos: [WalkPhoto]?`, `hardMode: Bool`, `proximityVerified: Bool?` |
 | `WalkPhoto` | `imageData` (externalStorage), `thumbnailData` (externalStorage), `caption`, `walkRecord` |
+| `StairwayOverride` | `stairwayID`, `verifiedStepCount: Int?`, `verifiedHeightFt: Double?`, `stairwayDescription: String?`, `createdAt`, `updatedAt` |
 | `Stairway` | Value type loaded from `all_stairways.json` bundle resource |
 
 #### Three-State Stairway Model
 
 Every stairway exists in one of three states, derived from `WalkRecord`:
-- **Unsaved** — no `WalkRecord`; amber (#D4882B) solid teardrop pin, 30×38pt
-- **Saved** — `WalkRecord.walked == false`; light green (#81C784) solid teardrop pin, 36×45pt
-- **Walked** — `WalkRecord.walked == true`; green (#4CAF50) solid teardrop pin, 36×45pt
+- **Unsaved** — no `WalkRecord`
+- **Saved** — `WalkRecord.walked == false`
+- **Walked** — `WalkRecord.walked == true`
 
-Pins are solid teardrop shapes with no icon inside — state is communicated by color only. Selected pins darken one step and scale to 42×53pt. Dimmed pins (Around Me active, out of zone) render at 30% opacity. Closed stairways use `unwalkedSlate` at 40% opacity.
+**Pins** are solid orange (`brandOrange` #E8602C) teardrop shapes for all three states — state is communicated in the detail/bottom-sheet, not by pin color. Sizes: 30×38pt (unsaved), 36×45pt (saved/walked), 42×53pt (selected, `brandOrangeDark` #BF4A1F). Dimmed pins render at 30% opacity. Closed stairways use `unwalkedSlate` at 40% opacity.
 
 **Unverified badge:** Walked pins with `hardMode = true` and `proximityVerified = false` display a 10pt amber (`accentAmber` #E8A838) circle with an exclamation mark at the top-right of the bulb. Computed via `WalkRecord.showUnverifiedBadge`, passed through `StairwayAnnotation` to `StairwayPin.showUnverifiedBadge`.
+
+#### StairwayOverride Fallback Chain
+
+For any stat display (stair count, height): use `StairwayOverride` value if non-nil → else catalog value (`Stairway.heightFt`) → else nothing. The `StairwayStore` provides `resolvedStepCount(for:override:)` and `resolvedHeightFt(for:override:)` helpers. Views that display stats query `StairwayOverride` records and look up by `stairwayID`. Verified values render with a `checkmark.seal.fill` badge in `forestGreen`.
 
 ### Views
 
 - `ContentView` — `TabView` (Map / List / Progress)
-- `MapTab` — MapKit full-screen map (dark appearance), `brandOrange` top bar with centered `StairShape` icon + trailing icon buttons (translucent circle backgrounds), filter pills (All/Saved/Walked/Nearby), floating `ProgressCard` (bottom-right, 120pt wide) with `brandOrange` header
-- `ListTab` — searchable, filterable stairway list (All/Walked/Saved); `NavigationLink` to detail
-- `ProgressTab` — completion ring, stats grid, neighborhood breakdown, recent walks; sync status icon in toolbar
-- `StairwayDetail` — focused mini-map at top (non-interactive, 200pt), walk logging, Save button in toolbar (when unsaved), photo management, Hard Mode toggle
+- `MapTab` — MapKit full-screen map (dark appearance), plain `brandOrange` top bar with trailing icon buttons (search, Around Me), filter pills (All/Saved/Walked/Nearby), floating `ProgressCard` (bottom-right, 120pt wide) with `brandOrange` header
+- `ListTab` — searchable, filterable stairway list (All/Walked/Saved); `NavigationLink` to detail; queries `StairwayOverride` and passes to each row
+- `ProgressTab` — completion ring, stats grid, neighborhood breakdown, recent walks; sync status icon in toolbar; height stat uses `resolvedHeightFt`
+- `StairwayDetail` — focused mini-map at top (non-interactive, 200pt), walk logging, Save button in toolbar (when unsaved), curator data section (walked-only, inline editable fields), Hard Mode toggle, notes, photo grid
 - `StairwayAnnotation` — delegates to `StairwayPin` with three-state + dimming + unverified badge support
 - `TeardropPin` — reusable SwiftUI teardrop `Shape` + `StairwayPin` view; `showUnverifiedBadge` amber overlay
 - `StairwayBottomSheet` — three-state action buttons; Hard Mode toggle row; proximity-gated Mark Walked
@@ -178,7 +183,10 @@ all_stairways.json ──► StairwayStore ──► MapTab / ListTab / SearchPa
 neighborhood_centroids.json ─┬─► AroundMeManager ──► pin dimming + neighborhood chip
 neighborhood_adjacency.json ─┘
 
-SwiftData (WalkRecord) ◄──► CloudKit ──► synced across devices
+SwiftData (WalkRecord)       ◄──► CloudKit ──► synced across devices
+SwiftData (StairwayOverride) ◄──► CloudKit ──► synced across devices
+         │
+         └──► resolvedStepCount / resolvedHeightFt ──► stats display everywhere
 ```
 
-`StairwayStore` loads stairway data at init and exposes search/filter/region helpers. `WalkRecord` is the only write path — all stairway state is derived from walk records.
+`StairwayStore` loads stairway data at init and exposes search/filter/region/resolver helpers. `WalkRecord` and `StairwayOverride` are independent write paths, both keyed by `stairwayID`. All stairway state is derived from these two models.
