@@ -5,6 +5,7 @@ struct ListTab: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var walkRecords: [WalkRecord]
     @State private var store = StairwayStore()
+    @State private var locationManager = LocationManager()
     @State private var searchText = ""
     @State private var listFilter: ListFilter = .all
 
@@ -20,7 +21,7 @@ struct ListTab: View {
                 ForEach(filteredGroups, id: \.name) { group in
                     Section {
                         ForEach(group.stairways) { stairway in
-                            NavigationLink(destination: StairwayDetail(stairway: stairway)) {
+                            NavigationLink(destination: StairwayDetail(stairway: stairway, locationManager: locationManager)) {
                                 StairwayRow(
                                     stairway: stairway,
                                     walkRecord: walkRecord(for: stairway)
