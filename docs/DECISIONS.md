@@ -1,5 +1,28 @@
 # Architecture Decisions — sf-stairways
 
+## Map pins: circles replace teardrops; three-state color system restored
+**Date:** 2026-03-27
+
+`TeardropShape` inside `StairwayPin` rendered poorly in MapKit's `Annotation` container at small sizes — the rounded top of the teardrop lost definition against the dark map, and the point was clipped. After two rounds of size/shadow tuning, the teardrop was abandoned entirely. `Circle()` is reliable, renders crisply at all sizes, and needs no custom `Shape` path.
+
+Three-state colors were restored (they had been collapsed to solid orange in a prior session): gray `Color(white: 0.55)` for unsaved, `brandOrange` for saved, `walkedGreen` for walked. Selected state uses a darker variant and expands to 24pt. The rationale for collapsing to solid orange (state visible in detail, not map) was valid, but the circles are small enough (12–16pt) that color is the primary legibility signal at map scale — state differentiation is worth the three-color palette at this size.
+
+`TeardropShape` and `StairShape` are kept in `TeardropPin.swift` for future use.
+
+## Curator section gated on curator role, not just walked state
+**Date:** 2026-03-27
+
+The "Stairway Info" editor in `StairwayDetail` (stair count, height, description TextFields) was gated only on `isWalked`. This caused every walked stairway to show editable fields with "Add stair count" / "Add height" / "Add description..." prompts to all users — it looked like the app was asking users to manually enter catalog data.
+
+The fix is a single condition change: `if isWalked` → `if isWalked && authManager.isCurator && curatorModeActive`. The `statsRow` already correctly shows public catalog data (`Stairway.heightFt`) and override data with a verified badge for all users — that path is unchanged.
+
+## Auth error surfacing: signInError for Sign in with Apple debugging
+**Date:** 2026-03-27
+
+Sign in with Apple was failing silently — the catch block in `handleAppleAuthorization` only printed to the console, giving no visible feedback on device. Added `signInError: String?` as a published property on `AuthManager`. The catch block sets it to `error.localizedDescription`; `SettingsView` renders it in red below the sign-in button.
+
+This is a temporary debug instrument. Once Sign in with Apple is confirmed working (Supabase provider config verified, sign-in completes successfully), remove the `signInError` display from `SettingsView` and clear the property after successful sign-in.
+
 ## Sign in with Apple: use SwiftUI button credential directly, no second ASAuthorizationController
 **Date:** 2026-03-27
 

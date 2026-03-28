@@ -344,7 +344,7 @@ struct StairwayDetail: View {
 
     @ViewBuilder
     private var curatorSection: some View {
-        if isWalked {
+        if isWalked && authManager.isCurator && curatorModeActive {
             VStack(alignment: .leading, spacing: 12) {
                 Divider()
 

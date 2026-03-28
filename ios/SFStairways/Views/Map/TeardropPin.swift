@@ -65,8 +65,7 @@ struct TeardropShape: Shape {
 
 // MARK: - Stairway Pin View
 
-/// Three-state map pin: all states render as solid orange teardrops.
-/// State is still tracked for data model purposes; visual distinction is selection/dimming only.
+/// Three-state map pin: colored circles (gray/orange/green) per walk state.
 struct StairwayPin: View {
     enum PinState {
         case unsaved, saved, walked
@@ -78,29 +77,39 @@ struct StairwayPin: View {
     var isClosed: Bool = false
 
     var body: some View {
-        TeardropShape()
+        Circle()
             .fill(fillColor)
-            .overlay(TeardropShape().stroke(Color.black.opacity(0.4), lineWidth: 1))
-            .frame(width: pinWidth, height: pinHeight)
-            .shadow(color: .black.opacity(0.3), radius: 2, y: 2)
+            .overlay(Circle().stroke(Color.black.opacity(0.3), lineWidth: 1))
+            .frame(width: pinSize, height: pinSize)
+            .shadow(color: .black.opacity(0.3), radius: 2, y: 1)
             .opacity(opacity)
             .animation(.spring(response: 0.2), value: isSelected)
             .animation(.easeInOut(duration: 0.25), value: isDimmed)
     }
 
-    private var pinWidth: CGFloat {
-        if isSelected { return 48 }
-        return state == .unsaved ? 36 : 40
-    }
-
-    private var pinHeight: CGFloat {
-        if isSelected { return 60 }
-        return state == .unsaved ? 45 : 50
+    private var pinSize: CGFloat {
+        if isSelected { return 24 }
+        switch state {
+        case .unsaved: return 12
+        case .saved: return 16
+        case .walked: return 16
+        }
     }
 
     private var fillColor: Color {
         if isClosed { return Color.unwalkedSlate }
-        return isSelected ? Color.brandOrangeDark : Color.brandOrange
+        if isSelected {
+            switch state {
+            case .unsaved: return Color(white: 0.7)
+            case .saved: return Color.brandOrangeDark
+            case .walked: return Color.walkedGreenDark
+            }
+        }
+        switch state {
+        case .unsaved: return Color(white: 0.55)
+        case .saved: return Color.brandOrange
+        case .walked: return Color.walkedGreen
+        }
     }
 
     private var opacity: Double {

@@ -28,22 +28,18 @@ _Last updated: 2026-03-27_
 
 ## Active Workstreams
 
-### 1. Solo UX — Bug Fixes (just completed 2026-03-27)
+### 1. Solo UX — Bug Fixes Round 2 (just completed 2026-03-27)
 
-Three bugs found during on-device testing:
+Three bugs found during on-device testing (post-round-1):
 
-**Bug A — Map pins** were rendering as tiny hollow/chevron shapes. Fixed:
-- Removed white shadow (was creating hollow appearance on dark map)
-- Added thin dark stroke overlay for defined edge
-- Increased pin sizes: unsaved 36×45, saved/walked 40×50, selected 48×60
+**Bug A — Map pins still rendering poorly.** Abandoned teardrop shape entirely. Switched to `Circle()` — state-based colors (gray/orange/green) and sizes (12/16/24pt selected). Selected state uses darker color variant.
 
-**Bug B — Sign in with Apple** was completing OS auth but never updating app state. Root cause: `SettingsView` discarded the credential from `SignInWithAppleButton`'s `onCompletion` and launched a second `ASAuthorizationController`. Fixed:
-- `onCompletion` now passes the `ASAuthorization` directly to `AuthManager.handleAppleAuthorization(_:)`
-- New method extracts identity token and calls `signInWithIdToken` — no second controller
+**Bug B — Curator section visible to all users on walked stairways.** The "Stairway Info" editor (stair count, height, description TextFields) was gated only on `isWalked`, not on curator role. All users saw "Add stair count" / "Add height" / "Add description..." prompts. Fixed: gated on `isWalked && authManager.isCurator && curatorModeActive`.
 
-**Bug C — Hard Mode toggle** was permanently disabled. Resolved automatically by Bug B fix.
+**Bug C — Sign in with Apple still failing.** Code path confirmed correct from round 1. Added visible error feedback: `signInError: String?` on `AuthManager`, surfaced in `SettingsView` below the sign-in button. Supabase dashboard config must be manually verified (Apple provider enabled, Service ID = `com.o4dvasq.SFStairways`).
 
 ### Previous completions
+- Bug Fixes Round 1: map pins, Sign in with Apple code path, Hard Mode toggle
 - Curator social layer: photo carousel, curator commentary, photo likes, user-level Hard Mode (Supabase)
 - Supabase iOS integration: SDK, AuthManager, Sign in with Apple, SettingsView
 - Curator data layer: `StairwayOverride` model, verified stats with badge
@@ -59,8 +55,10 @@ Three bugs found during on-device testing:
 ## Known Issues
 
 - CloudKit sync may still fall back to local if Xcode target lacks Background Modes → Remote Notifications capability (manual Xcode step — not in repo)
-- CKErrorDomain error 2 (not authenticated) surfaces as red error icon on Progress tab — separate from Supabase auth; requires CloudKit investigation (see note in SPEC_bugfix-pins-auth-hardmode.md)
+- CKErrorDomain error 2 (not authenticated) surfaces as red error icon on Progress tab — separate from Supabase auth; requires CloudKit investigation
 - `supabase-swift` package + new files from curator social layer not yet confirmed added to Xcode target
+- Sign in with Apple: `signInError` display is temporary for debugging — remove after auth is confirmed working
+- Supabase Apple provider config not yet manually verified (required for Sign in with Apple to work)
 
 ## Repository
 

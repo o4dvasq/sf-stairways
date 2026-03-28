@@ -88,6 +88,13 @@ struct SettingsView: View {
             .signInWithAppleButtonStyle(.black)
             .frame(height: 44)
             .clipShape(RoundedRectangle(cornerRadius: 8))
+
+            if let error = authManager.signInError {
+                Text(error)
+                    .font(.caption)
+                    .foregroundStyle(.red)
+                    .padding(.top, 4)
+            }
         }
         .padding(.vertical, 4)
     }

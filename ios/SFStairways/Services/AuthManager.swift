@@ -8,6 +8,7 @@ final class AuthManager: NSObject {
     var isLoading: Bool = true
     var userProfile: UserProfile? = nil
     var hardModeEnabled: Bool = UserDefaults.standard.bool(forKey: "hardModeEnabled")
+    var signInError: String? = nil
 
     var isAuthenticated: Bool { session != nil }
     var userId: UUID? { session?.user.id }
@@ -118,10 +119,16 @@ final class AuthManager: NSObject {
                 let session = try await SupabaseManager.shared.client.auth.signInWithIdToken(
                     credentials: .init(provider: .apple, idToken: tokenString)
                 )
-                await MainActor.run { self.session = session }
+                await MainActor.run {
+                    self.session = session
+                    self.signInError = nil
+                }
                 await loadProfile()
             } catch {
                 print("[AuthManager] Supabase sign-in failed: \(error)")
+                await MainActor.run {
+                    self.signInError = error.localizedDescription
+                }
             }
         }
     }

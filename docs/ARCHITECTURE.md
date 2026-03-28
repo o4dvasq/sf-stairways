@@ -138,7 +138,7 @@ Every stairway exists in one of three states, derived from `WalkRecord`:
 - **Saved** — `WalkRecord.walked == false`
 - **Walked** — `WalkRecord.walked == true`
 
-**Pins** are solid orange (`brandOrange` #E8602C) teardrop shapes for all three states — state is communicated in the detail/bottom-sheet, not by pin color. Sizes: 36×45pt (unsaved), 40×50pt (saved/walked), 48×60pt (selected, `brandOrangeDark` #BF4A1F). Dark stroke overlay (0.4 opacity, 1pt) gives edge definition on the dark map. Dimmed pins render at 30% opacity. Closed stairways use `unwalkedSlate` at 40% opacity.
+**Pins** are colored circles: gray (`Color(white: 0.55)`) for unsaved, `brandOrange` for saved, `walkedGreen` for walked. Selected pins use darker variants (`Color(white: 0.7)` / `brandOrangeDark` / `walkedGreenDark`) and expand to 24pt diameter. Unselected sizes: 12pt (unsaved), 16pt (saved/walked). Thin dark stroke overlay (0.3 opacity, 1pt). Dimmed pins render at 30% opacity. Closed stairways use `unwalkedSlate` at 40% opacity. `TeardropShape` and `StairShape` are kept in `TeardropPin.swift` for future use.
 
 **Unverified badge:** Walked pins with `hardMode = true` and `proximityVerified = false` display a 10pt amber (`accentAmber` #E8A838) circle with an exclamation mark at the top-right of the bulb. Computed via `WalkRecord.showUnverifiedBadge`, passed through `StairwayAnnotation` to `StairwayPin.showUnverifiedBadge`.
 
@@ -155,7 +155,7 @@ For any stat display (stair count, height): use `StairwayOverride` value if non-
 - `SettingsView` — sheet from gear icon in ProgressTab toolbar; Account section (Sign in with Apple / signed-in state + Sign Out); iCloud Sync section (mirrors sync status)
 - `StairwayDetail` — focused mini-map at top (non-interactive, 200pt), walk logging, Save button in toolbar (when unsaved), curator data section (walked-only, inline editable fields), Hard Mode toggle, notes, photo grid
 - `StairwayAnnotation` — delegates to `StairwayPin` with three-state + dimming + unverified badge support
-- `TeardropPin` — reusable SwiftUI teardrop `Shape` + `StairwayPin` view; `showUnverifiedBadge` amber overlay
+- `TeardropPin` — `StairwayPin` view (colored circles, three-state colors + dimming); `TeardropShape` and `StairShape` structs kept for future use; `showUnverifiedBadge` amber overlay
 - `StairwayBottomSheet` — three-state action buttons; Hard Mode toggle row; proximity-gated Mark Walked
 - `SearchPanel` — full-screen search modal with Name/Street/Neighborhood tabs
 - `AroundMeManager` — `@Observable`; nearest-centroid neighborhood detection, adjacency lookup, pin dimming state

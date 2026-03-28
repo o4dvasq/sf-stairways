@@ -2,6 +2,7 @@
 
 | Description | Implemented | Spec File |
 |---|---|---|
+| Round 2 bug fixes: circle pins, curator gate, auth error | 2026-03-27 | SPEC_bugfix-round2-pins-detail-auth.md |
 | Bug fixes: map pins, Sign in with Apple, Hard Mode toggle | 2026-03-27 | SPEC_bugfix-pins-auth-hardmode.md |
 | Curator social layer: commentary, photo carousel, likes, user-level Hard Mode | 2026-03-27 | SPEC_curator-social-layer.md |
 | Supabase iOS integration: SDK, AuthManager, Sign in with Apple, SettingsView | 2026-03-27 | SPEC_supabase-ios-integration.md |
