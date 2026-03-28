@@ -1,5 +1,27 @@
 # Architecture Decisions — sf-stairways
 
+## Photo persistence: PhotoSource enum + local-first display with upload dedup
+**Date:** 2026-03-28
+
+Two independent bugs caused photos to be invisible in the carousel. Fixed together.
+
+**Bug A — local photos never displayed.** `PhotoCarousel` only received `[SupabasePhoto]`. Local `WalkPhoto` objects in SwiftData were never consulted. Fix: introduced `PhotoSource` enum (`case remote(SupabasePhoto) / case local(WalkPhoto)`), `StairwayBottomSheet` now computes `mergedPhotos: [PhotoSource]` by combining `photoLikeService.sortedPhotos` + `walkRecord.photoArray`, sorted by `createdAt` descending. `PhotoCarousel` accepts `[PhotoSource]` and switches on case for both thumbnail rendering and full-screen viewing.
+
+**Bug B — uploaded photos invisible.** `PhotoInsert` in `PhotoLikeService` omitted `is_public`, which the database defaults to `false`. `fetchPhotos` filters `.eq("is_public", true)`. Fix: added `is_public: Bool` to `PhotoInsert` and sets it to `true` on every upload.
+
+**Dedup strategy: delete local on upload success.** After a successful Supabase upload, the local `WalkPhoto` is deleted from SwiftData. The `SupabasePhoto` returned by the upload is already in `photoLikeService.photos`, so `mergedPhotos` transitions from `[.local(p)]` to `[.remote(p)]` automatically. If upload fails, the local copy persists as offline fallback. This is simpler than date-matching for dedup and avoids keeping stale local copies indefinitely.
+
+**Local badge instead of like overlay.** Local-only photos show a `icloud.slash` icon (bottom-left) in place of the like/count overlay. Like interactions are Supabase-only — local photos have no server-side ID to track likes against.
+
+## Launch zoom to nearest stairway: time-based splash guard over binding
+**Date:** 2026-03-28
+
+On first location fix after launch, `MapTab` zooms to the nearest stairway at `latDelta 0.01`. The zoom must not fire while the splash is still visible (splash dismisses at ~2.9s: 2.5s delay + 0.4s fade).
+
+**Time-based guard chosen over `showSplash` binding.** `showSplash` lives in `SFStairwaysApp` — threading it down through `ContentView` → `MapTab` would add a parameter to both intermediate views for a one-time concern. Instead, `MapTab` records `launchTime: Date = .now` and computes `delay = max(0, launchTime + 3.1 - now)` when location first arrives. If the location comes in before splash ends, the zoom is deferred by the remaining window; if it arrives late, delay is 0 and the zoom fires immediately. No coupling to app-level state required.
+
+**`hasZoomedToNearest` set before the async dispatch, not after.** The flag is set to `true` synchronously in the `.onChange` handler, before the `DispatchQueue.main.asyncAfter` closure runs. This prevents a second location update (arriving in the small delay window) from scheduling a second zoom.
+
 ## Map pin tap targets and zoom-responsive scaling
 **Date:** 2026-03-28
 

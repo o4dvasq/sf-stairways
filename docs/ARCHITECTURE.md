@@ -130,6 +130,7 @@ Source at `ios/SFStairways/`. **iOS is the sole active platform** — web app de
 | `WalkPhoto` | `imageData` (externalStorage), `thumbnailData` (externalStorage), `caption`, `walkRecord` |
 | `StairwayOverride` | `stairwayID`, `verifiedStepCount: Int?`, `verifiedHeightFt: Double?`, `stairwayDescription: String?`, `createdAt`, `updatedAt` |
 | `Stairway` | Value type loaded from `all_stairways.json` bundle resource |
+| `PhotoSource` | Enum (not SwiftData): `.remote(SupabasePhoto)` / `.local(WalkPhoto)`; `Identifiable`; `createdAt` for merged sort |
 
 #### Three-State Stairway Model
 
@@ -149,11 +150,11 @@ For any stat display (stair count, height): use `StairwayOverride` value if non-
 ### Views
 
 - `ContentView` — `TabView` (Map / List / Progress)
-- `MapTab` — MapKit full-screen map (dark appearance), plain `brandOrange` top bar with trailing icon buttons (search, Around Me), filter pills (All/Saved/Walked/Nearby), floating `ProgressCard` (bottom-right, 120pt wide) with `brandOrange` header; tracks `mapSpan` via `.onMapCameraChange(frequency: .continuous)` and passes a lerped `pinScale` (1.0–2.0) to each annotation; no walk-record action logic (all in sheet)
+- `MapTab` — MapKit full-screen map (dark appearance), plain `brandOrange` top bar with trailing icon buttons (search, Around Me), filter pills (All/Saved/Walked/Nearby), floating `ProgressCard` (bottom-right, 120pt wide) with `brandOrange` header; tracks `mapSpan` via `.onMapCameraChange(frequency: .continuous)` and passes a lerped `pinScale` (1.0–2.0) to each annotation; on first location fix, zooms to nearest stairway at `latDelta 0.01` after a time-based splash guard (3.1s from launch); no walk-record action logic (all in sheet)
 - `ListTab` — searchable, filterable stairway list (All/Walked/Saved); tap row → `StairwayBottomSheet` sheet; queries `StairwayOverride` and passes to each row
 - `ProgressTab` — completion ring, stats grid, neighborhood breakdown, recent walks; toolbar has sync icon + gear icon; height stat uses `resolvedHeightFt`
 - `SettingsView` — sheet from gear icon in ProgressTab toolbar; Account section (Sign in with Apple / signed-in state + Sign Out); iCloud Sync section (mirrors sync status)
-- `StairwayBottomSheet` — **single detail surface for the whole app** (replaces deleted `StairwayDetail`); self-contained with `@Query`, `@Environment(\.modelContext)`, `@Environment(\.dismiss)`; two detent states: collapsed `.height(390)` (header, stats, walk status card, action buttons) and expanded `.large` (curator commentary → notes → curator editor → photo carousel → StairwayOverride fields → source link); "Promote to Commentary" button sets `triggerCuratorPromote = true`, which pre-fills the editor via binding and scrolls to it via `ScrollViewReader`; all walk record writes handled internally
+- `StairwayBottomSheet` — **single detail surface for the whole app** (replaces deleted `StairwayDetail`); self-contained with `@Query`, `@Environment(\.modelContext)`, `@Environment(\.dismiss)`; two detent states: collapsed `.height(390)` (header, stats, walk status card, action buttons) and expanded `.large` (curator commentary → notes → curator editor → photo carousel → StairwayOverride fields → source link); "Promote to Commentary" button sets `triggerCuratorPromote = true`, which pre-fills the editor via binding and scrolls to it via `ScrollViewReader`; `mergedPhotos: [PhotoSource]` combines remote `photoLikeService.sortedPhotos` + local `walkRecord.photoArray` sorted by date; on successful Supabase upload the local `WalkPhoto` is deleted (dedup); all walk record writes handled internally
 - `StairwayAnnotation` — delegates to `StairwayPin` with three-state + dimming + unverified badge support; accepts `scale: CGFloat` and passes through to `StairwayPin`
 - `TeardropPin` — `StairwayPin` view (colored circles, three-state colors + dimming); `TeardropShape` and `StairShape` structs kept for future use; `showUnverifiedBadge` amber overlay
 - `SearchPanel` — full-screen search modal with Name/Street/Neighborhood tabs
