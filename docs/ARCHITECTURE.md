@@ -118,7 +118,7 @@ Source at `ios/SFStairways/`. **iOS is the sole active platform** — web app de
 | `SyncStatusManager.swift` | `@Observable` — listens to `NSPersistentCloudKitContainer.eventChangedNotification`, exposes `.state` enum |
 | `SeedDataService.swift` | Seeds `WalkRecord` data from `target_list.json` on first launch; skips if records already exist (CloudKit delivery) or UserDefaults flag set |
 | `LocationManager.swift` | CLLocationManager wrapper for current location; `isWithinRadius(_:ofLatitude:longitude:)` for Hard Mode proximity check |
-| `PhotoService.swift` | Photo capture, thumbnail generation |
+| `PhotoService.swift` | Photo capture, thumbnail generation; `CameraPicker.Coordinator` saves to system camera roll via `PHPhotoLibrary.performChanges` (fire-and-forget, silent failure on permission denial) |
 | `SupabaseManager.swift` | Singleton Supabase client; reads project URL + anon key from `Config/Supabase.plist` (gitignored); crashes with clear message if plist is missing |
 | `AuthManager.swift` | `@Observable` — wraps Supabase Auth session; restores session from Keychain on init; `handleAppleAuthorization(_:)` receives credential from `SignInWithAppleButton.onCompletion` and calls `signInWithIdToken` directly; injected via `.environment()` |
 

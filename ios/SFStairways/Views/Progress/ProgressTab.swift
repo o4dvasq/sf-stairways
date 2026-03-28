@@ -7,7 +7,6 @@ struct ProgressTab: View {
     @Query private var overrides: [StairwayOverride]
     @State private var store = StairwayStore()
     @State private var showSyncDetails = false
-    @State private var showSettings = false
 
     private var walkedRecords: [WalkRecord] {
         walkRecords.filter(\.walked)
@@ -102,30 +101,18 @@ struct ProgressTab: View {
             .navigationTitle("Progress")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    HStack(spacing: 16) {
-                        Button {
-                            showSyncDetails = true
-                        } label: {
-                            Image(systemName: syncIconName)
-                                .foregroundStyle(syncIconColor)
-                        }
-                        .accessibilityLabel("iCloud sync status")
-
-                        Button {
-                            showSettings = true
-                        } label: {
-                            Image(systemName: "gearshape")
-                        }
-                        .accessibilityLabel("Settings")
+                    Button {
+                        showSyncDetails = true
+                    } label: {
+                        Image(systemName: syncIconName)
+                            .foregroundStyle(syncIconColor)
                     }
+                    .accessibilityLabel("iCloud sync status")
                 }
             }
             .sheet(isPresented: $showSyncDetails) {
                 SyncStatusSheet(manager: syncManager)
                     .presentationDetents([.fraction(0.3)])
-            }
-            .sheet(isPresented: $showSettings) {
-                SettingsView()
             }
         }
     }

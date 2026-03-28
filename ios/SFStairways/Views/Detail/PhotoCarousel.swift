@@ -1,15 +1,15 @@
 import SwiftUI
 
-/// Horizontal photo carousel showing all public Supabase photos for a stairway.
-/// Includes per-photo like overlays and an "Add photo" button at the end.
+/// Horizontal photo carousel showing local and remote photos for a stairway.
+/// Remote photos include like overlays. Local-only photos show a cloud-slash badge.
 struct PhotoCarousel: View {
-    let photos: [SupabasePhoto]
+    let photos: [PhotoSource]
     let likedPhotoIds: Set<UUID>
     let userId: UUID?
     let onLikeTap: (SupabasePhoto) -> Void
     let onAddTap: () -> Void
 
-    @State private var selectedPhoto: SupabasePhoto? = nil
+    @State private var selectedSource: PhotoSource? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -29,8 +29,8 @@ struct PhotoCarousel: View {
             } else {
                 ScrollView(.horizontal, showsIndicators: false) {
                     LazyHStack(spacing: 10) {
-                        ForEach(photos) { photo in
-                            photoCell(photo)
+                        ForEach(photos) { source in
+                            photoCell(source)
                         }
                         addButton
                     }
@@ -38,15 +38,39 @@ struct PhotoCarousel: View {
                 }
             }
         }
-        .sheet(item: $selectedPhoto) { photo in
-            FullScreenPhotoView(photo: photo)
+        .sheet(item: $selectedSource) { source in
+            FullScreenPhotoView(source: source)
         }
     }
 
     // MARK: - Photo Cell
 
-    private func photoCell(_ photo: SupabasePhoto) -> some View {
+    private func photoCell(_ source: PhotoSource) -> some View {
         ZStack(alignment: .bottomLeading) {
+            thumbnailView(for: source)
+                .frame(width: 120, height: 120)
+                .onTapGesture { selectedSource = source }
+
+            switch source {
+            case .remote(let photo):
+                likeOverlay(for: photo)
+                    .padding(6)
+            case .local:
+                Image(systemName: "icloud.slash")
+                    .font(.system(size: 10, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .padding(5)
+                    .background(.black.opacity(0.5))
+                    .clipShape(RoundedRectangle(cornerRadius: 4))
+                    .padding(6)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func thumbnailView(for source: PhotoSource) -> some View {
+        switch source {
+        case .remote(let photo):
             AsyncImage(url: photo.thumbnailURL()) { phase in
                 switch phase {
                 case .empty:
@@ -70,32 +94,45 @@ struct PhotoCarousel: View {
                     EmptyView()
                 }
             }
-            .frame(width: 120, height: 120)
-            .onTapGesture {
-                selectedPhoto = photo
+        case .local(let photo):
+            Group {
+                if let image = photo.thumbnailImage {
+                    Image(uiImage: image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 120, height: 120)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                } else {
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(Color(.systemGray5))
+                        .overlay(
+                            Image(systemName: "photo")
+                                .foregroundStyle(.secondary)
+                        )
+                }
             }
+        }
+    }
 
-            // Like overlay (bottom-left)
-            Button {
-                if userId != nil {
-                    onLikeTap(photo)
-                }
-            } label: {
-                HStack(spacing: 3) {
-                    Image(systemName: likedPhotoIds.contains(photo.id) ? "heart.fill" : "heart")
-                        .font(.system(size: 10, weight: .semibold))
-                        .foregroundStyle(likedPhotoIds.contains(photo.id) ? Color.closedRed : .white)
-                    Text("\(photo.likeCount)")
-                        .font(.caption2)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.white)
-                }
-                .padding(.horizontal, 6)
-                .padding(.vertical, 3)
-                .background(.black.opacity(0.5))
-                .clipShape(Capsule())
+    private func likeOverlay(for photo: SupabasePhoto) -> some View {
+        Button {
+            if userId != nil {
+                onLikeTap(photo)
             }
-            .padding(6)
+        } label: {
+            HStack(spacing: 3) {
+                Image(systemName: likedPhotoIds.contains(photo.id) ? "heart.fill" : "heart")
+                    .font(.system(size: 10, weight: .semibold))
+                    .foregroundStyle(likedPhotoIds.contains(photo.id) ? Color.closedRed : .white)
+                Text("\(photo.likeCount)")
+                    .font(.caption2)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.white)
+            }
+            .padding(.horizontal, 6)
+            .padding(.vertical, 3)
+            .background(.black.opacity(0.5))
+            .clipShape(Capsule())
         }
     }
 
@@ -146,21 +183,34 @@ struct PhotoCarousel: View {
 // MARK: - Full Screen Photo Viewer
 
 private struct FullScreenPhotoView: View {
-    let photo: SupabasePhoto
+    let source: PhotoSource
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
             Color.black.ignoresSafeArea()
 
-            AsyncImage(url: photo.fullImageURL()) { phase in
-                switch phase {
-                case .success(let image):
-                    image
+            switch source {
+            case .remote(let photo):
+                AsyncImage(url: photo.fullImageURL()) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    default:
+                        ProgressView()
+                            .tint(.white)
+                    }
+                }
+            case .local(let photo):
+                if let image = photo.fullImage {
+                    Image(uiImage: image)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
-                default:
+                } else {
                     ProgressView()
                         .tint(.white)
                 }

@@ -177,6 +177,7 @@ final class PhotoLikeService {
             let stairway_id: String
             let storage_path: String
             let thumbnail_path: String?
+            let is_public: Bool
         }
         let inserted: [SupabasePhoto] = try await supabase
             .from("walk_photos")
@@ -185,7 +186,8 @@ final class PhotoLikeService {
                 walk_record_id: walkRecordId.uuidString,
                 stairway_id: stairwayId,
                 storage_path: fullPath,
-                thumbnail_path: thumbnailData != nil ? thumbPath : nil
+                thumbnail_path: thumbnailData != nil ? thumbPath : nil,
+                is_public: true
             ))
             .select()
             .execute()

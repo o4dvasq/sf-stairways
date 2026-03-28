@@ -46,6 +46,13 @@ struct StairwayBottomSheet: View {
 
     private var isWalked: Bool { walkRecord?.walked ?? false }
 
+    /// Merged photo list: remote Supabase photos + local SwiftData photos, sorted most recent first.
+    private var mergedPhotos: [PhotoSource] {
+        let remote = photoLikeService.sortedPhotos.map { PhotoSource.remote($0) }
+        let local = (walkRecord?.photoArray ?? []).map { PhotoSource.local($0) }
+        return (remote + local).sorted { $0.createdAt > $1.createdAt }
+    }
+
     private var isMarkWalkedDisabled: Bool {
         guard authManager.hardModeEnabled else { return false }
         return !locationManager.isWithinRadius(150, ofLatitude: stairway.lat ?? 0, longitude: stairway.lng ?? 0)
@@ -95,7 +102,7 @@ struct StairwayBottomSheet: View {
                 }
 
                 PhotoCarousel(
-                    photos: photoLikeService.sortedPhotos,
+                    photos: mergedPhotos,
                     likedPhotoIds: photoLikeService.likedPhotoIds,
                     userId: authManager.userId,
                     onLikeTap: { photo in
@@ -217,7 +224,7 @@ struct StairwayBottomSheet: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
-            let photoCount = photoLikeService.photos.count
+            let photoCount = mergedPhotos.count
             if photoCount > 0 {
                 Text("\(photoCount) \(photoCount == 1 ? "photo" : "photos")")
                     .font(.caption)
@@ -590,14 +597,18 @@ struct StairwayBottomSheet: View {
         try? modelContext.save()
 
         guard let userId = authManager.userId else { return }
-        Task {
+        Task { @MainActor in
             do {
                 try await photoLikeService.uploadPhoto(
                     stairwayId: stairway.id,
                     userId: userId,
                     imageData: imageData
                 )
+                // Upload succeeded — remove local copy to avoid duplicate in merged list
+                modelContext.delete(photo)
+                try? modelContext.save()
             } catch {
+                // Local photo stays as offline fallback
                 print("[StairwayBottomSheet] Supabase photo upload failed: \(error)")
             }
         }
