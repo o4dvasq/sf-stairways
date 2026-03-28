@@ -120,7 +120,7 @@ Source at `ios/SFStairways/`. **iOS is the sole active platform** — web app de
 | `LocationManager.swift` | CLLocationManager wrapper for current location; `isWithinRadius(_:ofLatitude:longitude:)` for Hard Mode proximity check |
 | `PhotoService.swift` | Photo capture, thumbnail generation |
 | `SupabaseManager.swift` | Singleton Supabase client; reads project URL + anon key from `Config/Supabase.plist` (gitignored); crashes with clear message if plist is missing |
-| `AuthManager.swift` | `@Observable` — wraps Supabase Auth session; restores session from Keychain on init; handles Sign in with Apple via `ASAuthorizationController` → Supabase `signInWithIdToken`; injected via `.environment()` |
+| `AuthManager.swift` | `@Observable` — wraps Supabase Auth session; restores session from Keychain on init; `handleAppleAuthorization(_:)` receives credential from `SignInWithAppleButton.onCompletion` and calls `signInWithIdToken` directly; injected via `.environment()` |
 
 ### Models (SwiftData)
 
@@ -138,7 +138,7 @@ Every stairway exists in one of three states, derived from `WalkRecord`:
 - **Saved** — `WalkRecord.walked == false`
 - **Walked** — `WalkRecord.walked == true`
 
-**Pins** are solid orange (`brandOrange` #E8602C) teardrop shapes for all three states — state is communicated in the detail/bottom-sheet, not by pin color. Sizes: 30×38pt (unsaved), 36×45pt (saved/walked), 42×53pt (selected, `brandOrangeDark` #BF4A1F). Dimmed pins render at 30% opacity. Closed stairways use `unwalkedSlate` at 40% opacity.
+**Pins** are solid orange (`brandOrange` #E8602C) teardrop shapes for all three states — state is communicated in the detail/bottom-sheet, not by pin color. Sizes: 36×45pt (unsaved), 40×50pt (saved/walked), 48×60pt (selected, `brandOrangeDark` #BF4A1F). Dark stroke overlay (0.4 opacity, 1pt) gives edge definition on the dark map. Dimmed pins render at 30% opacity. Closed stairways use `unwalkedSlate` at 40% opacity.
 
 **Unverified badge:** Walked pins with `hardMode = true` and `proximityVerified = false` display a 10pt amber (`accentAmber` #E8A838) circle with an exclamation mark at the top-right of the bulb. Computed via `WalkRecord.showUnverifiedBadge`, passed through `StairwayAnnotation` to `StairwayPin.showUnverifiedBadge`.
 

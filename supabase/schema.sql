@@ -56,6 +56,7 @@ CREATE TABLE walk_photos (
   id              uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id         uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   walk_record_id  uuid NOT NULL REFERENCES walk_records(id) ON DELETE CASCADE,
+  stairway_id     text NOT NULL REFERENCES stairway_catalog(id),
   storage_path    text NOT NULL,
   thumbnail_path  text,
   caption         text,
@@ -97,6 +98,7 @@ CREATE INDEX idx_walk_records_user_id ON walk_records(user_id);
 CREATE INDEX idx_walk_records_stairway_id ON walk_records(stairway_id);
 CREATE INDEX idx_walk_photos_walk_record_id ON walk_photos(walk_record_id);
 CREATE INDEX idx_walk_photos_user_id ON walk_photos(user_id);
+CREATE INDEX idx_walk_photos_stairway_id ON walk_photos(stairway_id);
 CREATE INDEX idx_photo_likes_photo_id ON photo_likes(photo_id);
 CREATE INDEX idx_curator_commentary_stairway_id ON curator_commentary(stairway_id);
 

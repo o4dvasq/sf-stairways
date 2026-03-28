@@ -1,14 +1,21 @@
 import AuthenticationServices
+import Supabase
 import SwiftUI
 
 struct SettingsView: View {
     @Environment(AuthManager.self) private var authManager
     @Environment(SyncStatusManager.self) private var syncManager
 
+    @AppStorage("curatorModeActive") private var curatorModeActive = false
+
     var body: some View {
         NavigationStack {
             List {
                 accountSection
+                walkingSection
+                if authManager.isCurator {
+                    curatorSection
+                }
                 iCloudSection
             }
             .navigationTitle("Settings")
@@ -70,15 +77,66 @@ struct SettingsView: View {
 
             SignInWithAppleButton(.signIn) { request in
                 request.requestedScopes = [.fullName, .email]
-            } onCompletion: { _ in
-                // Handled by AuthManager via ASAuthorizationControllerDelegate
-                authManager.signInWithApple()
+            } onCompletion: { result in
+                switch result {
+                case .success(let authorization):
+                    authManager.handleAppleAuthorization(authorization)
+                case .failure(let error):
+                    print("[SettingsView] Sign in with Apple failed: \(error)")
+                }
             }
             .signInWithAppleButtonStyle(.black)
             .frame(height: 44)
             .clipShape(RoundedRectangle(cornerRadius: 8))
         }
         .padding(.vertical, 4)
+    }
+
+    // MARK: - Walking Section
+
+    private var hardModeBinding: Binding<Bool> {
+        Binding(get: { authManager.hardModeEnabled }, set: { authManager.setHardMode($0) })
+    }
+
+    private var walkingSection: some View {
+        Section("Walking") {
+            Toggle(isOn: hardModeBinding) {
+                Label {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Hard Mode")
+                            .font(.subheadline)
+                        Text("Require proximity (150m) to mark stairways as walked")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                } icon: {
+                    Image(systemName: "lock.fill")
+                        .foregroundStyle(Color.forestGreen)
+                }
+            }
+            .disabled(!authManager.isAuthenticated)
+        }
+    }
+
+    // MARK: - Curator Section
+
+    private var curatorSection: some View {
+        Section("Curator") {
+            Toggle(isOn: $curatorModeActive) {
+                Label {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Curator Mode")
+                            .font(.subheadline)
+                        Text("Show curator tools on stairway detail view")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                } icon: {
+                    Image(systemName: "pencil.and.list.clipboard")
+                        .foregroundStyle(Color.brandOrange)
+                }
+            }
+        }
     }
 
     // MARK: - iCloud Section

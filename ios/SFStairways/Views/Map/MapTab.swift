@@ -4,6 +4,7 @@ import SwiftData
 
 struct MapTab: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(AuthManager.self) private var authManager
     @Query private var walkRecords: [WalkRecord]
     @Query private var overrides: [StairwayOverride]
     @State private var store = StairwayStore()
@@ -98,8 +99,7 @@ struct MapTab: View {
                 onSave: { saveStairway(stairway) },
                 onMarkWalked: { markWalked(stairway) },
                 onUnmarkWalk: { unmarkWalk(stairway) },
-                onRemove: { removeRecord(stairway) },
-                onToggleHardMode: { enabled in toggleHardMode(stairway, enabled: enabled) }
+                onRemove: { removeRecord(stairway) }
             )
             .presentationDetents([.height(390), .medium])
             .presentationDragIndicator(.visible)
@@ -289,12 +289,11 @@ struct MapTab: View {
         if let record = walkRecord(for: stairway) {
             record.walked = true
             record.dateWalked = record.dateWalked ?? Date()
-            if record.hardMode {
-                record.proximityVerified = true
-            }
+            record.hardModeAtCompletion = authManager.hardModeEnabled
             record.updatedAt = Date()
         } else {
             let record = WalkRecord(stairwayID: stairway.id, walked: true, dateWalked: Date())
+            record.hardModeAtCompletion = authManager.hardModeEnabled
             modelContext.insert(record)
         }
         try? modelContext.save()
@@ -304,21 +303,6 @@ struct MapTab: View {
         guard let record = walkRecord(for: stairway) else { return }
         record.walked = false
         record.updatedAt = Date()
-        try? modelContext.save()
-    }
-
-    private func toggleHardMode(_ stairway: Stairway, enabled: Bool) {
-        if let record = walkRecord(for: stairway) {
-            if enabled && record.walked {
-                record.proximityVerified = false
-            }
-            record.hardMode = enabled
-            record.updatedAt = Date()
-        } else if enabled {
-            let record = WalkRecord(stairwayID: stairway.id, walked: false)
-            record.hardMode = true
-            modelContext.insert(record)
-        }
         try? modelContext.save()
     }
 

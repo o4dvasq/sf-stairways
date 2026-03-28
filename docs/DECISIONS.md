@@ -1,5 +1,21 @@
 # Architecture Decisions — sf-stairways
 
+## Sign in with Apple: use SwiftUI button credential directly, no second ASAuthorizationController
+**Date:** 2026-03-27
+
+`SignInWithAppleButton` (SwiftUI) delivers the `ASAuthorization` credential in its `onCompletion` handler. The original implementation discarded this credential (`_ in`) and called `authManager.signInWithApple()`, which created a second `ASAuthorizationController` — the second request silently failed or was ignored, leaving the user perpetually signed out.
+
+The fix is to handle the credential where it's delivered: extract the identity token from the `ASAuthorizationAppleIDCredential` in `onCompletion` and pass it directly to `AuthManager.handleAppleAuthorization(_:)`. No second controller is needed. The existing `ASAuthorizationControllerDelegate` implementation is kept for the fallback path but is no longer the primary flow.
+
+## Map pins: remove white shadow, add dark stroke, increase minimum sizes
+**Date:** 2026-03-27
+
+White shadow (`.shadow(color: .white.opacity(0.3), radius: 3, y: 0)`) was added in a prior session to give pins visual "lift" on a dark map. In practice it created a hollow/washed-out appearance — the white halo overwhelmed the orange fill at small pin sizes. Removed.
+
+A thin dark stroke (`.stroke(Color.black.opacity(0.4), lineWidth: 1)`) was added instead — this defines the pin edge against the dark map without washing out the fill color.
+
+Pin sizes increased: unsaved 36×45pt, saved/walked 40×50pt, selected 48×60pt (from 30×38 / 36×45 / 42×53). At the previous sizes the teardrop shape was too small to read as a teardrop at typical map zoom levels.
+
 ## Web app deprecated in favor of iOS-only
 **Date:** 2026-03-25
 

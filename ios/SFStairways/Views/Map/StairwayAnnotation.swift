@@ -11,8 +11,7 @@ struct StairwayAnnotation: View {
             state: pinState,
             isSelected: isSelected,
             isDimmed: isDimmed,
-            isClosed: stairway.closed,
-            showUnverifiedBadge: walkRecord?.showUnverifiedBadge ?? false
+            isClosed: stairway.closed
         )
     }
 

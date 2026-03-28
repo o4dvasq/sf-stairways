@@ -10,11 +10,12 @@ final class WalkRecord {
     var stepCount: Int?
     var createdAt: Date = Date()
     var updatedAt: Date = Date()
+    // Deprecated — per-stairway hard mode replaced by user-level setting.
+    // Read-only for backward compatibility with pre-migration data.
     var hardMode: Bool = false
-    // nil = Hard Mode was never enabled for this record
-    // false = Hard Mode enabled, walk predates opt-in (unverified)
-    // true = walk occurred within 150m with Hard Mode active
     var proximityVerified: Bool? = nil
+    // Stamped true at walk completion when global Hard Mode was enabled
+    var hardModeAtCompletion: Bool = false
 
     @Relationship(deleteRule: .cascade, inverse: \WalkPhoto.walkRecord)
     var photos: [WalkPhoto]?
@@ -40,15 +41,8 @@ final class WalkRecord {
         walked.toggle()
         if walked {
             dateWalked = dateWalked ?? Date()
-            if hardMode {
-                proximityVerified = true
-            }
         }
         updatedAt = Date()
-    }
-
-    var showUnverifiedBadge: Bool {
-        hardMode && walked && proximityVerified == false
     }
 
     var photoArray: [WalkPhoto] {

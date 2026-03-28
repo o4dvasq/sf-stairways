@@ -9,7 +9,8 @@ struct StairwayBottomSheet: View {
     let onMarkWalked: () -> Void
     let onUnmarkWalk: () -> Void
     let onRemove: () -> Void
-    let onToggleHardMode: (Bool) -> Void
+
+    @Environment(AuthManager.self) private var authManager
 
     private enum StairwayState {
         case unsaved, saved, walked
@@ -99,12 +100,6 @@ struct StairwayBottomSheet: View {
                 // Action buttons
                 actionButtons
 
-                // Location required label (Hard Mode, no location)
-                locationRequiredLabel
-
-                // Hard Mode toggle
-                hardModeToggle
-
                 // View details
                 NavigationLink(destination: StairwayDetail(stairway: stairway, locationManager: locationManager)) {
                     Text("View details")
@@ -137,46 +132,8 @@ struct StairwayBottomSheet: View {
     // MARK: - Hard Mode
 
     private var isMarkWalkedDisabled: Bool {
-        guard walkRecord?.hardMode == true else { return false }
+        guard authManager.hardModeEnabled else { return false }
         return !locationManager.isWithinRadius(150, ofLatitude: stairway.lat ?? 0, longitude: stairway.lng ?? 0)
-    }
-
-    @ViewBuilder
-    private var locationRequiredLabel: some View {
-        if walkRecord?.hardMode == true && locationManager.currentLocation == nil {
-            Text("Location required for Hard Mode")
-                .font(.caption2)
-                .foregroundColor(Color.unwalkedSlate)
-        }
-    }
-
-    private var hardModeBinding: Binding<Bool> {
-        Binding(
-            get: { walkRecord?.hardMode ?? false },
-            set: { newValue in onToggleHardMode(newValue) }
-        )
-    }
-
-    @ViewBuilder
-    private var hardModeToggle: some View {
-        if !stairway.closed {
-            VStack(alignment: .leading, spacing: 4) {
-                Divider()
-                HStack {
-                    Image(systemName: "lock.fill")
-                        .foregroundColor(Color.forestGreen)
-                    Text("Hard Mode")
-                        .font(.subheadline)
-                        .fontWeight(.medium)
-                    Spacer()
-                    Toggle("", isOn: hardModeBinding)
-                        .labelsHidden()
-                }
-                Text("Require proximity to mark walked")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-        }
     }
 
     // MARK: - State Indicator

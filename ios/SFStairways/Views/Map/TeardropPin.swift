@@ -76,42 +76,26 @@ struct StairwayPin: View {
     var isSelected: Bool = false
     var isDimmed: Bool = false
     var isClosed: Bool = false
-    var showUnverifiedBadge: Bool = false
 
     var body: some View {
-        ZStack(alignment: .top) {
-            TeardropShape()
-                .fill(fillColor)
-                .frame(width: pinWidth, height: pinHeight)
-                .shadow(color: .white.opacity(0.3), radius: 3, y: 0)
-                .shadow(color: .black.opacity(0.3), radius: 2, y: 2)
-
-            // Unverified badge: amber circle with exclamation at top-right of bulb
-            if showUnverifiedBadge {
-                Circle()
-                    .fill(Color.accentAmber)
-                    .frame(width: 10, height: 10)
-                    .overlay(
-                        Image(systemName: "exclamationmark")
-                            .font(.system(size: 6, weight: .bold))
-                            .foregroundColor(.white)
-                    )
-                    .offset(x: pinWidth * 0.30, y: 2)
-            }
-        }
-        .opacity(opacity)
-        .animation(.spring(response: 0.2), value: isSelected)
-        .animation(.easeInOut(duration: 0.25), value: isDimmed)
+        TeardropShape()
+            .fill(fillColor)
+            .overlay(TeardropShape().stroke(Color.black.opacity(0.4), lineWidth: 1))
+            .frame(width: pinWidth, height: pinHeight)
+            .shadow(color: .black.opacity(0.3), radius: 2, y: 2)
+            .opacity(opacity)
+            .animation(.spring(response: 0.2), value: isSelected)
+            .animation(.easeInOut(duration: 0.25), value: isDimmed)
     }
 
     private var pinWidth: CGFloat {
-        if isSelected { return 42 }
-        return state == .unsaved ? 30 : 36
+        if isSelected { return 48 }
+        return state == .unsaved ? 36 : 40
     }
 
     private var pinHeight: CGFloat {
-        if isSelected { return 53 }
-        return state == .unsaved ? 38 : 45
+        if isSelected { return 60 }
+        return state == .unsaved ? 45 : 50
     }
 
     private var fillColor: Color {
@@ -135,7 +119,7 @@ struct StairwayPin: View {
             StairwayPin(state: .saved)
             StairwayPin(state: .walked)
         }
-        VStack(spacing: 16) {
+            VStack(spacing: 16) {
             StairwayPin(state: .unsaved, isSelected: true)
             StairwayPin(state: .saved, isSelected: true)
             StairwayPin(state: .walked, isSelected: true)

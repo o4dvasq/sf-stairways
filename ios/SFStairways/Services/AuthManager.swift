@@ -6,9 +6,12 @@ import SwiftUI
 final class AuthManager: NSObject {
     var session: Session?
     var isLoading: Bool = true
+    var userProfile: UserProfile? = nil
+    var hardModeEnabled: Bool = UserDefaults.standard.bool(forKey: "hardModeEnabled")
 
     var isAuthenticated: Bool { session != nil }
     var userId: UUID? { session?.user.id }
+    var isCurator: Bool { userProfile?.isCurator ?? false }
 
     private var authStateTask: Task<Void, Never>?
 
@@ -21,6 +24,52 @@ final class AuthManager: NSObject {
         authStateTask?.cancel()
     }
 
+    // MARK: - Hard Mode
+
+    func setHardMode(_ enabled: Bool) {
+        hardModeEnabled = enabled
+        UserDefaults.standard.set(enabled, forKey: "hardModeEnabled")
+        Task { await syncHardModeToSupabase() }
+    }
+
+    private func syncHardModeToSupabase() async {
+        guard let userId else { return }
+        do {
+            try await SupabaseManager.shared.client
+                .from("user_profiles")
+                .update(["hard_mode_enabled": hardModeEnabled])
+                .eq("id", value: userId.uuidString)
+                .execute()
+        } catch {
+            print("[AuthManager] Failed to sync hard mode: \(error)")
+        }
+    }
+
+    // MARK: - Profile
+
+    func loadProfile() async {
+        guard let userId else { return }
+        do {
+            let profiles: [UserProfile] = try await SupabaseManager.shared.client
+                .from("user_profiles")
+                .select()
+                .eq("id", value: userId.uuidString)
+                .limit(1)
+                .execute()
+                .value
+            if let profile = profiles.first {
+                await MainActor.run {
+                    self.userProfile = profile
+                    // Supabase is the source of truth for hard mode on sign-in
+                    self.hardModeEnabled = profile.hardModeEnabled
+                    UserDefaults.standard.set(profile.hardModeEnabled, forKey: "hardModeEnabled")
+                }
+            }
+        } catch {
+            print("[AuthManager] Failed to load profile: \(error)")
+        }
+    }
+
     // MARK: - Session restore
 
     private func restoreSession() async {
@@ -29,6 +78,9 @@ final class AuthManager: NSObject {
             await MainActor.run {
                 self.session = currentSession
                 self.isLoading = false
+            }
+            if currentSession != nil {
+                await loadProfile()
             }
         } catch {
             await MainActor.run {
@@ -40,11 +92,39 @@ final class AuthManager: NSObject {
         authStateTask = Task {
             for await (_, session) in await SupabaseManager.shared.client.auth.authStateChanges {
                 await MainActor.run { self.session = session }
+                if session != nil {
+                    await self.loadProfile()
+                }
             }
         }
     }
 
     // MARK: - Sign in with Apple
+
+    /// Handles the credential returned directly by SignInWithAppleButton's onCompletion handler.
+    /// Extracts the identity token and passes it to Supabase — no second ASAuthorizationController needed.
+    func handleAppleAuthorization(_ authorization: ASAuthorization) {
+        guard
+            let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
+            let tokenData = credential.identityToken,
+            let tokenString = String(data: tokenData, encoding: .utf8)
+        else {
+            print("[AuthManager] Sign in with Apple: missing identity token")
+            return
+        }
+
+        Task {
+            do {
+                let session = try await SupabaseManager.shared.client.auth.signInWithIdToken(
+                    credentials: .init(provider: .apple, idToken: tokenString)
+                )
+                await MainActor.run { self.session = session }
+                await loadProfile()
+            } catch {
+                print("[AuthManager] Supabase sign-in failed: \(error)")
+            }
+        }
+    }
 
     func signInWithApple() {
         let provider = ASAuthorizationAppleIDProvider()

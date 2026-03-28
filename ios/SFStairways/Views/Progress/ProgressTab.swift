@@ -278,9 +278,16 @@ struct ProgressTab: View {
                         Spacer()
 
                         if let date = item.record.dateWalked {
-                            Text(date.formatted(.dateTime.month(.abbreviated).day()))
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                            HStack(spacing: 4) {
+                                if item.record.hardModeAtCompletion {
+                                    Image(systemName: "lock.fill")
+                                        .font(.system(size: 9))
+                                        .foregroundStyle(Color.forestGreen)
+                                }
+                                Text(date.formatted(.dateTime.month(.abbreviated).day()))
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
                     }
                 }

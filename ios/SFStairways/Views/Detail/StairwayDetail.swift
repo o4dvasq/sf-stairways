@@ -7,22 +7,28 @@ struct StairwayDetail: View {
     let locationManager: LocationManager
 
     @Environment(\.modelContext) private var modelContext
+    @Environment(AuthManager.self) private var authManager
     @Query private var walkRecords: [WalkRecord]
     @Query private var overrides: [StairwayOverride]
 
     @State private var showPhotoPicker = false
     @State private var showCamera = false
-    @State private var selectedPhoto: WalkPhoto?
     @State private var editingNotes = false
     @State private var notesText = ""
     @State private var editingDate = false
 
-    // Curator fields
+    // Curator fields (local StairwayOverride)
     @State private var curatorStepCountText: String = ""
     @State private var curatorHeightText: String = ""
     @State private var curatorDescription: String = ""
     @State private var curatorDirty = false
     @FocusState private var curatorFocus: CuratorField?
+
+    // Supabase services
+    @State private var curatorService = CuratorService()
+    @State private var photoLikeService = PhotoLikeService()
+
+    @AppStorage("curatorModeActive") private var curatorModeActive = false
 
     private enum CuratorField: Hashable {
         case stepCount, height, description
@@ -40,33 +46,54 @@ struct StairwayDetail: View {
         walkRecord?.walked ?? false
     }
 
+    private var isWalkToggleDisabled: Bool {
+        guard authManager.hardModeEnabled else { return false }
+        return !locationManager.isWithinRadius(150, ofLatitude: stairway.lat ?? 0, longitude: stairway.lng ?? 0)
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                // Focused map showing stairway location
                 detailMap
 
                 VStack(alignment: .leading, spacing: 20) {
-                    // Header
+                    // Curator commentary (all users — published only)
+                    if !(authManager.isCurator && curatorModeActive) {
+                        CuratorCommentaryView(commentary: curatorService.commentary)
+                    }
+
+                    // Curator editor (curator mode active only)
+                    if authManager.isCurator && curatorModeActive, let userId = authManager.userId {
+                        CuratorEditorView(
+                            stairwayId: stairway.id,
+                            curatorId: userId,
+                            notesText: notesText,
+                            service: curatorService
+                        )
+                    }
+
                     header
-
-                    // Stats
                     statsRow
-
-                    // Walk status
                     walkStatusCard
 
-                    // Curator data (walked stairways only)
+                    // Local curator data (StairwayOverride — walked stairways only)
                     curatorSection
-
-                    // Hard Mode toggle
-                    hardModeSection
 
                     // Notes
                     notesSection
 
-                    // Photos grid
-                    photosSection
+                    // Photo carousel (Supabase)
+                    PhotoCarousel(
+                        photos: photoLikeService.sortedPhotos,
+                        likedPhotoIds: photoLikeService.likedPhotoIds,
+                        userId: authManager.userId,
+                        onLikeTap: { photo in
+                            if let userId = authManager.userId {
+                                Task { await photoLikeService.toggleLike(photo: photo, userId: userId) }
+                            }
+                        },
+                        onAddTap: { showPhotoPicker = true }
+                    )
 
                     // Source link
                     if let urlString = stairway.sourceURL,
@@ -130,14 +157,17 @@ struct StairwayDetail: View {
             }
             .ignoresSafeArea()
         }
-        .sheet(item: $selectedPhoto) { photo in
-            PhotoViewer(photo: photo, onDelete: {
-                deletePhoto(photo)
-            })
-        }
         .onAppear {
             notesText = walkRecord?.notes ?? ""
             initCuratorFields()
+        }
+        .task {
+            if authManager.isCurator && curatorModeActive {
+                await curatorService.fetchForEditor(stairwayId: stairway.id)
+            } else {
+                await curatorService.fetchPublished(stairwayId: stairway.id)
+            }
+            await photoLikeService.fetchPhotos(stairwayId: stairway.id, userId: authManager.userId)
         }
         .onChange(of: curatorFocus) { _, newFocus in
             if newFocus == nil && curatorDirty {
@@ -209,7 +239,6 @@ struct StairwayDetail: View {
 
     private var statsRow: some View {
         HStack(spacing: 0) {
-            // Stair count: verified curator value overrides pedometer steps
             if let verifiedStairs = currentOverride?.verifiedStepCount {
                 statItem(value: "\(verifiedStairs)", label: "stairs", verified: true)
                 Divider().frame(height: 30)
@@ -218,7 +247,6 @@ struct StairwayDetail: View {
                 Divider().frame(height: 30)
             }
 
-            // Height: verified curator value overrides catalog
             if let verifiedHeight = currentOverride?.verifiedHeightFt {
                 statItem(value: "\(Int(verifiedHeight))", label: "feet", verified: true)
                 Divider().frame(height: 30)
@@ -227,7 +255,7 @@ struct StairwayDetail: View {
                 Divider().frame(height: 30)
             }
 
-            let photoCount = walkRecord?.photoArray.count ?? 0
+            let photoCount = photoLikeService.photos.count
             statItem(value: "\(photoCount)", label: photoCount == 1 ? "photo" : "photos")
         }
     }
@@ -250,62 +278,6 @@ struct StairwayDetail: View {
                 .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity)
-    }
-
-    // MARK: - Hard Mode
-
-    private var isWalkToggleDisabled: Bool {
-        guard walkRecord?.hardMode == true else { return false }
-        return !locationManager.isWithinRadius(150, ofLatitude: stairway.lat ?? 0, longitude: stairway.lng ?? 0)
-    }
-
-    private var hardModeBinding: Binding<Bool> {
-        Binding(
-            get: { walkRecord?.hardMode ?? false },
-            set: { newValue in
-                if let record = walkRecord {
-                    if newValue && record.walked {
-                        record.proximityVerified = false
-                    }
-                    record.hardMode = newValue
-                    record.updatedAt = Date()
-                } else if newValue {
-                    let record = WalkRecord(stairwayID: stairway.id, walked: false)
-                    record.hardMode = true
-                    modelContext.insert(record)
-                }
-                try? modelContext.save()
-            }
-        )
-    }
-
-    @ViewBuilder
-    private var hardModeSection: some View {
-        if !stairway.closed {
-            VStack(alignment: .leading, spacing: 8) {
-                Divider()
-                HStack {
-                    Image(systemName: "lock.fill")
-                        .foregroundColor(Color.forestGreen)
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Hard Mode")
-                            .font(.subheadline)
-                            .fontWeight(.medium)
-                        Text("Require proximity to mark walked")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                    Spacer()
-                    Toggle("", isOn: hardModeBinding)
-                        .labelsHidden()
-                }
-                if walkRecord?.hardMode == true && locationManager.currentLocation == nil {
-                    Text("Location required for Hard Mode")
-                        .font(.caption2)
-                        .foregroundColor(Color.unwalkedSlate)
-                }
-            }
-        }
     }
 
     // MARK: - Walk Status
@@ -368,7 +340,7 @@ struct StairwayDetail: View {
         }
     }
 
-    // MARK: - Curator Section
+    // MARK: - Curator Section (local StairwayOverride)
 
     @ViewBuilder
     private var curatorSection: some View {
@@ -387,7 +359,6 @@ struct StairwayDetail: View {
                     }
                 }
 
-                // Stair count
                 HStack {
                     Text("Stair count")
                         .font(.subheadline)
@@ -401,7 +372,6 @@ struct StairwayDetail: View {
                         .onChange(of: curatorStepCountText) { _, _ in curatorDirty = true }
                 }
 
-                // Height
                 HStack {
                     Text("Height (ft)")
                         .font(.subheadline)
@@ -415,7 +385,6 @@ struct StairwayDetail: View {
                         .onChange(of: curatorHeightText) { _, _ in curatorDirty = true }
                 }
 
-                // Description
                 VStack(alignment: .leading, spacing: 6) {
                     Text("Description")
                         .font(.subheadline)
@@ -452,6 +421,22 @@ struct StairwayDetail: View {
                     .font(.subheadline)
                     .fontWeight(.medium)
                 Spacer()
+                // Promote to Commentary — curator mode only, when notes are non-empty
+                if authManager.isCurator && curatorModeActive && !notesText.isEmpty {
+                    Button {
+                        // Load editor and pre-fill with notes
+                        Task {
+                            if curatorService.commentary == nil {
+                                await curatorService.fetchForEditor(stairwayId: stairway.id)
+                            }
+                        }
+                        // The CuratorEditorView handles promote via its "Promote Notes" button
+                    } label: {
+                        Label("To Commentary", systemImage: "arrow.up.doc")
+                            .font(.caption)
+                            .foregroundStyle(Color.forestGreen)
+                    }
+                }
                 Button {
                     editingNotes.toggle()
                     if !editingNotes {
@@ -486,54 +471,6 @@ struct StairwayDetail: View {
         }
     }
 
-    // MARK: - Photos
-
-    private var photosSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("Photos")
-                .font(.subheadline)
-                .fontWeight(.medium)
-
-            let photos = walkRecord?.photoArray ?? []
-            LazyVGrid(columns: [
-                GridItem(.flexible(), spacing: 6),
-                GridItem(.flexible(), spacing: 6),
-                GridItem(.flexible(), spacing: 6)
-            ], spacing: 6) {
-                ForEach(photos) { photo in
-                    if let thumb = photo.thumbnailImage {
-                        Image(uiImage: thumb)
-                            .resizable()
-                            .aspectRatio(1, contentMode: .fill)
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                            .onTapGesture {
-                                selectedPhoto = photo
-                            }
-                    }
-                }
-
-                // Add photo button
-                Button {
-                    showPhotoPicker = true
-                } label: {
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(style: StrokeStyle(lineWidth: 1.5, dash: [6]))
-                        .foregroundStyle(.tertiary)
-                        .aspectRatio(1, contentMode: .fill)
-                        .overlay {
-                            VStack(spacing: 4) {
-                                Image(systemName: "plus")
-                                    .font(.title3)
-                                Text("Add")
-                                    .font(.caption2)
-                            }
-                            .foregroundStyle(.tertiary)
-                        }
-                }
-            }
-        }
-    }
-
     // MARK: - Actions
 
     private func saveStairway() {
@@ -545,18 +482,24 @@ struct StairwayDetail: View {
 
     private func toggleWalk() {
         if let record = walkRecord {
+            let willBeWalked = !record.walked
+            if willBeWalked {
+                record.hardModeAtCompletion = authManager.hardModeEnabled
+            }
             record.toggleWalked()
             if !record.walked {
                 editingDate = false
             }
         } else {
             let record = WalkRecord(stairwayID: stairway.id, walked: true, dateWalked: Date())
+            record.hardModeAtCompletion = authManager.hardModeEnabled
             modelContext.insert(record)
         }
         try? modelContext.save()
     }
 
     private func addPhoto(imageData: Data) {
+        // Save locally
         let record: WalkRecord
         if let existing = walkRecord {
             record = existing
@@ -564,20 +507,25 @@ struct StairwayDetail: View {
             record = WalkRecord(stairwayID: stairway.id)
             modelContext.insert(record)
         }
-
         let photo = WalkPhoto(imageData: imageData)
         photo.walkRecord = record
-        if record.photos == nil {
-            record.photos = []
-        }
+        if record.photos == nil { record.photos = [] }
         record.photos?.append(photo)
         try? modelContext.save()
-    }
 
-    private func deletePhoto(_ photo: WalkPhoto) {
-        modelContext.delete(photo)
-        try? modelContext.save()
-        selectedPhoto = nil
+        // Upload to Supabase (async, best-effort)
+        guard let userId = authManager.userId else { return }
+        Task {
+            do {
+                try await photoLikeService.uploadPhoto(
+                    stairwayId: stairway.id,
+                    userId: userId,
+                    imageData: imageData
+                )
+            } catch {
+                print("[StairwayDetail] Supabase photo upload failed: \(error)")
+            }
+        }
     }
 
     private func saveNotes() {
@@ -591,7 +539,7 @@ struct StairwayDetail: View {
         try? modelContext.save()
     }
 
-    // MARK: - Curator Actions
+    // MARK: - Curator Override Actions
 
     private func initCuratorFields() {
         guard let o = currentOverride else { return }
@@ -608,7 +556,6 @@ struct StairwayDetail: View {
         let desc = curatorDescription.trimmingCharacters(in: .whitespacesAndNewlines)
         let descValue: String? = desc.isEmpty ? nil : desc
 
-        // All fields cleared → delete override
         if stepCount == nil && height == nil && descValue == nil {
             if let existing = currentOverride {
                 modelContext.delete(existing)
@@ -617,7 +564,6 @@ struct StairwayDetail: View {
             return
         }
 
-        // Update or create
         let override: StairwayOverride
         if let existing = currentOverride {
             override = existing
