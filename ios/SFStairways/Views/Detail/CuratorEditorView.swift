@@ -7,6 +7,7 @@ struct CuratorEditorView: View {
     let curatorId: UUID
     let notesText: String
     let service: CuratorService
+    @Binding var triggerPromote: Bool
 
     @State private var draftText: String = ""
     @State private var isSaving = false
@@ -100,6 +101,12 @@ struct CuratorEditorView: View {
             // Only sync from service if user hasn't typed (i.e., draftText still matches)
             if draftText == (service.commentary?.commentary ?? "") {
                 draftText = newValue ?? ""
+            }
+        }
+        .onChange(of: triggerPromote) { _, shouldPromote in
+            if shouldPromote {
+                draftText = notesText
+                triggerPromote = false
             }
         }
     }

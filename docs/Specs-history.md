@@ -2,6 +2,7 @@
 
 | Description | Implemented | Spec File |
 |---|---|---|
+| Promote notes to commentary: reorder layout, trigger pre-fill, scroll | 2026-03-28 | SPEC_curator-notes-to-commentary.md |
 | Expandable bottom sheet replaces two-view map flow, deletes StairwayDetail | 2026-03-28 16:00 | SPEC_expand-collapse-detail.md |
 | UI overhaul: amber accent, top bar redesign, splash fix, pin colors | 2026-03-27 | SPEC_ui-overhaul-auth-db.md |
 | Round 2 bug fixes: circle pins, curator gate, auth error | 2026-03-27 | SPEC_bugfix-round2-pins-detail-auth.md |

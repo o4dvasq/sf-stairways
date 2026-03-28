@@ -1,5 +1,16 @@
 # Architecture Decisions — sf-stairways
 
+## Curator promote flow: triggerPromote binding over direct scroll
+**Date:** 2026-03-28
+
+The "Promote to Commentary" button in the notes section needed to pre-fill the `CuratorEditorView` with the current note text. Two options considered:
+
+**Option A:** Pass a `promotedNotesText` state down and have the editor load it on appear. Problem: the editor already uses `.onAppear` to load existing Supabase commentary, and competing initializers create ordering ambiguity.
+
+**Option B (chosen):** `@Binding var triggerPromote: Bool` on `CuratorEditorView`. The parent sets it to `true`; the editor's `.onChange` copies `notesText → draftText` and resets the flag to `false`. This is a minimal one-shot signal — no stored value to clean up, no state ambiguity, and compatible with the existing `onAppear` + `onChange(of: service.commentary)` loading logic.
+
+The editor also moved below the notes section (was above). With `ScrollViewReader`, tapping "Promote" scrolls the view down to the editor anchor, making the pre-fill immediately visible.
+
 ## Expandable bottom sheet replaces two-view map flow
 **Date:** 2026-03-28
 

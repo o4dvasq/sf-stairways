@@ -30,6 +30,8 @@ struct StairwayBottomSheet: View {
 
     @AppStorage("curatorModeActive") private var curatorModeActive = false
 
+    @State private var triggerCuratorPromote = false
+
     private enum CuratorField: Hashable {
         case stepCount, height, description
     }
@@ -57,6 +59,7 @@ struct StairwayBottomSheet: View {
     }
 
     var body: some View {
+        ScrollViewReader { proxy in
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
 
@@ -77,17 +80,19 @@ struct StairwayBottomSheet: View {
                     CuratorCommentaryView(commentary: curatorService.commentary)
                 }
 
-                // Curator editor (curator mode only)
+                notesSection
+
+                // Curator editor (curator mode only — below notes)
                 if authManager.isCurator && curatorModeActive, let userId = authManager.userId {
                     CuratorEditorView(
                         stairwayId: stairway.id,
                         curatorId: userId,
                         notesText: notesText,
-                        service: curatorService
+                        service: curatorService,
+                        triggerPromote: $triggerCuratorPromote
                     )
+                    .id("curatorEditor")
                 }
-
-                notesSection
 
                 PhotoCarousel(
                     photos: photoLikeService.sortedPhotos,
@@ -148,6 +153,12 @@ struct StairwayBottomSheet: View {
             if editingNotes { saveNotes() }
             if curatorDirty { saveCuratorData() }
         }
+        .onChange(of: triggerCuratorPromote) { _, shouldPromote in
+            if shouldPromote {
+                withAnimation { proxy.scrollTo("curatorEditor", anchor: .top) }
+            }
+        }
+        } // end ScrollViewReader
     }
 
     // MARK: - Header
@@ -382,11 +393,7 @@ struct StairwayBottomSheet: View {
                 Spacer()
                 if authManager.isCurator && curatorModeActive && !notesText.isEmpty {
                     Button {
-                        Task {
-                            if curatorService.commentary == nil {
-                                await curatorService.fetchForEditor(stairwayId: stairway.id)
-                            }
-                        }
+                        triggerCuratorPromote = true
                     } label: {
                         Label("Promote to Commentary", systemImage: "arrow.up.doc")
                             .font(.caption)

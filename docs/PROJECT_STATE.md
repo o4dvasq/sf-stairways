@@ -28,19 +28,18 @@ _Last updated: 2026-03-28_
 
 ## Active Workstreams
 
-### 1. Solo UX — Expandable Bottom Sheet (just completed 2026-03-28)
+### 1. Solo UX — Curator Notes-to-Commentary Workflow (just completed 2026-03-28)
 
-Replaced the two-view map flow (bottom sheet → NavigationLink → StairwayDetail) with a single expandable bottom sheet.
+Wired the full notes → commentary promotion flow in `StairwayBottomSheet`:
 
-- **Collapsed state (.height(390)):** header (name, neighborhood, camera menu), stats row, walk status card (Mark as Walked / walked date + edit), action buttons (Save/Unsave/Mark Walked/Unmark/Remove)
-- **Expanded state (.large):** curator commentary, notes (Add/Edit/Save/Cancel), Supabase photo carousel, curator editor, curator data section (StairwayOverride fields), source link
-- `StairwayBottomSheet` is now fully self-contained: `@Query` for live data, `@Environment(\.dismiss)` for self-dismissal on remove, all walk record actions handled internally
-- `StairwayDetail.swift` deleted — no longer referenced anywhere
-- `MapTab` simplified: no callback parameters, no action functions, no `AuthManager` environment
-- `ListTab` updated: NavigationLink replaced with Button + `.sheet(item:)` using the same `StairwayBottomSheet`
-- Map remains interactive at the collapsed detent via `.presentationBackgroundInteraction(.enabled(upThrough: .height(390)))`
+- **Layout reordered:** expanded content now flows commentary → notes → curator editor → photos → curator section → source link. Editor is below notes (was above), so "Promote to Commentary" scrolls down to it.
+- **"Promote to Commentary" button fixed:** previously fetched curator data with no visible effect. Now sets `triggerCuratorPromote = true`, which pre-fills the editor's `draftText` with the current `notesText` via a `@Binding var triggerPromote: Bool` on `CuratorEditorView`. The `ScrollViewReader` scrolls to the editor anchor on trigger.
+- **`CuratorEditorView`**: added `@Binding var triggerPromote: Bool` + `.onChange` handler that copies `notesText → draftText` when triggered.
 
-### Previous completions
+### Previous completions (2026-03-28)
+- Expandable bottom sheet replaces two-view map flow, deletes `StairwayDetail`; `ListTab` updated to use same sheet; `MapTab` simplified
+
+### Previous completions (2026-03-27 and earlier)
 - UI overhaul: amber accent, top bar redesign, splash fix, pin colors
 - Round 2 bug fixes: circle pins, curator gate, auth error
 - Bug Fixes Round 1: map pins, Sign in with Apple code path, Hard Mode toggle
@@ -54,7 +53,7 @@ Replaced the two-view map flow (bottom sheet → NavigationLink → StairwayDeta
 ### 2. App Store — Scaffold multi-user architecture
 
 - Supabase project: create project, run `supabase/schema.sql`, configure Apple provider in Dashboard
-- No pending specs in `docs/specs/` except `SPEC_curator-notes-to-commentary.md`
+- No pending specs in `docs/specs/`
 
 ## Known Issues
 
