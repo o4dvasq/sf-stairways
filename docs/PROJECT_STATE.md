@@ -1,6 +1,6 @@
 # Project State — sf-stairways
 
-_Last updated: 2026-03-27_
+_Last updated: 2026-03-28_
 
 ## Platform
 
@@ -28,17 +28,21 @@ _Last updated: 2026-03-27_
 
 ## Active Workstreams
 
-### 1. Solo UX — Bug Fixes Round 2 (just completed 2026-03-27)
+### 1. Solo UX — Expandable Bottom Sheet (just completed 2026-03-28)
 
-Three bugs found during on-device testing (post-round-1):
+Replaced the two-view map flow (bottom sheet → NavigationLink → StairwayDetail) with a single expandable bottom sheet.
 
-**Bug A — Map pins still rendering poorly.** Abandoned teardrop shape entirely. Switched to `Circle()` — state-based colors (gray/orange/green) and sizes (12/16/24pt selected). Selected state uses darker color variant.
-
-**Bug B — Curator section visible to all users on walked stairways.** The "Stairway Info" editor (stair count, height, description TextFields) was gated only on `isWalked`, not on curator role. All users saw "Add stair count" / "Add height" / "Add description..." prompts. Fixed: gated on `isWalked && authManager.isCurator && curatorModeActive`.
-
-**Bug C — Sign in with Apple still failing.** Code path confirmed correct from round 1. Added visible error feedback: `signInError: String?` on `AuthManager`, surfaced in `SettingsView` below the sign-in button. Supabase dashboard config must be manually verified (Apple provider enabled, Service ID = `com.o4dvasq.SFStairways`).
+- **Collapsed state (.height(390)):** header (name, neighborhood, camera menu), stats row, walk status card (Mark as Walked / walked date + edit), action buttons (Save/Unsave/Mark Walked/Unmark/Remove)
+- **Expanded state (.large):** curator commentary, notes (Add/Edit/Save/Cancel), Supabase photo carousel, curator editor, curator data section (StairwayOverride fields), source link
+- `StairwayBottomSheet` is now fully self-contained: `@Query` for live data, `@Environment(\.dismiss)` for self-dismissal on remove, all walk record actions handled internally
+- `StairwayDetail.swift` deleted — no longer referenced anywhere
+- `MapTab` simplified: no callback parameters, no action functions, no `AuthManager` environment
+- `ListTab` updated: NavigationLink replaced with Button + `.sheet(item:)` using the same `StairwayBottomSheet`
+- Map remains interactive at the collapsed detent via `.presentationBackgroundInteraction(.enabled(upThrough: .height(390)))`
 
 ### Previous completions
+- UI overhaul: amber accent, top bar redesign, splash fix, pin colors
+- Round 2 bug fixes: circle pins, curator gate, auth error
 - Bug Fixes Round 1: map pins, Sign in with Apple code path, Hard Mode toggle
 - Curator social layer: photo carousel, curator commentary, photo likes, user-level Hard Mode (Supabase)
 - Supabase iOS integration: SDK, AuthManager, Sign in with Apple, SettingsView
@@ -50,7 +54,7 @@ Three bugs found during on-device testing (post-round-1):
 ### 2. App Store — Scaffold multi-user architecture
 
 - Supabase project: create project, run `supabase/schema.sql`, configure Apple provider in Dashboard
-- No pending specs in `docs/specs/`
+- No pending specs in `docs/specs/` except `SPEC_curator-notes-to-commentary.md`
 
 ## Known Issues
 

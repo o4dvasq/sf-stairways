@@ -149,14 +149,13 @@ For any stat display (stair count, height): use `StairwayOverride` value if non-
 ### Views
 
 - `ContentView` — `TabView` (Map / List / Progress)
-- `MapTab` — MapKit full-screen map (dark appearance), plain `brandOrange` top bar with trailing icon buttons (search, Around Me), filter pills (All/Saved/Walked/Nearby), floating `ProgressCard` (bottom-right, 120pt wide) with `brandOrange` header
-- `ListTab` — searchable, filterable stairway list (All/Walked/Saved); `NavigationLink` to detail; queries `StairwayOverride` and passes to each row
+- `MapTab` — MapKit full-screen map (dark appearance), plain `brandOrange` top bar with trailing icon buttons (search, Around Me), filter pills (All/Saved/Walked/Nearby), floating `ProgressCard` (bottom-right, 120pt wide) with `brandOrange` header; no walk-record action logic (all in sheet)
+- `ListTab` — searchable, filterable stairway list (All/Walked/Saved); tap row → `StairwayBottomSheet` sheet; queries `StairwayOverride` and passes to each row
 - `ProgressTab` — completion ring, stats grid, neighborhood breakdown, recent walks; toolbar has sync icon + gear icon; height stat uses `resolvedHeightFt`
 - `SettingsView` — sheet from gear icon in ProgressTab toolbar; Account section (Sign in with Apple / signed-in state + Sign Out); iCloud Sync section (mirrors sync status)
-- `StairwayDetail` — focused mini-map at top (non-interactive, 200pt), walk logging, Save button in toolbar (when unsaved), curator data section (walked-only, inline editable fields), Hard Mode toggle, notes, photo grid
+- `StairwayBottomSheet` — **single detail surface for the whole app** (replaces deleted `StairwayDetail`); self-contained with `@Query`, `@Environment(\.modelContext)`, `@Environment(\.dismiss)`; two detent states: collapsed `.height(390)` (header, stats, walk status card, action buttons) and expanded `.large` (curator commentary, notes, photo carousel, curator editor, StairwayOverride fields, source link); all walk record writes handled internally
 - `StairwayAnnotation` — delegates to `StairwayPin` with three-state + dimming + unverified badge support
 - `TeardropPin` — `StairwayPin` view (colored circles, three-state colors + dimming); `TeardropShape` and `StairShape` structs kept for future use; `showUnverifiedBadge` amber overlay
-- `StairwayBottomSheet` — three-state action buttons; Hard Mode toggle row; proximity-gated Mark Walked
 - `SearchPanel` — full-screen search modal with Name/Street/Neighborhood tabs
 - `AroundMeManager` — `@Observable`; nearest-centroid neighborhood detection, adjacency lookup, pin dimming state
 - `ToastView` + `.toast()` modifier — auto-dismissing toast messages

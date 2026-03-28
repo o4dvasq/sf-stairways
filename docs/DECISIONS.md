@@ -1,5 +1,18 @@
 # Architecture Decisions — sf-stairways
 
+## Expandable bottom sheet replaces two-view map flow
+**Date:** 2026-03-28
+
+The previous map flow used two views: `StairwayBottomSheet` (compact, at `.height(390)`) with a NavigationLink that pushed `StairwayDetail` into a NavigationStack. `StairwayDetail` had its own mini-map at the top — which was redundant since the stairway pin is already visible on the map behind the sheet.
+
+The new design consolidates everything into a single `StairwayBottomSheet` with two sheet detents (`.height(390)` and `.large`). The map itself is the "detail map" — it's always visible behind the collapsed sheet. The expanded sheet (dragged to `.large`) reveals notes, photos, commentary, and curator tools.
+
+**Why self-contained rather than callback-based.** The old bottom sheet received `walkRecord`, `override`, and four action callbacks from `MapTab`. This meant MapTab owned all write logic and the sheet was stateless. The new sheet adds `@Query` and `@Environment(\.modelContext)` directly, owns all write logic, and uses `@Environment(\.dismiss)` to self-dismiss on remove. This removes the callback coupling entirely and lets `ListTab` use the same sheet with zero extra wiring.
+
+**Why the same sheet for ListTab.** `ListTab` previously had a `NavigationLink → StairwayDetail`. Replacing it with `Button → selectedStairway → .sheet(item:)` using `StairwayBottomSheet` means there is now exactly one detail surface in the app. Future changes to detail UI need to happen in one place only.
+
+**`StairwayDetail.swift` deleted.** All content was absorbed into `StairwayBottomSheet`. The mini-map (the only unique element) was intentionally dropped — it was redundant with the map tab itself.
+
 ## Map pins: circles replace teardrops; three-state color system restored
 **Date:** 2026-03-27
 

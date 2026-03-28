@@ -9,6 +9,7 @@ struct ListTab: View {
     @State private var locationManager = LocationManager()
     @State private var searchText = ""
     @State private var listFilter: ListFilter = .all
+    @State private var selectedStairway: Stairway?
 
     enum ListFilter: String, CaseIterable {
         case all = "All"
@@ -22,13 +23,16 @@ struct ListTab: View {
                 ForEach(filteredGroups, id: \.name) { group in
                     Section {
                         ForEach(group.stairways) { stairway in
-                            NavigationLink(destination: StairwayDetail(stairway: stairway, locationManager: locationManager)) {
+                            Button {
+                                selectedStairway = stairway
+                            } label: {
                                 StairwayRow(
                                     stairway: stairway,
                                     walkRecord: walkRecord(for: stairway),
                                     override: override(for: stairway)
                                 )
                             }
+                            .buttonStyle(.plain)
                         }
                     } header: {
                         Text(group.name)
@@ -38,6 +42,11 @@ struct ListTab: View {
             .listStyle(.plain)
             .navigationTitle("Stairways")
             .searchable(text: $searchText, prompt: "Search stairways...")
+            .sheet(item: $selectedStairway) { stairway in
+                StairwayBottomSheet(stairway: stairway, locationManager: locationManager)
+                    .presentationDetents([.height(390), .large])
+                    .presentationDragIndicator(.visible)
+            }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Picker("Filter", selection: $listFilter) {

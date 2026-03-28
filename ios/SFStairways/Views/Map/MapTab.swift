@@ -3,8 +3,6 @@ import MapKit
 import SwiftData
 
 struct MapTab: View {
-    @Environment(\.modelContext) private var modelContext
-    @Environment(AuthManager.self) private var authManager
     @Query private var walkRecords: [WalkRecord]
     @Query private var overrides: [StairwayOverride]
     @State private var store = StairwayStore()
@@ -19,6 +17,7 @@ struct MapTab: View {
     )
     @State private var filter: StairwayFilter = .all
     @State private var showSearch: Bool = false
+    @State private var showSettings: Bool = false
     @State private var toastMessage: String? = nil
 
     enum StairwayFilter: String, CaseIterable {
@@ -91,19 +90,13 @@ struct MapTab: View {
         }
         .toast(message: $toastMessage)
         .sheet(item: $selectedStairway) { stairway in
-            StairwayBottomSheet(
-                stairway: stairway,
-                walkRecord: walkRecord(for: stairway),
-                override: override(for: stairway),
-                locationManager: locationManager,
-                onSave: { saveStairway(stairway) },
-                onMarkWalked: { markWalked(stairway) },
-                onUnmarkWalk: { unmarkWalk(stairway) },
-                onRemove: { removeRecord(stairway) }
-            )
-            .presentationDetents([.height(390), .medium])
-            .presentationDragIndicator(.visible)
-            .presentationBackgroundInteraction(.enabled(upThrough: .height(390)))
+            StairwayBottomSheet(stairway: stairway, locationManager: locationManager)
+                .presentationDetents([.height(390), .large])
+                .presentationDragIndicator(.visible)
+                .presentationBackgroundInteraction(.enabled(upThrough: .height(390)))
+        }
+        .sheet(isPresented: $showSettings) {
+            SettingsView()
         }
         .fullScreenCover(isPresented: $showSearch) {
             SearchPanel(
@@ -133,10 +126,26 @@ struct MapTab: View {
 
     private var topBar: some View {
         ZStack {
+            // Stairs icon centered — decorative branding
+            StairShape()
+                .fill(Color.white)
+                .frame(width: 20, height: 20)
+
             // Buttons pinned to trailing edge
             HStack {
                 Spacer()
                 HStack(spacing: 8) {
+                    Button {
+                        showSettings = true
+                    } label: {
+                        Image(systemName: "gearshape")
+                            .font(.system(size: 15, weight: .semibold))
+                            .foregroundStyle(.white)
+                            .frame(width: 32, height: 32)
+                            .background(Color.white.opacity(0.2))
+                            .clipShape(Circle())
+                    }
+
                     Button {
                         showSearch = true
                     } label: {
@@ -275,45 +284,6 @@ struct MapTab: View {
     private func walkRecord(for stairway: Stairway) -> WalkRecord? {
         walkRecords.first { $0.stairwayID == stairway.id }
     }
-
-    // MARK: - Walk Record Actions
-
-    private func saveStairway(_ stairway: Stairway) {
-        guard walkRecord(for: stairway) == nil else { return }
-        let record = WalkRecord(stairwayID: stairway.id, walked: false)
-        modelContext.insert(record)
-        try? modelContext.save()
-    }
-
-    private func markWalked(_ stairway: Stairway) {
-        if let record = walkRecord(for: stairway) {
-            record.walked = true
-            record.dateWalked = record.dateWalked ?? Date()
-            record.hardModeAtCompletion = authManager.hardModeEnabled
-            record.updatedAt = Date()
-        } else {
-            let record = WalkRecord(stairwayID: stairway.id, walked: true, dateWalked: Date())
-            record.hardModeAtCompletion = authManager.hardModeEnabled
-            modelContext.insert(record)
-        }
-        try? modelContext.save()
-    }
-
-    private func unmarkWalk(_ stairway: Stairway) {
-        guard let record = walkRecord(for: stairway) else { return }
-        record.walked = false
-        record.updatedAt = Date()
-        try? modelContext.save()
-    }
-
-    private func removeRecord(_ stairway: Stairway) {
-        guard let record = walkRecord(for: stairway) else { return }
-        modelContext.delete(record)
-        try? modelContext.save()
-        if selectedStairway?.id == stairway.id {
-            selectedStairway = nil
-        }
-    }
 }
 
 // MARK: - Progress Card
@@ -332,7 +302,7 @@ struct ProgressCard: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 8)
                 .padding(.vertical, 4)
-                .background(Color.brandOrange)
+                .background(Color.brandAmber)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(walkedCount > 0 ? "\(walkedCount) stairways" : "—")

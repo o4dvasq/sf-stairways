@@ -2,6 +2,8 @@
 
 | Description | Implemented | Spec File |
 |---|---|---|
+| Expandable bottom sheet replaces two-view map flow, deletes StairwayDetail | 2026-03-28 16:00 | SPEC_expand-collapse-detail.md |
+| UI overhaul: amber accent, top bar redesign, splash fix, pin colors | 2026-03-27 | SPEC_ui-overhaul-auth-db.md |
 | Round 2 bug fixes: circle pins, curator gate, auth error | 2026-03-27 | SPEC_bugfix-round2-pins-detail-auth.md |
 | Bug fixes: map pins, Sign in with Apple, Hard Mode toggle | 2026-03-27 | SPEC_bugfix-pins-auth-hardmode.md |
 | Curator social layer: commentary, photo carousel, likes, user-level Hard Mode | 2026-03-27 | SPEC_curator-social-layer.md |
