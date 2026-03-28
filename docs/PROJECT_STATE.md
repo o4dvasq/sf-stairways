@@ -28,15 +28,18 @@ _Last updated: 2026-03-28_
 
 ## Active Workstreams
 
-### 1. Solo UX — Map Pin UX (just completed 2026-03-28)
+### 1. Solo UX — Photo Camera Roll Save (just completed 2026-03-28)
 
-Improved map pin tap targets and zoom-responsive sizing:
+In-app camera captures now save to the system camera roll via `PHPhotoLibrary`:
 
-- **Expanded tap targets:** `StairwayPin` now wraps the visual circle in a transparent `max(44, pinSize)` frame with `.contentShape(Rectangle())`. Tap target is at least 44pt regardless of visual size (Apple HIG minimum), larger at street-level zoom.
-- **Zoom-responsive pin scaling:** `MapTab` tracks `mapSpan` via `.onMapCameraChange(frequency: .continuous)`. A `pinScale` computed property lerps from 1.0 (city view, `latitudeDelta >= 0.05`) to 2.0 (street level, `latitudeDelta <= 0.005`). Scale is passed through `StairwayAnnotation` → `StairwayPin` and applied to all base pin sizes.
-- **No visual regressions:** dimming, closed-state opacity, selected state, and unverified badge logic untouched.
+- **`CameraPicker.Coordinator`** fires `PHPhotoLibrary.shared().performChanges(...)` immediately after capturing — saves to camera roll before calling `onCapture`, which is fire-and-forget (no completion handler, silent failure on permission denial).
+- **`NSPhotoLibraryAddUsageDescription`** added to `Info.plist` — add-only permission, does not request full library read access.
+- Photo picker path (`PhotoPicker`) is unchanged — images chosen from library are already in the camera roll.
 
 ### Previous completions (2026-03-28)
+- Fix local photos invisible: carousel merges Supabase + local SwiftData photos; `PhotoInsert` sets `is_public = true`
+- Launch zoom to nearest stairway after splash dismisses; falls back to city-wide default
+- Map pin tap targets 44pt min; zoom-responsive scale 1x–2x
 - Curator notes-to-commentary promotion flow wired (pre-fill editor, scroll, binding)
 - Expandable bottom sheet replaces two-view map flow, deletes `StairwayDetail`; `ListTab` updated to use same sheet; `MapTab` simplified
 
@@ -55,8 +58,8 @@ Improved map pin tap targets and zoom-responsive sizing:
 
 Two specs in `docs/specs/` awaiting implementation:
 
-- **SPEC_photo-persistence-fix.md** — Photos added during walks don't appear in UI. Two bugs: (1) carousel only reads Supabase, ignores local SwiftData photos; (2) `PhotoInsert` doesn't set `is_public = true` so even uploaded photos are filtered out.
-- **SPEC_launch-zoom-nearest.md** — On launch, auto-zoom to nearest stairway after location fix arrives. Falls back to city-wide default if no permission.
+- **SPEC_photo-time-window-suggestions.md** — Suggest photos from the user's camera roll taken near a stairway during a walk window.
+- **SPEC_active-walk-mode.md** — Active walk mode: start/stop a timed walk session with location tracking.
 
 ### 3. App Store — Scaffold multi-user architecture
 

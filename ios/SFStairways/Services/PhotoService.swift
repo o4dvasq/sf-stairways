@@ -1,5 +1,6 @@
 import SwiftUI
 import PhotosUI
+import Photos
 
 struct PhotoPicker: UIViewControllerRepresentable {
     let onPick: (Data) -> Void
@@ -71,6 +72,12 @@ struct CameraPicker: UIViewControllerRepresentable {
             picker.dismiss(animated: true)
             guard let image = info[.originalImage] as? UIImage,
                   let data = image.jpegData(compressionQuality: 0.85) else { return }
+
+            // Save to camera roll (silent failure if permission denied)
+            PHPhotoLibrary.shared().performChanges({
+                PHAssetChangeRequest.creationRequestForAsset(from: image)
+            }, completionHandler: nil)
+
             DispatchQueue.main.async {
                 self.onCapture(data)
             }

@@ -2,6 +2,8 @@
 
 | Description | Implemented | Spec File |
 |---|---|---|
+| Save camera captures to system camera roll via PHPhotoLibrary | 2026-03-28 | SPEC_photo-camera-roll-fix.md |
+| Fix local photos invisible; add is_public to upload; merge remote+local | 2026-03-28 | SPEC_photo-persistence-fix.md |
 | Launch zoom to nearest stairway after splash dismisses | 2026-03-28 | SPEC_launch-zoom-nearest.md |
 | Map pin tap targets 44pt min; zoom-responsive scale 1x–2x | 2026-03-28 | SPEC_map-pin-ux.md |
 | Promote notes to commentary: reorder layout, trigger pre-fill, scroll | 2026-03-28 | SPEC_curator-notes-to-commentary.md |
