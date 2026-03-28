@@ -15,10 +15,13 @@ struct MapTab: View {
             span: MKCoordinateSpan(latitudeDelta: 0.06, longitudeDelta: 0.06)
         )
     )
+    @State private var mapSpan: Double = 0.06
     @State private var filter: StairwayFilter = .all
     @State private var showSearch: Bool = false
     @State private var showSettings: Bool = false
     @State private var toastMessage: String? = nil
+    @State private var hasZoomedToNearest = false
+    @State private var launchTime: Date = .now
 
     enum StairwayFilter: String, CaseIterable {
         case all = "All"
@@ -39,7 +42,8 @@ struct MapTab: View {
                                 stairway: stairway,
                                 walkRecord: walkRecord(for: stairway),
                                 isSelected: selectedStairway?.id == stairway.id,
-                                isDimmed: aroundMe.isDimmed(neighborhood: stairway.neighborhood)
+                                isDimmed: aroundMe.isDimmed(neighborhood: stairway.neighborhood),
+                                scale: pinScale
                             )
                             .onTapGesture {
                                 withAnimation(.spring(response: 0.3)) {
@@ -49,6 +53,9 @@ struct MapTab: View {
                         }
                     }
                 }
+            }
+            .onMapCameraChange(frequency: .continuous) { context in
+                mapSpan = context.region.span.latitudeDelta
             }
             .mapStyle(.standard(elevation: .realistic))
             .preferredColorScheme(.dark)
@@ -119,6 +126,16 @@ struct MapTab: View {
         }
         .onAppear {
             locationManager.requestPermission()
+        }
+        .onChange(of: locationManager.currentLocation) { _, newLocation in
+            guard let location = newLocation, !hasZoomedToNearest else { return }
+            hasZoomedToNearest = true
+            // Splash fully dismisses at ~2.9s (2.5s delay + 0.4s fade). Add 0.2s buffer.
+            let splashEnd = launchTime.addingTimeInterval(3.1)
+            let delay = max(0, splashEnd.timeIntervalSinceNow)
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                zoomToNearest(from: location)
+            }
         }
     }
 
@@ -237,7 +254,28 @@ struct MapTab: View {
         withAnimation { cameraPosition = .region(region) }
     }
 
+    private func zoomToNearest(from location: CLLocation) {
+        let nearest = store.stairways
+            .filter { $0.hasValidCoordinate }
+            .min(by: { $0.distance(from: location) < $1.distance(from: location) })
+        guard let stairway = nearest, let coord = stairway.coordinate else { return }
+        let region = MKCoordinateRegion(
+            center: coord,
+            span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+        )
+        withAnimation { cameraPosition = .region(region) }
+    }
+
     // MARK: - Computed Properties
+
+    /// Lerps pin scale from 1.0 (city-wide) to 2.0 (street-level) based on map zoom.
+    private var pinScale: CGFloat {
+        let streetLevel: Double = 0.005
+        let cityLevel: Double = 0.05
+        let clamped = min(max(mapSpan, streetLevel), cityLevel)
+        let t = (cityLevel - clamped) / (cityLevel - streetLevel)
+        return CGFloat(1.0 + t)
+    }
 
     private var savedStairwayIDs: Set<String> {
         Set(walkRecords.filter { !$0.walked }.map(\.stairwayID))

@@ -28,15 +28,16 @@ _Last updated: 2026-03-28_
 
 ## Active Workstreams
 
-### 1. Solo UX — Curator Notes-to-Commentary Workflow (just completed 2026-03-28)
+### 1. Solo UX — Map Pin UX (just completed 2026-03-28)
 
-Wired the full notes → commentary promotion flow in `StairwayBottomSheet`:
+Improved map pin tap targets and zoom-responsive sizing:
 
-- **Layout reordered:** expanded content now flows commentary → notes → curator editor → photos → curator section → source link. Editor is below notes (was above), so "Promote to Commentary" scrolls down to it.
-- **"Promote to Commentary" button fixed:** previously fetched curator data with no visible effect. Now sets `triggerCuratorPromote = true`, which pre-fills the editor's `draftText` with the current `notesText` via a `@Binding var triggerPromote: Bool` on `CuratorEditorView`. The `ScrollViewReader` scrolls to the editor anchor on trigger.
-- **`CuratorEditorView`**: added `@Binding var triggerPromote: Bool` + `.onChange` handler that copies `notesText → draftText` when triggered.
+- **Expanded tap targets:** `StairwayPin` now wraps the visual circle in a transparent `max(44, pinSize)` frame with `.contentShape(Rectangle())`. Tap target is at least 44pt regardless of visual size (Apple HIG minimum), larger at street-level zoom.
+- **Zoom-responsive pin scaling:** `MapTab` tracks `mapSpan` via `.onMapCameraChange(frequency: .continuous)`. A `pinScale` computed property lerps from 1.0 (city view, `latitudeDelta >= 0.05`) to 2.0 (street level, `latitudeDelta <= 0.005`). Scale is passed through `StairwayAnnotation` → `StairwayPin` and applied to all base pin sizes.
+- **No visual regressions:** dimming, closed-state opacity, selected state, and unverified badge logic untouched.
 
 ### Previous completions (2026-03-28)
+- Curator notes-to-commentary promotion flow wired (pre-fill editor, scroll, binding)
 - Expandable bottom sheet replaces two-view map flow, deletes `StairwayDetail`; `ListTab` updated to use same sheet; `MapTab` simplified
 
 ### Previous completions (2026-03-27 and earlier)
@@ -50,10 +51,16 @@ Wired the full notes → commentary promotion flow in `StairwayBottomSheet`:
 - Hard Mode: per-stairway proximity-gated walk verification with unverified badge
 - See: `docs/specs/implemented/` for full spec history
 
-### 2. App Store — Scaffold multi-user architecture
+### 2. Pending Specs (ready for Claude Code)
+
+Two specs in `docs/specs/` awaiting implementation:
+
+- **SPEC_photo-persistence-fix.md** — Photos added during walks don't appear in UI. Two bugs: (1) carousel only reads Supabase, ignores local SwiftData photos; (2) `PhotoInsert` doesn't set `is_public = true` so even uploaded photos are filtered out.
+- **SPEC_launch-zoom-nearest.md** — On launch, auto-zoom to nearest stairway after location fix arrives. Falls back to city-wide default if no permission.
+
+### 3. App Store — Scaffold multi-user architecture
 
 - Supabase project: create project, run `supabase/schema.sql`, configure Apple provider in Dashboard
-- No pending specs in `docs/specs/`
 
 ## Known Issues
 

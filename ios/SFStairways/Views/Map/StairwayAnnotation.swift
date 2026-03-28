@@ -5,13 +5,15 @@ struct StairwayAnnotation: View {
     let walkRecord: WalkRecord?
     var isSelected: Bool = false
     var isDimmed: Bool = false
+    var scale: CGFloat = 1.0
 
     var body: some View {
         StairwayPin(
             state: pinState,
             isSelected: isSelected,
             isDimmed: isDimmed,
-            isClosed: stairway.closed
+            isClosed: stairway.closed,
+            scale: scale
         )
     }
 

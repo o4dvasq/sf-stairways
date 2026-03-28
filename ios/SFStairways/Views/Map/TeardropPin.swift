@@ -75,39 +75,48 @@ struct StairwayPin: View {
     var isSelected: Bool = false
     var isDimmed: Bool = false
     var isClosed: Bool = false
+    var scale: CGFloat = 1.0
 
     var body: some View {
+        let size = pinSize
+        let tapTarget = max(44, size)
         Circle()
             .fill(fillColor)
             .overlay(Circle().stroke(Color.black.opacity(0.3), lineWidth: 1))
-            .frame(width: pinSize, height: pinSize)
+            .frame(width: size, height: size)
             .shadow(color: .black.opacity(0.3), radius: 2, y: 1)
             .opacity(opacity)
             .animation(.spring(response: 0.2), value: isSelected)
             .animation(.easeInOut(duration: 0.25), value: isDimmed)
+            .frame(width: tapTarget, height: tapTarget)
+            .contentShape(Rectangle())
     }
 
     private var pinSize: CGFloat {
-        if isSelected { return 24 }
-        switch state {
-        case .unsaved: return 12
-        case .saved: return 16
-        case .walked: return 16
+        let base: CGFloat
+        if isSelected { base = 24 }
+        else {
+            switch state {
+            case .unsaved: base = 12
+            case .saved: base = 16
+            case .walked: base = 16
+            }
         }
+        return base * scale
     }
 
     private var fillColor: Color {
         if isClosed { return Color.unwalkedSlate }
         if isSelected {
             switch state {
-            case .unsaved: return Color(white: 0.7)
-            case .saved: return Color.brandOrangeDark
+            case .unsaved: return Color.brandAmberDark
+            case .saved: return Color.pinSavedDark
             case .walked: return Color.walkedGreenDark
             }
         }
         switch state {
-        case .unsaved: return Color(white: 0.55)
-        case .saved: return Color.brandOrange
+        case .unsaved: return Color.brandAmber
+        case .saved: return Color.pinSaved
         case .walked: return Color.walkedGreen
         }
     }

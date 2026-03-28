@@ -2,6 +2,8 @@
 
 | Description | Implemented | Spec File |
 |---|---|---|
+| Launch zoom to nearest stairway after splash dismisses | 2026-03-28 | SPEC_launch-zoom-nearest.md |
+| Map pin tap targets 44pt min; zoom-responsive scale 1x–2x | 2026-03-28 | SPEC_map-pin-ux.md |
 | Promote notes to commentary: reorder layout, trigger pre-fill, scroll | 2026-03-28 | SPEC_curator-notes-to-commentary.md |
 | Expandable bottom sheet replaces two-view map flow, deletes StairwayDetail | 2026-03-28 16:00 | SPEC_expand-collapse-detail.md |
 | UI overhaul: amber accent, top bar redesign, splash fix, pin colors | 2026-03-27 | SPEC_ui-overhaul-auth-db.md |

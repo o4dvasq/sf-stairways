@@ -138,7 +138,7 @@ Every stairway exists in one of three states, derived from `WalkRecord`:
 - **Saved** — `WalkRecord.walked == false`
 - **Walked** — `WalkRecord.walked == true`
 
-**Pins** are colored circles: gray (`Color(white: 0.55)`) for unsaved, `brandOrange` for saved, `walkedGreen` for walked. Selected pins use darker variants (`Color(white: 0.7)` / `brandOrangeDark` / `walkedGreenDark`) and expand to 24pt diameter. Unselected sizes: 12pt (unsaved), 16pt (saved/walked). Thin dark stroke overlay (0.3 opacity, 1pt). Dimmed pins render at 30% opacity. Closed stairways use `unwalkedSlate` at 40% opacity. `TeardropShape` and `StairShape` are kept in `TeardropPin.swift` for future use.
+**Pins** are colored circles: gray (`Color(white: 0.55)`) for unsaved, `brandOrange` for saved, `walkedGreen` for walked. Selected pins use darker variants and expand to 24pt diameter. Unselected base sizes: 12pt (unsaved), 16pt (saved/walked). All sizes are multiplied by a `scale` factor (1.0–2.0) driven by map zoom level. Tap target is `max(44, scaledSize)` via an outer frame + `.contentShape(Rectangle())`. Thin dark stroke overlay (0.3 opacity, 1pt). Dimmed pins render at 30% opacity. Closed stairways use `unwalkedSlate` at 40% opacity. `TeardropShape` and `StairShape` are kept in `TeardropPin.swift` for future use.
 
 **Unverified badge:** Walked pins with `hardMode = true` and `proximityVerified = false` display a 10pt amber (`accentAmber` #E8A838) circle with an exclamation mark at the top-right of the bulb. Computed via `WalkRecord.showUnverifiedBadge`, passed through `StairwayAnnotation` to `StairwayPin.showUnverifiedBadge`.
 
@@ -149,12 +149,12 @@ For any stat display (stair count, height): use `StairwayOverride` value if non-
 ### Views
 
 - `ContentView` — `TabView` (Map / List / Progress)
-- `MapTab` — MapKit full-screen map (dark appearance), plain `brandOrange` top bar with trailing icon buttons (search, Around Me), filter pills (All/Saved/Walked/Nearby), floating `ProgressCard` (bottom-right, 120pt wide) with `brandOrange` header; no walk-record action logic (all in sheet)
+- `MapTab` — MapKit full-screen map (dark appearance), plain `brandOrange` top bar with trailing icon buttons (search, Around Me), filter pills (All/Saved/Walked/Nearby), floating `ProgressCard` (bottom-right, 120pt wide) with `brandOrange` header; tracks `mapSpan` via `.onMapCameraChange(frequency: .continuous)` and passes a lerped `pinScale` (1.0–2.0) to each annotation; no walk-record action logic (all in sheet)
 - `ListTab` — searchable, filterable stairway list (All/Walked/Saved); tap row → `StairwayBottomSheet` sheet; queries `StairwayOverride` and passes to each row
 - `ProgressTab` — completion ring, stats grid, neighborhood breakdown, recent walks; toolbar has sync icon + gear icon; height stat uses `resolvedHeightFt`
 - `SettingsView` — sheet from gear icon in ProgressTab toolbar; Account section (Sign in with Apple / signed-in state + Sign Out); iCloud Sync section (mirrors sync status)
 - `StairwayBottomSheet` — **single detail surface for the whole app** (replaces deleted `StairwayDetail`); self-contained with `@Query`, `@Environment(\.modelContext)`, `@Environment(\.dismiss)`; two detent states: collapsed `.height(390)` (header, stats, walk status card, action buttons) and expanded `.large` (curator commentary → notes → curator editor → photo carousel → StairwayOverride fields → source link); "Promote to Commentary" button sets `triggerCuratorPromote = true`, which pre-fills the editor via binding and scrolls to it via `ScrollViewReader`; all walk record writes handled internally
-- `StairwayAnnotation` — delegates to `StairwayPin` with three-state + dimming + unverified badge support
+- `StairwayAnnotation` — delegates to `StairwayPin` with three-state + dimming + unverified badge support; accepts `scale: CGFloat` and passes through to `StairwayPin`
 - `TeardropPin` — `StairwayPin` view (colored circles, three-state colors + dimming); `TeardropShape` and `StairShape` structs kept for future use; `showUnverifiedBadge` amber overlay
 - `SearchPanel` — full-screen search modal with Name/Street/Neighborhood tabs
 - `AroundMeManager` — `@Observable`; nearest-centroid neighborhood detection, adjacency lookup, pin dimming state

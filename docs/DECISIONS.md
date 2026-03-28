@@ -1,5 +1,14 @@
 # Architecture Decisions — sf-stairways
 
+## Map pin tap targets and zoom-responsive scaling
+**Date:** 2026-03-28
+
+**Tap targets via contentShape, not padding.** The tap gesture lives on `StairwayAnnotation` in `MapTab`. The cleanest way to expand the hit area without changing MapKit annotation layout is to wrap the visual circle in an outer frame of `max(44, pinSize)` and apply `.contentShape(Rectangle())` at that outer frame. Using `.padding()` + `.contentShape(Circle())` was rejected because a circular content shape at 44pt on a 12pt pin leaves the corners dead — a rectangular content shape fills the minimum 44×44pt area uniformly and matches Apple HIG intent.
+
+**Scale factor via lerp, not discrete steps.** Pin size was mapped continuously from 1.0 (city view, `latitudeDelta >= 0.05`) to 2.0 (street level, `latitudeDelta <= 0.005`) using linear interpolation. Discrete size breakpoints (e.g., small/medium/large) would produce visible pops on pinch-zoom. The lerp is a one-line clamp + ratio — trivial to compute on every camera change.
+
+**`.onMapCameraChange(frequency: .continuous)` over `.onEnd`.** Continuous firing gives smooth scale transitions during pinch. The scale computation is a clamp + multiply — no meaningful CPU cost at this granularity. `.onEnd` would cause pins to snap size only after the gesture finishes, which reads as a layout jump.
+
 ## Curator promote flow: triggerPromote binding over direct scroll
 **Date:** 2026-03-28
 
