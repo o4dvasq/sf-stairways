@@ -10,7 +10,7 @@ _Last updated: 2026-03-29_
 - `SyncStatusManager` tracks live CloudKit event notifications; cloud icon in Stats tab shows sync state
 - Supabase SDK integrated; `AuthManager` manages Sign in with Apple session
 - Photo capture with thumbnails, location services, seed data import
-- Tags are **read-only** on iOS (display + filter only) — all tag CRUD is macOS-only
+- Tags are **read-only** on iOS (display + filter only) — all tag CRUD is macOS-only; `TagEditorSheet` removed
 - Successfully archived in Xcode on 2026-03-23
 - See `docs/IOS_REFERENCE.md` for full build details
 
@@ -18,11 +18,14 @@ _Last updated: 2026-03-29_
 - **`ios/SFStairwaysMac/`** — macOS target in `SFStairways.xcodeproj`, bundle ID `com.o4dvasq.SFStairways.mac`
 - Shares the same CloudKit container (`iCloud.com.o4dvasq.sfstairways`) as iOS — all walk data, overrides, tags sync automatically
 - Shares SwiftData model files with iOS (same `Models/*.swift`)
-- Three-column `NavigationSplitView`: neighborhood sidebar → sortable stairway table → detail panel
-- Detail panel: catalog vs. walk data comparison, editable curator overrides, notes editing, tag add/remove, photo grid with delete + **Add Photos button (NSOpenPanel + drag-drop)**
-- **Photo import from Mac**: NSOpenPanel multi-select or drag-drop, JPEG 0.85 compression, proper macOS thumbnail generation (NSImage + NSBitmapImageRep, 300px, JPEG 0.7)
+- Three-column `NavigationSplitView`: sidebar (neighborhoods + tags filter) → sortable stairway table → detail panel
+- **Sidebar Tags section**: lists tags with assignment counts; clicking a tag filters table; intersects with neighborhood filter
+- **Table sorting**: all numeric columns sortable (Height, Steps, Elev. Gain, Photos, Date Walked + Name); nil values sort to bottom in both directions via `nilLastSorted` helper
+- **TagManagerSheet**: full tag CRUD — create custom tags (slug ID generation), inline rename, delete with cascade confirmation, preset tags displayed read-only with counts
+- Detail panel: catalog vs. walk data comparison, editable curator overrides, notes editing, tag add/remove + **"Create & Assign…" inline option**, photo grid with delete + Add Photos (NSOpenPanel + drag-drop)
+- Bulk Operations: bulk tag assign + **"Create new tag…" inline option** + **"Remove Tag from All Selected"** section, bulk mark walked, CSV export
 - Data Hygiene sheet: flags missing height, missing coordinates, no HealthKit data, promotion candidates, proximity unverified
-- Bulk Operations sheet: bulk tag assign, bulk mark walked (with date picker), CSV export via NSSavePanel
+- **App icon**: white StairShape silhouette on brandOrange (#E8602C) background, all 10 required macOS sizes generated
 - No Supabase, no HealthKit fetching on macOS (displays synced walk data only)
 
 ### Web App (deprecated)
@@ -41,9 +44,10 @@ _Last updated: 2026-03-29_
 ## Recent Completions
 
 ### 2026-03-29 (this session)
-- **Urban Hiker SF data import** — `scripts/import_urban_hiker_locations.py` imports 762 new stairways from Urban Hiker SF (Alexandra Kenin) KMZ data. 4 coordinate gap-fills applied (Pemberton Place, Clover Lane, Acme Alley, Moraga Street). 8 new neighborhoods created (Presidio, Golden Gate Park, Lands End, Fort Mason, Embarcadero, Downtown, Alcatraz Island, Unclassified). Script is idempotent with `--dry-run` / `--apply` modes; produces `data/import_report.md` for review.
+- **macOS tag management** — `TagManagerSheet.swift` with full CRUD (create, inline rename, delete with cascade to TagAssignments, preset tags read-only); sidebar Tags section in `StairwayBrowser` with per-tag counts and filter intersecting neighborhood filter; all numeric table columns sortable with nil-last logic; "Create & Assign…" inline option in detail panel Add Tag menu; Remove Tag and Create New Tag sections in BulkOperationsSheet; iOS `TagEditorSheet` deleted and tags made fully read-only on iOS; macOS app icon generated (white StairShape on brandOrange, all 10 sizes).
 
 ### 2026-03-29 (earlier)
+- **Urban Hiker SF data import** — `scripts/import_urban_hiker_locations.py` imports 762 new stairways from Urban Hiker SF (Alexandra Kenin) KMZ data. 4 coordinate gap-fills applied (Pemberton Place, Clover Lane, Acme Alley, Moraga Street). 8 new neighborhoods created (Presidio, Golden Gate Park, Lands End, Fort Mason, Embarcadero, Downtown, Alcatraz Island, Unclassified). Script is idempotent with `--dry-run` / `--apply` modes; produces `data/import_report.md` for review.
 - **macOS photo add + notes editing** — "Add Photos..." button (NSOpenPanel) + drag-drop in detail panel photos section; inline notes editing; proper macOS thumbnail generation.
 - **DataHygieneView bug fix** — `canRetroactivelyPullStats` removed; fixed to use `walkStartTime != nil`.
 - **HealthKit data accuracy fix** — removed retroactive full-day pull; stats display restricted to active walks only; one-time migration clears bad data.
@@ -69,7 +73,7 @@ _Last updated: 2026-03-29_
 
 ## Pending Specs
 
-- `docs/specs/SPEC_macos-tag-management.md` — macOS tag CRUD
+- `docs/specs/SPEC_urban-hiker-data-enrichment.md` — import Urban Hiker SF stairways
 
 ## Known Issues
 

@@ -36,7 +36,6 @@ struct StairwayBottomSheet: View {
 
     @AppStorage("curatorModeActive") private var curatorModeActive = false
 
-    @State private var showTagEditor = false
     @State private var triggerCuratorPromote = false
     @State private var showCancelWalkAlert = false
     @State private var showHardModeAlert = false
@@ -184,10 +183,6 @@ struct StairwayBottomSheet: View {
             Button("Mark Anyway") { markWalked(proximityVerified: false) }
         } message: {
             Text("You're not near this stairway. You can still log it, but it won't count as proximity-verified.")
-        }
-        .sheet(isPresented: $showTagEditor) {
-            TagEditorSheet(stairwayID: stairway.id)
-                .presentationDetents([.medium])
         }
         .sheet(isPresented: $showPhotoPicker) {
             PhotoPicker { imageData in addPhoto(imageData: imageData) }
@@ -576,31 +571,21 @@ struct StairwayBottomSheet: View {
                 .font(.subheadline)
                 .fontWeight(.medium)
 
-            FlowLayout(spacing: 8) {
-                ForEach(stairwayTags) { tag in
-                    Text(tag.name)
-                        .font(.subheadline)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
-                        .foregroundStyle(Color.forestGreen)
-                        .clipShape(Capsule())
-                        .overlay(Capsule().stroke(Color.forestGreen, lineWidth: 1))
-                }
-
-                Button {
-                    showTagEditor = true
-                } label: {
-                    HStack(spacing: 4) {
-                        Image(systemName: "plus")
-                            .font(.system(size: 11, weight: .semibold))
-                        Text("Add Tag")
-                            .font(.subheadline)
-                    }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
+            if stairwayTags.isEmpty {
+                Text("No tags assigned.")
+                    .font(.subheadline)
                     .foregroundStyle(.secondary)
-                    .clipShape(Capsule())
-                    .overlay(Capsule().stroke(Color(.separator), lineWidth: 0.5))
+            } else {
+                FlowLayout(spacing: 8) {
+                    ForEach(stairwayTags) { tag in
+                        Text(tag.name)
+                            .font(.subheadline)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .foregroundStyle(Color.forestGreen)
+                            .clipShape(Capsule())
+                            .overlay(Capsule().stroke(Color.forestGreen, lineWidth: 1))
+                    }
                 }
             }
         }

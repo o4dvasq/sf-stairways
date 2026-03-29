@@ -21,6 +21,10 @@ struct StairwayDetailPanel: View {
     // Tag picker state
     @State private var showTagPicker = false
 
+    // Inline create-and-assign state
+    @State private var showCreateTagField = false
+    @State private var inlineTagName = ""
+
     // Notes editing state
     @State private var isEditingNotes = false
     @State private var editNotesText: String = ""
@@ -45,6 +49,8 @@ struct StairwayDetailPanel: View {
         .onChange(of: stairway.id) {
             loadOverrideFields()
             isEditingNotes = false
+            showCreateTagField = false
+            inlineTagName = ""
         }
     }
 
@@ -314,15 +320,38 @@ struct StairwayDetailPanel: View {
                 }
 
                 let unassignedTags = tags.filter { !assignedTagIDs.contains($0.id) }
-                if !unassignedTags.isEmpty {
-                    Menu("Add Tag") {
-                        ForEach(unassignedTags) { tag in
-                            Button(tag.name) {
-                                addTag(tagID: tag.id)
-                            }
+                Menu("Add Tag") {
+                    ForEach(unassignedTags) { tag in
+                        Button(tag.name) {
+                            addTag(tagID: tag.id)
                         }
                     }
-                    .menuStyle(.borderedButton)
+                    if !unassignedTags.isEmpty {
+                        Divider()
+                    }
+                    Button("Create & Assign…") {
+                        showCreateTagField = true
+                        inlineTagName = ""
+                    }
+                }
+                .menuStyle(.borderedButton)
+
+                if showCreateTagField {
+                    HStack(spacing: 6) {
+                        TextField("Tag name…", text: $inlineTagName)
+                            .textFieldStyle(.roundedBorder)
+                            .onSubmit { createAndAssignInlineTag() }
+                        Button("Add") { createAndAssignInlineTag() }
+                            .buttonStyle(.borderedProminent)
+                            .controlSize(.small)
+                            .disabled(inlineTagName.trimmingCharacters(in: .whitespaces).isEmpty)
+                        Button("Cancel") {
+                            showCreateTagField = false
+                            inlineTagName = ""
+                        }
+                        .buttonStyle(.bordered)
+                        .controlSize(.small)
+                    }
                 }
             }
             .padding(8)
@@ -429,6 +458,21 @@ struct StairwayDetailPanel: View {
         let toDelete = tagAssignments.filter { $0.stairwayID == stairway.id && $0.tagID == tagID }
         toDelete.forEach { modelContext.delete($0) }
         try? modelContext.save()
+    }
+
+    private func createAndAssignInlineTag() {
+        let name = inlineTagName.trimmingCharacters(in: .whitespaces)
+        guard !name.isEmpty else { return }
+        let slug = name.lowercased()
+            .replacingOccurrences(of: " ", with: "-")
+            .filter { $0.isLetter || $0.isNumber || $0 == "-" }
+        let tag = StairwayTag(id: slug, name: name, isPreset: false)
+        modelContext.insert(tag)
+        let assignment = TagAssignment(stairwayID: stairway.id, tagID: slug)
+        modelContext.insert(assignment)
+        try? modelContext.save()
+        showCreateTagField = false
+        inlineTagName = ""
     }
 
     private func saveNotes() {

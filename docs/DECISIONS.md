@@ -392,3 +392,27 @@ The retroactive HealthKit pull queried steps and elevation for the entire day a 
 **Idempotency via ID pre-check.** The script generates the canonical slug ID for each UH entry before checking whether it already exists in `all_stairways.json`. If it does (from a prior `--apply` run), the entry is skipped. This means `--apply` can be run safely any number of times. The slug generation is deterministic (lowercase → strip non-alphanumeric → spaces-to-hyphens → truncate 60 chars → numeric suffix if collision) so the same UH name always produces the same ID.
 
 **New neighborhoods assigned by bounding box after 800m centroid fallback.** Entries within 800m of any existing neighborhood centroid are assigned to that neighborhood. Entries farther than 800m are checked against 8 geographic bounding boxes (Presidio, Golden Gate Park, Lands End, Fort Mason, Marina, Embarcadero, Downtown, Alcatraz Island) in priority order. Remaining entries within 1500m of any centroid get the nearest neighborhood. Anything still unassigned gets "Unclassified" for future curator review in the macOS admin dashboard.
+
+## macOS-only tag CRUD; iOS tags made fully read-only
+**Date:** 2026-03-29
+
+Tags are a curator-facing feature that requires deliberate action — creating, renaming, assigning, and deleting tags. Putting this UI on iOS created friction: the phone keyboard is awkward for naming tags, and the full tag lifecycle (see all tags, check assignment counts, rename across stairways, cascade-delete) maps naturally to a desktop list UI.
+
+**iOS as display-only.** `TagEditorSheet.swift` was deleted. `StairwayBottomSheet` now shows assigned tags as read-only pills (same visual, no X button, no Add Tag control). `TagFilterSheet` is unchanged — filtering by tag on the map is a read operation and belongs on iOS. The iOS → macOS asymmetry is intentional: walk logging on iOS, curation on macOS.
+
+**`TagManagerSheet` as the single tag admin surface.** Rather than scattering tag create/rename/delete across the detail panel and bulk ops sheet, a dedicated `TagManagerSheet` (toolbar button, `tag.fill` icon) owns the full lifecycle. Detail panel and bulk ops retain *assignment* controls (add/remove tags to/from stairways) but delegate *tag creation* to the manager sheet or to inline "Create & Assign…" fields that run the same slug ID logic.
+
+**Cascade delete on tag removal.** Deleting a custom tag from `TagManagerSheet` immediately deletes all `TagAssignment` records with that `tagID`. This is done in the action function before deleting the `StairwayTag`, so the model context save is a single atomic operation. Confirmation alert shows the affected stairway count.
+
+**Preset tags cannot be renamed or deleted.** The `isPreset: Bool` flag on `StairwayTag` is the guard. Preset rows in `TagManagerSheet` show only name + count — no edit/delete controls. Preset tags are created once by `SeedDataService` and are considered part of the app's vocabulary.
+
+## Nil-last sorting via sentinel sort keys + manual comparator dispatch
+**Date:** 2026-03-29
+
+SwiftUI `Table` requires `TableColumn(value:)` to use a `KeyPath` pointing to a `Comparable` type. `Optional<Double>` and `Optional<Int>` are not `Comparable`, so optional columns (Height, Steps, Elev. Gain, Date Walked) cannot be directly used as sort keypaths. Two approaches were considered:
+
+**Option A: NilLastDouble/NilLastInt wrapper types.** Implement `Comparable` wrappers that put `nil` last. Works for ascending, but in descending order Swift reverses the comparison — nil (represented as `.leastNormalMagnitude`) would sort to the top, not the bottom. Fixing this requires overriding descending behavior which the wrapper can't see.
+
+**Option B (chosen): Sentinel sort keys + manual dispatch in `sortedRows`.** Non-optional `heightSortKey: Double`, `stepsSortKey: Int`, etc. are added to `StairwayRow` using `-.greatestFiniteMagnitude` / `.min` as nil sentinels. These satisfy the `TableColumn(value:)` requirement (clickable headers, sort direction arrows). `sortedRows` reads `sortOrder.first.keyPath`, matches it against known keypaths (`\StairwayRow.heightSortKey` etc.), and delegates to `nilLastSorted(_:asc:value:)` which applies nil-last logic for both directions. Non-optional columns (Name, Photos) fall through to `rows.sorted(using: sortOrder)`.
+
+The sentinel values are never shown in the UI — they only exist so the `Table` header has a sortable column type. The actual sort is fully controlled by `nilLastSorted`.

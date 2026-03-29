@@ -13,6 +13,9 @@ struct BulkOperationsSheet: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var selectedTagID: String? = nil
+    @State private var selectedRemoveTagID: String? = nil
+    @State private var showCreateTagField = false
+    @State private var inlineNewTagName = ""
     @State private var markWalkedDate: Date = Date()
     @State private var showDatePicker = false
     @State private var operationResult: String? = nil
@@ -25,6 +28,19 @@ struct BulkOperationsSheet: View {
             dict[assignment.stairwayID, default: []].insert(assignment.tagID)
         }
         return dict
+    }
+
+    private var tagsOnSelectedStairways: [StairwayTag] {
+        let stairwayIDs = Set(selectedStairways.map(\.id))
+        let assignedTagIDs = Set(
+            tagAssignments
+                .filter { stairwayIDs.contains($0.stairwayID) }
+                .map(\.tagID)
+        )
+        var seen = Set<String>()
+        return tags
+            .filter { assignedTagIDs.contains($0.id) && seen.insert($0.id).inserted }
+            .sorted { $0.name.lowercased() < $1.name.lowercased() }
     }
 
     var body: some View {
@@ -50,19 +66,14 @@ struct BulkOperationsSheet: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    // Selected list preview
                     selectedPreview
-
-                    // Tag assignment
-                    tagSection
-
-                    // Mark as walked
+                    assignTagSection
+                    if !tagsOnSelectedStairways.isEmpty {
+                        removeTagSection
+                    }
                     markWalkedSection
-
-                    // Export
                     exportSection
 
-                    // Result feedback
                     if let result = operationResult {
                         Text(result)
                             .font(.system(size: 12))
@@ -99,9 +110,9 @@ struct BulkOperationsSheet: View {
         }
     }
 
-    // MARK: - Tag Assignment
+    // MARK: - Assign Tag
 
-    private var tagSection: some View {
+    private var assignTagSection: some View {
         GroupBox("Assign Tag to All Selected") {
             VStack(alignment: .leading, spacing: 10) {
                 Picker("Tag", selection: $selectedTagID) {
@@ -112,11 +123,59 @@ struct BulkOperationsSheet: View {
                 }
                 .frame(width: 280)
 
-                Button("Assign Tag") {
-                    bulkAssignTag()
+                if showCreateTagField {
+                    HStack(spacing: 8) {
+                        TextField("New tag name…", text: $inlineNewTagName)
+                            .textFieldStyle(.roundedBorder)
+                            .frame(width: 180)
+                            .onSubmit { createAndBulkAssign() }
+                        Button("Add & Assign") { createAndBulkAssign() }
+                            .buttonStyle(.borderedProminent)
+                            .disabled(inlineNewTagName.trimmingCharacters(in: .whitespaces).isEmpty)
+                        Button("Cancel") {
+                            showCreateTagField = false
+                            inlineNewTagName = ""
+                        }
+                        .buttonStyle(.bordered)
+                    }
                 }
-                .buttonStyle(.borderedProminent)
-                .disabled(selectedTagID == nil)
+
+                HStack {
+                    Button("Assign Tag") {
+                        bulkAssignTag()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .disabled(selectedTagID == nil || showCreateTagField)
+
+                    Button("Create new tag…") {
+                        showCreateTagField.toggle()
+                        if !showCreateTagField { inlineNewTagName = "" }
+                    }
+                    .buttonStyle(.bordered)
+                }
+            }
+            .padding(8)
+        }
+    }
+
+    // MARK: - Remove Tag
+
+    private var removeTagSection: some View {
+        GroupBox("Remove Tag from All Selected") {
+            VStack(alignment: .leading, spacing: 10) {
+                Picker("Tag to remove", selection: $selectedRemoveTagID) {
+                    Text("Choose a tag…").tag(nil as String?)
+                    ForEach(tagsOnSelectedStairways) { tag in
+                        Text(tag.name).tag(tag.id as String?)
+                    }
+                }
+                .frame(width: 280)
+
+                Button("Remove Tag from All Selected") {
+                    bulkRemoveTag()
+                }
+                .buttonStyle(.bordered)
+                .disabled(selectedRemoveTagID == nil)
             }
             .padding(8)
         }
@@ -175,9 +234,51 @@ struct BulkOperationsSheet: View {
         operationResult = "Tag '\(tagName)' assigned to \(count) stairways."
     }
 
+    private func bulkRemoveTag() {
+        guard let tagID = selectedRemoveTagID else { return }
+        let stairwayIDs = Set(selectedStairways.map(\.id))
+        let toDelete = tagAssignments.filter {
+            stairwayIDs.contains($0.stairwayID) && $0.tagID == tagID
+        }
+        toDelete.forEach { modelContext.delete($0) }
+        try? modelContext.save()
+        let tagName = tags.first { $0.id == tagID }?.name ?? tagID
+        operationResult = "Tag '\(tagName)' removed from \(toDelete.count) stairways."
+        selectedRemoveTagID = nil
+    }
+
+    private func createAndBulkAssign() {
+        let name = inlineNewTagName.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !name.isEmpty else { return }
+        let slug = name.lowercased()
+            .replacingOccurrences(of: " ", with: "-")
+            .filter { $0.isLetter || $0.isNumber || $0 == "-" }
+        let tagID = String(slug.prefix(30))
+
+        if !tags.contains(where: { $0.id == tagID }) {
+            let tag = StairwayTag(id: tagID, name: name, isPreset: false)
+            modelContext.insert(tag)
+        }
+
+        var count = 0
+        for stairway in selectedStairways {
+            let alreadyAssigned = tagAssignments.contains {
+                $0.stairwayID == stairway.id && $0.tagID == tagID
+            }
+            if !alreadyAssigned {
+                let assignment = TagAssignment(stairwayID: stairway.id, tagID: tagID)
+                modelContext.insert(assignment)
+                count += 1
+            }
+        }
+        try? modelContext.save()
+        operationResult = "Tag '\(name)' created and assigned to \(count) stairways."
+        showCreateTagField = false
+        inlineNewTagName = ""
+    }
+
     private func bulkMarkWalked() {
         for stairway in selectedStairways {
-            // Find existing walk record or create one.
             let existing = allRows.first { $0.stairway.id == stairway.id }?.walkRecord
             let record: WalkRecord
             if let r = existing {

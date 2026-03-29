@@ -45,6 +45,13 @@ struct StairwayRow: Identifiable {
         let trimmed = notes.trimmingCharacters(in: .whitespacesAndNewlines)
         return String(trimmed.prefix(30)) + (trimmed.count > 30 ? "…" : "")
     }
+
+    // Sort keys for table columns (non-optional, for TableColumn value: parameter).
+    // Actual nil-last sort logic lives in StairwayBrowser.sortedRows.
+    var heightSortKey: Double { heightFt ?? -.greatestFiniteMagnitude }
+    var stepsSortKey: Int { verifiedStepCount ?? hkStepCount ?? .min }
+    var elevationSortKey: Double { elevationGain ?? -.greatestFiniteMagnitude }
+    var dateWalkedSortKey: Double { dateWalked?.timeIntervalSince1970 ?? -.greatestFiniteMagnitude }
 }
 
 // MARK: - Main Browser
@@ -59,11 +66,13 @@ struct StairwayBrowser: View {
 
     @State private var stairwayStore = StairwayStore()
     @State private var selectedNeighborhood: String? = nil
+    @State private var selectedTagID: String? = nil
     @State private var filter: WalkFilter = .all
     @State private var searchText: String = ""
     @State private var selectedIDs: Set<String> = []
     @State private var showHygiene = false
     @State private var showBulkOps = false
+    @State private var showTagManager = false
     @State private var sortOrder: [KeyPathComparator<StairwayRow>] = [
         .init(\.name, order: .forward)
     ]
@@ -100,6 +109,11 @@ struct StairwayBrowser: View {
             result = result.filter { $0.neighborhood == hood }
         }
 
+        if let tagID = selectedTagID {
+            let taggedIDs = Set(tagAssignments.filter { $0.tagID == tagID }.map(\.stairwayID))
+            result = result.filter { taggedIDs.contains($0.id) }
+        }
+
         switch filter {
         case .all:
             break
@@ -133,7 +147,34 @@ struct StairwayBrowser: View {
     }
 
     private var sortedRows: [StairwayRow] {
-        rows.sorted(using: sortOrder)
+        guard let first = sortOrder.first else { return rows }
+        let asc = first.order == .forward
+        let kp = first.keyPath
+
+        if kp == \StairwayRow.heightSortKey {
+            return nilLastSorted(rows, asc: asc) { $0.heightFt }
+        } else if kp == \StairwayRow.stepsSortKey {
+            return nilLastSorted(rows, asc: asc) { $0.verifiedStepCount ?? $0.hkStepCount }
+        } else if kp == \StairwayRow.elevationSortKey {
+            return nilLastSorted(rows, asc: asc) { $0.elevationGain }
+        } else if kp == \StairwayRow.photoCount {
+            return rows.sorted { asc ? $0.photoCount < $1.photoCount : $0.photoCount > $1.photoCount }
+        } else if kp == \StairwayRow.dateWalkedSortKey {
+            return nilLastSorted(rows, asc: asc) { $0.dateWalked }
+        } else {
+            return rows.sorted(using: sortOrder)
+        }
+    }
+
+    private func nilLastSorted<T: Comparable>(_ rows: [StairwayRow], asc: Bool, value: (StairwayRow) -> T?) -> [StairwayRow] {
+        rows.sorted { a, b in
+            switch (value(a), value(b)) {
+            case (nil, nil): return false
+            case (nil, _): return false
+            case (_, nil): return true
+            case let (va?, vb?): return asc ? va < vb : va > vb
+            }
+        }
     }
 
     private var neighborhoodCounts: [(name: String, total: Int, walked: Int)] {
@@ -142,6 +183,18 @@ struct StairwayBrowser: View {
             let walked = group.stairways.filter { walkedIDs.contains($0.id) }.count
             return (name: group.name, total: group.stairways.count, walked: walked)
         }
+    }
+
+    private var tagFilterItems: [(id: String, name: String, count: Int)] {
+        var seen = Set<String>()
+        return tags
+            .filter { seen.insert($0.id).inserted }
+            .compactMap { tag -> (id: String, name: String, count: Int)? in
+                let count = Set(tagAssignments.filter { $0.tagID == tag.id }.map(\.stairwayID)).count
+                guard count > 0 else { return nil }
+                return (id: tag.id, name: tag.name, count: count)
+            }
+            .sorted { $0.name.lowercased() < $1.name.lowercased() }
     }
 
     // The single stairway to show in the detail column (only when exactly one row is selected).
@@ -181,6 +234,9 @@ struct StairwayBrowser: View {
                 tagAssignments: tagAssignments
             )
         }
+        .sheet(isPresented: $showTagManager) {
+            TagManagerSheet()
+        }
     }
 
     // MARK: - Sidebar
@@ -217,6 +273,29 @@ struct StairwayBrowser: View {
                     .tag(item.name as String?)
                 }
             }
+
+            if !tagFilterItems.isEmpty {
+                Section("Tags") {
+                    ForEach(tagFilterItems, id: \.id) { item in
+                        HStack {
+                            Image(systemName: "tag.fill")
+                                .font(.system(size: 10))
+                                .foregroundStyle(selectedTagID == item.id ? Color.brandAmber : Color.secondary)
+                            Text(item.name)
+                                .font(.system(size: 12))
+                                .foregroundStyle(selectedTagID == item.id ? Color.brandAmber : Color.primary)
+                            Spacer()
+                            Text("\(item.count)")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            selectedTagID = (selectedTagID == item.id) ? nil : item.id
+                        }
+                    }
+                }
+            }
         }
         .navigationTitle("SF Stairways")
     }
@@ -243,7 +322,7 @@ struct StairwayBrowser: View {
             }
             .width(min: 160)
 
-            TableColumn("Height") { row in
+            TableColumn("Height", value: \.heightSortKey) { row in
                 if let h = row.heightFt {
                     Text("\(Int(h)) ft")
                 } else {
@@ -252,7 +331,7 @@ struct StairwayBrowser: View {
             }
             .width(65)
 
-            TableColumn("Steps") { row in
+            TableColumn("Steps", value: \.stepsSortKey) { row in
                 if let s = row.verifiedStepCount {
                     Text("\(s)")
                 } else if let s = row.hkStepCount {
@@ -263,7 +342,7 @@ struct StairwayBrowser: View {
             }
             .width(60)
 
-            TableColumn("Elev. Gain") { row in
+            TableColumn("Elev. Gain", value: \.elevationSortKey) { row in
                 if let e = row.elevationGain {
                     Text("\(Int(e)) ft")
                 } else {
@@ -272,7 +351,7 @@ struct StairwayBrowser: View {
             }
             .width(75)
 
-            TableColumn("Photos") { row in
+            TableColumn("Photos", value: \.photoCount) { row in
                 if row.photoCount > 0 {
                     Label("\(row.photoCount)", systemImage: "photo")
                         .font(.system(size: 11))
@@ -320,7 +399,7 @@ struct StairwayBrowser: View {
             }
             .width(150)
 
-            TableColumn("Date Walked") { row in
+            TableColumn("Date Walked", value: \.dateWalkedSortKey) { row in
                 if let date = row.dateWalked {
                     Text(date, style: .date)
                         .font(.system(size: 11))
@@ -378,6 +457,14 @@ struct StairwayBrowser: View {
             }
             .pickerStyle(.segmented)
             .frame(width: 200)
+        }
+
+        ToolbarItem {
+            Button {
+                showTagManager = true
+            } label: {
+                Label("Tags", systemImage: "tag.fill")
+            }
         }
 
         ToolbarItem {

@@ -126,10 +126,11 @@ The following iOS source files are also compiled into the macOS target:
 
 | File | Purpose |
 |---|---|
-| `Views/StairwayBrowser.swift` | Three-column `NavigationSplitView`: neighborhood sidebar with walked/total counts, sortable `Table` of stairways (name, height, steps, elev gain, photos, date walked), detail column |
-| `Views/StairwayDetailPanel.swift` | Catalog vs. walk data comparison grid; editable curator overrides (step count, height, description) with Save; notes → promote to curator description; tag add/remove via `Menu`; local photo grid (NSImage from Data) with per-photo delete confirm |
+| `Views/StairwayBrowser.swift` | Three-column `NavigationSplitView`: sidebar with neighborhood walked/total counts + Tags section (per-tag counts, clickable filter); **fully sortable `Table`** (Name, Height, Steps, Elev. Gain, Photos, Date Walked — nil values sort to bottom in both directions via `nilLastSorted`); detail column; toolbar with Tags, Data Hygiene, and Bulk Actions buttons |
+| `Views/TagManagerSheet.swift` | Full tag CRUD: preset tags (read-only list with assignment counts); custom tags (inline rename, delete with cascade confirmation, assignment counts); new-tag creation with slug ID generation and uniqueness validation |
+| `Views/StairwayDetailPanel.swift` | Catalog vs. walk data comparison grid; editable curator overrides (step count, height, description) with Save; notes → promote to curator description; tag add/remove via `Menu` with "Create & Assign…" inline option; local photo grid (NSImage from Data) with per-photo delete confirm; drag-drop + NSOpenPanel photo import |
 | `Views/DataHygieneView.swift` | Two-column issue browser: sidebar with issue type filter + counts, `Table` of flagged stairways; detects: missing height, missing coordinates, missing HealthKit data, promotion candidates (notes without curator description), proximity-unverified walks |
-| `Views/BulkOperationsSheet.swift` | Bulk tag assign to all selected; bulk mark walked with `DatePicker`; CSV export via `NSSavePanel` using `UniformTypeIdentifiers` |
+| `Views/BulkOperationsSheet.swift` | Bulk tag assign (with "Create new tag…" inline option); **Remove Tag from All Selected** section (picker shows only tags on selected stairways); bulk mark walked with `DatePicker`; CSV export via `NSSavePanel` |
 
 ### macOS Data Flow
 
