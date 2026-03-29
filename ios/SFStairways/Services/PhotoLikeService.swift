@@ -165,7 +165,7 @@ final class PhotoLikeService {
             .upload(fullPath, data: compressedData, options: FileOptions(contentType: "image/jpeg"))
 
         if let thumbData = thumbnailData {
-            try? await supabase.storage
+            _ = try? await supabase.storage
                 .from("photos")
                 .upload(thumbPath, data: thumbData, options: FileOptions(contentType: "image/jpeg"))
         }

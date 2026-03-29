@@ -367,7 +367,7 @@ struct MapTab: View {
         let stateMatchCount = stateFilteredStairways.filter { taggedIDs.contains($0.id) }.count
         if stateMatchCount == 0 {
             let tagName = allTags.first(where: { $0.id == tagID })?.name ?? tagID
-            toastMessage = "No \(filter.rawValue.lowercased()) stairways with "\(tagName)" — showing all tagged."
+            toastMessage = "No \(filter.rawValue.lowercased()) stairways with \"\(tagName)\" — showing all tagged."
         }
     }
 

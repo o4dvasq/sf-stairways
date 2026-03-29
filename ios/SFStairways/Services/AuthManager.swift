@@ -80,9 +80,7 @@ final class AuthManager: NSObject {
                 self.session = currentSession
                 self.isLoading = false
             }
-            if currentSession != nil {
-                await loadProfile()
-            }
+            await loadProfile()
         } catch {
             await MainActor.run {
                 self.session = nil
@@ -91,7 +89,7 @@ final class AuthManager: NSObject {
         }
 
         authStateTask = Task {
-            for await (_, session) in await SupabaseManager.shared.client.auth.authStateChanges {
+            for await (_, session) in SupabaseManager.shared.client.auth.authStateChanges {
                 await MainActor.run { self.session = session }
                 if session != nil {
                     await self.loadProfile()
@@ -203,9 +201,12 @@ extension AuthManager: ASAuthorizationControllerDelegate {
 extension AuthManager: ASAuthorizationControllerPresentationContextProviding {
     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
         // Find the key window to present the Apple credential sheet
-        let scene = UIApplication.shared.connectedScenes
-            .compactMap { $0 as? UIWindowScene }
-            .first { $0.activationState == .foregroundActive }
-        return scene?.windows.first { $0.isKeyWindow } ?? UIWindow()
+        guard let windowScene = UIApplication.shared.connectedScenes
+            .compactMap({ $0 as? UIWindowScene })
+            .first(where: { $0.activationState == .foregroundActive })
+        else {
+            return UIWindow()
+        }
+        return windowScene.keyWindow ?? UIWindow(windowScene: windowScene)
     }
 }
