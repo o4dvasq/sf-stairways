@@ -16,6 +16,12 @@ final class WalkRecord {
     var proximityVerified: Bool? = nil
     // Stamped true at walk completion when global Hard Mode was enabled
     var hardModeAtCompletion: Bool = false
+    var elevationGain: Double? = nil    // Feet climbed, from HealthKit, nil if not captured
+    var walkStartTime: Date? = nil      // Precise session start, used for photo suggestion window
+    var walkEndTime: Date? = nil        // Precise session end, used for photo suggestion window
+
+    var dismissedPhotoIDs: [String] = []
+    var addedPhotoAssetIDs: [String] = []
 
     @Relationship(deleteRule: .cascade, inverse: \WalkPhoto.walkRecord)
     var photos: [WalkPhoto]?
