@@ -13,7 +13,7 @@ _Last updated: 2026-03-29_
 - Successfully archived in Xcode on 2026-03-23
 - See `docs/IOS_REFERENCE.md` for full build details
 
-### macOS Admin Dashboard (new — 2026-03-29)
+### macOS Admin Dashboard
 - **`ios/SFStairwaysMac/`** — macOS target in `SFStairways.xcodeproj`, bundle ID `com.o4dvasq.SFStairways.mac`
 - Shares the same CloudKit container (`iCloud.com.o4dvasq.sfstairways`) as iOS — all walk data, overrides, tags sync automatically
 - Shares SwiftData model files with iOS (same `Models/*.swift`)
@@ -21,7 +21,6 @@ _Last updated: 2026-03-29_
 - Detail panel: catalog vs. walk data comparison, editable curator overrides, notes → promote, tag add/remove, local photo grid with delete
 - Data Hygiene sheet: flags missing height, missing coordinates, no HealthKit data, promotion candidates, proximity unverified
 - Bulk Operations sheet: bulk tag assign, bulk mark walked (with date picker), CSV export via NSSavePanel
-- **Xcode setup required:** shared model files must be manually added to the macOS target membership in Xcode (File Inspector → Target Membership)
 - No Supabase, no HealthKit fetching on macOS (displays synced walk data only)
 
 ### Web App (deprecated)
@@ -39,13 +38,14 @@ _Last updated: 2026-03-29_
 ## Recent Completions
 
 ### 2026-03-29
-- **macOS Admin Dashboard** — new macOS target with three-column browser, detail panel (curator edits, tag mgmt, photo grid), data hygiene dashboard, bulk operations + CSV export. `WalkPhoto.swift` made cross-platform (`#if canImport(UIKit)` guards). Requires Xcode target membership setup.
+- **HealthKit data accuracy fix** — removed retroactive full-day HealthKit pull (inaccurate per-stairway data); `statsRow` now only shows stepCount/elevationGain when `walkStartTime != nil` (active walks only); one-time migration clears bad full-day step counts from manually logged walks.
+- **macOS Admin Dashboard** — new macOS target with three-column browser, detail panel (curator edits, tag mgmt, photo grid), data hygiene dashboard, bulk operations + CSV export. `WalkPhoto.swift` made cross-platform. `SupabaseModels.swift` guarded with `#if !os(macOS)`.
 - **Photo sync fix** — photo upload logging, auth check, failed vs pending badge.
-- **Map launch cleanup** — removed auto-zoom-to-nearest on launch (map stays at city view); HealthKit entitlement added; ProgressCard header changed to amber accent bar (no label).
+- **Map launch cleanup** — removed auto-zoom-to-nearest on launch; HealthKit entitlement added; ProgressCard header changed to amber accent bar.
 
 ### 2026-03-28
 - **Remove Saved concept + layout tweaks** — two-state model; search bottom-right; settings leading; Progress tab renamed Stats; one-time migration.
-- **HealthKit walk stats display** — walk method badge, diagnostic in stats row, retroactive pull flow, HealthKit auth in Settings.
+- **HealthKit walk stats display** — walk method badge, retroactive pull flow (now removed), HealthKit auth in Settings.
 - **Camera during active walk** — camera button in activeSessionBanner; WalkRecord created on walk start.
 - **Hard Mode confirmation prompt** — amber badge for unverified walks; confirmation alert flow.
 - **Stairway Tags v1** — StairwayTag + TagAssignment models, tag editor, map filter, preset tags.
@@ -61,12 +61,11 @@ _Last updated: 2026-03-29_
 
 ## Pending Specs
 
-- `SPEC_map-launch-and-cleanup.md`
-- `SPEC_photo-sync-fix.md`
+- `SPEC_macos-photo-add.md`
 
 ## Known Issues
 
-- **macOS target membership:** `Models/*.swift`, `StairwayStore.swift`, `AppColors.swift`, `all_stairways.json` must be manually added to `SFStairwaysMac` target membership in Xcode's File Inspector before the macOS app compiles.
+- **macOS CloudKit sync:** first launch on Mac requires a few minutes for CloudKit to sync iOS walk data down. Leave both apps open; data appears automatically once sync completes.
 - **HealthKit:** entitlement added to `.entitlements`; HealthKit capability must also be manually enabled in Xcode target Signing & Capabilities (links HealthKit.framework).
 - **CloudKit sync:** may still fall back to local if Xcode target lacks Background Modes → Remote Notifications capability (manual Xcode step — not in repo).
 - **CKErrorDomain error 2** (not authenticated) surfaces as red error icon on Stats tab — separate from Supabase auth; requires CloudKit investigation.

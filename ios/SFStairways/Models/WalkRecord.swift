@@ -64,9 +64,4 @@ final class WalkRecord {
         }
     }
 
-    // True when the walk was manually marked and has no HealthKit stats yet —
-    // meaning a retroactive pull could add data.
-    var canRetroactivelyPullStats: Bool {
-        walked && walkStartTime == nil && stepCount == nil && elevationGain == nil
-    }
 }

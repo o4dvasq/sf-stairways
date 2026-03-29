@@ -353,3 +353,16 @@ A macOS companion app was added as a second target in `SFStairways.xcodeproj` (b
 **Why macOS rather than a second iOS app or web admin.** The admin workflow (bulk tagging, curator note promotion, data hygiene review, CSV export) is inherently desktop-oriented — multi-select, sortable tables, file export panels. A native macOS app with `NavigationSplitView` + `Table` (macOS SwiftUI primitives) provides exactly this without needing to build a separate web backend or fight iOS's touch-first conventions.
 
 **File membership is a manual Xcode step.** Adding a target to `project.pbxproj` by hand editing is error-prone and risks corrupting the project file. The correct workflow is: create the target in Xcode UI (File → New → Target), then add shared files via the File Inspector (Target Membership checkbox). This is documented in PROJECT_STATE.md Known Issues.
+
+## HealthKit data accuracy: drop retroactive pull, restrict display to active walks
+**Date:** 2026-03-29
+
+The retroactive HealthKit pull queried steps and elevation for the entire day a stairway was walked (midnight to midnight). This produced wildly inaccurate data — a stairway walk might show 10,000+ steps because it captured every step taken that day, not the ~200 steps on the stairway itself.
+
+**Root cause.** `retroactivelyPullHealthKitStats()` used `Calendar.startOfDay` / `Calendar.startOfDay+1day` as the query window. There was no way to narrow it further because manually logged walks have no `walkStartTime` or `walkEndTime` — those timestamps are only set by the active walk session flow.
+
+**Fix: discard all manually logged walk HealthKit data.** The `retroactivelyPullHealthKitStats()` function is removed entirely. `statsRow` now guards `stepCount` and `elevationGain` display behind `walkStartTime != nil` — only data from timed active sessions is shown. A one-time migration (`cleanRetroactiveStatsIfNeeded`, key `com.sfstairways.hasCleanedRetroactiveStats`) clears the bad full-day values from all existing manually logged walk records.
+
+**Active walk HealthKit remains unchanged.** `endWalkSession()` still fetches HealthKit stats using the actual session `walkStartTime`/`walkEndTime` window — this produces accurate per-stairway step count and elevation, and is unaffected by this change.
+
+**Design rule going forward:** HealthKit data is only ever captured during active walk sessions. Manually logged walks (via "Mark as Walked") intentionally have no HealthKit stats. This is correct because there is no reliable time window to query.

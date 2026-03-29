@@ -40,8 +40,6 @@ struct StairwayBottomSheet: View {
     @State private var triggerCuratorPromote = false
     @State private var showCancelWalkAlert = false
     @State private var showHardModeAlert = false
-    @State private var showRetroactivePullAlert = false
-    @State private var isRetroactivePullInProgress = false
     @State private var toastMessage: String? = nil
     @State private var failedPhotoIDs: Set<PersistentIdentifier> = []
 
@@ -187,15 +185,6 @@ struct StairwayBottomSheet: View {
         } message: {
             Text("You're not near this stairway. You can still log it, but it won't count as proximity-verified.")
         }
-        .alert(
-            "Add HealthKit Stats for \(walkRecord?.dateWalked?.formatted(date: .abbreviated, time: .omitted) ?? "this date")?",
-            isPresented: $showRetroactivePullAlert
-        ) {
-            Button("Cancel", role: .cancel) { }
-            Button("Add Stats") { retroactivelyPullHealthKitStats() }
-        } message: {
-            Text("Will search for steps and elevation data recorded on your iPhone on this date.")
-        }
         .sheet(isPresented: $showTagEditor) {
             TagEditorSheet(stairwayID: stairway.id)
                 .presentationDetents([.medium])
@@ -285,7 +274,8 @@ struct StairwayBottomSheet: View {
         HStack(spacing: 12) {
             if let verifiedStairs = currentOverride?.verifiedStepCount {
                 verifiedStatText("\(verifiedStairs) stairs")
-            } else if let steps = walkRecord?.stepCount {
+            } else if let steps = walkRecord?.stepCount, walkRecord?.walkStartTime != nil {
+                // Only show HealthKit step count when it came from an active walk session.
                 Text("\(steps) steps")
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -297,7 +287,8 @@ struct StairwayBottomSheet: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
-            if let elevation = walkRecord?.elevationGain {
+            if let elevation = walkRecord?.elevationGain, walkRecord?.walkStartTime != nil {
+                // Only show HealthKit elevation when it came from an active walk session.
                 Text("\(Int(elevation)) ft gained")
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -792,31 +783,6 @@ struct StairwayBottomSheet: View {
         if let elevation { record.elevationGain = elevation }
         record.updatedAt = Date()
         try? modelContext.save()
-    }
-
-    private func retroactivelyPullHealthKitStats() {
-        guard let record = walkRecord, let dateWalked = record.dateWalked else { return }
-        guard record.canRetroactivelyPullStats else { return }
-        isRetroactivePullInProgress = true
-        Task {
-            let start = Calendar.current.startOfDay(for: dateWalked)
-            let end = Calendar.current.date(byAdding: .second, value: -1,
-                to: Calendar.current.startOfDay(
-                    for: Calendar.current.date(byAdding: .day, value: 1, to: dateWalked)!
-                ))!
-            let stats = await HealthKitService.fetchWalkStats(from: start, to: end)
-            await MainActor.run {
-                if stats.steps == nil && stats.elevationFeet == nil {
-                    toastMessage = "No HealthKit data found for this date."
-                } else {
-                    if let steps = stats.steps { record.stepCount = steps }
-                    if let elevation = stats.elevationFeet { record.elevationGain = elevation }
-                    record.updatedAt = Date()
-                    try? modelContext.save()
-                }
-                isRetroactivePullInProgress = false
-            }
-        }
     }
 
     private func removeRecord() {

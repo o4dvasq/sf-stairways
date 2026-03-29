@@ -62,6 +62,7 @@ struct SFStairwaysApp: App {
                         SeedDataService.seedIfNeeded(modelContext: modelContainer.mainContext)
                         SeedDataService.seedTagsIfNeeded(modelContext: modelContainer.mainContext)
                         SeedDataService.cleanUnwalkedRecordsIfNeeded(modelContext: modelContainer.mainContext)
+                        SeedDataService.cleanRetroactiveStatsIfNeeded(modelContext: modelContainer.mainContext)
                     }
 
                 if showSplash {

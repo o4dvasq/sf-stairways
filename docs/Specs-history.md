@@ -2,6 +2,7 @@
 
 | Description | Implemented | Spec File |
 |---|---|---|
+| Remove retroactive HealthKit pull; clear bad step/elevation data | 2026-03-29 | SPEC_healthkit-data-cleanup.md |
 | macOS admin dashboard: browser, detail, hygiene, bulk ops | 2026-03-29 | SPEC_admin-dashboard-design.md |
 | Photo upload logging, auth check, failed vs pending badge | 2026-03-29 | SPEC_photo-sync-fix.md |
 | Stats/Progress label swap; search button bottom-right; sheet cleanup | 2026-03-29 | SPEC_map-launch-and-cleanup.md |
