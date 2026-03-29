@@ -283,8 +283,10 @@
 				INFOPLIST_FILE = SFStairways/Info.plist;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSCameraUsageDescription = "SFStairways uses your camera to photograph stairways you've walked.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "SF Stairways reads step count and elevation from your walks.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "FStairways uses your location to find nearby stairways.";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "SFStairways accesses your photo library to add stairway photos.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Stairway photos are saved to your camera roll.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "SF Stairways suggests photos from your library taken on the day you walked a stairway.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -320,8 +322,10 @@
 				INFOPLIST_FILE = SFStairways/Info.plist;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSCameraUsageDescription = "SFStairways uses your camera to photograph stairways you've walked.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "SF Stairways reads step count and elevation from your walks.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "FStairways uses your location to find nearby stairways.";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "SFStairways accesses your photo library to add stairway photos.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Stairway photos are saved to your camera roll.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "SF Stairways suggests photos from your library taken on the day you walked a stairway.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

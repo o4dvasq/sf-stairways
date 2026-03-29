@@ -2,6 +2,7 @@
 
 | Description | Implemented | Spec File |
 |---|---|---|
+| Remove launch zoom; ProgressCard label; HealthKit entitlement | 2026-03-28 | SPEC_map-launch-and-cleanup.md |
 | HealthKit walk stats visibility, diagnostics, retroactive pull | 2026-03-28 | SPEC_healthkit-walk-stats-display.md |
 | Remove Saved concept; search bottom-right; settings left; Stats tab | 2026-03-28 | SPEC_remove-saved-and-layout-tweaks.md |
 | Camera button in active walk banner; WalkRecord created on start | 2026-03-28 | SPEC_camera-during-active-walk.md |

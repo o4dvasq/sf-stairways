@@ -1,6 +1,6 @@
 # Project State — sf-stairways
 
-_Last updated: 2026-03-28_
+_Last updated: 2026-03-29_
 
 ## Platform
 
@@ -27,36 +27,31 @@ _Last updated: 2026-03-28_
 
 ## Active Workstreams
 
-### 1. Solo UX — recent completions (2026-03-28)
+### 1. Solo UX — recent completions (2026-03-29)
 
-- **Remove Saved concept + layout tweaks** — Two-state model (Unsaved / Walked); Save/Unsave buttons and Saved filter pills removed everywhere; "Not Walked" deletes the record; search button moves to bottom-right floating circle; settings gear to leading of top bar; Around Me + Tag Filter remain trailing; Progress tab renamed "Stats"; one-time migration deletes walked==false WalkRecords on first launch.
-- **HealthKit walk stats visibility** — walk method badge ("Active Walk" / "Active Walk (no HealthKit data)" / "Logged manually") below date in bottom sheet; "HealthKit data not found" diagnostic in stats row; retroactive HealthKit pull for manually-logged walks (amber CTA → confirmation alert → full-day query → silent update or toast); HealthKit auth status row in Settings.
-- **Camera during active walk** — camera button in activeSessionBanner; WalkRecord created on walk start so mid-walk photos attach correctly.
-- **Hard Mode confirmation prompt** — Mark Walked never disabled; Hard Mode ON + out of range shows confirmation alert. Amber badge on unverified walks. Active Walk completion sets proximityVerified=true.
-- **Stairway Tags v1** — StairwayTag + TagAssignment models, tag editor, pills in detail + search, map filter, preset tags.
-- **Active walk mode** — timer, HealthKit steps/elevation, end/cancel flow
-- **Photo suggestions** — suggested photos from walk day; PHAsset dedup, dismiss, add actions
-- **Photo camera roll save** — in-app camera captures saved via PHPhotoLibrary
-- **Photo persistence fix** — local photos visible in carousel; PhotoSource enum; is_public fix
+- **Map launch cleanup** — removed auto-zoom-to-nearest on launch (map stays at city view); removed "Progress" title from ProgressCard (replaced with 4pt amber accent bar); added HealthKit entitlement to SFStairways.entitlements so permission dialog can fire.
 
 ### Previous completions (2026-03-28)
-- Launch zoom to nearest stairway after splash dismisses
-- Map pin tap targets 44pt min; zoom-responsive scale 1x–2x
-- Curator notes-to-commentary promotion flow wired
-- Expandable bottom sheet replaces two-view map flow, deletes StairwayDetail
+- **Remove Saved concept + layout tweaks** — two-state model; search bottom-right; settings leading; Progress tab renamed Stats; one-time migration for walked==false records.
+- **HealthKit walk stats display** — walk method badge, diagnostic in stats row, retroactive pull flow, HealthKit auth in Settings.
+- **Camera during active walk** — camera button in activeSessionBanner; WalkRecord created on walk start.
+- **Hard Mode confirmation prompt** — amber badge for unverified walks; confirmation alert flow.
+- **Stairway Tags v1** — StairwayTag + TagAssignment models, tag editor, map filter, preset tags.
+- **Active walk mode** — timer, HealthKit steps/elevation, end/cancel flow.
+- **Photo suggestions** — PHAsset dedup, dismiss, add from walk day.
+- **Photo camera roll save** and **photo persistence fix** (PhotoSource enum, is_public fix).
+- Launch zoom to nearest, map pin tap targets, curator notes-to-commentary, expandable bottom sheet.
 
 ### Previous completions (2026-03-27 and earlier)
 - UI overhaul: amber accent, top bar redesign, splash fix, pin colors
-- Round 2 bug fixes: circle pins, curator gate, auth error
-- Bug Fixes Round 1: map pins, Sign in with Apple code path, Hard Mode toggle
-- Curator social layer: photo carousel, curator commentary, photo likes, user-level Hard Mode (Supabase)
-- Supabase iOS integration: SDK, AuthManager, Sign in with Apple, SettingsView
-- Curator data layer: StairwayOverride model, verified stats with badge
+- Curator social layer, Supabase integration, curator data layer
 - See: docs/specs/implemented/ for full spec history
 
 ### 2. Pending Specs
 
-No specs currently pending. docs/specs/ is empty.
+- `SPEC_map-launch-and-cleanup.md`
+- `SPEC_photo-sync-fix.md`
+- `SPEC_admin-dashboard-design.md`
 
 ### 3. App Store — Scaffold multi-user architecture
 
@@ -64,6 +59,7 @@ No specs currently pending. docs/specs/ is empty.
 
 ## Known Issues
 
+- HealthKit: entitlement added to .entitlements file; HealthKit capability must also be manually enabled in Xcode target Signing & Capabilities (links HealthKit.framework)
 - CloudKit sync may still fall back to local if Xcode target lacks Background Modes → Remote Notifications capability (manual Xcode step — not in repo)
 - CKErrorDomain error 2 (not authenticated) surfaces as red error icon on Stats tab — separate from Supabase auth; requires CloudKit investigation
 - supabase-swift package + new files from curator social layer not yet confirmed added to Xcode target

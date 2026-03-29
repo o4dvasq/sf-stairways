@@ -2,12 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSHealthShareUsageDescription</key>
-	<string>SF Stairways reads step count and elevation from your walks.</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Stairway photos are saved to your camera roll.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>SF Stairways suggests photos from your library taken on the day you walked a stairway.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>

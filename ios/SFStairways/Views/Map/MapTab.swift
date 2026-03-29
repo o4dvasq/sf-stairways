@@ -24,8 +24,6 @@ struct MapTab: View {
     @State private var showSettings: Bool = false
     @State private var showTagFilter: Bool = false
     @State private var toastMessage: String? = nil
-    @State private var hasZoomedToNearest = false
-    @State private var launchTime: Date = .now
 
     enum StairwayFilter: String, CaseIterable {
         case all = "All"
@@ -152,16 +150,6 @@ struct MapTab: View {
         .onChange(of: filter) { _, _ in
             showTagDroppedToastIfNeeded(for: activeTagFilter)
         }
-        .onChange(of: locationManager.currentLocation) { _, newLocation in
-            guard let location = newLocation, !hasZoomedToNearest else { return }
-            hasZoomedToNearest = true
-            // Splash fully dismisses at ~2.9s (2.5s delay + 0.4s fade). Add 0.2s buffer.
-            let splashEnd = launchTime.addingTimeInterval(3.1)
-            let delay = max(0, splashEnd.timeIntervalSinceNow)
-            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-                zoomToNearest(from: location)
-            }
-        }
     }
 
     // MARK: - Top Bar
@@ -281,18 +269,6 @@ struct MapTab: View {
         withAnimation { cameraPosition = .region(region) }
     }
 
-    private func zoomToNearest(from location: CLLocation) {
-        let nearest = store.stairways
-            .filter { $0.hasValidCoordinate }
-            .min(by: { $0.distance(from: location) < $1.distance(from: location) })
-        guard let stairway = nearest, let coord = stairway.coordinate else { return }
-        let region = MKCoordinateRegion(
-            center: coord,
-            span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-        )
-        withAnimation { cameraPosition = .region(region) }
-    }
-
     // MARK: - Computed Properties
 
     /// Static pin scale — no dynamic resizing for performance.
@@ -375,14 +351,8 @@ struct ProgressCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("Progress")
-                .font(.caption)
-                .fontWeight(.semibold)
-                .foregroundColor(.white)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 4)
-                .background(Color.brandAmber)
+            Color.brandAmber
+                .frame(height: 4)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(walkedCount > 0 ? "\(walkedCount) stairways" : "—")

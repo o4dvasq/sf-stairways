@@ -323,3 +323,20 @@ Three small UX changes bundled in the same spec:
 **Settings gear to leading.** The gear icon moved from the trailing HStack (where it competed with Around Me + Tag Filter) to the leading side of the top bar ZStack. The trailing side now holds only the two functional map controls: Around Me and Tag Filter.
 
 **Progress → Stats.** The tab label and navigation title were renamed from "Progress" to "Stats" (`ContentView.swift` tab label + `ProgressTab.swift` `.navigationTitle`). "Stats" is more concise and accurately describes the content (completion metrics, neighborhood breakdown, recent walks) without implying a goal-setting workflow.
+
+## Remove launch zoom-to-nearest: city view is the right default
+**Date:** 2026-03-29
+
+The launch zoom automatically flew the map to the nearest stairway as soon as location was obtained. The motivation was to give new users an immediate point of interest. In practice it was disorienting — the map would jump unexpectedly to a random stairway even when the user just wanted the overview. City-wide view (latDelta 0.06, centered on SF) is the correct default: it shows all 382 stairways and lets the user orient before navigating.
+
+`hasZoomedToNearest`, `launchTime`, the `.onChange(of: locationManager.currentLocation)` handler, and `zoomToNearest(from:)` are all removed. Explicit user-triggered navigation (`flyTo`, `flyToUserLocation`, `flyToNeighborhood`) is unchanged.
+
+## ProgressCard: amber bar replaces title text
+**Date:** 2026-03-29
+
+The ProgressCard header displayed `Text("Progress")` — the same word as the (now renamed) Stats tab just below it, creating a visual echo. Removed the text entirely. The card's purpose is self-evident from the three stat lines (stairway count, feet, steps). The amber header bar is kept as a 4pt color accent, providing visual separation between the header area and stats without requiring a label.
+
+## HealthKit entitlement: added to .entitlements, Xcode capability required separately
+**Date:** 2026-03-29
+
+`com.apple.developer.healthkit` and `com.apple.developer.healthkit.access` added to `SFStairways.entitlements`. These keys are required for code signing but the HealthKit permission dialog also requires the HealthKit capability to be enabled in Xcode target Signing & Capabilities (which links `HealthKit.framework`). The entitlement file is in the repo; the Xcode project capability toggle is a manual step per-machine that is not tracked in the repo's pbxproj in this project's workflow.
