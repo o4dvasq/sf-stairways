@@ -10,8 +10,10 @@ struct TagFilterSheet: View {
 
     private var tagsWithAssignments: [StairwayTag] {
         let assignedTagIDs = Set(allAssignments.map(\.tagID))
+        // Deduplicate by id (CloudKit + seed can create duplicates)
+        var seen = Set<String>()
         return allTags
-            .filter { assignedTagIDs.contains($0.id) }
+            .filter { assignedTagIDs.contains($0.id) && seen.insert($0.id).inserted }
             .sorted { $0.name.lowercased() < $1.name.lowercased() }
     }
 

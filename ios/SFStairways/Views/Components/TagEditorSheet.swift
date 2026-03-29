@@ -18,7 +18,10 @@ struct TagEditorSheet: View {
     }
 
     private var filteredTags: [StairwayTag] {
-        let sorted = allTags.sorted { $0.name.lowercased() < $1.name.lowercased() }
+        // Deduplicate by id (CloudKit + seed can create duplicates)
+        var seen = Set<String>()
+        let unique = allTags.filter { seen.insert($0.id).inserted }
+        let sorted = unique.sorted { $0.name.lowercased() < $1.name.lowercased() }
         guard !searchText.isEmpty else { return sorted }
         return sorted.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
     }

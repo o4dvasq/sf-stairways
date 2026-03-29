@@ -41,6 +41,10 @@ final class PhotoSuggestionService {
         suggestions = assets
     }
 
+    func removeSuggestion(withID id: String) {
+        suggestions.removeAll { $0.localIdentifier == id }
+    }
+
     func loadFullImage(asset: PHAsset) async -> Data? {
         await withCheckedContinuation { continuation in
             let options = PHImageRequestOptions()
