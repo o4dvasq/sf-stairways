@@ -22,6 +22,7 @@ struct SettingsView: View {
                 }
                 iCloudSection
                 buildSection
+                acknowledgementsSection
             }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
@@ -314,6 +315,83 @@ struct SettingsView: View {
             return Date()
         }
         return date
+    }
+
+    // MARK: - Acknowledgements
+
+    private var acknowledgementsSection: some View {
+        Section("Acknowledgements") {
+            Text("Data Sources")
+                .font(.caption.bold())
+                .foregroundStyle(.secondary)
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Stairway data originally compiled from the index in Stairway Walks in San Francisco by Adah Bakalinsky, maintained at sfstairways.com")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                if let url = URL(string: "https://www.sfstairways.com") {
+                    Link(destination: url) {
+                        Label("sfstairways.com", systemImage: "arrow.up.right")
+                            .font(.subheadline)
+                            .foregroundStyle(Color.forestGreen)
+                    }
+                }
+            }
+            .padding(.vertical, 4)
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Additional stairway locations from the San Francisco Public Stairway Map by Alexandra Kenin / Urban Hiker SF")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                if let url = URL(string: "https://www.urbanhikersf.com") {
+                    Link(destination: url) {
+                        Label("urbanhikersf.com", systemImage: "arrow.up.right")
+                            .font(.subheadline)
+                            .foregroundStyle(Color.forestGreen)
+                    }
+                }
+                if let url = URL(string: "https://www.google.com/maps/d/viewer?mid=1F4TY3dl4yiG6VBqigpnrFvhsbK_FYcsW") {
+                    Link(destination: url) {
+                        Label("View the Stairway Map", systemImage: "arrow.up.right")
+                            .font(.subheadline)
+                            .foregroundStyle(Color.forestGreen)
+                    }
+                }
+            }
+            .padding(.vertical, 4)
+
+            if let url = URL(string: "https://buymeacoffee.com/urbanhikersf") {
+                Link(destination: url) {
+                    HStack(spacing: 10) {
+                        Image(systemName: "cup.and.saucer.fill")
+                            .foregroundStyle(Color.brandAmber)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Buy a Matcha")
+                                .font(.subheadline)
+                                .fontWeight(.medium)
+                            Text("Support Alexandra's incredible work cataloging SF's stairways")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        Image(systemName: "arrow.up.right")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    .foregroundStyle(.primary)
+                }
+                .padding(.vertical, 4)
+            }
+
+            HStack(spacing: 10) {
+                Image(systemName: "book.fill")
+                    .foregroundStyle(.secondary)
+                Text("Stairway Walks in San Francisco by Adah Bakalinsky — the original field guide that started it all")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.vertical, 4)
+        }
     }
 
     private var syncDetail: String {

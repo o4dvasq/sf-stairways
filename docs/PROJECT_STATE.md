@@ -44,6 +44,9 @@ _Last updated: 2026-03-29_
 ## Recent Completions
 
 ### 2026-03-29 (this session)
+- **Attribution & acknowledgements** — iOS bottom sheet shows "View on Urban Hiker SF Map" link for stairways with `geocodeSource == "urban_hiker"` (alongside existing sfstairways.com link for stairways with both sources); macOS detail panel adds "UH Map" row in data comparison grid for Urban Hiker stairways; iOS Settings gains a new "Acknowledgements" section (SF Stairways attribution, Urban Hiker SF attribution + Stairway Map link, Buy a Matcha link with amber cup icon, book credit); macOS gets an `info.circle` toolbar button opening `AcknowledgementsSheet` with the same content.
+
+### 2026-03-29 (earlier)
 - **macOS tag management** — `TagManagerSheet.swift` with full CRUD (create, inline rename, delete with cascade to TagAssignments, preset tags read-only); sidebar Tags section in `StairwayBrowser` with per-tag counts and filter intersecting neighborhood filter; all numeric table columns sortable with nil-last logic; "Create & Assign…" inline option in detail panel Add Tag menu; Remove Tag and Create New Tag sections in BulkOperationsSheet; iOS `TagEditorSheet` deleted and tags made fully read-only on iOS; macOS app icon generated (white StairShape on brandOrange, all 10 sizes).
 
 ### 2026-03-29 (earlier)
@@ -73,7 +76,7 @@ _Last updated: 2026-03-29_
 
 ## Pending Specs
 
-- `docs/specs/SPEC_urban-hiker-data-enrichment.md` — import Urban Hiker SF stairways
+- `docs/specs/SPEC_ux-fixes-round3.md` — UX fixes round 3
 
 ## Known Issues
 

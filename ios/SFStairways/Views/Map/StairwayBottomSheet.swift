@@ -149,6 +149,25 @@ struct StairwayBottomSheet: View {
                         .clipShape(RoundedRectangle(cornerRadius: 10))
                     }
                 }
+
+                if stairway.geocodeSource == "urban_hiker",
+                   let lat = stairway.lat,
+                   let lng = stairway.lng,
+                   let url = URL(string: "https://www.google.com/maps/d/viewer?mid=1F4TY3dl4yiG6VBqigpnrFvhsbK_FYcsW&ll=\(lat),\(lng)&z=18") {
+                    Link(destination: url) {
+                        HStack {
+                            Image(systemName: "safari")
+                            Text("View on Urban Hiker SF Map")
+                            Spacer()
+                            Image(systemName: "arrow.up.right")
+                        }
+                        .font(.subheadline)
+                        .foregroundStyle(Color.forestGreen)
+                        .padding(14)
+                        .background(Color(.systemGray6))
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                    }
+                }
             }
             .padding(20)
         }

@@ -160,6 +160,22 @@ struct StairwayDetailPanel: View {
                             .foregroundStyle(.tertiary)
                     }
                 }
+
+                if stairway.geocodeSource == "urban_hiker",
+                   let lat = stairway.lat,
+                   let lng = stairway.lng,
+                   let url = URL(string: "https://www.google.com/maps/d/viewer?mid=1F4TY3dl4yiG6VBqigpnrFvhsbK_FYcsW&ll=\(lat),\(lng)&z=18") {
+                    GridRow {
+                        Text("UH Map")
+                            .font(.system(size: 12))
+                            .foregroundStyle(.secondary)
+                        Link("View on Urban Hiker SF", destination: url)
+                            .font(.system(size: 12))
+                        Text("—")
+                            .font(.system(size: 12))
+                            .foregroundStyle(.tertiary)
+                    }
+                }
             }
             .padding(8)
         }

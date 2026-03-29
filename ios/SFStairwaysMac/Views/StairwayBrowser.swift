@@ -73,6 +73,7 @@ struct StairwayBrowser: View {
     @State private var showHygiene = false
     @State private var showBulkOps = false
     @State private var showTagManager = false
+    @State private var showAcknowledgements = false
     @State private var sortOrder: [KeyPathComparator<StairwayRow>] = [
         .init(\.name, order: .forward)
     ]
@@ -236,6 +237,9 @@ struct StairwayBrowser: View {
         }
         .sheet(isPresented: $showTagManager) {
             TagManagerSheet()
+        }
+        .sheet(isPresented: $showAcknowledgements) {
+            AcknowledgementsSheet()
         }
     }
 
@@ -475,6 +479,14 @@ struct StairwayBrowser: View {
             }
         }
 
+        ToolbarItem {
+            Button {
+                showAcknowledgements = true
+            } label: {
+                Label("Acknowledgements", systemImage: "info.circle")
+            }
+        }
+
         if !selectedIDs.isEmpty {
             ToolbarItem {
                 Button {
@@ -484,5 +496,100 @@ struct StairwayBrowser: View {
                 }
             }
         }
+    }
+}
+
+// MARK: - Acknowledgements Sheet
+
+struct AcknowledgementsSheet: View {
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            HStack {
+                Text("Acknowledgements")
+                    .font(.title2.bold())
+                Spacer()
+                Button("Done") { dismiss() }
+                    .buttonStyle(.bordered)
+            }
+            .padding(.bottom, 20)
+
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    Text("Data Sources")
+                        .font(.caption.bold())
+                        .foregroundStyle(.secondary)
+
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Stairway data originally compiled from the index in Stairway Walks in San Francisco by Adah Bakalinsky, maintained at sfstairways.com")
+                            .font(.body)
+                            .foregroundStyle(.secondary)
+                        if let url = URL(string: "https://www.sfstairways.com") {
+                            Link(destination: url) {
+                                Label("sfstairways.com", systemImage: "arrow.up.right")
+                                    .font(.body)
+                            }
+                        }
+                    }
+
+                    Divider()
+
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Additional stairway locations from the San Francisco Public Stairway Map by Alexandra Kenin / Urban Hiker SF")
+                            .font(.body)
+                            .foregroundStyle(.secondary)
+                        if let url = URL(string: "https://www.urbanhikersf.com") {
+                            Link(destination: url) {
+                                Label("urbanhikersf.com", systemImage: "arrow.up.right")
+                                    .font(.body)
+                            }
+                        }
+                        if let url = URL(string: "https://www.google.com/maps/d/viewer?mid=1F4TY3dl4yiG6VBqigpnrFvhsbK_FYcsW") {
+                            Link(destination: url) {
+                                Label("View the Stairway Map", systemImage: "arrow.up.right")
+                                    .font(.body)
+                            }
+                        }
+                    }
+
+                    Divider()
+
+                    if let url = URL(string: "https://buymeacoffee.com/urbanhikersf") {
+                        Link(destination: url) {
+                            HStack(spacing: 10) {
+                                Image(systemName: "cup.and.saucer.fill")
+                                    .foregroundStyle(Color.brandAmber)
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("Buy a Matcha")
+                                        .font(.body)
+                                        .fontWeight(.medium)
+                                    Text("Support Alexandra's incredible work cataloging SF's stairways")
+                                        .font(.callout)
+                                        .foregroundStyle(.secondary)
+                                }
+                                Spacer()
+                                Image(systemName: "arrow.up.right")
+                                    .font(.callout)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .foregroundStyle(.primary)
+                        }
+                    }
+
+                    Divider()
+
+                    HStack(spacing: 10) {
+                        Image(systemName: "book.fill")
+                            .foregroundStyle(.secondary)
+                        Text("Stairway Walks in San Francisco by Adah Bakalinsky — the original field guide that started it all")
+                            .font(.body)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+        }
+        .padding(24)
+        .frame(width: 480, height: 480)
     }
 }
