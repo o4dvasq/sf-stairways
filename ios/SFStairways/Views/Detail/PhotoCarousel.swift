@@ -1,11 +1,14 @@
 import SwiftUI
+import SwiftData
 
 /// Horizontal photo carousel showing local and remote photos for a stairway.
-/// Remote photos include like overlays. Local-only photos show a cloud-slash badge.
+/// Remote photos include like overlays. Local-only photos show a cloud-slash badge
+/// (gray = pending upload, red = upload failed).
 struct PhotoCarousel: View {
     let photos: [PhotoSource]
     let likedPhotoIds: Set<UUID>
     let userId: UUID?
+    let failedPhotoIDs: Set<PersistentIdentifier>
     let onLikeTap: (SupabasePhoto) -> Void
     let onAddTap: () -> Void
 
@@ -55,10 +58,11 @@ struct PhotoCarousel: View {
             case .remote(let photo):
                 likeOverlay(for: photo)
                     .padding(6)
-            case .local:
+            case .local(let photo):
+                let uploadFailed = failedPhotoIDs.contains(photo.persistentModelID)
                 Image(systemName: "icloud.slash")
                     .font(.system(size: 10, weight: .semibold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(uploadFailed ? Color.red : .white)
                     .padding(5)
                     .background(.black.opacity(0.5))
                     .clipShape(RoundedRectangle(cornerRadius: 4))
