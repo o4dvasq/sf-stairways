@@ -7,6 +7,7 @@ struct SFStairwaysApp: App {
     let syncStatusManager: SyncStatusManager
     let authManager: AuthManager
     let activeWalkManager = ActiveWalkManager()
+    let neighborhoodStore = NeighborhoodStore()
 
     init() {
         let schema = Schema([WalkRecord.self, WalkPhoto.self, StairwayOverride.self, StairwayTag.self, TagAssignment.self, StairwayDeletion.self])
@@ -27,10 +28,15 @@ struct SFStairwaysApp: App {
             print("[SFStairways] CloudKit ModelContainer created successfully")
         } catch {
             let nsError = error as NSError
-            let reason = "domain=\(nsError.domain) code=\(nsError.code): \(nsError.localizedDescription)"
-            print("[SFStairways] CloudKit init failed — \(reason)")
+            print("[SFStairways] CloudKit init failed — domain=\(nsError.domain) code=\(nsError.code): \(nsError.localizedDescription)")
             print("[SFStairways] Falling back to local storage. Fix CloudKit config and reinstall to enable sync.")
-            manager.markUnavailable(reason: nsError.localizedDescription)
+            let unavailableReason: String
+            if nsError.domain == "SwiftData.SwiftDataError" && nsError.code == 1 {
+                unavailableReason = "CloudKit schema needs updating — open Xcode and deploy the schema to CloudKit Dashboard (container: iCloud.com.o4dvasq.sfstairways)"
+            } else {
+                unavailableReason = nsError.localizedDescription
+            }
+            manager.markUnavailable(reason: unavailableReason)
 
             do {
                 let localConfig = ModelConfiguration(
@@ -82,5 +88,6 @@ struct SFStairwaysApp: App {
         .environment(syncStatusManager)
         .environment(authManager)
         .environment(activeWalkManager)
+        .environment(neighborhoodStore)
     }
 }

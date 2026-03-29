@@ -2,6 +2,9 @@
 
 | Description | Implemented | Spec File |
 |---|---|---|
+| Neighborhood model, GeoJSON, migration 53→41 hoods, NeighborhoodStore | 2026-03-29 10:00 | SPEC_neighborhood-foundation.md |
+| HealthKit retry+error, no duplicate mark button, photo badges, iCloud error msg | 2026-03-29 | SPEC_ux-fixes-round4.md |
+| HealthKit logging + delay; toast on nil; "no data" steps; iCloud troubleshoot | 2026-03-29 | SPEC_healthkit-stats-and-sync-diagnosis.md |
 | iOS admin app: field catalog tool, stairway deletion, overrides, tags | 2026-03-29 | SPEC_ios-admin-app.md |
 | Light mode, warm terracotta palette, Rounded typography, orange ring | 2026-03-29 | SPEC_visual-refresh-phase-1.md |
 | iOS admin app: stairway browser, delete, overrides, tags | 2026-03-29 | SPEC_ios-admin-app.md |

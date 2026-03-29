@@ -11,6 +11,7 @@ struct MapTab: View {
     @Environment(NavigationCoordinator.self) private var coordinator
     @State private var store = StairwayStore()
     @State private var locationManager = LocationManager()
+    @Environment(NeighborhoodStore.self) private var neighborhoodStore
     @State private var aroundMe = AroundMeManager()
     @State private var selectedStairway: Stairway?
     @State private var cameraPosition: MapCameraPosition = .region(
@@ -225,7 +226,7 @@ struct MapTab: View {
         }
 
         withAnimation {
-            if let errorMessage = aroundMe.activate(location: location) {
+            if let errorMessage = aroundMe.activate(location: location, store: neighborhoodStore) {
                 toastMessage = errorMessage
             } else {
                 flyToUserLocation(location)

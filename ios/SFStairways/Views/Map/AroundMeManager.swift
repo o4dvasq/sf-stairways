@@ -4,9 +4,10 @@ import Observation
 
 /// Manages the "Around Me" neighborhood-aware filter.
 ///
-/// Loads pre-computed neighborhood centroids and adjacency data from bundled JSON.
+/// Receives a NeighborhoodStore at activation time so it can be initialized
+/// as a @State property without requiring the environment to be available yet.
 /// Uses nearest-centroid lookup to determine the user's current neighborhood,
-/// then highlights that neighborhood and its adjacent neighbors on the map.
+/// then highlights that neighborhood and its adjacent neighbors.
 @Observable
 final class AroundMeManager {
 
@@ -18,35 +19,20 @@ final class AroundMeManager {
 
     // MARK: - Private
 
-    private struct Centroid {
-        let lat: Double
-        let lng: Double
-    }
-
-    private var centroids: [String: Centroid] = [:]
-    private var adjacency: [String: [String]] = [:]
-
     // Max distance from any SF neighborhood centroid to be considered "in SF"
     private let maxSFDistanceMeters: CLLocationDistance = 5000
-
-    init() {
-        loadCentroids()
-        loadAdjacency()
-    }
 
     // MARK: - Public API
 
     /// Activate Around Me for the given location. Returns a toast message if there's an issue.
-    func activate(location: CLLocation) -> String? {
-        guard let neighborhood = findNeighborhood(for: location) else {
+    func activate(location: CLLocation, store: NeighborhoodStore) -> String? {
+        guard let neighborhood = findNeighborhood(for: location, store: store) else {
             return "Around Me works within San Francisco"
         }
 
         currentNeighborhood = neighborhood
         var highlighted: Set<String> = [neighborhood]
-        if let neighbors = adjacency[neighborhood] {
-            highlighted.formUnion(neighbors)
-        }
+        highlighted.formUnion(store.neighbors(of: neighborhood))
         highlightedNeighborhoods = highlighted
         isActive = true
         return nil
@@ -66,50 +52,19 @@ final class AroundMeManager {
 
     // MARK: - Neighborhood Detection
 
-    private func findNeighborhood(for location: CLLocation) -> String? {
+    private func findNeighborhood(for location: CLLocation, store: NeighborhoodStore) -> String? {
         var nearest: String? = nil
         var nearestDist: CLLocationDistance = .greatestFiniteMagnitude
 
-        for (name, centroid) in centroids {
-            let centroidLocation = CLLocation(latitude: centroid.lat, longitude: centroid.lng)
+        for hood in store.neighborhoods {
+            let centroidLocation = CLLocation(latitude: hood.centroid.latitude, longitude: hood.centroid.longitude)
             let dist = location.distance(from: centroidLocation)
             if dist < nearestDist {
                 nearestDist = dist
-                nearest = name
+                nearest = hood.name
             }
         }
 
         return nearestDist < maxSFDistanceMeters ? nearest : nil
-    }
-
-    // MARK: - Data Loading
-
-    private func loadCentroids() {
-        guard let url = Bundle.main.url(forResource: "neighborhood_centroids", withExtension: "json"),
-              let data = try? Data(contentsOf: url),
-              let raw = try? JSONDecoder().decode([String: [String: Double]].self, from: data)
-        else {
-            print("[AroundMeManager] Failed to load neighborhood_centroids.json")
-            return
-        }
-
-        centroids = raw.compactMapValues { dict in
-            guard let lat = dict["lat"], let lng = dict["lng"] else { return nil }
-            return Centroid(lat: lat, lng: lng)
-        }
-        print("[AroundMeManager] Loaded \(centroids.count) neighborhood centroids")
-    }
-
-    private func loadAdjacency() {
-        guard let url = Bundle.main.url(forResource: "neighborhood_adjacency", withExtension: "json"),
-              let data = try? Data(contentsOf: url),
-              let raw = try? JSONDecoder().decode([String: [String]].self, from: data)
-        else {
-            print("[AroundMeManager] Failed to load neighborhood_adjacency.json")
-            return
-        }
-
-        adjacency = raw
-        print("[AroundMeManager] Loaded adjacency for \(adjacency.count) neighborhoods")
     }
 }

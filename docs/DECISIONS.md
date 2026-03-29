@@ -1,5 +1,25 @@
 # Architecture Decisions — sf-stairways
 
+## NeighborhoodStore: GeoJSON-backed, computed at startup, injected via environment
+**Date:** 2026-03-29
+
+Neighborhood data (centroids, adjacency, polygon lookup) is now computed at app startup from a bundled `sf_neighborhoods.geojson` rather than loaded from two pre-computed static JSON files (`neighborhood_centroids.json`, `neighborhood_adjacency.json`).
+
+**Why GeoJSON instead of pre-computed JSONs.** The pre-computed files were one-off outputs from a Python script and would go stale whenever the neighborhood boundaries changed. Computing centroids and adjacency from the GeoJSON polygons at startup eliminates the separate build step, removes two files from the bundle, and makes the data flow transparent: source of truth is the GeoJSON, everything else is derived.
+
+**Why in-memory struct, not SwiftData.** Neighborhood boundary polygons are read-only reference data, not user data — they never change at runtime and don't need to sync via CloudKit. SwiftData is reserved for user-generated state (WalkRecord, StairwayOverride, etc.). An in-memory `@Observable` class (`NeighborhoodStore`) loaded at startup is the right layer.
+
+**Why pass store at call site, not at init.** `AroundMeManager` is a `@State` property initialized before `@Environment` is accessible. Rather than a lazy init pattern or optional unwrapping, the store is passed as a parameter to `activate(location:store:)`. This keeps `AroundMeManager` init-time simple and makes the dependency explicit at the call site.
+
+**Adjacency algorithm: grid-bucketed shared vertices.** Two neighborhoods are adjacent if any vertex of one polygon falls within ~100m of any vertex of another. Vertices are snapped to a `0.001°` grid (~90m at SF latitude); any grid cell shared by 2+ neighborhoods marks those neighborhoods as adjacent. This is O(n·v) where v is total vertex count and is fast enough for 41 neighborhoods at startup.
+
+## DataSF Analysis Neighborhoods: migration from 53 scraped names
+**Date:** 2026-03-29
+
+`all_stairways.json` was migrated from 53 hand-scraped neighborhood names (inconsistent, not geometry-backed) to 41 official DataSF Analysis Neighborhood names. Migration algorithm: point-in-polygon (ray casting) for 367 stairways with coordinates; manual name mapping for 15 stairways without coordinates. Result: 34 DataSF neighborhoods with at least one stairway; 7 have none (e.g. Golden Gate Park, Presidio, Treasure Island).
+
+**Why DataSF Analysis Neighborhoods, not SF Planning neighborhoods or others.** Analysis Neighborhoods are the standard city-wide statistical unit used in official SF data products. They have stable names, public GeoJSON, and match what residents recognize. The SF Chronicle data team maintains a mirror that was used for the download.
+
 ## StairwayDeletion: soft delete via CloudKit-synced model
 **Date:** 2026-03-29
 

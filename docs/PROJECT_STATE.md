@@ -1,6 +1,6 @@
 # Project State — sf-stairways
 
-_Last updated: 2026-03-29 (ios-admin-app)_
+_Last updated: 2026-03-29 (neighborhood-foundation)_
 
 ## Platforms
 
@@ -13,6 +13,7 @@ _Last updated: 2026-03-29 (ios-admin-app)_
 - Tags are **read-only** on iOS (display + filter only) — all tag CRUD is macOS-only; `TagEditorSheet` removed
 - `StairwayStore` filters out deleted stairways via `applyDeletions(_:)` — map, list, search, progress all respect deletions
 - **Visual design: light-first** — warm terracotta `brandOrange`, SF Pro Rounded for display text, `surfaceCardElevated` stat cards, orange progress ring
+- **Neighborhoods: DataSF Analysis Neighborhoods** — 41 official neighborhoods, 34 with stairways; powered by `NeighborhoodStore` (GeoJSON-backed, computes centroids + adjacency at startup)
 - Successfully archived in Xcode on 2026-03-23
 - See `docs/IOS_REFERENCE.md` for full build details
 
@@ -52,23 +53,23 @@ _Last updated: 2026-03-29 (ios-admin-app)_
 |---|---|
 | Walked stairways | 8 |
 | With photos | 0 |
-| All SF stairways (catalog) | **1,144** (was 382) |
-| Neighborhoods | **61** (53 original + 8 new) |
+| All SF stairways (catalog) | **382** |
+| DataSF Analysis Neighborhoods | **41** (34 with stairways) |
 
 ## Recent Completions
 
 ### 2026-03-29 (this session)
+- **Neighborhood Foundation** — `Neighborhood` struct + `NeighborhoodStore` (`@Observable`) replace two separate static JSON files; GeoJSON-backed (`sf_neighborhoods.geojson`, 41 DataSF Analysis Neighborhoods); centroids computed from polygon geometry at startup; adjacency computed from shared polygon vertex proximity (grid-bucketed, ~100m threshold); `AroundMeManager` refactored to accept `NeighborhoodStore` at activation call site instead of init; `SFStairwaysApp` initializes and injects `NeighborhoodStore` into SwiftUI environment; `MapTab` reads from environment; `all_stairways.json` migrated from 53 scraped names → 41 DataSF names (367 point-in-polygon, 15 manual mapping, 0 unassigned); "Mission Distrtict" typo eliminated; `neighborhood_centroids.json` and `neighborhood_adjacency.json` deleted.
+
+### 2026-03-29 (earlier sessions)
 - **iOS Admin App** — new iOS target `SFStairwaysAdmin` (bundle: `com.o4dvasq.SFStairways.admin`); shares CloudKit container and all SwiftData models; `AdminBrowser` with search/filter/sort, `AdminDetailView` with editable overrides + tag management + stairway removal, `AdminTagManager` CRUD sheet, `RemovedStairwaysView` for restore flow; `StairwayDeletion` model added to all three targets' ModelContainer schemas; `StairwayStore.applyDeletions()` filters deleted IDs from `stairways` computed property; main iOS app, macOS app, and admin app all respect deletions.
 - **HealthKit diagnostics** — added debug logging and 1-second post-walk delay in `HealthKitService.fetchWalkStats` to allow HealthKit time to flush walk data before querying; toast on nil stats result.
-- **Visual refresh phase 1** — light mode as default appearance (removed `.preferredColorScheme(.dark)` from Map); warm terracotta `brandOrange` (#D4724E light / #E07A52 dark, adaptive via `UIColor(dynamicProvider:)`); six new adaptive surface/text tokens; progress ring stroke changed to `brandOrange`; SF Pro Rounded on all display numbers, stat card labels, neighborhood headers, search tab pills, and nav bar titles; splash screen background changed to `brandOrange`; stat cards use `surfaceCardElevated` token.
-
-### 2026-03-29 (earlier)
-- **Map label cleanup** — `Stairway.displayName` computed property truncates names to first 4 words, stripping trailing `.,;`; labels hidden at `mapSpan > 0.02`; full `name` unchanged everywhere else.
-- **UX fixes round 3** — `forestGreen` brightened; notes Save button only; collapsible neighborhood `DisclosureGroup` in Stats; Stats card orange bar with "Stats" label; Search as 4th tab; `NavigationCoordinator` for cross-tab navigation.
-- **Attribution & acknowledgements** — "View on Urban Hiker SF Map" link for urban-hiker stairways; iOS Settings Acknowledgements section; macOS `AcknowledgementsSheet`.
-- **macOS tag management** — `TagManagerSheet` CRUD; sidebar Tags filter; nil-last table sorting; "Create & Assign…" inline option; iOS tags read-only; macOS app icon.
-- **Urban Hiker SF data import** — 762 new stairways imported (1,144 total), 8 new neighborhoods.
-- **macOS photo add + notes editing**, **HealthKit data accuracy fix**, **macOS Admin Dashboard**, **Photo sync fix**, **Map launch cleanup**.
+- **Visual refresh phase 1** — light mode as default appearance; warm terracotta `brandOrange`; six new adaptive surface/text tokens; progress ring stroke changed to `brandOrange`; SF Pro Rounded on all display numbers; splash screen background changed to `brandOrange`.
+- **Map label cleanup** — `Stairway.displayName` truncates to first 4 words; labels hidden at `mapSpan > 0.02`.
+- **UX fixes round 3** — `forestGreen` brightened; notes Save button only; collapsible neighborhood `DisclosureGroup` in Stats; Search as 4th tab; `NavigationCoordinator` for cross-tab navigation.
+- **Attribution & acknowledgements** — "View on Urban Hiker SF Map" link; iOS Settings Acknowledgements section; macOS `AcknowledgementsSheet`.
+- **macOS tag management** — `TagManagerSheet` CRUD; sidebar Tags filter; nil-last table sorting; iOS tags read-only; macOS app icon.
+- **Urban Hiker SF data import**, **macOS photo add + notes editing**, **HealthKit data accuracy fix**, **macOS Admin Dashboard**, **Photo sync fix**, **Map launch cleanup**.
 
 ### 2026-03-28
 - Remove Saved concept, HealthKit walk stats display, camera during active walk, Hard Mode confirmation prompt, Stairway Tags v1, Active walk mode, Photo suggestions, Photo camera roll save, photo persistence fix, Launch zoom to nearest, map pin tap targets, curator notes-to-commentary, expandable bottom sheet.
@@ -80,7 +81,8 @@ _Last updated: 2026-03-29 (ios-admin-app)_
 
 ## Pending Specs
 
-- `docs/specs/SPEC_healthkit-stats-and-sync-diagnosis.md`
+- `docs/specs/SPEC_neighborhood-map-and-detail.md`
+- `docs/specs/SPEC_neighborhood-progress-reframe.md`
 
 ## Known Issues
 
@@ -91,7 +93,6 @@ _Last updated: 2026-03-29 (ios-admin-app)_
 - **supabase-swift** package not confirmed added to Xcode target membership.
 - **Sign in with Apple:** `signInError` display is temporary for debugging.
 - **Supabase Apple provider** config not yet manually verified.
-- **Stairway count in iOS app** may still show 382 — `all_stairways.json` bundle resource needs to be re-bundled into the Xcode build for the expanded 1,144-entry dataset to appear on device.
 - **Admin app Xcode target**: file memberships and capabilities must be manually verified in Xcode after pulling — the target config is in `project.pbxproj` but CloudKit + Background Modes capabilities require Signing & Capabilities UI.
 
 ## Repository

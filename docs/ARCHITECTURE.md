@@ -118,7 +118,7 @@ The following iOS source files are also compiled into the macOS target:
 - `Models/WalkRecord.swift`, `WalkPhoto.swift`, `StairwayOverride.swift`, `StairwayTag.swift`, `TagAssignment.swift`
 - `Models/StairwayStore.swift`, `Stairway.swift`, `SupabaseModels.swift`, `PhotoSource.swift`
 - `Resources/AppColors.swift`
-- `all_stairways.json` bundle resource
+- `all_stairways.json`, `sf_neighborhoods.geojson` bundle resources
 
 `WalkPhoto.swift` uses `#if canImport(UIKit)` guards around `UIImage`-specific computed properties and `UIGraphicsImageRenderer` thumbnail generation, which are iOS-only. macOS views access photo data via raw `Data` → `NSImage(data:)` directly.
 
@@ -191,7 +191,7 @@ Source at `ios/SFStairways/`. iOS is the primary user-facing platform. Web app d
 
 ### Entry Point
 
-`SFStairwaysApp.swift` — creates `ModelContainer` (CloudKit-backed, falls back to local), creates `SyncStatusManager` and `AuthManager`, injects all three into the SwiftUI environment via `.environment()`.
+`SFStairwaysApp.swift` — creates `ModelContainer` (CloudKit-backed, falls back to local), creates `SyncStatusManager`, `AuthManager`, `ActiveWalkManager`, and `NeighborhoodStore`, injects all into the SwiftUI environment via `.environment()`.
 
 ### Services
 
@@ -244,19 +244,18 @@ For any stat display (stair count, height): use `StairwayOverride` value if non-
 - `StairwayAnnotation` — delegates to `StairwayPin` with three-state + dimming + unverified badge support; accepts `scale: CGFloat` and passes through to `StairwayPin`
 - `TeardropPin` — `StairwayPin` view (colored circles, three-state colors + dimming); `TeardropShape` and `StairShape` structs kept for future use; `showUnverifiedBadge` amber overlay
 - `SearchPanel` — search UI with Name/Street/Neighborhood/Tags tabs; `isTabMode: Bool` parameter hides the dismiss button when used as a persistent tab (vs. fullScreenCover); Tags tab shows pill grid of all assigned tags (with stairway count) → tap to drill into stairway list; `@Query` for `StairwayTag` + `TagAssignment` injected directly (no prop drilling); `selectedTag: StairwayTag?` state drives pill grid vs. stairway list sub-view
-- `AroundMeManager` — `@Observable`; nearest-centroid neighborhood detection, adjacency lookup, pin dimming state
+- `AroundMeManager` — `@Observable`; nearest-centroid neighborhood detection using `NeighborhoodStore`, adjacency lookup, pin dimming state; store passed at `activate(location:store:)` call site
 - `ToastView` + `.toast()` modifier — auto-dismissing toast messages
 
 ### Bundled Resources
 
 | File | Purpose |
 |------|---------|
-| `all_stairways.json` | 382 SF stairways catalog (read-only) |
-| `neighborhood_centroids.json` | Avg lat/lng per neighborhood (from `scripts/build_neighborhood_adjacency.py`) |
-| `neighborhood_adjacency.json` | Neighborhood → neighbors map (≤2.5km centroid distance) |
+| `all_stairways.json` | 382 SF stairways catalog (read-only); neighborhood field uses DataSF Analysis Neighborhood names |
+| `sf_neighborhoods.geojson` | 41 DataSF Analysis Neighborhood polygons; loaded by `NeighborhoodStore` at startup to compute centroids + adjacency |
 | `tags_preset.json` | 9 preset tag suggestions seeded into SwiftData on first launch |
 
-To regenerate neighborhood data: `python3 scripts/build_neighborhood_adjacency.py`
+Neighborhood data (centroids, adjacency) is computed at runtime from the GeoJSON — no separate pre-computed JSON files.
 
 ### CloudKit Setup
 
@@ -269,9 +268,11 @@ To regenerate neighborhood data: `python3 scripts/build_neighborhood_adjacency.p
 
 ```
 all_stairways.json ──► StairwayStore ──► MapTab / ListTab / SearchPanel
-                            │
-neighborhood_centroids.json ─┬─► AroundMeManager ──► pin dimming + neighborhood chip
-neighborhood_adjacency.json ─┘
+
+sf_neighborhoods.geojson ──► NeighborhoodStore (startup) ──► centroids, adjacency, PiP lookup
+                                      │
+                              .environment() ──► MapTab ──► AroundMeManager.activate(location:store:)
+                                                        ──► pin dimming + neighborhood chip
 
 SwiftData (WalkRecord)       ◄──► CloudKit ──► synced across devices
 SwiftData (StairwayOverride) ◄──► CloudKit ──► synced across devices

@@ -2,7 +2,7 @@
   {
     "id": "arbol-lane",
     "name": "Arbol Lane",
-    "neighborhood": "Anza Vista",
+    "neighborhood": "Lone Mountain/USF",
     "lat": 37.7792766991284,
     "lng": -122.4438382689199,
     "height_ft": 30,
@@ -13,7 +13,7 @@
   {
     "id": "vicha-ratanapakdee-way",
     "name": "Vicha Ratanapakdee Way",
-    "neighborhood": "Anza Vista",
+    "neighborhood": "Lone Mountain/USF",
     "lat": 37.78161695072208,
     "lng": -122.4437215990117,
     "height_ft": 30,
@@ -24,7 +24,7 @@
   {
     "id": "ashbury-terrace",
     "name": "Ashbury Terrace",
-    "neighborhood": "Ashbury Heights/Mount Olympus",
+    "neighborhood": "Haight Ashbury",
     "lat": 37.76479895128175,
     "lng": -122.4448027290914,
     "height_ft": 5,
@@ -35,7 +35,7 @@
   {
     "id": "monument-way",
     "name": "Monument Way",
-    "neighborhood": "Ashbury Heights/Mount Olympus",
+    "neighborhood": "Haight Ashbury",
     "lat": 37.76214941259097,
     "lng": -122.4464314197318,
     "height_ft": 50,
@@ -46,7 +46,7 @@
   {
     "id": "upper-terrace-to-mount-olympus",
     "name": "Upper Terrace to Mount Olympus",
-    "neighborhood": "Ashbury Heights/Mount Olympus",
+    "neighborhood": "Haight Ashbury",
     "lat": 37.76337759295224,
     "lng": -122.4450334521948,
     "height_ft": 30,
@@ -57,7 +57,7 @@
   {
     "id": "arelious-walker-drive-flights-of-fancy-mosaic-steps",
     "name": "Arelious Walker Drive Flights of Fancy mosaic steps",
-    "neighborhood": "Bayview/Hunters Point",
+    "neighborhood": "Bayview Hunters Point",
     "lat": 37.73068063702443,
     "lng": -122.3740392547864,
     "height_ft": 55,
@@ -68,7 +68,7 @@
   {
     "id": "bowman-court-to-rebecca-lane",
     "name": "Bowman Court to Rebecca Lane",
-    "neighborhood": "Bayview/Hunters Point",
+    "neighborhood": "Bayview Hunters Point",
     "lat": 37.73822961155683,
     "lng": -122.3831568084979,
     "height_ft": 10,
@@ -79,7 +79,7 @@
   {
     "id": "gilroy-street-at-jamestown-avenue",
     "name": "Gilroy Street at Jamestown Avenue",
-    "neighborhood": "Bayview/Hunters Point",
+    "neighborhood": "Bayview Hunters Point",
     "lat": 37.71572685518891,
     "lng": -122.3893261415934,
     "height_ft": 25,
@@ -90,7 +90,7 @@
   {
     "id": "hawes-street-south-of-innes-avenue",
     "name": "Hawes Street south of Innes Avenue",
-    "neighborhood": "Bayview/Hunters Point",
+    "neighborhood": "Bayview Hunters Point",
     "lat": 37.73290012468895,
     "lng": -122.3777044270299,
     "height_ft": 35,
@@ -101,7 +101,7 @@
   {
     "id": "hillview-court-at-cashmere-street",
     "name": "Hillview Court at Cashmere Street",
-    "neighborhood": "Bayview/Hunters Point",
+    "neighborhood": "Bayview Hunters Point",
     "lat": 37.73577816880244,
     "lng": -122.3847495792216,
     "height_ft": 30,
@@ -112,7 +112,7 @@
   {
     "id": "lane-street-at-lasalle-avenue",
     "name": "Lane Street at LaSalle Avenue",
-    "neighborhood": "Bayview/Hunters Point",
+    "neighborhood": "Bayview Hunters Point",
     "lat": 37.73529395541118,
     "lng": -122.3869847412484,
     "height_ft": 10,
@@ -123,7 +123,7 @@
   {
     "id": "lindsay-circle-at-lasalle-avenue",
     "name": "Lindsay Circle at LaSalle Avenue",
-    "neighborhood": "Bayview/Hunters Point",
+    "neighborhood": "Bayview Hunters Point",
     "lat": 37.73512632243862,
     "lng": -122.3859542564496,
     "height_ft": 40,
@@ -134,7 +134,7 @@
   {
     "id": "quesada-avenue-at-newhall-street",
     "name": "Quesada Avenue at Newhall Street",
-    "neighborhood": "Bayview/Hunters Point",
+    "neighborhood": "Bayview Hunters Point",
     "lat": 37.73440052933397,
     "lng": -122.3931249835129,
     "height_ft": 25,
@@ -266,7 +266,7 @@
   {
     "id": "cuvier-street-to-san-jose-avenue",
     "name": "Cuvier Street to San Jose Avenue",
-    "neighborhood": "Bernal Heights",
+    "neighborhood": "Outer Mission",
     "lat": 37.73470044490644,
     "lng": -122.4287240525996,
     "height_ft": 10,
@@ -706,7 +706,7 @@
   {
     "id": "clayton-street-at-corbett-avenue",
     "name": "Clayton Street at Corbett Avenue",
-    "neighborhood": "Clarendon Heights",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.75891017829711,
     "lng": -122.4463010031675,
     "height_ft": 15,
@@ -717,7 +717,7 @@
   {
     "id": "pemberton-place-clayton-street-to-villa-terrace",
     "name": "Pemberton Place - Clayton Street to Villa Terrace",
-    "neighborhood": "Clarendon Heights",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.75865477274935,
     "lng": -122.4466325986597,
     "height_ft": 40,
@@ -728,7 +728,7 @@
   {
     "id": "pemberton-place-graystone-terrace-to-crown-terrace",
     "name": "Pemberton Place - Graystone Terrace to Crown Terrace",
-    "neighborhood": "Clarendon Heights",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.75805024962769,
     "lng": -122.4471975211611,
     "height_ft": 35,
@@ -739,7 +739,7 @@
   {
     "id": "pemberton-place-villa-terrace-to-graystone-terrace",
     "name": "Pemberton Place - Villa Terrace to Graystone Terrace",
-    "neighborhood": "Clarendon Heights",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.75834580004765,
     "lng": -122.4469191843431,
     "height_ft": 40,
@@ -750,7 +750,7 @@
   {
     "id": "raccoon-drive-to-twin-peaks-boulevard",
     "name": "Raccoon Drive to Twin Peaks Boulevard",
-    "neighborhood": "Clarendon Heights",
+    "neighborhood": "Inner Sunset",
     "lat": 37.75767541048141,
     "lng": -122.4479193221505,
     "height_ft": 10,
@@ -761,7 +761,7 @@
   {
     "id": "adahs-stairway",
     "name": "Adah's Stairway",
-    "neighborhood": "Corona Heights",
+    "neighborhood": "Haight Ashbury",
     "lat": 37.77003078468741,
     "lng": -122.4388480775348,
     "height_ft": 30,
@@ -772,7 +772,7 @@
   {
     "id": "corbin-place",
     "name": "Corbin Place",
-    "neighborhood": "Corona Heights",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.76186505514981,
     "lng": -122.4428979918088,
     "height_ft": 15,
@@ -783,7 +783,7 @@
   {
     "id": "deforest-way",
     "name": "DeForest Way",
-    "neighborhood": "Corona Heights",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.76483361684318,
     "lng": -122.436761429456,
     "height_ft": 10,
@@ -794,7 +794,7 @@
   {
     "id": "douglass-street-at-states-street",
     "name": "Douglass Street at States Street",
-    "neighborhood": "Corona Heights",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.76352159739225,
     "lng": -122.4395179478123,
     "height_ft": 15,
@@ -805,7 +805,7 @@
   {
     "id": "henry-street-at-roosevelt-way",
     "name": "Henry Street at Roosevelt Way",
-    "neighborhood": "Corona Heights",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.76647056446963,
     "lng": -122.4375071001691,
     "height_ft": 20,
@@ -816,7 +816,7 @@
   {
     "id": "levant-street-states-street-to-roosevelt-way",
     "name": "Levant Street - States Street to Roosevelt Way",
-    "neighborhood": "Corona Heights",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.7651077976618,
     "lng": -122.4423895542929,
     "height_ft": 20,
@@ -827,7 +827,7 @@
   {
     "id": "lower-terrace-at-saturn-street",
     "name": "Lower Terrace at Saturn Street",
-    "neighborhood": "Corona Heights",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.76283545180767,
     "lng": -122.4417255720939,
     "height_ft": 10,
@@ -838,7 +838,7 @@
   {
     "id": "lower-terrace-to-roosevelt-way",
     "name": "Lower Terrace to Roosevelt Way",
-    "neighborhood": "Corona Heights",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.76344869822999,
     "lng": -122.4428956256131,
     "height_ft": 20,
@@ -849,7 +849,7 @@
   {
     "id": "ord-court-at-douglass-street",
     "name": "Ord Court at Douglass Street",
-    "neighborhood": "Corona Heights",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.763504240148,
     "lng": -122.4397222330511,
     "height_ft": 5,
@@ -860,7 +860,7 @@
   {
     "id": "saturn-street-west-of-ord-street",
     "name": "Saturn Street west of Ord Street",
-    "neighborhood": "Corona Heights",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.76274509257919,
     "lng": -122.4405967979573,
     "height_ft": 45,
@@ -871,7 +871,7 @@
   {
     "id": "shilohs-way",
     "name": "Shiloh's Way",
-    "neighborhood": "Corona Heights",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.7609633152893,
     "lng": -122.4444362334459,
     "height_ft": 20,
@@ -882,7 +882,7 @@
   {
     "id": "vulcan-stairway",
     "name": "Vulcan Stairway",
-    "neighborhood": "Corona Heights",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.7635107225629,
     "lng": -122.4411569400488,
     "height_ft": 115,
@@ -893,7 +893,7 @@
   {
     "id": "curtis-street-to-prague-street",
     "name": "Curtis Street to Prague Street",
-    "neighborhood": "Crocker-Amazon",
+    "neighborhood": "Excelsior",
     "lat": 37.71022655071194,
     "lng": -122.4381219801771,
     "height_ft": 20,
@@ -904,7 +904,7 @@
   {
     "id": "amatista-lane",
     "name": "Amatista Lane",
-    "neighborhood": "Diamond Heights",
+    "neighborhood": "Glen Park",
     "lat": 37.73835457080876,
     "lng": -122.4293211351203,
     "height_ft": 50,
@@ -915,7 +915,7 @@
   {
     "id": "colleen-way",
     "name": "Colleen Way",
-    "neighborhood": "Diamond Heights",
+    "neighborhood": "Glen Park",
     "lat": 37.73967271863716,
     "lng": -122.4383041506765,
     "height_ft": 55,
@@ -926,7 +926,7 @@
   {
     "id": "coralino-lane",
     "name": "Coralino Lane",
-    "neighborhood": "Diamond Heights",
+    "neighborhood": "Noe Valley",
     "lat": 37.74466831921649,
     "lng": -122.442876182692,
     "height_ft": 60,
@@ -937,7 +937,7 @@
   {
     "id": "glen-canyon-park-to-turquoise-way",
     "name": "Glen Canyon Park to Turquoise Way",
-    "neighborhood": "Diamond Heights",
+    "neighborhood": "Glen Park",
     "lat": 37.74437335306701,
     "lng": -122.4459366043411,
     "height_ft": 10,
@@ -948,7 +948,7 @@
   {
     "id": "onique-lane-berkeley-way-to-gold-mine-drive",
     "name": "Onique Lane - Berkeley Way to Gold Mine Drive",
-    "neighborhood": "Diamond Heights",
+    "neighborhood": "Glen Park",
     "lat": 37.73931438446197,
     "lng": -122.4388436129802,
     "height_ft": 50,
@@ -959,7 +959,7 @@
   {
     "id": "onique-lane-diamond-heights-boulevard-to-berkeley-way",
     "name": "Onique Lane - Diamond Heights Boulevard to Berkeley Way",
-    "neighborhood": "Diamond Heights",
+    "neighborhood": "Glen Park",
     "lat": 37.73899229864112,
     "lng": -122.4393142489036,
     "height_ft": 60,
@@ -970,7 +970,7 @@
   {
     "id": "opalo-lane",
     "name": "Opalo Lane",
-    "neighborhood": "Diamond Heights",
+    "neighborhood": "Glen Park",
     "lat": 37.74296471616697,
     "lng": -122.4393073185397,
     "height_ft": 40,
@@ -981,7 +981,7 @@
   {
     "id": "safira-lane",
     "name": "Safira Lane",
-    "neighborhood": "Diamond Heights",
+    "neighborhood": "Noe Valley",
     "lat": 37.74629479416067,
     "lng": -122.4397605778992,
     "height_ft": 35,
@@ -992,7 +992,7 @@
   {
     "id": "turquoise-way-to-amber-drive",
     "name": "Turquoise Way to Amber Drive",
-    "neighborhood": "Diamond Heights",
+    "neighborhood": "Noe Valley",
     "lat": 37.74450145541749,
     "lng": -122.4454122974749,
     "height_ft": 30,
@@ -1003,7 +1003,7 @@
   {
     "id": "20th-street-at-noe-street",
     "name": "20th Street at Noe Street",
-    "neighborhood": "Dolores Heights",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.75793502560016,
     "lng": -122.4321694063091,
     "height_ft": 40,
@@ -1014,7 +1014,7 @@
   {
     "id": "20th-street-west-of-sanchez-street",
     "name": "20th Street west of Sanchez Street",
-    "neighborhood": "Dolores Heights",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.75795069178416,
     "lng": -122.430502831656,
     "height_ft": 35,
@@ -1025,7 +1025,7 @@
   {
     "id": "21st-street-at-castro-street",
     "name": "21st Street at Castro Street",
-    "neighborhood": "Dolores Heights",
+    "neighborhood": "Noe Valley",
     "lat": 37.75601476543289,
     "lng": -122.4347450726895,
     "height_ft": 10,
@@ -1036,7 +1036,7 @@
   {
     "id": "21st-street-at-collingwood-street",
     "name": "21st Street at Collingwood Street",
-    "neighborhood": "Dolores Heights",
+    "neighborhood": "Noe Valley",
     "lat": 37.75598045527674,
     "lng": -122.4355830124156,
     "height_ft": 10,
@@ -1047,7 +1047,7 @@
   {
     "id": "22nd-street-jungle-stairs",
     "name": "22nd Street Jungle Stairs",
-    "neighborhood": "Dolores Heights",
+    "neighborhood": "Noe Valley",
     "lat": 37.75437811323332,
     "lng": -122.436248229393,
     "height_ft": 45,
@@ -1058,7 +1058,7 @@
   {
     "id": "22nd-street-jungle-stairs-east",
     "name": "22nd Street Jungle Stairs East",
-    "neighborhood": "Dolores Heights",
+    "neighborhood": "Noe Valley",
     "lat": 37.75452757447361,
     "lng": -122.4354479568145,
     "height_ft": 25,
@@ -1069,7 +1069,7 @@
   {
     "id": "cumberland-street-at-noe-street",
     "name": "Cumberland Street at Noe Street",
-    "neighborhood": "Dolores Heights",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.75868457326843,
     "lng": -122.432405163183,
     "height_ft": 20,
@@ -1080,7 +1080,7 @@
   {
     "id": "cumberland-street-east-of-sanchez-street",
     "name": "Cumberland Street east of Sanchez Street",
-    "neighborhood": "Dolores Heights",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.75871977782984,
     "lng": -122.4302632965837,
     "height_ft": 20,
@@ -1091,7 +1091,7 @@
   {
     "id": "liberty-street-noe-street-to-rayburn-street",
     "name": "Liberty Street - Noe Street to Rayburn Street",
-    "neighborhood": "Dolores Heights",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.75705540753774,
     "lng": -122.4321068569204,
     "height_ft": 50,
@@ -1102,7 +1102,7 @@
   {
     "id": "liberty-street-east-of-sanchez-street",
     "name": "Liberty Street east of Sanchez Street",
-    "neighborhood": "Dolores Heights",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.75721073193713,
     "lng": -122.429542648947,
     "height_ft": 10,
@@ -1113,7 +1113,7 @@
   {
     "id": "sanchez-street-at-19th-street",
     "name": "Sanchez Street at 19th Street",
-    "neighborhood": "Dolores Heights",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.75940531839338,
     "lng": -122.430425279523,
     "height_ft": 30,
@@ -1124,7 +1124,7 @@
   {
     "id": "sanchez-street-at-liberty-street",
     "name": "Sanchez Street at Liberty Street",
-    "neighborhood": "Dolores Heights",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.75720646253251,
     "lng": -122.4301489530662,
     "height_ft": 10,
@@ -1135,7 +1135,7 @@
   {
     "id": "sanchez-street-south-of-liberty-street",
     "name": "Sanchez Street south of Liberty Street",
-    "neighborhood": "Dolores Heights",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.75701459731119,
     "lng": -122.4300918653192,
     "height_ft": 20,
@@ -1146,7 +1146,7 @@
   {
     "id": "18th-street-to-market-street",
     "name": "18th Street to Market Street",
-    "neighborhood": "Eureka Valley",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.76047206043175,
     "lng": -122.443394069317,
     "height_ft": 10,
@@ -1157,7 +1157,7 @@
   {
     "id": "clover-lane-caselli-avenue-to-19th-street",
     "name": "Clover Lane - Caselli Avenue to 19th Street",
-    "neighborhood": "Eureka Valley",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.75928776914865,
     "lng": -122.4410565769326,
     "height_ft": 50,
@@ -1168,7 +1168,7 @@
   {
     "id": "douglass-street-20th-street-to-corwin-street",
     "name": "Douglass Street - 20th Street to Corwin Street",
-    "neighborhood": "Eureka Valley",
+    "neighborhood": "Twin Peaks",
     "lat": 37.75726015330474,
     "lng": -122.4390568187351,
     "height_ft": 30,
@@ -1179,7 +1179,7 @@
   {
     "id": "mono-street-eagle-street-to-market-street",
     "name": "Mono Street - Eagle Street to Market Street",
-    "neighborhood": "Eureka Valley",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.75833299464033,
     "lng": -122.4435789626603,
     "height_ft": 30,
@@ -1190,7 +1190,7 @@
   {
     "id": "ord-street-at-market-street",
     "name": "Ord Street at Market Street",
-    "neighborhood": "Eureka Valley",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.76094824828105,
     "lng": -122.4401007077773,
     "height_ft": 20,
@@ -1245,7 +1245,7 @@
   {
     "id": "prague-street-into-mclaren-park",
     "name": "Prague Street into McLaren Park",
-    "neighborhood": "Excelsior",
+    "neighborhood": "McLaren Park",
     "lat": 37.72211316566979,
     "lng": -122.424723854428,
     "height_ft": 10,
@@ -1267,7 +1267,7 @@
   {
     "id": "12th-avenue-to-dorantes-avenue",
     "name": "12th Avenue to Dorantes Avenue",
-    "neighborhood": "Forest Hill",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.74502998008194,
     "lng": -122.4680551596814,
     "height_ft": 20,
@@ -1278,7 +1278,7 @@
   {
     "id": "9th-avenue-to-mendosa-avenue",
     "name": "9th Avenue to Mendosa Avenue",
-    "neighborhood": "Forest Hill",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.74776188705695,
     "lng": -122.4661434839017,
     "height_ft": 65,
@@ -1289,7 +1289,7 @@
   {
     "id": "castenada-avenue-to-pacheco-street",
     "name": "Castenada Avenue to Pacheco Street",
-    "neighborhood": "Forest Hill",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.7487549276685,
     "lng": -122.4623074306919,
     "height_ft": 60,
@@ -1300,7 +1300,7 @@
   {
     "id": "castenada-avenue-to-san-marcos-avenue",
     "name": "Castenada Avenue to San Marcos Avenue",
-    "neighborhood": "Forest Hill",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.74638483124246,
     "lng": -122.4655245378139,
     "height_ft": 55,
@@ -1311,7 +1311,7 @@
   {
     "id": "forest-hill-grand-stairway",
     "name": "Forest Hill Grand Stairway",
-    "neighborhood": "Forest Hill",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.7464068217697,
     "lng": -122.4624304332906,
     "height_ft": 70,
@@ -1322,7 +1322,7 @@
   {
     "id": "pacheco-street-merced-avenue-to-vasquez-avenue",
     "name": "Pacheco Street - Merced Avenue to Vasquez Avenue",
-    "neighborhood": "Forest Hill",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.74481093386558,
     "lng": -122.460439088569,
     "height_ft": 20,
@@ -1333,7 +1333,7 @@
   {
     "id": "pacheco-street-to-sotelo-avenue",
     "name": "Pacheco Street to Sotelo Avenue",
-    "neighborhood": "Forest Hill",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.7497833703572,
     "lng": -122.4636567855647,
     "height_ft": 60,
@@ -1344,7 +1344,7 @@
   {
     "id": "san-marcos-avenue",
     "name": "San Marcos Avenue",
-    "neighborhood": "Forest Hill",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.74683266418767,
     "lng": -122.4655987501834,
     "height_ft": 10,
@@ -1355,7 +1355,7 @@
   {
     "id": "san-marcos-avenue-at-santa-rita-avenue",
     "name": "San Marcos Avenue at Santa Rita Avenue",
-    "neighborhood": "Forest Hill",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.74680264257203,
     "lng": -122.4646689718769,
     "height_ft": 20,
@@ -1366,7 +1366,7 @@
   {
     "id": "san-marcos-avenue-to-9th-avenue",
     "name": "San Marcos Avenue to 9th Avenue",
-    "neighborhood": "Forest Hill",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.74715719450175,
     "lng": -122.4656418503924,
     "height_ft": 75,
@@ -1377,7 +1377,7 @@
   {
     "id": "ventura-avenue-to-8th-avenue",
     "name": "Ventura Avenue to 8th Avenue",
-    "neighborhood": "Forest Hill",
+    "neighborhood": "Inner Sunset",
     "lat": 37.75111688383456,
     "lng": -122.4638979811677,
     "height_ft": 30,
@@ -1388,7 +1388,7 @@
   {
     "id": "ventura-avenue-to-pacheco-street",
     "name": "Ventura Avenue to Pacheco Street",
-    "neighborhood": "Forest Hill",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.75052101664618,
     "lng": -122.4631570870475,
     "height_ft": 30,
@@ -1399,7 +1399,7 @@
   {
     "id": "ashwood-lane",
     "name": "Ashwood Lane",
-    "neighborhood": "Forest Knolls",
+    "neighborhood": "Inner Sunset",
     "lat": 37.75325679156849,
     "lng": -122.4569194481661,
     "height_ft": 40,
@@ -1410,7 +1410,7 @@
   {
     "id": "blairwood-lane-christopher-drive-to-crestmont-drive",
     "name": "Blairwood Lane - Christopher Drive to Crestmont Drive",
-    "neighborhood": "Forest Knolls",
+    "neighborhood": "Inner Sunset",
     "lat": 37.75481665086048,
     "lng": -122.4584277374796,
     "height_ft": 70,
@@ -1421,7 +1421,7 @@
   {
     "id": "blairwood-lane-oak-park-drive-to-christopher-drive",
     "name": "Blairwood Lane - Oak Park Drive to Christopher Drive",
-    "neighborhood": "Forest Knolls",
+    "neighborhood": "Inner Sunset",
     "lat": 37.7543643933656,
     "lng": -122.4581815751483,
     "height_ft": 55,
@@ -1432,7 +1432,7 @@
   {
     "id": "blairwood-lane-warren-drive-to-oak-park-drive",
     "name": "Blairwood Lane - Warren Drive to Oak Park Drive",
-    "neighborhood": "Forest Knolls",
+    "neighborhood": "Inner Sunset",
     "lat": 37.7538628620994,
     "lng": -122.4578749971908,
     "height_ft": 55,
@@ -1443,7 +1443,7 @@
   {
     "id": "glenhaven-lane",
     "name": "Glenhaven Lane",
-    "neighborhood": "Forest Knolls",
+    "neighborhood": "Inner Sunset",
     "lat": 37.75558143218735,
     "lng": -122.4569823082095,
     "height_ft": 90,
@@ -1454,7 +1454,7 @@
   {
     "id": "oakhurst-lane",
     "name": "Oakhurst Lane",
-    "neighborhood": "Forest Knolls",
+    "neighborhood": "Inner Sunset",
     "lat": 37.75708089120525,
     "lng": -122.460644162881,
     "height_ft": 290,
@@ -1476,7 +1476,7 @@
   {
     "id": "hammerton-avenue-at-bosworth-street",
     "name": "Hammerton Avenue at Bosworth Street",
-    "neighborhood": "Glen Park",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.73393767704703,
     "lng": -122.437642281857,
     "height_ft": 40,
@@ -1509,7 +1509,7 @@
   {
     "id": "14th-avenue-at-moraga-street",
     "name": "14th Avenue at Moraga Street",
-    "neighborhood": "Golden Gate Heights",
+    "neighborhood": "Inner Sunset",
     "lat": 37.7563514270825,
     "lng": -122.4710009601981,
     "height_ft": 10,
@@ -1520,7 +1520,7 @@
   {
     "id": "15th-avenue-kirkham-street-to-lawton-street",
     "name": "15th Avenue - Kirkham Street to Lawton Street",
-    "neighborhood": "Golden Gate Heights",
+    "neighborhood": "Inner Sunset",
     "lat": 37.75953310566351,
     "lng": -122.4723482672663,
     "height_ft": 110,
@@ -1531,7 +1531,7 @@
   {
     "id": "15th-avenue-between-moraga-street-and-noriega-street",
     "name": "15th Avenue between Moraga Street and Noriega Street",
-    "neighborhood": "Golden Gate Heights",
+    "neighborhood": "Inner Sunset",
     "lat": 37.75591758798053,
     "lng": -122.4724547714986,
     "height_ft": 15,
@@ -1542,7 +1542,7 @@
   {
     "id": "15th-avenue-to-fanning-way",
     "name": "15th Avenue to Fanning Way",
-    "neighborhood": "Golden Gate Heights",
+    "neighborhood": "Inner Sunset",
     "lat": 37.7492383656777,
     "lng": -122.4716771026416,
     "height_ft": 15,
@@ -1553,7 +1553,7 @@
   {
     "id": "15th-avenue-to-noriega-street",
     "name": "15th Avenue to Noriega Street",
-    "neighborhood": "Golden Gate Heights",
+    "neighborhood": "Inner Sunset",
     "lat": 37.7554634444026,
     "lng": -122.4721287735217,
     "height_ft": 40,
@@ -1564,7 +1564,7 @@
   {
     "id": "15th-avenue-to-pacheco-street",
     "name": "15th Avenue to Pacheco Street",
-    "neighborhood": "Golden Gate Heights",
+    "neighborhood": "Inner Sunset",
     "lat": 37.75134487807377,
     "lng": -122.4717981109356,
     "height_ft": 25,
@@ -1575,7 +1575,7 @@
   {
     "id": "hidden-garden-steps",
     "name": "Hidden Garden Steps",
-    "neighborhood": "Golden Gate Heights",
+    "neighborhood": "Inner Sunset",
     "lat": 37.75966354107957,
     "lng": -122.4736471316814,
     "height_ft": 55,
@@ -1586,7 +1586,7 @@
   {
     "id": "aerial-way-14th-avenue-to-funston-avenue",
     "name": "Aerial Way - 14th Avenue to Funston Avenue",
-    "neighborhood": "Golden Gate Heights",
+    "neighborhood": "Inner Sunset",
     "lat": 37.75259199134003,
     "lng": -122.4702978440797,
     "height_ft": 110,
@@ -1597,7 +1597,7 @@
   {
     "id": "aerial-way-ortega-street-to-pacheco-street",
     "name": "Aerial Way - Ortega Street to Pacheco Street",
-    "neighborhood": "Golden Gate Heights",
+    "neighborhood": "Inner Sunset",
     "lat": 37.75309146048402,
     "lng": -122.4687386264213,
     "height_ft": 65,
@@ -1608,7 +1608,7 @@
   {
     "id": "cascade-walk",
     "name": "Cascade Walk",
-    "neighborhood": "Golden Gate Heights",
+    "neighborhood": "Inner Sunset",
     "lat": 37.75432065120126,
     "lng": -122.4701463527584,
     "height_ft": 80,
@@ -1619,7 +1619,7 @@
   {
     "id": "crestwell-walk",
     "name": "Crestwell Walk",
-    "neighborhood": "Golden Gate Heights",
+    "neighborhood": "Inner Sunset",
     "lat": 37.75589141521652,
     "lng": -122.4719250123888,
     "height_ft": 65,
@@ -1630,7 +1630,7 @@
   {
     "id": "encinal-walk",
     "name": "Encinal Walk",
-    "neighborhood": "Golden Gate Heights",
+    "neighborhood": "Inner Sunset",
     "lat": 37.75636091235054,
     "lng": -122.471262771694,
     "height_ft": 55,
@@ -1641,7 +1641,7 @@
   {
     "id": "lomita-avenue-to-aloha-avenue",
     "name": "Lomita Avenue to Aloha Avenue",
-    "neighborhood": "Golden Gate Heights",
+    "neighborhood": "Inner Sunset",
     "lat": 37.75794990753404,
     "lng": -122.4727112658501,
     "height_ft": 10,
@@ -1652,7 +1652,7 @@
   {
     "id": "mandalay-lane",
     "name": "Mandalay Lane",
-    "neighborhood": "Golden Gate Heights",
+    "neighborhood": "Inner Sunset",
     "lat": 37.75073345096266,
     "lng": -122.4713832372063,
     "height_ft": 85,
@@ -1663,7 +1663,7 @@
   {
     "id": "moraga-street-between-funston-avenue-and-14th-avenue",
     "name": "Moraga Street between Funston Avenue and 14th Avenue",
-    "neighborhood": "Golden Gate Heights",
+    "neighborhood": "Inner Sunset",
     "lat": 37.75636895809546,
     "lng": -122.4706338755041,
     "height_ft": 30,
@@ -1674,7 +1674,7 @@
   {
     "id": "16th-avenue-tiled-steps",
     "name": "16th Avenue Tiled Steps",
-    "neighborhood": "Golden Gate Heights",
+    "neighborhood": "Inner Sunset",
     "lat": 37.75626533533746,
     "lng": -122.4731636575631,
     "height_ft": 90,
@@ -1685,7 +1685,7 @@
   {
     "id": "mount-lane",
     "name": "Mount Lane",
-    "neighborhood": "Golden Gate Heights",
+    "neighborhood": "Inner Sunset",
     "lat": 37.75423858915848,
     "lng": -122.4715320141898,
     "height_ft": 90,
@@ -1696,7 +1696,7 @@
   {
     "id": "oriole-way",
     "name": "Oriole Way",
-    "neighborhood": "Golden Gate Heights",
+    "neighborhood": "Inner Sunset",
     "lat": 37.75097263782079,
     "lng": -122.4674047915182,
     "height_ft": 55,
@@ -1707,7 +1707,7 @@
   {
     "id": "ortega-way",
     "name": "Ortega Way",
-    "neighborhood": "Golden Gate Heights",
+    "neighborhood": "Inner Sunset",
     "lat": 37.7526019490914,
     "lng": -122.4714388016631,
     "height_ft": 85,
@@ -1718,7 +1718,7 @@
   {
     "id": "pacheco-street-to-12th-avenue",
     "name": "Pacheco Street to 12th Avenue",
-    "neighborhood": "Golden Gate Heights",
+    "neighborhood": "Inner Sunset",
     "lat": 37.75189260229122,
     "lng": -122.4686901635894,
     "height_ft": 20,
@@ -1729,7 +1729,7 @@
   {
     "id": "quintara-street-15th-avenue-to-14th-avenue",
     "name": "Quintara Street - 15th Avenue to 14th Avenue",
-    "neighborhood": "Golden Gate Heights",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.74883282468447,
     "lng": -122.4712312146112,
     "height_ft": 80,
@@ -1740,7 +1740,7 @@
   {
     "id": "selma-way",
     "name": "Selma Way",
-    "neighborhood": "Golden Gate Heights",
+    "neighborhood": "Inner Sunset",
     "lat": 37.75485799319107,
     "lng": -122.4690783753708,
     "height_ft": 80,
@@ -1751,7 +1751,7 @@
   {
     "id": "ocean-avenue-history-stairscape",
     "name": "Ocean Avenue History Stairscape",
-    "neighborhood": "Ingleside",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.72407192788512,
     "lng": -122.4530818576444,
     "height_ft": 10,
@@ -1762,7 +1762,7 @@
   {
     "id": "moncada-way-to-ocean-avenue",
     "name": "Moncada Way to Ocean Avenue",
-    "neighborhood": "Ingleside Terraces",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.72978709658017,
     "lng": -122.4697790960892,
     "height_ft": 30,
@@ -1773,7 +1773,7 @@
   {
     "id": "cottage-row",
     "name": "Cottage Row",
-    "neighborhood": "Japantown",
+    "neighborhood": "Pacific Heights",
     "lat": 37.78668303007932,
     "lng": -122.4323104939336,
     "height_ft": 30,
@@ -1784,7 +1784,7 @@
   {
     "id": "wyton-lane-19th-avenue-to-denslowe-drive",
     "name": "Wyton Lane - 19th Avenue to Denslowe Drive",
-    "neighborhood": "Lakeside",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.7230741233528,
     "lng": -122.4746689840868,
     "height_ft": 10,
@@ -1795,7 +1795,7 @@
   {
     "id": "dicha-alley",
     "name": "Dicha Alley",
-    "neighborhood": "Laurel Heights",
+    "neighborhood": "Presidio Heights",
     "lat": 37.78387776024768,
     "lng": -122.4495491176773,
     "height_ft": 15,
@@ -1806,7 +1806,7 @@
   {
     "id": "cook-street-at-euclid-avenue",
     "name": "Cook Street at Euclid Avenue",
-    "neighborhood": "Laurel Heights",
+    "neighborhood": "Presidio Heights",
     "lat": 37.78375824425782,
     "lng": -122.45254084696,
     "height_ft": 20,
@@ -1817,7 +1817,7 @@
   {
     "id": "jean-way",
     "name": "Jean Way",
-    "neighborhood": "Lone Mountain",
+    "neighborhood": "Lone Mountain/USF",
     "lat": 37.78060579549355,
     "lng": -122.4491880505521,
     "height_ft": 15,
@@ -1828,7 +1828,7 @@
   {
     "id": "lone-mountain-terrace-beaumont-avenue-to-parker-avenue",
     "name": "Lone Mountain Terrace - Beaumont Avenue to Parker Avenue",
-    "neighborhood": "Lone Mountain",
+    "neighborhood": "Lone Mountain/USF",
     "lat": 37.77900680144153,
     "lng": -122.4541897296125,
     "height_ft": 25,
@@ -1839,7 +1839,7 @@
   {
     "id": "lone-mountain-terrace-rossi-avenue-to-stanyan-street",
     "name": "Lone Mountain Terrace - Rossi Avenue to Stanyan Street",
-    "neighborhood": "Lone Mountain",
+    "neighborhood": "Lone Mountain/USF",
     "lat": 37.77877686069916,
     "lng": -122.4559385935867,
     "height_ft": 20,
@@ -1850,7 +1850,7 @@
   {
     "id": "lone-mountain-terrace-stanyan-street-to-beaumont-avenue",
     "name": "Lone Mountain Terrace - Stanyan Street to Beaumont Avenue",
-    "neighborhood": "Lone Mountain",
+    "neighborhood": "Lone Mountain/USF",
     "lat": 37.77889877443739,
     "lng": -122.4549944558796,
     "height_ft": 25,
@@ -1861,7 +1861,7 @@
   {
     "id": "waller-park",
     "name": "Waller Park",
-    "neighborhood": "Lower Haight",
+    "neighborhood": "Hayes Valley",
     "lat": 37.77168303601547,
     "lng": -122.4259892497351,
     "height_ft": 40,
@@ -1872,7 +1872,7 @@
   {
     "id": "fredela-lane-marview-way-to-clairview-court",
     "name": "Fredela Lane - Marview Way to Clairview Court",
-    "neighborhood": "Midtown Terrace",
+    "neighborhood": "Twin Peaks",
     "lat": 37.75432495169827,
     "lng": -122.449908511866,
     "height_ft": 25,
@@ -1883,7 +1883,7 @@
   {
     "id": "fredela-lane-clairview-court-to-farview-court",
     "name": "Fredela Lane - Clairview Court to Farview Court",
-    "neighborhood": "Midtown Terrace",
+    "neighborhood": "Twin Peaks",
     "lat": 37.75487704437734,
     "lng": -122.4504333164902,
     "height_ft": 40,
@@ -1894,7 +1894,7 @@
   {
     "id": "malta-drive",
     "name": "Malta Drive",
-    "neighborhood": "Miraloma Park",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.73527828461955,
     "lng": -122.4438845263132,
     "height_ft": 10,
@@ -1905,7 +1905,7 @@
   {
     "id": "lulu-alley-melrose-avenue-to-los-palmos-drive",
     "name": "Lulu Alley - Melrose Avenue to Los Palmos Drive",
-    "neighborhood": "Miraloma Park",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.73411495239254,
     "lng": -122.4526839811775,
     "height_ft": 50,
@@ -1916,7 +1916,7 @@
   {
     "id": "avoca-alley",
     "name": "Avoca Alley",
-    "neighborhood": "Miraloma Park",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.73807039503923,
     "lng": -122.4504292196939,
     "height_ft": 40,
@@ -1927,7 +1927,7 @@
   {
     "id": "vista-verde-court",
     "name": "Vista Verde Court",
-    "neighborhood": "Miraloma Park",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.73540695050956,
     "lng": -122.4452898724648,
     "height_ft": 10,
@@ -1938,7 +1938,7 @@
   {
     "id": "dragons-tale-staircase",
     "name": "Dragon's Tale Staircase",
-    "neighborhood": "Miraloma Park",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.73815800113086,
     "lng": -122.449881858641,
     "height_ft": 20,
@@ -1949,7 +1949,7 @@
   {
     "id": "florida-street-at-15th-street",
     "name": "Florida Street at 15th Street",
-    "neighborhood": "Mission Distrtict",
+    "neighborhood": "Mission",
     "lat": 37.76677746182993,
     "lng": -122.411563791731,
     "height_ft": 10,
@@ -1960,7 +1960,7 @@
   {
     "id": "alemany-boulevard-to-mission-street-north-side",
     "name": "Alemany Boulevard to Mission Street (North side)",
-    "neighborhood": "Mission Terrace",
+    "neighborhood": "Outer Mission",
     "lat": 37.73146259436596,
     "lng": -122.4287836336354,
     "height_ft": 20,
@@ -1971,7 +1971,7 @@
   {
     "id": "alemany-boulevard-to-mission-street-south-side",
     "name": "Alemany Boulevard to Mission Street (South side)",
-    "neighborhood": "Mission Terrace",
+    "neighborhood": "Outer Mission",
     "lat": 37.7308742790587,
     "lng": -122.4295093666558,
     "height_ft": 20,
@@ -2026,7 +2026,7 @@
   {
     "id": "stockton-tunnel-north-end",
     "name": "Stockton Tunnel (North end)",
-    "neighborhood": "Nob Hill",
+    "neighborhood": "Chinatown",
     "lat": 37.79271767235004,
     "lng": -122.4076523247185,
     "height_ft": 20,
@@ -2037,7 +2037,7 @@
   {
     "id": "stockton-tunnel-south-end",
     "name": "Stockton Tunnel (South end)",
-    "neighborhood": "Nob Hill",
+    "neighborhood": "Financial District/South Beach",
     "lat": 37.7902935696672,
     "lng": -122.4071758545698,
     "height_ft": 20,
@@ -2180,7 +2180,7 @@
   {
     "id": "zircon-place",
     "name": "Zircon Place",
-    "neighborhood": "Noe Valley",
+    "neighborhood": "Glen Park",
     "lat": 37.7427908714505,
     "lng": -122.4346367128276,
     "height_ft": 10,
@@ -2202,7 +2202,7 @@
   {
     "id": "vallejo-street-at-cowell-place",
     "name": "Vallejo Street at Cowell Place",
-    "neighborhood": "Northeast Waterfront",
+    "neighborhood": "Financial District/South Beach",
     "lat": 37.79940023511619,
     "lng": -122.4017171710787,
     "height_ft": 10,
@@ -2213,7 +2213,7 @@
   {
     "id": "union-street-at-sansome-street",
     "name": "Union Street at Sansome Street",
-    "neighborhood": "Northeast Waterfront",
+    "neighborhood": "Financial District/South Beach",
     "lat": 37.80126280420573,
     "lng": -122.4025573007263,
     "height_ft": 10,
@@ -2224,7 +2224,7 @@
   {
     "id": "head-street-at-alemany-boulevard",
     "name": "Head Street at Alemany Boulevard",
-    "neighborhood": "Oceanview",
+    "neighborhood": "Oceanview/Merced/Ingleside",
     "lat": 37.71147223839588,
     "lng": -122.4643526255166,
     "height_ft": 15,
@@ -2235,7 +2235,7 @@
   {
     "id": "ramsell-street-at-brotherhood-way",
     "name": "Ramsell Street at Brotherhood Way",
-    "neighborhood": "Oceanview",
+    "neighborhood": "Oceanview/Merced/Ingleside",
     "lat": 37.71270790008184,
     "lng": -122.4662971712094,
     "height_ft": 15,
@@ -2246,7 +2246,7 @@
   {
     "id": "ridge-lane-san-miguel-street-to-caine-avenue",
     "name": "Ridge Lane - San Miguel Street to Caine Avenue",
-    "neighborhood": "Oceanview",
+    "neighborhood": "Oceanview/Merced/Ingleside",
     "lat": 37.71808977587967,
     "lng": -122.4497484128577,
     "height_ft": 20,
@@ -2334,7 +2334,7 @@
   {
     "id": "lyon-street-vallejo-street-to-broadway",
     "name": "Lyon Street - Vallejo Street to Broadway",
-    "neighborhood": "Pacific Heights",
+    "neighborhood": "Presidio",
     "lat": 37.79328368348408,
     "lng": -122.4465234072123,
     "height_ft": 75,
@@ -2345,7 +2345,7 @@
   {
     "id": "lyon-street-north-of-vallejo-street",
     "name": "Lyon Street north of Vallejo Street",
-    "neighborhood": "Pacific Heights",
+    "neighborhood": "Presidio",
     "lat": 37.79403153565418,
     "lng": -122.4466416446943,
     "height_ft": 65,
@@ -2367,7 +2367,7 @@
   {
     "id": "cambon-drive-to-19th-avenue",
     "name": "Cambon Drive to 19th Avenue",
-    "neighborhood": "Parkmerced",
+    "neighborhood": "Lakeshore",
     "lat": 37.71866442735333,
     "lng": -122.4744050649279,
     "height_ft": 10,
@@ -2378,7 +2378,7 @@
   {
     "id": "cardenas-avenue-to-19th-avenue",
     "name": "Cardenas Avenue to 19th Avenue",
-    "neighborhood": "Parkmerced",
+    "neighborhood": "Lakeshore",
     "lat": 37.71911774111183,
     "lng": -122.4747936313631,
     "height_ft": 10,
@@ -2389,7 +2389,7 @@
   {
     "id": "summit-way",
     "name": "Summit Way",
-    "neighborhood": "Parkmerced",
+    "neighborhood": "Lakeshore",
     "lat": 37.7151574374094,
     "lng": -122.4758556003945,
     "height_ft": 40,
@@ -2400,7 +2400,7 @@
   {
     "id": "brotherhood-way-to-summit-way",
     "name": "Brotherhood Way to Summit Way",
-    "neighborhood": "Parkmerced",
+    "neighborhood": "Lakeshore",
     "lat": 37.71473801439414,
     "lng": -122.476958401065,
     "height_ft": 10,
@@ -2411,7 +2411,7 @@
   {
     "id": "felix-avenue-to-19th-avenue",
     "name": "Felix Avenue to 19th Avenue",
-    "neighborhood": "Parkmerced",
+    "neighborhood": "Lakeshore",
     "lat": 37.71704670376008,
     "lng": -122.4729332244497,
     "height_ft": 10,
@@ -2422,7 +2422,7 @@
   {
     "id": "farnsworth-lane",
     "name": "Farnsworth Lane",
-    "neighborhood": "Parnassus Heights",
+    "neighborhood": "Inner Sunset",
     "lat": 37.76380844219752,
     "lng": -122.4546025842249,
     "height_ft": 55,
@@ -2466,7 +2466,7 @@
   {
     "id": "sunglow-lane",
     "name": "Sunglow Lane",
-    "neighborhood": "Portola",
+    "neighborhood": "Excelsior",
     "lat": 37.72918224512886,
     "lng": -122.420504978318,
     "height_ft": 30,
@@ -2598,7 +2598,7 @@
   {
     "id": "3rd-avenue-north-of-lake-street",
     "name": "3rd Avenue north of Lake Street",
-    "neighborhood": "Richmond District",
+    "neighborhood": "Inner Richmond",
     "lat": 37.78698912922106,
     "lng": -122.4615064425037,
     "height_ft": 15,
@@ -2609,7 +2609,7 @@
   {
     "id": "48th-avenue-north-of-balboa-street",
     "name": "48th Avenue north of Balboa Street",
-    "neighborhood": "Richmond District",
+    "neighborhood": "Outer Richmond",
     "lat": 37.77540512195687,
     "lng": -122.5091545628722,
     "height_ft": 25,
@@ -2620,7 +2620,7 @@
   {
     "id": "lincoln-park-steps",
     "name": "Lincoln Park Steps",
-    "neighborhood": "Richmond District",
+    "neighborhood": "Lincoln Park",
     "lat": 37.78350612184164,
     "lng": -122.493611863928,
     "height_ft": 20,
@@ -2631,7 +2631,7 @@
   {
     "id": "lansing-street-essex-street-to-guy-place",
     "name": "Lansing Street - Essex Street to Guy Place",
-    "neighborhood": "Rincon Hill",
+    "neighborhood": "Financial District/South Beach",
     "lat": 37.7856422750402,
     "lng": -122.3944514795128,
     "height_ft": 20,
@@ -2642,7 +2642,7 @@
   {
     "id": "beale-street-to-harrison-street",
     "name": "Beale Street to Harrison Street",
-    "neighborhood": "Rincon Hill",
+    "neighborhood": "Financial District/South Beach",
     "lat": 37.78760783210038,
     "lng": -122.3910165903121,
     "height_ft": 40,
@@ -2653,7 +2653,7 @@
   {
     "id": "delancey-street-at-bryant-street",
     "name": "Delancey Street at Bryant Street",
-    "neighborhood": "Rincon Hill",
+    "neighborhood": "Financial District/South Beach",
     "lat": 37.78474043191849,
     "lng": -122.3913471321869,
     "height_ft": 30,
@@ -2675,7 +2675,7 @@
   {
     "id": "broadway-salmon-street-to-himmelman-place",
     "name": "Broadway - Salmon Street to Himmelman Place",
-    "neighborhood": "Russian Hill",
+    "neighborhood": "Nob Hill",
     "lat": 37.79692008018945,
     "lng": -122.4129038036948,
     "height_ft": 10,
@@ -2708,7 +2708,7 @@
   {
     "id": "fallon-place",
     "name": "Fallon Place",
-    "neighborhood": "Russian Hill",
+    "neighborhood": "Nob Hill",
     "lat": 37.79771114369784,
     "lng": -122.4133762220693,
     "height_ft": 40,
@@ -2719,7 +2719,7 @@
   {
     "id": "florence-street",
     "name": "Florence Street",
-    "neighborhood": "Russian Hill",
+    "neighborhood": "Nob Hill",
     "lat": 37.79705262466866,
     "lng": -122.4146780781224,
     "height_ft": 30,
@@ -2884,7 +2884,7 @@
   {
     "id": "jones-street-at-vallejo-street",
     "name": "Jones Street at Vallejo Street",
-    "neighborhood": "Russian Hill",
+    "neighborhood": "Nob Hill",
     "lat": 37.79777026131031,
     "lng": -122.4153377110575,
     "height_ft": 10,
@@ -2961,7 +2961,7 @@
   {
     "id": "vallejo-street-east-of-taylor-street",
     "name": "Vallejo Street east of Taylor Street",
-    "neighborhood": "Russian Hill",
+    "neighborhood": "Nob Hill",
     "lat": 37.79803315689428,
     "lng": -122.4132699580352,
     "height_ft": 95,
@@ -2972,7 +2972,7 @@
   {
     "id": "vallejo-street-west-of-taylor-street",
     "name": "Vallejo Street west of Taylor Street",
-    "neighborhood": "Russian Hill",
+    "neighborhood": "Nob Hill",
     "lat": 37.79795845628148,
     "lng": -122.4140113445598,
     "height_ft": 60,
@@ -2994,7 +2994,7 @@
   {
     "id": "terrace-walk-terrace-drive-to-santa-paula-avenue",
     "name": "Terrace Walk - Terrace Drive to Santa Paula Avenue",
-    "neighborhood": "Saint Francis Wood",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.73598837260221,
     "lng": -122.4641969003722,
     "height_ft": 20,
@@ -3005,7 +3005,7 @@
   {
     "id": "terrace-walk-terrace-drive-to-yerba-buena-avenue",
     "name": "Terrace Walk - Terrace Drive to Yerba Buena Avenue",
-    "neighborhood": "Saint Francis Wood",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.73675456928344,
     "lng": -122.4635605341163,
     "height_ft": 55,
@@ -3016,7 +3016,7 @@
   {
     "id": "globe-alley",
     "name": "Globe Alley",
-    "neighborhood": "Sherwood Forest/Mount Davidson",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.73505171575006,
     "lng": -122.4575543839542,
     "height_ft": 60,
@@ -3027,7 +3027,7 @@
   {
     "id": "bengal-alley",
     "name": "Bengal Alley",
-    "neighborhood": "Sherwood Forest/Mount Davidson",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.73816335380113,
     "lng": -122.4610985447681,
     "height_ft": 75,
@@ -3038,7 +3038,7 @@
   {
     "id": "portola-drive-to-miraloma-drive",
     "name": "Portola Drive to Miraloma Drive",
-    "neighborhood": "Sherwood Forest/Mount Davidson",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.74024221015922,
     "lng": -122.4597740529911,
     "height_ft": 20,
@@ -3049,7 +3049,7 @@
   {
     "id": "diana-street-at-thornton-avenue",
     "name": "Diana Street at Thornton Avenue",
-    "neighborhood": "Silver Terrace",
+    "neighborhood": "Bayview Hunters Point",
     "lat": 37.73103749389327,
     "lng": -122.3962575680373,
     "height_ft": 10,
@@ -3060,7 +3060,7 @@
   {
     "id": "joost-and-baden-mini-park",
     "name": "Joost and Baden Mini Park",
-    "neighborhood": "Sunnyside",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.73273323603632,
     "lng": -122.4408832971171,
     "height_ft": 40,
@@ -3071,7 +3071,7 @@
   {
     "id": "upper-detroit-steps",
     "name": "Upper Detroit Steps",
-    "neighborhood": "Sunnyside",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.73198836212473,
     "lng": -122.4443248576925,
     "height_ft": 65,
@@ -3082,7 +3082,7 @@
   {
     "id": "lower-detroit-steps",
     "name": "Lower Detroit Steps",
-    "neighborhood": "Sunnyside",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.73128326480948,
     "lng": -122.4443328958675,
     "height_ft": 35,
@@ -3093,7 +3093,7 @@
   {
     "id": "melrose-avenue-west-of-foerster-street",
     "name": "Melrose Avenue west of Foerster Street",
-    "neighborhood": "Sunnyside",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.73373014525709,
     "lng": -122.4494357569456,
     "height_ft": 20,
@@ -3104,7 +3104,7 @@
   {
     "id": "sunnyside-conservatory-to-joost-avenue",
     "name": "Sunnyside Conservatory to Joost Avenue",
-    "neighborhood": "Sunnyside",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.73214653140496,
     "lng": -122.4406152616679,
     "height_ft": 15,
@@ -3115,7 +3115,7 @@
   {
     "id": "bartol-street-at-vallejo-street",
     "name": "Bartol Street at Vallejo Street",
-    "neighborhood": "Telegraph Hill",
+    "neighborhood": "North Beach",
     "lat": 37.79907747918911,
     "lng": -122.4036912818403,
     "height_ft": 10,
@@ -3126,7 +3126,7 @@
   {
     "id": "child-street-at-lombard-street",
     "name": "Child Street at Lombard Street",
-    "neighborhood": "Telegraph Hill",
+    "neighborhood": "North Beach",
     "lat": 37.80334331054406,
     "lng": -122.4076400358515,
     "height_ft": 20,
@@ -3137,7 +3137,7 @@
   {
     "id": "filbert-street-kearny-street-to-telegraph-hill-boulevard",
     "name": "Filbert Street - Kearny Street to Telegraph Hill Boulevard",
-    "neighborhood": "Telegraph Hill",
+    "neighborhood": "North Beach",
     "lat": 37.80172802959717,
     "lng": -122.4059278666852,
     "height_ft": 40,
@@ -3148,7 +3148,7 @@
   {
     "id": "filbert-street-montgomery-street-to-telegraph-hill-boulevard",
     "name": "Filbert Street - Montgomery Street to Telegraph Hill Boulevard",
-    "neighborhood": "Telegraph Hill",
+    "neighborhood": "North Beach",
     "lat": 37.80192299359055,
     "lng": -122.4050751903934,
     "height_ft": 50,
@@ -3159,7 +3159,7 @@
   {
     "id": "filbert-street-sansome-street-to-montgomery-street",
     "name": "Filbert Street - Sansome Street to Montgomery Street",
-    "neighborhood": "Telegraph Hill",
+    "neighborhood": "North Beach",
     "lat": 37.8020878930906,
     "lng": -122.4040064221076,
     "height_ft": 165,
@@ -3170,7 +3170,7 @@
   {
     "id": "filbert-street-at-montgomery-street",
     "name": "Filbert Street at Montgomery Street",
-    "neighborhood": "Telegraph Hill",
+    "neighborhood": "North Beach",
     "lat": 37.80196424531538,
     "lng": -122.4046433011747,
     "height_ft": 20,
@@ -3181,7 +3181,7 @@
   {
     "id": "francisco-street-between-kearny-street-and-grant-avenue",
     "name": "Francisco Street between Kearny Street and Grant Avenue",
-    "neighborhood": "Telegraph Hill",
+    "neighborhood": "North Beach",
     "lat": 37.80544476936109,
     "lng": -122.4080014541401,
     "height_ft": 45,
@@ -3192,7 +3192,7 @@
   {
     "id": "greenwich-street-child-street-to-telegraph-hill-boulevard-north-side",
     "name": "Greenwich Street - Child Street to Telegraph Hill Boulevard (North side)",
-    "neighborhood": "Telegraph Hill",
+    "neighborhood": "North Beach",
     "lat": 37.80270691561554,
     "lng": -122.4071440788715,
     "height_ft": 30,
@@ -3203,7 +3203,7 @@
   {
     "id": "greenwich-street-child-street-to-telegraph-hill-boulevard-south-side",
     "name": "Greenwich Street - Child Street to Telegraph Hill Boulevard (South side)",
-    "neighborhood": "Telegraph Hill",
+    "neighborhood": "North Beach",
     "lat": 37.80257365667593,
     "lng": -122.4068745412226,
     "height_ft": 50,
@@ -3214,7 +3214,7 @@
   {
     "id": "greenwich-street-montgomery-street-to-telegraph-hill-boulevard",
     "name": "Greenwich Street - Montgomery Street to Telegraph Hill Boulevard",
-    "neighborhood": "Telegraph Hill",
+    "neighborhood": "North Beach",
     "lat": 37.8028776883578,
     "lng": -122.4052786078265,
     "height_ft": 120,
@@ -3225,7 +3225,7 @@
   {
     "id": "greenwich-street-sansome-street-to-montgomery-street",
     "name": "Greenwich Street - Sansome Street to Montgomery Street",
-    "neighborhood": "Telegraph Hill",
+    "neighborhood": "North Beach",
     "lat": 37.80292993022101,
     "lng": -122.4042711506839,
     "height_ft": 160,
@@ -3236,7 +3236,7 @@
   {
     "id": "jack-early-park",
     "name": "Jack Early Park",
-    "neighborhood": "Telegraph Hill",
+    "neighborhood": "North Beach",
     "lat": 37.80488604183578,
     "lng": -122.4081628698435,
     "height_ft": 35,
@@ -3247,7 +3247,7 @@
   {
     "id": "jack-micheline-place",
     "name": "Jack Micheline Place",
-    "neighborhood": "Telegraph Hill",
+    "neighborhood": "North Beach",
     "lat": 37.80221382316573,
     "lng": -122.4080638491941,
     "height_ft": 10,
@@ -3258,7 +3258,7 @@
   {
     "id": "julius-street-at-whiting-street",
     "name": "Julius Street at Whiting Street",
-    "neighborhood": "Telegraph Hill",
+    "neighborhood": "North Beach",
     "lat": 37.8039255280846,
     "lng": -122.4079282941259,
     "height_ft": 5,
@@ -3269,7 +3269,7 @@
   {
     "id": "montgomery-street-north-of-green-street",
     "name": "Montgomery Street north of Green Street",
-    "neighborhood": "Telegraph Hill",
+    "neighborhood": "North Beach",
     "lat": 37.8004230467609,
     "lng": -122.4043280190296,
     "height_ft": 25,
@@ -3280,7 +3280,7 @@
   {
     "id": "san-antonio-place-at-vallejo-street",
     "name": "San Antonio Place at Vallejo Street",
-    "neighborhood": "Telegraph Hill",
+    "neighborhood": "North Beach",
     "lat": 37.79913708935977,
     "lng": -122.406250311567,
     "height_ft": 35,
@@ -3291,7 +3291,7 @@
   {
     "id": "telegraph-hill-boulevard-at-greenwich-street",
     "name": "Telegraph Hill Boulevard at Greenwich Street",
-    "neighborhood": "Telegraph Hill",
+    "neighborhood": "North Beach",
     "lat": 37.80278104759609,
     "lng": -122.4067767763543,
     "height_ft": 10,
@@ -3302,7 +3302,7 @@
   {
     "id": "tuscany-alley",
     "name": "Tuscany Alley",
-    "neighborhood": "Telegraph Hill",
+    "neighborhood": "North Beach",
     "lat": 37.80303893522804,
     "lng": -122.4103490516816,
     "height_ft": 5,
@@ -3313,7 +3313,7 @@
   {
     "id": "union-street-east-of-calhoun-terrace",
     "name": "Union Street east of Calhoun Terrace",
-    "neighborhood": "Telegraph Hill",
+    "neighborhood": "North Beach",
     "lat": 37.80117126522323,
     "lng": -122.4035466142389,
     "height_ft": 40,
@@ -3324,7 +3324,7 @@
   {
     "id": "vallejo-street-west-of-montgomery-street",
     "name": "Vallejo Street west of Montgomery Street",
-    "neighborhood": "Telegraph Hill",
+    "neighborhood": "North Beach",
     "lat": 37.79917802105839,
     "lng": -122.4044374911928,
     "height_ft": 60,
@@ -3335,7 +3335,7 @@
   {
     "id": "24th-street-grand-view-avenue-to-cuesta-court",
     "name": "24th Street - Grand View Avenue to Cuesta Court",
-    "neighborhood": "Upper Market/Twin Peaks",
+    "neighborhood": "Twin Peaks",
     "lat": 37.75062985580076,
     "lng": -122.4433410533319,
     "height_ft": 70,
@@ -3346,7 +3346,7 @@
   {
     "id": "argent-alley",
     "name": "Argent Alley",
-    "neighborhood": "Upper Market/Twin Peaks",
+    "neighborhood": "Twin Peaks",
     "lat": 37.75278523573016,
     "lng": -122.443314113078,
     "height_ft": 40,
@@ -3357,7 +3357,7 @@
   {
     "id": "copper-alley",
     "name": "Copper Alley",
-    "neighborhood": "Upper Market/Twin Peaks",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.75687674828043,
     "lng": -122.4437636289273,
     "height_ft": 10,
@@ -3368,7 +3368,7 @@
   {
     "id": "dixie-alley-grand-view-avenue-to-market-street",
     "name": "Dixie Alley - Grand View Avenue to Market Street",
-    "neighborhood": "Upper Market/Twin Peaks",
+    "neighborhood": "Twin Peaks",
     "lat": 37.7535119106659,
     "lng": -122.4421349508138,
     "height_ft": 40,
@@ -3379,7 +3379,7 @@
   {
     "id": "glendale-street",
     "name": "Glendale Street",
-    "neighborhood": "Upper Market/Twin Peaks",
+    "neighborhood": "Twin Peaks",
     "lat": 37.75613284937312,
     "lng": -122.4431237743124,
     "height_ft": 15,
@@ -3390,7 +3390,7 @@
   {
     "id": "grand-view-avenue-to-market-street",
     "name": "Grand View Avenue to Market Street",
-    "neighborhood": "Upper Market/Twin Peaks",
+    "neighborhood": "Twin Peaks",
     "lat": 37.75671019078951,
     "lng": -122.441645846735,
     "height_ft": 10,
@@ -3401,7 +3401,7 @@
   {
     "id": "iron-alley-clayton-street-to-corbett-avenue",
     "name": "Iron Alley - Clayton Street to Corbett Avenue",
-    "neighborhood": "Upper Market/Twin Peaks",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.75807777070186,
     "lng": -122.4446175525922,
     "height_ft": 65,
@@ -3412,7 +3412,7 @@
   {
     "id": "market-street-to-clayton-street",
     "name": "Market Street to Clayton Street",
-    "neighborhood": "Upper Market/Twin Peaks",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.75843219433288,
     "lng": -122.4447815994069,
     "height_ft": 20,
@@ -3423,7 +3423,7 @@
   {
     "id": "short-street",
     "name": "Short Street",
-    "neighborhood": "Upper Market/Twin Peaks",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.75763259669817,
     "lng": -122.4428569048579,
     "height_ft": 15,
@@ -3434,7 +3434,7 @@
   {
     "id": "stanton-street-to-grand-view-avenue",
     "name": "Stanton Street to Grand View Avenue",
-    "neighborhood": "Upper Market/Twin Peaks",
+    "neighborhood": "Twin Peaks",
     "lat": 37.75683712523667,
     "lng": -122.4420534137524,
     "height_ft": 5,
@@ -3445,7 +3445,7 @@
   {
     "id": "vista-lane-burnett-avenue-to-gardenside-drive",
     "name": "Vista Lane - Burnett Avenue to Gardenside Drive",
-    "neighborhood": "Upper Market/Twin Peaks",
+    "neighborhood": "Twin Peaks",
     "lat": 37.75262583323007,
     "lng": -122.4451006626985,
     "height_ft": 60,
@@ -3456,7 +3456,7 @@
   {
     "id": "vista-lane-gardenside-drive-to-parkridge-drive",
     "name": "Vista Lane - Gardenside Drive to Parkridge Drive",
-    "neighborhood": "Upper Market/Twin Peaks",
+    "neighborhood": "Twin Peaks",
     "lat": 37.75249391412451,
     "lng": -122.4456826910115,
     "height_ft": 50,
@@ -3467,7 +3467,7 @@
   {
     "id": "vista-lane-parkridge-drive-to-crestline-drive",
     "name": "Vista Lane - Parkridge Drive to Crestline Drive",
-    "neighborhood": "Upper Market/Twin Peaks",
+    "neighborhood": "Twin Peaks",
     "lat": 37.75182218306612,
     "lng": -122.4459451190035,
     "height_ft": 40,
@@ -3511,7 +3511,7 @@
   {
     "id": "public-park-granville-way-to-kensington-way",
     "name": "Public Park - Granville Way to Kensington Way",
-    "neighborhood": "West Portal",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.74263229406579,
     "lng": -122.4622282663983,
     "height_ft": 20,
@@ -3522,7 +3522,7 @@
   {
     "id": "monterey-boulevard-at-miramar-avenue",
     "name": "Monterey Boulevard at Miramar Avenue",
-    "neighborhood": "Westwood Park",
+    "neighborhood": "West of Twin Peaks",
     "lat": 37.73084078786493,
     "lng": -122.4583182834366,
     "height_ft": 10,
@@ -3533,7 +3533,7 @@
   {
     "id": "north-gate-road",
     "name": "North Gate Road",
-    "neighborhood": "Yerba Buena Island",
+    "neighborhood": "Treasure Island",
     "lat": 37.81242503922844,
     "lng": -122.3644306206023,
     "height_ft": 40,
@@ -3544,7 +3544,7 @@
   {
     "id": "thornton-avenue-3rd-street-to-latona-street",
     "name": "Thornton Avenue - 3rd Street to Latona Street",
-    "neighborhood": "Bayview/Hunters Point",
+    "neighborhood": "Bayview Hunters Point",
     "lat": 37.7306885854544,
     "lng": -122.3925165741586,
     "height_ft": 25,
@@ -3555,7 +3555,7 @@
   {
     "id": "revere-avenue-east-of-newhall-street",
     "name": "Revere Avenue east of Newhall Street",
-    "neighborhood": "Bayview/Hunters Point",
+    "neighborhood": "Bayview Hunters Point",
     "lat": 37.73363628454059,
     "lng": -122.3936626741811,
     "height_ft": 25,
@@ -3566,7 +3566,7 @@
   {
     "id": "griffith-street-south-of-innes-avenue",
     "name": "Griffith Street south of Innes Avenue",
-    "neighborhood": "Bayview/Hunters Point",
+    "neighborhood": "Bayview Hunters Point",
     "lat": 37.73176762109505,
     "lng": -122.3758905632811,
     "height_ft": 20,
@@ -3599,7 +3599,7 @@
   {
     "id": "vinton-court",
     "name": "Vinton Court",
-    "neighborhood": "Chinatown",
+    "neighborhood": "Financial District/South Beach",
     "lat": 37.79176914900016,
     "lng": -122.4060572879771,
     "height_ft": 15,
@@ -3610,7 +3610,7 @@
   {
     "id": "alpine-terrace-south-of-waller-street",
     "name": "Alpine Terrace south of Waller Street",
-    "neighborhood": "Corona Heights",
+    "neighborhood": "Haight Ashbury",
     "lat": 37.76989476827463,
     "lng": -122.4376882237438,
     "height_ft": 45,
@@ -3621,7 +3621,7 @@
   {
     "id": "duboce-avenue-castro-street-to-divisadero-street-north-side",
     "name": "Duboce Avenue - Castro Street to Divisadero Street (North side)",
-    "neighborhood": "Corona Heights",
+    "neighborhood": "Haight Ashbury",
     "lat": 37.76912829761427,
     "lng": -122.436221759036,
     "height_ft": 30,
@@ -3632,7 +3632,7 @@
   {
     "id": "duboce-avenue-castro-street-to-divisadero-street-south-side",
     "name": "Duboce Avenue - Castro Street to Divisadero Street (South side)",
-    "neighborhood": "Corona Heights",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.76895832706319,
     "lng": -122.4362329355625,
     "height_ft": 40,
@@ -3643,7 +3643,7 @@
   {
     "id": "duboce-avenue-west-of-divisadero-street",
     "name": "Duboce Avenue west of Divisadero Street",
-    "neighborhood": "Corona Heights",
+    "neighborhood": "Haight Ashbury",
     "lat": 37.76907805417005,
     "lng": -122.4369108619969,
     "height_ft": 20,
@@ -3654,7 +3654,7 @@
   {
     "id": "22nd-street-church-street-to-vicksburg-street",
     "name": "22nd Street - Church Street to Vicksburg Street",
-    "neighborhood": "Dolores Heights",
+    "neighborhood": "Noe Valley",
     "lat": 37.75485420801461,
     "lng": -122.4283327228145,
     "height_ft": 70,
@@ -3665,7 +3665,7 @@
   {
     "id": "sanchez-street-between-19th-street-and-cumberland-street",
     "name": "Sanchez Street between 19th Street and Cumberland Street",
-    "neighborhood": "Dolores Heights",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.75920762853048,
     "lng": -122.4304157903832,
     "height_ft": 20,
@@ -3676,7 +3676,7 @@
   {
     "id": "collingwood-street-south-of-20th-street",
     "name": "Collingwood Street south of 20th Street",
-    "neighborhood": "Eureka Valley",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.75740253924775,
     "lng": -122.4358171970644,
     "height_ft": 30,
@@ -3687,7 +3687,7 @@
   {
     "id": "yukon-street-south-of-short-street",
     "name": "Yukon Street south of Short Street",
-    "neighborhood": "Eureka Valley",
+    "neighborhood": "Castro/Upper Market",
     "lat": 37.75739193273355,
     "lng": -122.4423956599623,
     "height_ft": 15,
@@ -3742,7 +3742,7 @@
   {
     "id": "25th-street-east-of-dolores-street",
     "name": "25th Street east of Dolores Street",
-    "neighborhood": "Noe Valley",
+    "neighborhood": "Mission",
     "lat": 37.75033882584897,
     "lng": -122.4246098032004,
     "height_ft": 10,
@@ -3753,7 +3753,7 @@
   {
     "id": "25th-street-west-of-fair-oaks-street",
     "name": "25th Street west of Fair Oaks Street",
-    "neighborhood": "Noe Valley",
+    "neighborhood": "Mission",
     "lat": 37.75021753255346,
     "lng": -122.4241145050625,
     "height_ft": 15,
@@ -3797,7 +3797,7 @@
   {
     "id": "fillmore-street-green-street-to-vallejo-street-east-side",
     "name": "Fillmore Street - Green Street to Vallejo Street (East side)",
-    "neighborhood": "Pacific Heights",
+    "neighborhood": "Marina",
     "lat": 37.79567892267563,
     "lng": -122.4351301037494,
     "height_ft": 60,
@@ -3830,7 +3830,7 @@
   {
     "id": "fillmore-street-south-of-green-street-west-side",
     "name": "Fillmore Street south of Green Street (West side)",
-    "neighborhood": "Pacific Heights",
+    "neighborhood": "Marina",
     "lat": 37.79581508718869,
     "lng": -122.4353507649729,
     "height_ft": 30,
@@ -3852,7 +3852,7 @@
   {
     "id": "green-street-west-of-pierce-street",
     "name": "Green Street west of Pierce Street",
-    "neighborhood": "Pacific Heights",
+    "neighborhood": "Marina",
     "lat": 37.7957603455911,
     "lng": -122.4391322260064,
     "height_ft": 10,
@@ -3885,7 +3885,7 @@
   {
     "id": "stanyan-street-north-of-belgrave-street-east-side",
     "name": "Stanyan Street north of Belgrave Street (East side)",
-    "neighborhood": "Parnassus Heights",
+    "neighborhood": "Inner Sunset",
     "lat": 37.75968440712307,
     "lng": -122.4515419945278,
     "height_ft": 30,
@@ -3896,7 +3896,7 @@
   {
     "id": "stanyan-street-north-of-belgrave-street-west-side",
     "name": "Stanyan Street north of Belgrave Street (West side)",
-    "neighborhood": "Parnassus Heights",
+    "neighborhood": "Inner Sunset",
     "lat": 37.7597078567165,
     "lng": -122.4517236615387,
     "height_ft": 50,
@@ -3940,7 +3940,7 @@
   {
     "id": "mariposa-street-west-of-utah-street",
     "name": "Mariposa Street west of Utah Street",
-    "neighborhood": "Potrero Hill",
+    "neighborhood": "Mission",
     "lat": 37.76318752013115,
     "lng": -122.4066498607337,
     "height_ft": 20,
@@ -3984,7 +3984,7 @@
   {
     "id": "broadway-taylor-street-to-florence-street",
     "name": "Broadway - Taylor Street to Florence Street",
-    "neighborhood": "Russian Hill",
+    "neighborhood": "Nob Hill",
     "lat": 37.79696322090537,
     "lng": -122.414118557767,
     "height_ft": 70,
@@ -4006,7 +4006,7 @@
   {
     "id": "filbert-street-west-of-kearny-street-north-side",
     "name": "Filbert Street west of Kearny Street (North side)",
-    "neighborhood": "Telegraph Hill",
+    "neighborhood": "North Beach",
     "lat": 37.80180517972105,
     "lng": -122.4066660279053,
     "height_ft": 35,
@@ -4017,7 +4017,7 @@
   {
     "id": "filbert-street-grant-avenue-to-bob-kaufman-alley",
     "name": "Filbert Street - Grant Avenue to Bob Kaufman Alley",
-    "neighborhood": "Telegraph Hill",
+    "neighborhood": "North Beach",
     "lat": 37.80153588417679,
     "lng": -122.4075995555897,
     "height_ft": 15,
@@ -4028,7 +4028,7 @@
   {
     "id": "filbert-street-at-varennes-street",
     "name": "Filbert Street at Varennes Street",
-    "neighborhood": "Telegraph Hill",
+    "neighborhood": "North Beach",
     "lat": 37.80162200369413,
     "lng": -122.4069147430723,
     "height_ft": 10,
@@ -4039,7 +4039,7 @@
   {
     "id": "hudson-avenue-to-hawkins-lane",
     "name": "Hudson Avenue to Hawkins Lane",
-    "neighborhood": "Bayview/Hunters Point",
+    "neighborhood": "Bayview Hunters Point",
     "lat": null,
     "lng": null,
     "height_ft": null,
@@ -4050,7 +4050,7 @@
   {
     "id": "pemberton-place-at-crown-terrace",
     "name": "Pemberton Place at Crown Terrace",
-    "neighborhood": "Clarendon Heights",
+    "neighborhood": "Twin Peaks",
     "lat": null,
     "lng": null,
     "height_ft": null,
@@ -4061,7 +4061,7 @@
   {
     "id": "miguel-street-to-beacon-street",
     "name": "Miguel Street to Beacon Street",
-    "neighborhood": "Diamond Heights",
+    "neighborhood": "Glen Park",
     "lat": null,
     "lng": null,
     "height_ft": null,
@@ -4072,7 +4072,7 @@
   {
     "id": "clover-lane-19th-street-to-kite-hill",
     "name": "Clover Lane - 19th Street to Kite Hill",
-    "neighborhood": "Eureka Valley",
+    "neighborhood": "Castro/Upper Market",
     "lat": null,
     "lng": null,
     "height_ft": null,
@@ -4083,7 +4083,7 @@
   {
     "id": "acme-alley-corwin-street-to-grand-view-avenue",
     "name": "Acme Alley - Corwin Street to Grand View Avenue",
-    "neighborhood": "Eureka Valley",
+    "neighborhood": "Castro/Upper Market",
     "lat": null,
     "lng": null,
     "height_ft": null,
@@ -4094,7 +4094,7 @@
   {
     "id": "moraga-street-east-of-14th-avenue",
     "name": "Moraga Street east of 14th Avenue",
-    "neighborhood": "Golden Gate Heights",
+    "neighborhood": "Inner Sunset",
     "lat": null,
     "lng": null,
     "height_ft": null,
@@ -4105,7 +4105,7 @@
   {
     "id": "ingleside-path",
     "name": "Ingleside Path",
-    "neighborhood": "Ingleside Terraces",
+    "neighborhood": "Oceanview/Merced/Ingleside",
     "lat": null,
     "lng": null,
     "height_ft": null,
@@ -4138,7 +4138,7 @@
   {
     "id": "summit-way-to-gonzalez-drive",
     "name": "Summit Way to Gonzalez Drive",
-    "neighborhood": "Parkmerced",
+    "neighborhood": "Lakeshore",
     "lat": null,
     "lng": null,
     "height_ft": null,
@@ -4149,7 +4149,7 @@
   {
     "id": "summit-way-to-font-boulevard",
     "name": "Summit Way to Font Boulevard",
-    "neighborhood": "Parkmerced",
+    "neighborhood": "Lakeshore",
     "lat": null,
     "lng": null,
     "height_ft": null,
@@ -4160,7 +4160,7 @@
   {
     "id": "28th-avenue-south-of-vicente-street",
     "name": "28th Avenue south of Vicente Street",
-    "neighborhood": "Parkside",
+    "neighborhood": "Sunset/Parkside",
     "lat": null,
     "lng": null,
     "height_ft": null,
@@ -4182,7 +4182,7 @@
   {
     "id": "reno-place",
     "name": "Reno Place",
-    "neighborhood": "Telegraph Hill",
+    "neighborhood": "North Beach",
     "lat": null,
     "lng": null,
     "height_ft": null,
@@ -4193,7 +4193,7 @@
   {
     "id": "dixie-alley-corbett-avenue-to-burnett-avenue",
     "name": "Dixie Alley - Corbett Avenue to Burnett Avenue",
-    "neighborhood": "Upper Market/Twin Peaks",
+    "neighborhood": "Twin Peaks",
     "lat": null,
     "lng": null,
     "height_ft": null,

@@ -15,8 +15,8 @@
 /* Begin PBXFileReference section */
 		556E75582F708184007CD2B3 /* SFStairways.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SFStairways.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55C7A2102F7946DE00CA13A0 /* SFStairwaysMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SFStairwaysMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		AA000001000000000000AA01 /* SFStairwaysAdmin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SFStairwaysAdmin.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55C7A2362F7998AD00CA13A0 /* all_stairways.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = all_stairways.json; path = ../data/all_stairways.json; sourceTree = "<group>"; };
+		AA000001000000000000AA01 /* SFStairwaysAdmin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SFStairwaysAdmin.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -43,8 +43,7 @@
 				Models/WalkRecord.swift,
 				Resources/all_stairways.json,
 				Resources/AppColors.swift,
-				Resources/neighborhood_adjacency.json,
-				Resources/neighborhood_centroids.json,
+				Resources/sf_neighborhoods.geojson,
 				Resources/tags_preset.json,
 			);
 			target = 55C7A20F2F7946DE00CA13A0 /* SFStairwaysMac */;
