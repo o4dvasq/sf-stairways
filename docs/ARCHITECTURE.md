@@ -103,9 +103,55 @@ No API secret required — unsigned presets are safe for browser-side uploads.
 
 Records with `lat: null` or `lng: null` are silently skipped — no marker is rendered.
 
+## macOS Admin Dashboard
+
+Source at `ios/SFStairwaysMac/`. Added as a second target in `SFStairways.xcodeproj` on 2026-03-29.
+
+### Entry Point
+
+`SFStairwaysMacApp.swift` — creates `ModelContainer` using the same CloudKit container as iOS (`iCloud.com.o4dvasq.sfstairways`), falls back to local storage on failure. Sets default window size 1200×720.
+
+### Shared Code (macOS target membership)
+
+The following iOS source files are also compiled into the macOS target:
+
+- `Models/WalkRecord.swift`, `WalkPhoto.swift`, `StairwayOverride.swift`, `StairwayTag.swift`, `TagAssignment.swift`
+- `Models/StairwayStore.swift`, `Stairway.swift`, `SupabaseModels.swift`, `PhotoSource.swift`
+- `Resources/AppColors.swift`
+- `all_stairways.json` bundle resource
+
+`WalkPhoto.swift` uses `#if canImport(UIKit)` guards around `UIImage`-specific computed properties and `UIGraphicsImageRenderer` thumbnail generation, which are iOS-only. macOS views access photo data via raw `Data` → `NSImage(data:)` directly.
+
+### macOS Views
+
+| File | Purpose |
+|---|---|
+| `Views/StairwayBrowser.swift` | Three-column `NavigationSplitView`: neighborhood sidebar with walked/total counts, sortable `Table` of stairways (name, height, steps, elev gain, photos, date walked), detail column |
+| `Views/StairwayDetailPanel.swift` | Catalog vs. walk data comparison grid; editable curator overrides (step count, height, description) with Save; notes → promote to curator description; tag add/remove via `Menu`; local photo grid (NSImage from Data) with per-photo delete confirm |
+| `Views/DataHygieneView.swift` | Two-column issue browser: sidebar with issue type filter + counts, `Table` of flagged stairways; detects: missing height, missing coordinates, missing HealthKit data, promotion candidates (notes without curator description), proximity-unverified walks |
+| `Views/BulkOperationsSheet.swift` | Bulk tag assign to all selected; bulk mark walked with `DatePicker`; CSV export via `NSSavePanel` using `UniformTypeIdentifiers` |
+
+### macOS Data Flow
+
+```
+all_stairways.json ──► StairwayStore ──► StairwayBrowser (sidebar + table)
+
+CloudKit ──► SwiftData (same container as iOS) ──► @Query in StairwayBrowser
+                                                         │
+                              WalkRecord, StairwayOverride, StairwayTag, TagAssignment
+                                                         │
+                                               StairwayDetailPanel (read + write)
+                                               DataHygieneView (read only)
+                                               BulkOperationsSheet (write)
+```
+
+No Supabase, no HealthKit fetching on macOS. HealthKit data (stepCount, elevationGain) is read from CloudKit-synced `WalkRecord` fields only.
+
+---
+
 ## iOS App Structure
 
-Source at `ios/SFStairways/`. **iOS is the sole active platform** — web app deprecated 2026-03-25.
+Source at `ios/SFStairways/`. iOS is the primary user-facing platform. Web app deprecated 2026-03-25.
 
 ### Entry Point
 

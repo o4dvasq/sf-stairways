@@ -340,3 +340,16 @@ The ProgressCard header displayed `Text("Progress")` — the same word as the (n
 **Date:** 2026-03-29
 
 `com.apple.developer.healthkit` and `com.apple.developer.healthkit.access` added to `SFStairways.entitlements`. These keys are required for code signing but the HealthKit permission dialog also requires the HealthKit capability to be enabled in Xcode target Signing & Capabilities (which links `HealthKit.framework`). The entitlement file is in the repo; the Xcode project capability toggle is a manual step per-machine that is not tracked in the repo's pbxproj in this project's workflow.
+
+## macOS admin dashboard: new target in existing Xcode project, shared models
+**Date:** 2026-03-29
+
+A macOS companion app was added as a second target in `SFStairways.xcodeproj` (bundle ID: `com.o4dvasq.SFStairways.mac`, source at `ios/SFStairwaysMac/`). It shares the same CloudKit container as iOS, so walk records, overrides, tags, and photos sync automatically with zero additional sync code.
+
+**Shared models rather than duplicated.** All SwiftData model files (`Models/*.swift`, `StairwayStore`, `AppColors`) are shared between iOS and macOS via Xcode target membership — they compile for both platforms. The only model requiring changes was `WalkPhoto.swift`, which used `UIKit` for `UIImage` computed properties and `UIGraphicsImageRenderer` thumbnail generation. These are now wrapped in `#if canImport(UIKit)` / `#else` blocks so the macOS build omits them cleanly. macOS views access photo data directly (`photo.thumbnailData ?? photo.imageData` → `NSImage(data:)`) without going through the computed properties.
+
+**No Supabase or HealthKit on macOS (MVP).** The macOS app reads HealthKit data that was synced via CloudKit from iOS WalkRecords, but does not fetch new HealthKit data (HealthKit is iOS-only). Supabase photos are excluded from the macOS MVP — only CloudKit-synced local photos are visible.
+
+**Why macOS rather than a second iOS app or web admin.** The admin workflow (bulk tagging, curator note promotion, data hygiene review, CSV export) is inherently desktop-oriented — multi-select, sortable tables, file export panels. A native macOS app with `NavigationSplitView` + `Table` (macOS SwiftUI primitives) provides exactly this without needing to build a separate web backend or fight iOS's touch-first conventions.
+
+**File membership is a manual Xcode step.** Adding a target to `project.pbxproj` by hand editing is error-prone and risks corrupting the project file. The correct workflow is: create the target in Xcode UI (File → New → Target), then add shared files via the File Inspector (Target Membership checkbox). This is documented in PROJECT_STATE.md Known Issues.

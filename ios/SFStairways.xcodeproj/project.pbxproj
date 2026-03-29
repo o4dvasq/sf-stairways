@@ -12,6 +12,7 @@
 
 /* Begin PBXFileReference section */
 		556E75582F708184007CD2B3 /* SFStairways.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SFStairways.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		55C7A2102F7946DE00CA13A0 /* SFStairwaysMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SFStairwaysMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -22,6 +23,26 @@
 			);
 			target = 556E75572F708184007CD2B3 /* SFStairways */;
 		};
+		55C7A2252F7947FE00CA13A0 /* Exceptions for "SFStairways" folder in "SFStairwaysMac" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Models/PhotoSource.swift,
+				Models/Stairway.swift,
+				Models/StairwayOverride.swift,
+				Models/StairwayStore.swift,
+				Models/StairwayTag.swift,
+				Models/SupabaseModels.swift,
+				Models/TagAssignment.swift,
+				Models/WalkPhoto.swift,
+				Models/WalkRecord.swift,
+				Resources/all_stairways.json,
+				Resources/AppColors.swift,
+				Resources/neighborhood_adjacency.json,
+				Resources/neighborhood_centroids.json,
+				Resources/tags_preset.json,
+			);
+			target = 55C7A20F2F7946DE00CA13A0 /* SFStairwaysMac */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -29,8 +50,14 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				5575BEC82F723BD3002EA789 /* Exceptions for "SFStairways" folder in "SFStairways" target */,
+				55C7A2252F7947FE00CA13A0 /* Exceptions for "SFStairways" folder in "SFStairwaysMac" target */,
 			);
 			path = SFStairways;
+			sourceTree = "<group>";
+		};
+		55C7A2112F7946DE00CA13A0 /* SFStairwaysMac */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SFStairwaysMac;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -44,6 +71,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		55C7A20D2F7946DE00CA13A0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -51,6 +85,7 @@
 			isa = PBXGroup;
 			children = (
 				556E755A2F708184007CD2B3 /* SFStairways */,
+				55C7A2112F7946DE00CA13A0 /* SFStairwaysMac */,
 				556E75592F708184007CD2B3 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -59,6 +94,7 @@
 			isa = PBXGroup;
 			children = (
 				556E75582F708184007CD2B3 /* SFStairways.app */,
+				55C7A2102F7946DE00CA13A0 /* SFStairwaysMac.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -89,6 +125,28 @@
 			productReference = 556E75582F708184007CD2B3 /* SFStairways.app */;
 			productType = "com.apple.product-type.application";
 		};
+		55C7A20F2F7946DE00CA13A0 /* SFStairwaysMac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 55C7A2182F7946E000CA13A0 /* Build configuration list for PBXNativeTarget "SFStairwaysMac" */;
+			buildPhases = (
+				55C7A20C2F7946DE00CA13A0 /* Sources */,
+				55C7A20D2F7946DE00CA13A0 /* Frameworks */,
+				55C7A20E2F7946DE00CA13A0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				55C7A2112F7946DE00CA13A0 /* SFStairwaysMac */,
+			);
+			name = SFStairwaysMac;
+			packageProductDependencies = (
+			);
+			productName = SFStairwaysMac;
+			productReference = 55C7A2102F7946DE00CA13A0 /* SFStairwaysMac.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -96,11 +154,14 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2630;
+				LastSwiftUpdateCheck = 2640;
 				LastUpgradeCheck = 2640;
 				TargetAttributes = {
 					556E75572F708184007CD2B3 = {
 						CreatedOnToolsVersion = 26.3;
+					};
+					55C7A20F2F7946DE00CA13A0 = {
+						CreatedOnToolsVersion = 26.4;
 					};
 				};
 			};
@@ -122,6 +183,7 @@
 			projectRoot = "";
 			targets = (
 				556E75572F708184007CD2B3 /* SFStairways */,
+				55C7A20F2F7946DE00CA13A0 /* SFStairwaysMac */,
 			);
 		};
 /* End PBXProject section */
@@ -134,10 +196,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		55C7A20E2F7946DE00CA13A0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		556E75542F708184007CD2B3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		55C7A20C2F7946DE00CA13A0 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -348,6 +424,74 @@
 			};
 			name = Release;
 		};
+		55C7A2192F7946E000CA13A0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7BT67JPC78;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.o4dvasq.SFStairwaysMac;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		55C7A21A2F7946E000CA13A0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7BT67JPC78;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.o4dvasq.SFStairwaysMac;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -365,6 +509,15 @@
 			buildConfigurations = (
 				556E75642F708186007CD2B3 /* Debug */,
 				556E75652F708186007CD2B3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		55C7A2182F7946E000CA13A0 /* Build configuration list for PBXNativeTarget "SFStairwaysMac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				55C7A2192F7946E000CA13A0 /* Debug */,
+				55C7A21A2F7946E000CA13A0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -1,6 +1,9 @@
 import Foundation
 import SwiftData
+
+#if canImport(UIKit)
 import UIKit
+#endif
 
 @Model
 final class WalkPhoto {
@@ -25,6 +28,7 @@ final class WalkPhoto {
         self.createdAt = Date()
     }
 
+#if canImport(UIKit)
     var thumbnailImage: UIImage? {
         guard let data = thumbnailData else { return nil }
         return UIImage(data: data)
@@ -34,8 +38,10 @@ final class WalkPhoto {
         guard let data = imageData else { return nil }
         return UIImage(data: data)
     }
+#endif
 
     static func generateThumbnail(from imageData: Data, maxWidth: CGFloat = 300) -> Data? {
+#if canImport(UIKit)
         guard let image = UIImage(data: imageData) else { return nil }
         let scale = maxWidth / image.size.width
         guard scale < 1 else { return imageData }
@@ -45,5 +51,9 @@ final class WalkPhoto {
             image.draw(in: CGRect(origin: .zero, size: newSize))
         }
         return thumbnailImage.jpegData(compressionQuality: 0.7)
+#else
+        // On macOS, return the original data — NSImage can decode it directly.
+        return imageData
+#endif
     }
 }
