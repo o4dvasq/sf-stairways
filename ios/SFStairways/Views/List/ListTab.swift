@@ -5,6 +5,7 @@ struct ListTab: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var walkRecords: [WalkRecord]
     @Query private var overrides: [StairwayOverride]
+    @Query private var deletions: [StairwayDeletion]
     @State private var store = StairwayStore()
     @State private var locationManager = LocationManager()
     @State private var searchText = ""
@@ -35,6 +36,7 @@ struct ListTab: View {
                         }
                     } header: {
                         Text(group.name)
+                            .font(.system(.subheadline, design: .rounded))
                     }
                 }
             }
@@ -45,6 +47,12 @@ struct ListTab: View {
                 StairwayBottomSheet(stairway: stairway, locationManager: locationManager)
                     .presentationDetents([.height(390), .large])
                     .presentationDragIndicator(.visible)
+            }
+            .onAppear {
+                store.applyDeletions(deletions.map(\.stairwayID))
+            }
+            .onChange(of: deletions) { _, d in
+                store.applyDeletions(d.map(\.stairwayID))
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {

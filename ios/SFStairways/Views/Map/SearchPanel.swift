@@ -60,7 +60,7 @@ struct SearchPanel: View {
                             withAnimation { activeTab = tab }
                         } label: {
                             Text(tab.rawValue)
-                                .font(.subheadline)
+                                .font(.system(.subheadline, design: .rounded))
                                 .fontWeight(.medium)
                                 .padding(.horizontal, 14)
                                 .padding(.vertical, 7)

@@ -1,5 +1,8 @@
 import SwiftUI
 import SwiftData
+#if canImport(UIKit)
+import UIKit
+#endif
 
 struct ContentView: View {
     @State private var selectedTab = 0
@@ -24,7 +27,7 @@ struct ContentView: View {
             ProgressTab()
                 .tabItem {
                     Image(systemName: "chart.line.uptrend.xyaxis")
-                    Text("Stats")
+                    Text("Progress")
                 }
                 .tag(2)
 
@@ -50,11 +53,29 @@ struct ContentView: View {
         }
         .tint(Color.forestGreen)
         .environment(coordinator)
+        .onAppear { applyRoundedNavBarAppearance() }
     }
 }
 
+#if canImport(UIKit)
+private func applyRoundedNavBarAppearance() {
+    let makeFontRounded: (UIFont.TextStyle, CGFloat) -> UIFont = { style, size in
+        let base = UIFont.preferredFont(forTextStyle: style)
+        let descriptor = base.fontDescriptor.withDesign(.rounded) ?? base.fontDescriptor
+        return UIFont(descriptor: descriptor, size: size)
+    }
+    let appearance = UINavigationBarAppearance()
+    appearance.configureWithDefaultBackground()
+    appearance.largeTitleTextAttributes = [.font: makeFontRounded(.largeTitle, 0)]
+    appearance.titleTextAttributes = [.font: makeFontRounded(.headline, 0)]
+    UINavigationBar.appearance().standardAppearance = appearance
+    UINavigationBar.appearance().scrollEdgeAppearance = appearance
+}
+#endif
+
 private struct SearchTab: View {
     @Query private var walkRecords: [WalkRecord]
+    @Query private var deletions: [StairwayDeletion]
     @State private var store = StairwayStore()
     @State private var locationManager = LocationManager()
     let onSelectStairway: (Stairway) -> Void
@@ -69,6 +90,12 @@ private struct SearchTab: View {
             onSelectNeighborhood: onSelectNeighborhood,
             isTabMode: true
         )
-        .onAppear { locationManager.requestPermission() }
+        .onAppear {
+            locationManager.requestPermission()
+            store.applyDeletions(deletions.map(\.stairwayID))
+        }
+        .onChange(of: deletions) { _, d in
+            store.applyDeletions(d.map(\.stairwayID))
+        }
     }
 }

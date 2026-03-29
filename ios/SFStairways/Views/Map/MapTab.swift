@@ -7,6 +7,7 @@ struct MapTab: View {
     @Query private var overrides: [StairwayOverride]
     @Query private var allTags: [StairwayTag]
     @Query private var allTagAssignments: [TagAssignment]
+    @Query private var deletions: [StairwayDeletion]
     @Environment(NavigationCoordinator.self) private var coordinator
     @State private var store = StairwayStore()
     @State private var locationManager = LocationManager()
@@ -59,7 +60,6 @@ struct MapTab: View {
                 mapSpan = context.region.span.latitudeDelta
             }
             .mapStyle(.standard(elevation: .realistic))
-            .preferredColorScheme(.dark)
             .mapControls {
                 MapUserLocationButton()
                 MapCompass()
@@ -131,6 +131,12 @@ struct MapTab: View {
         }
         .onChange(of: filter) { _, _ in
             showTagDroppedToastIfNeeded(for: activeTagFilter)
+        }
+        .onAppear {
+            store.applyDeletions(deletions.map(\.stairwayID))
+        }
+        .onChange(of: deletions) { _, d in
+            store.applyDeletions(d.map(\.stairwayID))
         }
     }
 

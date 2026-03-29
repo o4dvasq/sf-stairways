@@ -5,6 +5,7 @@ struct ProgressTab: View {
     @Environment(SyncStatusManager.self) private var syncManager
     @Query private var walkRecords: [WalkRecord]
     @Query private var overrides: [StairwayOverride]
+    @Query private var deletions: [StairwayDeletion]
     @State private var store = StairwayStore()
     @State private var showSyncDetails = false
     @State private var expandedNeighborhoods: Set<String> = []
@@ -113,14 +114,6 @@ struct ProgressTab: View {
             .sorted { Double($0.walked) / Double($0.total) > Double($1.walked) / Double($1.total) }
     }
 
-    private var recentWalks: [(record: WalkRecord, stairway: Stairway?)] {
-        walkedRecords
-            .sorted { ($0.dateWalked ?? .distantPast) > ($1.dateWalked ?? .distantPast) }
-            .prefix(5)
-            .map { record in
-                (record: record, stairway: store.stairway(for: record.stairwayID))
-            }
-    }
 
     var body: some View {
         NavigationStack {
@@ -129,11 +122,16 @@ struct ProgressTab: View {
                     completionRing
                     statsGrid
                     neighborhoodSection
-                    recentWalksSection
                 }
                 .padding(16)
             }
-            .navigationTitle("Stats")
+            .onAppear {
+                store.applyDeletions(deletions.map(\.stairwayID))
+            }
+            .onChange(of: deletions) { _, d in
+                store.applyDeletions(d.map(\.stairwayID))
+            }
+            .navigationTitle("Progress")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
@@ -183,7 +181,7 @@ struct ProgressTab: View {
                 Circle()
                     .trim(from: 0, to: completionFraction)
                     .stroke(
-                        Color.walkedGreen,
+                        Color.brandOrange,
                         style: StrokeStyle(lineWidth: 10, lineCap: .round)
                     )
                     .frame(width: 160, height: 160)
@@ -192,15 +190,15 @@ struct ProgressTab: View {
 
                 VStack(spacing: 0) {
                     Text("\(walkedCount)")
-                        .font(.system(size: 36, weight: .medium))
+                        .font(.system(size: 36, weight: .medium, design: .rounded))
                     Text("of \(totalStairways)")
-                        .font(.subheadline)
+                        .font(.system(.subheadline, design: .rounded))
                         .foregroundStyle(.secondary)
                 }
             }
 
             Text("\(Int(completionFraction * 100))% complete")
-                .font(.subheadline)
+                .font(.system(.subheadline, design: .rounded))
                 .foregroundStyle(.secondary)
         }
         .padding(.top, 8)
@@ -225,7 +223,7 @@ struct ProgressTab: View {
     private var neighborhoodSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("By neighborhood")
-                .font(.subheadline)
+                .font(.system(.subheadline, design: .rounded))
                 .fontWeight(.medium)
 
             if neighborhoodData.isEmpty {
@@ -278,11 +276,11 @@ struct ProgressTab: View {
                         VStack(spacing: 4) {
                             HStack {
                                 Text(item.name)
-                                    .font(.subheadline)
+                                    .font(.system(.subheadline, design: .rounded))
                                 Spacer()
                                 Text("\(item.walked) / \(item.total)")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                    .font(.system(.caption, design: .rounded))
+                                    .foregroundStyle(Color.forestGreen)
                             }
                             GeometryReader { geo in
                                 ZStack(alignment: .leading) {
@@ -305,58 +303,6 @@ struct ProgressTab: View {
         }
     }
 
-    // MARK: - Recent Walks
-
-    private var recentWalksSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Recent walks")
-                .font(.subheadline)
-                .fontWeight(.medium)
-
-            if recentWalks.isEmpty {
-                Text("Your completed walks will appear here.")
-                    .font(.caption)
-                    .foregroundStyle(.tertiary)
-                    .padding(.vertical, 12)
-            } else {
-                ForEach(recentWalks, id: \.record.stairwayID) { item in
-                    HStack(spacing: 12) {
-                        ZStack {
-                            Circle()
-                                .fill(Color.walkedGreen.opacity(0.15))
-                                .frame(width: 32, height: 32)
-                            Image(systemName: "checkmark")
-                                .font(.system(size: 12, weight: .semibold))
-                                .foregroundStyle(Color.walkedGreen)
-                        }
-
-                        VStack(alignment: .leading, spacing: 1) {
-                            Text(item.stairway?.name ?? item.record.stairwayID)
-                                .font(.subheadline)
-                            Text(item.stairway?.neighborhood ?? "")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-
-                        Spacer()
-
-                        if let date = item.record.dateWalked {
-                            HStack(spacing: 4) {
-                                if item.record.hardModeAtCompletion {
-                                    Image(systemName: "lock.fill")
-                                        .font(.system(size: 9))
-                                        .foregroundStyle(Color.forestGreen)
-                                }
-                                Text(date.formatted(.dateTime.month(.abbreviated).day()))
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
 }
 
 // MARK: - Sync Status Sheet
@@ -442,15 +388,15 @@ struct StatCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(label)
-                .font(.caption)
+                .font(.system(.caption, design: .rounded))
                 .foregroundStyle(.secondary)
             Text(value)
-                .font(.title3)
+                .font(.system(.title3, design: .rounded))
                 .fontWeight(.medium)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)
-        .background(Color(.systemGray6))
+        .background(Color.surfaceCardElevated)
         .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 }

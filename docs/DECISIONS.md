@@ -1,5 +1,23 @@
 # Architecture Decisions — sf-stairways
 
+## Visual refresh: UIColor dynamicProvider for adaptive color tokens
+**Date:** 2026-03-29
+
+Adaptive light/dark colors for the new surface and brand tokens are defined in `AppColors.swift` using `Color(UIColor { traits in ... })` — UIKit's dynamic provider closure. This runs at render time so colors update automatically when the system color scheme changes.
+
+**Why not asset catalog.** Asset catalog adaptive colors require Xcode's GUI editor and ship as `.xcassets` — not editable via code alone. Dynamic provider achieves the same at-render-time resolution with zero asset catalog overhead, keeping all color definitions in one Swift file.
+
+**Why not SwiftUI environment.** `Color` static properties (`Color.surfaceBackground`) need to be usable everywhere — in `ShapeStyle` expressions, as `background()` modifiers, etc. Environment-based adaptive values require a `View` body, which breaks the static-property access pattern used throughout the app.
+
+**`#if canImport(UIKit)` guard.** AppColors.swift is compiled into the macOS target too. UIKit is not available on macOS (AppKit is used instead). The guard keeps the file compilable on both platforms; macOS uses non-adaptive Color literals for the tokens.
+
+## Visual refresh: Rounded typography via UINavigationBarAppearance
+**Date:** 2026-03-29
+
+SF Pro Rounded is applied to navigation bar large titles and inline titles via `UINavigationBarAppearance` in ContentView's `.onAppear`. This is global state that affects all nav bars in the app, which is the intended outcome (consistent Rounded headings everywhere).
+
+In SwiftUI view bodies, `.font(.system(.body, design: .rounded))` applies Rounded directly. Navigation titles require the UIKit appearance API — there is no SwiftUI modifier for nav bar title font. `UIFont(descriptor:withDesign:.rounded)` is used with a size of 0, which preserves Dynamic Type scaling.
+
 ## HealthKit authorization status: statusForAuthorizationRequest as proxy
 **Date:** 2026-03-28
 

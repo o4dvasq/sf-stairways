@@ -1,6 +1,6 @@
 # Project State — sf-stairways
 
-_Last updated: 2026-03-29_
+_Last updated: 2026-03-29 (visual refresh)_
 
 ## Platforms
 
@@ -45,6 +45,9 @@ _Last updated: 2026-03-29_
 ## Recent Completions
 
 ### 2026-03-29 (this session)
+- **Visual refresh phase 1** — Light mode as default appearance (removed `.preferredColorScheme(.dark)` from Map); warm terracotta `brandOrange` (#D4724E light / #E07A52 dark, adaptive via `UIColor(dynamicProvider:)`); six new adaptive surface/text tokens (`surfaceBackground`, `surfaceCard`, `surfaceCardElevated`, `textPrimary`, `textSecondary`, `divider`); progress ring stroke changed from `walkedGreen` → `brandOrange`; SF Pro Rounded on all display numbers, stat card labels, neighborhood headers, search tab pills, and nav bar titles (via `UINavigationBarAppearance` in ContentView); splash screen background changed from `brandAmber` → `brandOrange`; stat card backgrounds use warm `surfaceCardElevated` token.
+
+### 2026-03-29 (earlier)
 - **Map label cleanup** — `Stairway.displayName` computed property truncates names to first 4 words, stripping trailing `.,;` from each word; used only for map annotation labels; at `mapSpan > 0.02` (city-wide zoom) labels are hidden entirely (`""` passed to `Annotation`); at `mapSpan <= 0.02` (neighborhood zoom or closer) the truncated `displayName` appears; full `name` unchanged everywhere else.
 
 ### 2026-03-29 (earlier)
@@ -80,7 +83,7 @@ _Last updated: 2026-03-29_
 
 ## Pending Specs
 
-- `docs/specs/SPEC_ios-admin-app.md`
+- `docs/specs/SPEC_ios-admin-app.md` (iOS Admin App)
 
 ## Known Issues
 
