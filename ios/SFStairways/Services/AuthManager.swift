@@ -200,12 +200,11 @@ extension AuthManager: ASAuthorizationControllerDelegate {
 
 extension AuthManager: ASAuthorizationControllerPresentationContextProviding {
     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
-        // Find the key window to present the Apple credential sheet
-        guard let windowScene = UIApplication.shared.connectedScenes
-            .compactMap({ $0 as? UIWindowScene })
-            .first(where: { $0.activationState == .foregroundActive })
-        else {
-            return UIWindow()
+        // Find the key window to present the Apple credential sheet.
+        // A foreground-active UIWindowScene is always present when this is called.
+        let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+        guard let windowScene = scenes.first(where: { $0.activationState == .foregroundActive }) ?? scenes.first else {
+            preconditionFailure("No UIWindowScene available to present Apple sign-in sheet")
         }
         return windowScene.keyWindow ?? UIWindow(windowScene: windowScene)
     }
