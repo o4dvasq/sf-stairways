@@ -1,0 +1,5407 @@
+[
+  {
+    "name": "Lone Mtn., from No. 401 Parker to Beaumont to Stanyan to Rossi. Long narrow streets, church spires, views of Angel Island and west; nice series of Victorians on McAllister off Parker.",
+    "lat": 37.7790336,
+    "lng": -122.4540275
+  },
+  {
+    "name": "Bessie/Bessie & Mirabel at Shotwell.",
+    "lat": 37.7467443,
+    "lng": -122.4149996
+  },
+  {
+    "name": "Blake/Geary & Euclid, into Laurel Hill Playground. In Laurel Heights.",
+    "lat": 37.7836955,
+    "lng": -122.4514495
+  },
+  {
+    "name": "Arbol Lane/Anza Vista & Turk. Good everyday route.",
+    "lat": 37.7793558,
+    "lng": -122.443853
+  },
+  {
+    "name": "Balboa Park. San Jose, near Ocean, into park.",
+    "lat": 37.723476,
+    "lng": -122.4445313
+  },
+  {
+    "name": "Geneva, near Ocean. Skyway to City College; stairways midspan to MUNI Metro.",
+    "lat": 37.7229734,
+    "lng": -122.4510853
+  },
+  {
+    "name": "Naglee/Alemany & Cayuga.",
+    "lat": 37.7141524,
+    "lng": -122.449303
+  },
+  {
+    "name": "Oneida/Alemany & Cayuga.",
+    "lat": 37.7206233,
+    "lng": -122.4395838
+  },
+  {
+    "name": "Alemany, near Rousseau to Mission.",
+    "lat": 37.7308633,
+    "lng": -122.4294849
+  },
+  {
+    "name": "Restani Way & No. 718 Geneva.",
+    "lat": 37.7184209,
+    "lng": -122.4436389
+  },
+  {
+    "name": "Esmeralda/Prospect & Winfield",
+    "lat": 37.7436029,
+    "lng": -122.4182855
+  },
+  {
+    "name": "Joy/Holladay & Brewster.",
+    "lat": 37.7437945,
+    "lng": -122.4068523
+  },
+  {
+    "name": "Montezuma at Coso to Mirabel.",
+    "lat": 37.7459885,
+    "lng": -122.4174866
+  },
+  {
+    "name": "Andover/Powhattan & Bernal Heights Park.",
+    "lat": 37.7418073,
+    "lng": -122.4163734
+  },
+  {
+    "name": "Brewster/Brewster at Costa & Upper Brewster & Rutledge.",
+    "lat": 37.7451813,
+    "lng": -122.4067947
+  },
+  {
+    "name": "Eugenia/Prospect & Winfield.",
+    "lat": 37.7413541,
+    "lng": -122.4197981
+  },
+  {
+    "name": "Franconia/Montcalm & Rutledge.",
+    "lat": 37.7458199,
+    "lng": -122.4076822
+  },
+  {
+    "name": "Rutledge/Holladay, Mullen, Brewster, & Wolf Lane Community Garden.",
+    "lat": 37.7451711,
+    "lng": -122.4062584
+  },
+  {
+    "name": "Peralta/Samoset & Rutledge.",
+    "lat": 37.744746,
+    "lng": -122.4088413
+  },
+  {
+    "name": "Esmeralda/Brewster & Franconia.",
+    "lat": 37.7432788,
+    "lng": -122.4082074
+  },
+  {
+    "name": "Prentiss/Bernal Heights Blvd. & Powhattan.",
+    "lat": 37.7421213,
+    "lng": -122.4119736
+  },
+  {
+    "name": "Holladay/Peralta & Bayshore.",
+    "lat": 37.7484639,
+    "lng": -122.4050698
+  },
+  {
+    "name": "Banks/Chapman & Powhattan.",
+    "lat": 37.7416711,
+    "lng": -122.4126435
+  },
+  {
+    "name": "Bernal Heights Park. Across street from 39 Ellsworth into park.",
+    "lat": 37.7424946,
+    "lng": -122.4143888
+  },
+  {
+    "name": "Fair Stairway/Coleridge & Lundys.",
+    "lat": 37.7450556,
+    "lng": -122.4183938
+  },
+  {
+    "name": "Nevada/Powhattan & Chapman.",
+    "lat": 37.7415285,
+    "lng": -122.4113776
+  },
+  {
+    "name": "Faith/Brewster & Holladay.",
+    "lat": 37.7443133,
+    "lng": -122.4069347
+  },
+  {
+    "name": "Franconia/Mullen & Montcalm.",
+    "lat": 37.7461049,
+    "lng": -122.4079013
+  },
+  {
+    "name": "Franconia/Mullen & Peralta.",
+    "lat": 37.7465801,
+    "lng": -122.408203
+  },
+  {
+    "name": "Aztec/Aztec & Shotwell.",
+    "lat": 37.7455405,
+    "lng": -122.4151011
+  },
+  {
+    "name": "Harrison/Ripley & Norwich.",
+    "lat": 37.7445175,
+    "lng": -122.4113769
+  },
+  {
+    "name": "Kingston/Coleridge & Prospect.",
+    "lat": 37.7412736,
+    "lng": -122.421064
+  },
+  {
+    "name": "Mayflower/Holladay & Peralta.",
+    "lat": 37.7423443,
+    "lng": -122.4082951
+  },
+  {
+    "name": "Mayflower/Bradford & Carver.",
+    "lat": 37.7424315,
+    "lng": -122.4096648
+  },
+  {
+    "name": "Moultrie/Bernal Heights Blvd. & Powhattan.",
+    "lat": 37.7418414,
+    "lng": -122.4156095
+  },
+  {
+    "name": "Rosenkrantz/Bernal Heights Blvd. & Bernal Heights Blvd. at Powhattan.",
+    "lat": 37.7417659,
+    "lng": -122.4106721
+  },
+  {
+    "name": "Virginia & Winfield. Virginia Garden Walk.",
+    "lat": 37.742054,
+    "lng": -122.4187978
+  },
+  {
+    "name": "Vermont/20th St. to 22nd St.",
+    "lat": 37.7586046,
+    "lng": -122.4038073
+  },
+  {
+    "name": "McKinley Square Playground. San Bruno at 20th St., into square.",
+    "lat": 37.7594155,
+    "lng": -122.4048272
+  },
+  {
+    "name": "22nd St./ Wisconsin & Connecticut, into Potrero Hill Recreation Center.",
+    "lat": 37.7572896,
+    "lng": -122.3981091
+  },
+  {
+    "name": "Arguello/Anza & Edward, into Rossi Recreation Center. Large granite planter bowls at entrance of two granite stairways.",
+    "lat": 37.7788719,
+    "lng": -122.4585269
+  },
+  {
+    "name": "Cook/Geary & Euclid. In Laurel Heights. View of Lone Mtn.",
+    "lat": 37.783798,
+    "lng": -122.4525401
+  },
+  {
+    "name": "Ewing at Nos.196-200 to Anza, near Collins. Ewing Court was a baseball field at one time. Clever.",
+    "lat": 37.7806754,
+    "lng": -122.4492593
+  },
+  {
+    "name": "Dicha Alley/Lupine & Wood. Useful and used.",
+    "lat": 37.7838901,
+    "lng": -122.4495251
+  },
+  {
+    "name": "Sonora Lane/Terra Vista & O'Farrell at No. 90 Terra Vista.",
+    "lat": 37.7816628,
+    "lng": -122.4437541
+  },
+  {
+    "name": "Gates/Bernal Heights Blvd. & Powhattan.",
+    "lat": 37.7422901,
+    "lng": -122.413719
+  },
+  {
+    "name": "Tompkins/Putnam & Nevada. Mosaic Stairs.",
+    "lat": 37.7369861,
+    "lng": -122.4113215
+  },
+  {
+    "name": "Bradford Stairway from end of Bradford to Jarboe",
+    "lat": 37.7378848,
+    "lng": -122.4097489
+  },
+  {
+    "name": "Aurelious Walker Stairway/Flights of Fancy/Aurelious Walker & Innes",
+    "lat": 37.730766,
+    "lng": -122.3740247
+  },
+  {
+    "name": "Gilroy & Jamestown.",
+    "lat": 37.7157423,
+    "lng": -122.3893502
+  },
+  {
+    "name": "Hawes & Innes.",
+    "lat": 37.7327588,
+    "lng": -122.3778273
+  },
+  {
+    "name": "Key at Jennings.",
+    "lat": 37.7189711,
+    "lng": -122.3960775
+  },
+  {
+    "name": "Lane to No.1501 Lower LaSalle.",
+    "lat": 37.7353129,
+    "lng": -122.3869927
+  },
+  {
+    "name": "LaSalle & Osceola to Health Center.",
+    "lat": 37.7319948,
+    "lng": -122.3826713
+  },
+  {
+    "name": "Quesada-Upper Quesada to Lower Quesada, near Newhall. Nice mural at the bottom of the stairs.",
+    "lat": 37.7344339,
+    "lng": -122.3931467
+  },
+  {
+    "name": "Thornton/3rd St. & Latona. Two\u00a0 stairways on either side of the street.",
+    "lat": 37.7306499,
+    "lng": -122.3925551
+  },
+  {
+    "name": "Revere/Newhall & 3rd St. Sidewalk stairways on both sides of the street and stairways from the sidewalk to the street.",
+    "lat": 37.7334315,
+    "lng": -122.3932123
+  },
+  {
+    "name": "Shoreview Park at Lillian & Rosie Lee Lane.",
+    "lat": 37.7321167,
+    "lng": -122.3808262
+  },
+  {
+    "name": "LaSalle-Upper LaSalle to Lindsay Circle.",
+    "lat": 37.7351459,
+    "lng": -122.3859316
+  },
+  {
+    "name": "Hilltop Park. LaSalle at Osceola, up to park.",
+    "lat": 37.7322877,
+    "lng": -122.3832156
+  },
+  {
+    "name": "Quesada/Newhall & 3rd St. (Between Upper and Lower Quesada). Two stairways: one concrete stairway and one wood stairway.",
+    "lat": 37.7338923,
+    "lng": -122.3924283
+  },
+  {
+    "name": "Bernal Heights Park. From paved path above Esmeralda up to trail and into park.",
+    "lat": 37.742942,
+    "lng": -122.4167732
+  },
+  {
+    "name": "Bernal Heights Park. Coso, near Bonview, into park.",
+    "lat": 37.7443418,
+    "lng": -122.4156833
+  },
+  {
+    "name": "Coso/Prospect & Winfield. Sidewalk stairway.",
+    "lat": 37.7456385,
+    "lng": -122.4170364
+  },
+  {
+    "name": "Cuvier/San Jose & Bosworth.",
+    "lat": 37.7347043,
+    "lng": -122.4286986
+  },
+  {
+    "name": "Holly Park. Across from Junipero Serra School at Holly Park Circle.",
+    "lat": 37.7369117,
+    "lng": -122.420979
+  },
+  {
+    "name": "Holly Park. Bocana at Holly Park Circle, into park.",
+    "lat": 37.7380968,
+    "lng": -122.4193944
+  },
+  {
+    "name": "Holly Park. Highland at Holly Park Circle, into park.",
+    "lat": 37.73717,
+    "lng": -122.4189636
+  },
+  {
+    "name": "Holly Park. East side up from Highland, in park.",
+    "lat": 37.7371933,
+    "lng": -122.4194142
+  },
+  {
+    "name": "Holly Park. Murray at Holly Park Circle, into park.",
+    "lat": 37.7362798,
+    "lng": -122.4201464
+  },
+  {
+    "name": "Manchester at end of street below Bernal Heights Park.",
+    "lat": 37.7443775,
+    "lng": -122.4141498
+  },
+  {
+    "name": "Montcalm/Wright & Peralta.",
+    "lat": 37.7476857,
+    "lng": -122.4059097
+  },
+  {
+    "name": "Mullen Stairway, next to No.146, near Franconia.",
+    "lat": 37.7462548,
+    "lng": -122.4085203
+  },
+  {
+    "name": "Mullen Peralta Mini Park/Montcalm & Mullen.",
+    "lat": 37.7459684,
+    "lng": -122.4089769
+  },
+  {
+    "name": "Peralta/Rutledge & Montcalm.",
+    "lat": 37.7451052,
+    "lng": -122.408993
+  },
+  {
+    "name": "Powhattan/Gates & Ellsworth.",
+    "lat": 37.7415415,
+    "lng": -122.4141513
+  },
+  {
+    "name": "Prospect/Cortland & Santa Marina in Good Prospect Community Garden.",
+    "lat": 37.7400434,
+    "lng": -122.4209762
+  },
+  {
+    "name": "Appleton/San Jose & Mission.",
+    "lat": 37.7390963,
+    "lng": -122.4241451
+  },
+  {
+    "name": "Bronte/Tompkins & Jarboe.",
+    "lat": 37.7374771,
+    "lng": -122.4103416
+  },
+  {
+    "name": "Eve Stairway/Upper & Lower Holladay at Wright & Peralta.",
+    "lat": 37.7475731,
+    "lng": -122.4050492
+  },
+  {
+    "name": "Highland to San Jose.",
+    "lat": 37.7376468,
+    "lng": -122.42486
+  },
+  {
+    "name": "Richland to San Jose.",
+    "lat": 37.7363622,
+    "lng": -122.4262068
+  },
+  {
+    "name": "Buena Vista East. Buena Vista Terrace & Duboce, into Buena Vista Park.",
+    "lat": 37.7690229,
+    "lng": -122.4385161
+  },
+  {
+    "name": "Buena Vista East. Waller/Broderick, into Buena Vista Park.",
+    "lat": 37.7699831,
+    "lng": -122.4393324
+  },
+  {
+    "name": "Buena Vista East. Baker & Haight, into Buena Vista Park.",
+    "lat": 37.7708063,
+    "lng": -122.440407
+  },
+  {
+    "name": "Buena Vista East. Waller/Broderick & Buena Vista at No.101. Adah's Stairway.",
+    "lat": 37.7700245,
+    "lng": -122.4388097
+  },
+  {
+    "name": "Buena Vista West. Haight/Central & Lyon, into Buena Vista Park. Lovely.",
+    "lat": 37.7703921,
+    "lng": -122.4433017
+  },
+  {
+    "name": "Buena Vista West. Java, into Buena Vista Park.",
+    "lat": 37.7669737,
+    "lng": -122.4436412
+  },
+  {
+    "name": "Buena Vista West into Buena Vista Park, across from No. 555 Buena Vista West.",
+    "lat": 37.7665582,
+    "lng": -122.4432395
+  },
+  {
+    "name": "Henry Stairway/No. 75 Roosevelt & Castro.",
+    "lat": 37.7664911,
+    "lng": -122.437499
+  },
+  {
+    "name": "Alpine/Waller & Duboce. Sidewalk stairway.",
+    "lat": 37.7699336,
+    "lng": -122.4377392
+  },
+  {
+    "name": "Buena Vista East. Park Hill Ave., into Buena Vista Park.",
+    "lat": 37.7682129,
+    "lng": -122.4394524
+  },
+  {
+    "name": "Buena Vista West. Frederick, into Buena Vista Park.",
+    "lat": 37.7675751,
+    "lng": -122.4437979
+  },
+  {
+    "name": "Lyon & Haight, into Buena Vista Park.",
+    "lat": 37.7705184,
+    "lng": -122.4420068
+  },
+  {
+    "name": "DeForest/Beaver & Flint.",
+    "lat": 37.7648422,
+    "lng": -122.4367941
+  },
+  {
+    "name": "Duboce/Castro & Divisadero. Sidewalk stairway.",
+    "lat": 37.7690078,
+    "lng": -122.4363994
+  },
+  {
+    "name": "Duboce/Divisadero & Alpine. Sidewalk stairway.",
+    "lat": 37.7690629,
+    "lng": -122.4371397
+  },
+  {
+    "name": "Buena Vista West. Central, into Buena Vista Park.",
+    "lat": 37.7690132,
+    "lng": -122.4432133
+  },
+  {
+    "name": "Buena Vista Park. Stone steps to summit.",
+    "lat": 37.767964,
+    "lng": -122.4413406
+  },
+  {
+    "name": "Buena Vista Park. Along paved path on SW side of park.",
+    "lat": 37.7667072,
+    "lng": -122.4428564
+  },
+  {
+    "name": "Buena Vista West. Across from No. 737, into Buena Vista Park.",
+    "lat": 37.7680833,
+    "lng": -122.4435899
+  },
+  {
+    "name": "Buena Vista West. Across from No. 767, into Buena Vista Park.",
+    "lat": 37.7684869,
+    "lng": -122.4434617
+  },
+  {
+    "name": "California/opposite No. 660, into St. Mary's Square.",
+    "lat": 37.7923605,
+    "lng": -122.4055601
+  },
+  {
+    "name": "Opalo Lane, across from No. 160 Gold Mine Dr./Ora & Jade.",
+    "lat": 37.7428417,
+    "lng": -122.4393253
+  },
+  {
+    "name": "Onique/No.101 Berkeley, No. 289 Berkeley, No. 400 Gold Mine & No. 243 Topaz.",
+    "lat": 37.7393424,
+    "lng": -122.4388194
+  },
+  {
+    "name": "Coralino/No. 289 Amber to No. 92 Cameo.",
+    "lat": 37.7447131,
+    "lng": -122.4429219
+  },
+  {
+    "name": "Gold Mine Drive, east of Diamond Heights Boulevard, to No. 681 28th St.",
+    "lat": 37.7438956,
+    "lng": -122.4375305
+  },
+  {
+    "name": "Dolores Park. 19th St./Church & Dolores Park, over MUNI Metro tracks.",
+    "lat": 37.7597273,
+    "lng": -122.4278731
+  },
+  {
+    "name": "Hancock/Church & Dolores Park.",
+    "lat": 37.7605368,
+    "lng": -122.42825
+  },
+  {
+    "name": "Cumberland/Church & Dolores Park.",
+    "lat": 37.7588964,
+    "lng": -122.4280448
+  },
+  {
+    "name": "Turquoise Way between Glen Canyon Park and Amber Drive.",
+    "lat": 37.7444588,
+    "lng": -122.445535
+  },
+  {
+    "name": "Safira Lane from Douglass up to Diamond Heights Blvd.",
+    "lat": 37.7463005,
+    "lng": -122.4398509
+  },
+  {
+    "name": "Tennessee/between nos. 1108-1116. Few small stairways.",
+    "lat": 37.7575937,
+    "lng": -122.3892359
+  },
+  {
+    "name": "20th St. & Noe.",
+    "lat": 37.7578756,
+    "lng": -122.4322758
+  },
+  {
+    "name": "20th St. & Sanchez.",
+    "lat": 37.7579604,
+    "lng": -122.4304788
+  },
+  {
+    "name": "Cumberland/Noe No. 670 & Sanchez.",
+    "lat": 37.7587407,
+    "lng": -122.4323402
+  },
+  {
+    "name": "Liberty/Noe & Rayburn.",
+    "lat": 37.7570618,
+    "lng": -122.4321273
+  },
+  {
+    "name": "Sanchez/Liberty & 21st St.",
+    "lat": 37.7570239,
+    "lng": -122.4301116
+  },
+  {
+    "name": "22nd St./Church & Vicksburg. Sidewalk stairway on both sides of the street.",
+    "lat": 37.7548917,
+    "lng": -122.4282145
+  },
+  {
+    "name": "Cumberland/Sanchez & Church.",
+    "lat": 37.7587842,
+    "lng": -122.4302622
+  },
+  {
+    "name": "Liberty/Sanchez & Church.",
+    "lat": 37.7572249,
+    "lng": -122.4302099
+  },
+  {
+    "name": "Sanchez/19th St. & Cumberland.",
+    "lat": 37.7594218,
+    "lng": -122.4304308
+  },
+  {
+    "name": "21st St./Castro & Collingwood. Sidewalk stairway and going down to street.",
+    "lat": 37.7560724,
+    "lng": -122.4353331
+  },
+  {
+    "name": "22nd St./Castro & Collingwood and then Diamind and Collingwood. \"Jungle Stairs.\"",
+    "lat": 37.7544149,
+    "lng": -122.4355544
+  },
+  {
+    "name": "Dolores Park. Dolores and 19th.",
+    "lat": 37.7598451,
+    "lng": -122.4261449
+  },
+  {
+    "name": "Sanchez/Cumberland & Sanchez Stairway. Sidewalk Stairway on both sides of the street.",
+    "lat": 37.7588367,
+    "lng": -122.4303744
+  },
+  {
+    "name": "Athens/Avalon & Peru. Mosaic!",
+    "lat": 37.7250575,
+    "lng": -122.4257886
+  },
+  {
+    "name": "McLaren Park. LaGrande & Brazil, into park.",
+    "lat": 37.7202584,
+    "lng": -122.425446
+  },
+  {
+    "name": "McLaren Park. Between Ervine at Wilde and Visitacion and Mansell.",
+    "lat": 37.7178289,
+    "lng": -122.4098116
+  },
+  {
+    "name": "Kenny Alley at No. 646 London to Mission. Mosaic!",
+    "lat": 37.7191194,
+    "lng": -122.4384737
+  },
+  {
+    "name": "McLaren Park. Prague at Excelsior, into park.",
+    "lat": 37.7221137,
+    "lng": -122.4248522
+  },
+  {
+    "name": "McLaren Park. Yale, into park.",
+    "lat": 37.7220975,
+    "lng": -122.4155953
+  },
+  {
+    "name": "McLaren Park. University at Woolsey, into park.",
+    "lat": 37.7226499,
+    "lng": -122.4126742
+  },
+  {
+    "name": "Sunglow Lane/Gladstone & Silver at Oxford.",
+    "lat": 37.7292893,
+    "lng": -122.4205169
+  },
+  {
+    "name": "Lisbon/Russia & France. Many small sidewalks from street to sidewalk.",
+    "lat": 37.7197735,
+    "lng": -122.4353536
+  },
+  {
+    "name": "8th Ave. at No. 1998 to No. 20 Ventura.",
+    "lat": 37.7511146,
+    "lng": -122.4638103
+  },
+  {
+    "name": "Alton/No. 60 Ventura to No. 70 Alton & No. 400 Lower Pacheco",
+    "lat": 37.7505335,
+    "lng": -122.4631451
+  },
+  {
+    "name": "Montalvo/San Marcos to 9th Ave.",
+    "lat": 37.7472632,
+    "lng": -122.465685
+  },
+  {
+    "name": "Pacheco/Magellan & No. 249 Castenada.",
+    "lat": 37.7464467,
+    "lng": -122.4624727
+  },
+  {
+    "name": "Santa Rita at No. 60 to Upper and Lower San Marcos.",
+    "lat": 37.746828,
+    "lng": -122.464652
+  },
+  {
+    "name": "Alton/Lower Pacheco to No. 399 Upper Pacheco, continuing to No. 60 Sotelo.",
+    "lat": 37.7497994,
+    "lng": -122.4636149
+  },
+  {
+    "name": "Castenada at No. 140 to Pacheco at No. 334.",
+    "lat": 37.7487435,
+    "lng": -122.4623464
+  },
+  {
+    "name": "12th Ave. (at end) to Dorantes.",
+    "lat": 37.7449928,
+    "lng": -122.4681956
+  },
+  {
+    "name": "Castenada, opposite No. 249.",
+    "lat": 37.74675,
+    "lng": -122.4629662
+  },
+  {
+    "name": "Dorantes & Magellan.",
+    "lat": 37.7458656,
+    "lng": -122.4624753
+  },
+  {
+    "name": "Dorantes & San Marcos.",
+    "lat": 37.7459595,
+    "lng": -122.4635871
+  },
+  {
+    "name": "Forest Hill MUNI Metro Station, to Magellan.",
+    "lat": 37.7481142,
+    "lng": -122.4594535
+  },
+  {
+    "name": "Oakhurst Lane/Warren & Crestmont.",
+    "lat": 37.7570546,
+    "lng": -122.4606376
+  },
+  {
+    "name": "Ashwood Lane/Clarendon & Warren at No. 101.",
+    "lat": 37.7532374,
+    "lng": -122.4568592
+  },
+  {
+    "name": "Blairwood Lane/No. 113 Warren & No. 95 & No. 101 Crestmont.",
+    "lat": 37.7539984,
+    "lng": -122.4579286
+  },
+  {
+    "name": "Glenhaven Lane/Oak Park & No. 191 Christopher.",
+    "lat": 37.7555725,
+    "lng": -122.4569143
+  },
+  {
+    "name": "Forest Knolls Stairway at No. 191 Forest Knolls Drive, in cul-de-sac, down to school playground.",
+    "lat": 37.7544501,
+    "lng": -122.4558189
+  },
+  {
+    "name": "Horsetail Stairway, left of parking lot.",
+    "lat": 37.7130776,
+    "lng": -122.5026565
+  },
+  {
+    "name": "John Muir Drive at Skyline, on path to Fort Funston.",
+    "lat": 37.7188785,
+    "lng": -122.5019677
+  },
+  {
+    "name": "Fort Mason. Great Meadow & San Francisco International Youth Center near Bufano Peace sculpture.",
+    "lat": 37.8063939,
+    "lng": -122.4293804
+  },
+  {
+    "name": "Aquatic Park Bleachers. In park between Larkin & Polk.",
+    "lat": 37.8069116,
+    "lng": -122.4231289
+  },
+  {
+    "name": "Fort Mason. Great Meadow & Building E at Pier 3.",
+    "lat": 37.806419,
+    "lng": -122.4301659
+  },
+  {
+    "name": "Fort Mason. Black Point Battery to top of wall.",
+    "lat": 37.8076735,
+    "lng": -122.4277036
+  },
+  {
+    "name": "Fort Mason. End of Franklin to Black Point Battery & picnic area.",
+    "lat": 37.8074977,
+    "lng": -122.4277466
+  },
+  {
+    "name": "Fort Mason. Black Point Gunnery behind San Francisco International Youth Hostel.",
+    "lat": 37.8078108,
+    "lng": -122.4284001
+  },
+  {
+    "name": "Aquatic Park Promenade & Upper Railroad-Tie Walkway/Hyde & Van Ness.",
+    "lat": 37.8067041,
+    "lng": -122.4235728
+  },
+  {
+    "name": "Batteries to Bluffs/Langdon & Marshall Beach & Baker Beach.",
+    "lat": 37.7990443,
+    "lng": -122.4807748
+  },
+  {
+    "name": "Wool Court & Upton intersection.",
+    "lat": 37.799335,
+    "lng": -122.4734519
+  },
+  {
+    "name": "Kobbe, opposite No. 1324 to tennis practice area.",
+    "lat": 37.7991949,
+    "lng": -122.4722044
+  },
+  {
+    "name": "Kobbe, opposite No. 1328 to tennis courts.",
+    "lat": 37.7987347,
+    "lng": -122.472658
+  },
+  {
+    "name": "Kobbe, opposite No. 1330, at parking area to recreation hall.",
+    "lat": 37.7986902,
+    "lng": -122.4731891
+  },
+  {
+    "name": "Wool Court & Upton, opposite No. 1337 Pope sign to tennis courts parking lot.",
+    "lat": 37.7992515,
+    "lng": -122.4738528
+  },
+  {
+    "name": "Harry Stairway at No. 190 Beacon to Laidley.",
+    "lat": 37.7400985,
+    "lng": -122.431198
+  },
+  {
+    "name": "Amatista Lane/Bemis, near Miguel to Everson.",
+    "lat": 37.7383787,
+    "lng": -122.4293445
+  },
+  {
+    "name": "Billy Goat Hill.",
+    "lat": 37.7413912,
+    "lng": -122.4326331
+  },
+  {
+    "name": "Glen Canyon Park. Elk at Sussex, into park.",
+    "lat": 37.7372299,
+    "lng": -122.4399295
+  },
+  {
+    "name": "Hamerton/Bosworth & Mangels.",
+    "lat": 37.7339227,
+    "lng": -122.4376639
+  },
+  {
+    "name": "Burnside at Bosworth, across from No. 1035 Bosworth.",
+    "lat": 37.7345566,
+    "lng": -122.4383778
+  },
+  {
+    "name": "Chilton at Bosworth, across from No. 907 Bosworth.",
+    "lat": 37.7343064,
+    "lng": -122.4366022
+  },
+  {
+    "name": "Diamond & Moffit. Curvy small sidewalk stairway.",
+    "lat": 37.7387012,
+    "lng": -122.4346051
+  },
+  {
+    "name": "St. Mary's/San Jose & Arlington at No. 439.",
+    "lat": 37.7351996,
+    "lng": -122.428777
+  },
+  {
+    "name": "Roanoke/San Jose & Arlington.",
+    "lat": 37.7347445,
+    "lng": -122.4291197
+  },
+  {
+    "name": "16th Ave./Kirkham & Lawton. The Hidden Garden Mosaic Steps.",
+    "lat": 37.7596818,
+    "lng": -122.4736268
+  },
+  {
+    "name": "15th Ave./Kirkham & Lawton.",
+    "lat": 37.7595546,
+    "lng": -122.4723501
+  },
+  {
+    "name": "Cascade Walk/Ortega, Pacheco, & Funston.",
+    "lat": 37.7543155,
+    "lng": -122.4701264
+  },
+  {
+    "name": "Golden Gate Heights Park. Rockridge Drive near Funston and 12th Ave., into park to tennis courts.",
+    "lat": 37.7507901,
+    "lng": -122.4692519
+  },
+  {
+    "name": "Mandalay Lane/No. 2001 14th Ave. & 15th Ave. & Pacheco.",
+    "lat": 37.7507498,
+    "lng": -122.4713526
+  },
+  {
+    "name": "Aerial Way/14th Ave. & Funston.",
+    "lat": 37.7525778,
+    "lng": -122.470344
+  },
+  {
+    "name": "Ortega Way/14th Ave. & No. 1894 15th Ave.",
+    "lat": 37.752613,
+    "lng": -122.4715251
+  },
+  {
+    "name": "Moraga/15th & 16th Aves. 16th Avenue Tiled Steps.",
+    "lat": 37.7562701,
+    "lng": -122.4732569
+  },
+  {
+    "name": "Selma Way/No. 477 Noriega & No. 564 Ortega.",
+    "lat": 37.7548398,
+    "lng": -122.4690816
+  },
+  {
+    "name": "Moraga/Funston & 14th Ave.",
+    "lat": 37.7563496,
+    "lng": -122.4706628
+  },
+  {
+    "name": "Noriega to 15th Ave. & Sheldon Terrace.",
+    "lat": 37.7551963,
+    "lng": -122.4720032
+  },
+  {
+    "name": "Grand View Park. 14th Ave. to top of park.",
+    "lat": 37.7563581,
+    "lng": -122.4714273
+  },
+  {
+    "name": "Mount/No. 1795 14th Ave. & No. 1798 15th Ave.",
+    "lat": 37.754235,
+    "lng": -122.4716026
+  },
+  {
+    "name": "Grand View Park. Upper 15th Ave. to top of park.",
+    "lat": 37.755687,
+    "lng": -122.4720569
+  },
+  {
+    "name": "Oriole Way/Pacheco & Cragmont.",
+    "lat": 37.7509831,
+    "lng": -122.4674442
+  },
+  {
+    "name": "Pacheco St. & 12th Ave.",
+    "lat": 37.7518929,
+    "lng": -122.4687064
+  },
+  {
+    "name": "Pacheco/14th & 15th Ave.",
+    "lat": 37.7513457,
+    "lng": -122.4717802
+  },
+  {
+    "name": "Quintara at No. 500/14th and 15th Aves.",
+    "lat": 37.7488305,
+    "lng": -122.4711895
+  },
+  {
+    "name": "Aerial Way/No. 475 Ortega & No. 801 Pacheco.",
+    "lat": 37.753105,
+    "lng": -122.4687249
+  },
+  {
+    "name": "Pacheco & 16th Ave.",
+    "lat": 37.7506214,
+    "lng": -122.4729819
+  },
+  {
+    "name": "Golden Gate Heights Park. 12th Ave. at playground, to tennis courts.",
+    "lat": 37.7502132,
+    "lng": -122.4686826
+  },
+  {
+    "name": "Grand View Park.",
+    "lat": 37.7561164,
+    "lng": -122.4715844
+  },
+  {
+    "name": "Quintara & 16th Ave.",
+    "lat": 37.7488044,
+    "lng": -122.4729039
+  },
+  {
+    "name": "15th Ave., near Moraga to Upper 15th.",
+    "lat": 37.7559534,
+    "lng": -122.4724777
+  },
+  {
+    "name": "Aloha & Lomita.",
+    "lat": 37.7579477,
+    "lng": -122.4726751
+  },
+  {
+    "name": "Fanning & 15th Ave.",
+    "lat": 37.749227,
+    "lng": -122.4716377
+  },
+  {
+    "name": "Fanning & 14th Ave. Rounding a corner.",
+    "lat": 37.7497084,
+    "lng": -122.4710691
+  },
+  {
+    "name": "Pacheco & 14th Ave.",
+    "lat": 37.7523547,
+    "lng": -122.4707967
+  },
+  {
+    "name": "15th Ave., near Fanning & Quintara.",
+    "lat": 37.7490333,
+    "lng": -122.4717432
+  },
+  {
+    "name": "Conservatory of Flowers. To walkway and front entrance from lawn area.",
+    "lat": 37.7717451,
+    "lng": -122.4601148
+  },
+  {
+    "name": "23rd St./Carolina & Wisconsin. Up to Wisconsin.",
+    "lat": 37.7548002,
+    "lng": -122.3989576
+  },
+  {
+    "name": "23rd St./Lower Carolina & Upper Carolina.",
+    "lat": 37.754621,
+    "lng": -122.3996808
+  },
+  {
+    "name": "Carolina at Southern Heights.",
+    "lat": 37.7578691,
+    "lng": -122.4001026
+  },
+  {
+    "name": "Carolina/19th & 20th Sts.",
+    "lat": 37.7600318,
+    "lng": -122.4002765
+  },
+  {
+    "name": "McKinley Square Playground. Vermont at 20th St., into square.",
+    "lat": 37.7594439,
+    "lng": -122.4042065
+  },
+  {
+    "name": "19th St./De Haro & Rhode island.",
+    "lat": 37.7610118,
+    "lng": -122.401717
+  },
+  {
+    "name": "22nd St./Kansas & Rhode Island. Sidewalk stairways.",
+    "lat": 37.7571738,
+    "lng": -122.4024238
+  },
+  {
+    "name": "24th St/Rhode Island & De Haro. Sidewalk stairways on both sides of street.",
+    "lat": 37.753344,
+    "lng": -122.4010716
+  },
+  {
+    "name": "Mariposa/Utah & Potrero. Sidewalk stairway on one side of street.",
+    "lat": 37.7632472,
+    "lng": -122.4066219
+  },
+  {
+    "name": "Frederick & Carl/Arguello & Willard, opposite Kezar Stadium. Parkview Commons.",
+    "lat": 37.7654762,
+    "lng": -122.4560332
+  },
+  {
+    "name": "Clayton/Frederick & Carl.",
+    "lat": 37.7664671,
+    "lng": -122.4481472
+  },
+  {
+    "name": "Frederick at Willard. Down into Kezar Stadium.",
+    "lat": 37.7663825,
+    "lng": -122.4546248
+  },
+  {
+    "name": "2235 Ocean Ave., stairs up to Aptos Park.",
+    "lat": 37.7281516,
+    "lng": -122.4673454
+  },
+  {
+    "name": "Wyton Lane/Stratford Dr. & Junipero Serra Blvd.",
+    "lat": 37.7229975,
+    "lng": -122.472645
+  },
+  {
+    "name": "Alemany & Head St., near Palmetto.",
+    "lat": 37.7114334,
+    "lng": -122.4643425
+  },
+  {
+    "name": "Alemany, opposite Victoria.",
+    "lat": 37.7118832,
+    "lng": -122.4652598
+  },
+  {
+    "name": "Shakespeare/Shakespeare & De Long.",
+    "lat": 37.7095734,
+    "lng": -122.4644636
+  },
+  {
+    "name": "End of San Leandro/Moncada & Ocean.",
+    "lat": 37.7298787,
+    "lng": -122.4697292
+  },
+  {
+    "name": "Mile Rock Stairway/Coastal Trail & Mile Rock Beach.",
+    "lat": 37.7870654,
+    "lng": -122.5051661
+  },
+  {
+    "name": "Sutro Baths Stairway/Merrie Way parking lot & Sutro Baths.",
+    "lat": 37.7805085,
+    "lng": -122.5124151
+  },
+  {
+    "name": "USS San Francisco Naval Memorial Stairway/48th Ave. & El Camino del Mar to the Coastal Trail.",
+    "lat": 37.7832743,
+    "lng": -122.5112731
+  },
+  {
+    "name": "Lands End Trail to El Camino del Mar Trail, just below the VA Medical Center.",
+    "lat": 37.784517,
+    "lng": -122.5054512
+  },
+  {
+    "name": "El Camino del Mar Trail near Palace of Legion of Honor trailhead.",
+    "lat": 37.7840167,
+    "lng": -122.5043569
+  },
+  {
+    "name": "California/32nd Ave. & golf course, to Lincoln Park. The Lincoln Park Mosiac Steps.",
+    "lat": 37.7834944,
+    "lng": -122.4935546
+  },
+  {
+    "name": "Wave Organ at end of jetty by Golden Gate Yacht Club, around structure and down to water.",
+    "lat": 37.808518,
+    "lng": -122.4402228
+  },
+  {
+    "name": "Bay St./Webster & Buchanan, into George Moscone Recreation Center.",
+    "lat": 37.8030601,
+    "lng": -122.4335885
+  },
+  {
+    "name": "Crissy Field entrance to St. Francis Yacht Club at Lyon, to benches and to water.",
+    "lat": 37.8070758,
+    "lng": -122.4477223
+  },
+  {
+    "name": "Franklin Square. Bryant at 16th St., into square.",
+    "lat": 37.7654838,
+    "lng": -122.4103061
+  },
+  {
+    "name": "Franklin Square. Bryant at 17th St., into square.",
+    "lat": 37.7644448,
+    "lng": -122.410205
+  },
+  {
+    "name": "Franklin Square. 17th St./Bryant & Potrero, into square.",
+    "lat": 37.7644652,
+    "lng": -122.4094262
+  },
+  {
+    "name": "25th St./Fair Oaks & Dolores. Sidewalk stairway.",
+    "lat": 37.7503324,
+    "lng": -122.4235981
+  },
+  {
+    "name": "Garfield Square. Harrison/25th & 26th St. Two stairways on either side of Garfield Pool building.",
+    "lat": 37.7501239,
+    "lng": -122.411802
+  },
+  {
+    "name": "Garfield Square. Treat/25th & 26th St. Middle of block near children's play area.",
+    "lat": 37.7501727,
+    "lng": -122.4126818
+  },
+  {
+    "name": "Garfield Square. Harrison at 26th St., into square.",
+    "lat": 37.7494658,
+    "lng": -122.4116546
+  },
+  {
+    "name": "Garfield Square. Treat at 26th St., into square.",
+    "lat": 37.7494933,
+    "lng": -122.4126015
+  },
+  {
+    "name": "Mt. Davidson. Juanita Way at No. 275 Juanita, near Marne.",
+    "lat": 37.7392219,
+    "lng": -122.4578929
+  },
+  {
+    "name": "Mt. Davidson. Rockdale Drive, next to Nos. 919 and 925.",
+    "lat": 37.7408478,
+    "lng": -122.4544601
+  },
+  {
+    "name": "Yerba Buena to Upper Yerba Buena at Ravenwood.",
+    "lat": 37.7351775,
+    "lng": -122.460533
+  },
+  {
+    "name": "Terrace Walk/San Anselmo & Yerba Buena.",
+    "lat": 37.7366478,
+    "lng": -122.4636575
+  },
+  {
+    "name": "Avoca Alley/No. 219 Bella Vista Way at 550 Myra, opposite Dorcas Way.",
+    "lat": 37.7380531,
+    "lng": -122.4503992
+  },
+  {
+    "name": "Globe Alley at No. 96 Cresta Vista to Hazelwood, near Los Palmos.",
+    "lat": 37.7346827,
+    "lng": -122.4575689
+  },
+  {
+    "name": "Lulu Alley/Los Palmos & No. 450 to No. 500 Melrose. (Street continues across Los Palmos as a dirt road!)",
+    "lat": 37.7341486,
+    "lng": -122.452696
+  },
+  {
+    "name": "Marietta and Lower Marietta Dr., multiple stairways between Arroyo Way and Teresita Boulevard.",
+    "lat": 37.7384269,
+    "lng": -122.4435773
+  },
+  {
+    "name": "Mangels/Brentwood & Melrose.",
+    "lat": 37.7330114,
+    "lng": -122.453959
+  },
+  {
+    "name": "Miraloma at No. 2 to Portola.",
+    "lat": 37.7401482,
+    "lng": -122.4594836
+  },
+  {
+    "name": "Mt. Davidson. Park entrance on Dalewood at Lansdale Ave.",
+    "lat": 37.7369724,
+    "lng": -122.4538627
+  },
+  {
+    "name": "Vista Verde Court at Stillings. At end of cul-de-sac.",
+    "lat": 37.7354179,
+    "lng": -122.4453586
+  },
+  {
+    "name": "Grace Cathedral at California & Taylor.",
+    "lat": 37.7917574,
+    "lng": -122.4125761
+  },
+  {
+    "name": "Joice Alley at Pine to Sacramento/Powell & Stockton.",
+    "lat": 37.7914349,
+    "lng": -122.4082386
+  },
+  {
+    "name": "Huntington Park. California at Taylor & Cushman Alley, into park.",
+    "lat": 37.7917811,
+    "lng": -122.412097
+  },
+  {
+    "name": "Huntington Park. Sacramento at Taylor & Cushman Alley, into park.",
+    "lat": 37.792525,
+    "lng": -122.4122444
+  },
+  {
+    "name": "Taylor/Pine & California.",
+    "lat": 37.7912403,
+    "lng": -122.4124112
+  },
+  {
+    "name": "Clay to Washington, opposite No. 1171 Clay.",
+    "lat": 37.7938689,
+    "lng": -122.4124087
+  },
+  {
+    "name": "Mason at California.",
+    "lat": 37.7917743,
+    "lng": -122.4108079
+  },
+  {
+    "name": "Phoenix, opposite No. 1154 Pacific/Taylor & Jones.",
+    "lat": 37.795957,
+    "lng": -122.4142513
+  },
+  {
+    "name": "Priest, opposite No. 1350 Washington.",
+    "lat": 37.793688,
+    "lng": -122.4152033
+  },
+  {
+    "name": "Reed, opposite No.1370 Washington.",
+    "lat": 37.7938916,
+    "lng": -122.4156831
+  },
+  {
+    "name": "Cuesta Court to Grand View at No. 601, near 24th St.",
+    "lat": 37.7504959,
+    "lng": -122.4429971
+  },
+  {
+    "name": "Elizabeth/Hoffman & Grand View. Sidewalk stairways on both sides of the street.",
+    "lat": 37.7515934,
+    "lng": -122.4424695
+  },
+  {
+    "name": "Castro/Day & No. 500 30th St.",
+    "lat": 37.7420312,
+    "lng": -122.4329885
+  },
+  {
+    "name": "27th St. at Castro & Newburg.",
+    "lat": 37.7464083,
+    "lng": -122.4336627
+  },
+  {
+    "name": "27th St./Castro & Noe, from cul-de-sac at end of 27th St. to Noe.",
+    "lat": 37.7466407,
+    "lng": -122.4319274
+  },
+  {
+    "name": "Cesar Chavez/Castro at No. 4220 & Diamond.",
+    "lat": 37.7473051,
+    "lng": -122.4345157
+  },
+  {
+    "name": "Malta/Upper Malta No.11 and Lower Malta No. 50.",
+    "lat": 37.7353109,
+    "lng": -122.4438992
+  },
+  {
+    "name": "Day at No. 493, up to No. 2350 Castro.",
+    "lat": 37.7424391,
+    "lng": -122.4331946
+  },
+  {
+    "name": "Valley/Diamond & Castro. One stairway leading up to Diamond and the other leading down to Castro.",
+    "lat": 37.7439924,
+    "lng": -122.4353144
+  },
+  {
+    "name": "Duncan St. at Noe.",
+    "lat": 37.7459267,
+    "lng": -122.4311321
+  },
+  {
+    "name": "Castro/28th St. & Duncan.",
+    "lat": 37.7450572,
+    "lng": -122.4335139
+  },
+  {
+    "name": "Valley/Castro to Noe. (Few small stairways.)",
+    "lat": 37.7441959,
+    "lng": -122.4320131
+  },
+  {
+    "name": "Tuscany at Lombard/Stockton & Powell. Nice view of St. Peter & Paul Church Spire.",
+    "lat": 37.8031519,
+    "lng": -122.4103729
+  },
+  {
+    "name": "Kearny/Vallejo & Broadway. Peter Macchiarini Steps. Sidewalk stairways on both sides of street.",
+    "lat": 37.7984782,
+    "lng": -122.4055651
+  },
+  {
+    "name": "Romolo/Vallejo & Fresno, west of Kearny. Sidewalk stairways on both side of the street.",
+    "lat": 37.7987391,
+    "lng": -122.4064175
+  },
+  {
+    "name": "Vallejo/Montgomery & Kearny.",
+    "lat": 37.799158,
+    "lng": -122.4044851
+  },
+  {
+    "name": "Julius/Lombard & Whiting.",
+    "lat": 37.8039457,
+    "lng": -122.4079359
+  },
+  {
+    "name": "Filbert/Varennes & Kearny, sidewalk stairways on both sides of the street.",
+    "lat": 37.8017894,
+    "lng": -122.4067546
+  },
+  {
+    "name": "Filbert/Telegraph Hill Blvd. & Montgomery & Sansome. The Filbert Street Steps.",
+    "lat": 37.8020923,
+    "lng": -122.404418
+  },
+  {
+    "name": "Greenwich/Telegraph Hill Blvd. & Montgomery & Sansome. The Greenwich Street Steps.",
+    "lat": 37.8029203,
+    "lng": -122.4043407
+  },
+  {
+    "name": "Lombard at Telegraph Hill Blvd., near Kearny.",
+    "lat": 37.8035668,
+    "lng": -122.4063013
+  },
+  {
+    "name": "Coit Tower. Down to path (west side).",
+    "lat": 37.8026531,
+    "lng": -122.4060969
+  },
+  {
+    "name": "Coit Tower. Rear path to Telegraph Hill Blvd. (south side).",
+    "lat": 37.8018608,
+    "lng": -122.4056673
+  },
+  {
+    "name": "Pardee Alley/Grant & Kramer.",
+    "lat": 37.8022359,
+    "lng": -122.408054
+  },
+  {
+    "name": "Yerba Buena, near Maywood, to Miraloma.",
+    "lat": 37.7355873,
+    "lng": -122.4609635
+  },
+  {
+    "name": "Terrace Drive at Terrace Walk Stairway, down to tennis courts.",
+    "lat": 37.7363535,
+    "lng": -122.4640922
+  },
+  {
+    "name": "Pemberton Place/Crown & Clayton.",
+    "lat": 37.7584431,
+    "lng": -122.4468643
+  },
+  {
+    "name": "Francisco/Kearny & Grant.",
+    "lat": 37.8054237,
+    "lng": -122.4081032
+  },
+  {
+    "name": "Grant/Francisco & Chestnut. Into Jack Early Park.",
+    "lat": 37.8047989,
+    "lng": -122.4084144
+  },
+  {
+    "name": "Coit Tower path (west side) down to Telegraph Hill Blvd.",
+    "lat": 37.8026295,
+    "lng": -122.4064275
+  },
+  {
+    "name": "Montgomery/Green & Union.",
+    "lat": 37.8003871,
+    "lng": -122.4043267
+  },
+  {
+    "name": "Union/Calhoun & east cliff of Telegraph Hill.",
+    "lat": 37.8010907,
+    "lng": -122.4036239
+  },
+  {
+    "name": "Coit Tower. Pioneer Park north side along walking on circular part of Telegraph Hill Blvd.",
+    "lat": 37.802961,
+    "lng": -122.4060384
+  },
+  {
+    "name": "Bartol Alley at No. 379 Broadway to Vallejo.",
+    "lat": 37.7992003,
+    "lng": -122.4037122
+  },
+  {
+    "name": "Genoa Place/Filbert & Union. Few steps in the sidewalk.",
+    "lat": 37.8016209,
+    "lng": -122.4065399
+  },
+  {
+    "name": "San Antonio Place/Vallejo & Kearny.",
+    "lat": 37.7990682,
+    "lng": -122.4062057
+  },
+  {
+    "name": "Union at Sansome.",
+    "lat": 37.8012471,
+    "lng": -122.4027464
+  },
+  {
+    "name": "Wayne at end of street/Mason & Powell.",
+    "lat": 37.7970472,
+    "lng": -122.4110416
+  },
+  {
+    "name": "Alta Plaza, Pierce at Clay, into park.",
+    "lat": 37.790451,
+    "lng": -122.4375414
+  },
+  {
+    "name": "Alta Plaza. Steiner/Clay & Washington, into park.",
+    "lat": 37.7906715,
+    "lng": -122.4361252
+  },
+  {
+    "name": "Alta Plaza. Scott/Clay & Washington, into park.",
+    "lat": 37.7903229,
+    "lng": -122.4390676
+  },
+  {
+    "name": "Alta Plaza. Steiner at Washington, into park.",
+    "lat": 37.7913672,
+    "lng": -122.4361984
+  },
+  {
+    "name": "Baker/Vallejo & Broadway.",
+    "lat": 37.7934977,
+    "lng": -122.4449487
+  },
+  {
+    "name": "Fillmore/Broadway & Green.",
+    "lat": 37.7943251,
+    "lng": -122.4349274
+  },
+  {
+    "name": "Lyon/Green & Vallejo & Broadway. The Lyon Street Steps.",
+    "lat": 37.793476,
+    "lng": -122.4467341
+  },
+  {
+    "name": "Green/Scott & Pierce. Sidewalk stairway on south side of street.",
+    "lat": 37.7955529,
+    "lng": -122.4401433
+  },
+  {
+    "name": "Normandie Terrace at Vallejo.",
+    "lat": 37.7944032,
+    "lng": -122.4408809
+  },
+  {
+    "name": "Alta Plaza. Pierce at Jackson, into park.",
+    "lat": 37.7919578,
+    "lng": -122.4378482
+  },
+  {
+    "name": "Lafayette Park. Laguna at Washington, into park.",
+    "lat": 37.7921322,
+    "lng": -122.4292897
+  },
+  {
+    "name": "Lafayette Park. Gough at Clay, into park, connecting on path to tennis courts.",
+    "lat": 37.7918481,
+    "lng": -122.4263445
+  },
+  {
+    "name": "Lafayette Park. Gough at Sacramento, into park.",
+    "lat": 37.7910046,
+    "lng": -122.4259959
+  },
+  {
+    "name": "Peru/Athens & Valmar",
+    "lat": 37.7261479,
+    "lng": -122.424587
+  },
+  {
+    "name": "Union Square. Powell & Geary, into square.",
+    "lat": 37.7874244,
+    "lng": -122.4082228
+  },
+  {
+    "name": "Union Square. Stockton & Geary, into square.",
+    "lat": 37.7875946,
+    "lng": -122.4067482
+  },
+  {
+    "name": "Union Square. Powell & Post, into square.",
+    "lat": 37.7882305,
+    "lng": -122.4083575
+  },
+  {
+    "name": "Union Square. Stockton & Post, into square.",
+    "lat": 37.788417,
+    "lng": -122.406877
+  },
+  {
+    "name": "Stockton Tunnel/Sutter & Bush and Sacramento & California.",
+    "lat": 37.7903077,
+    "lng": -122.4071854
+  },
+  {
+    "name": "Pacheco/Merced & Vasquez.",
+    "lat": 37.7448383,
+    "lng": -122.4604362
+  },
+  {
+    "name": "Dorchester to Kensington. Crosses Allston & Granville.",
+    "lat": 37.742443,
+    "lng": -122.4623472
+  },
+  {
+    "name": "Ulloa/Kensington & Waithman. Number of stairways along street down to sidewalk.",
+    "lat": 37.741777,
+    "lng": -122.4575135
+  },
+  {
+    "name": "Garcia/Edgehill Way & ldora, connecting Upper and Lower Garcia.",
+    "lat": 37.7439345,
+    "lng": -122.4597162
+  },
+  {
+    "name": "Lennox, opposite No. 146., into West Portal Recreation Center",
+    "lat": 37.7418224,
+    "lng": -122.465533
+  },
+  {
+    "name": "Ulloa at Waithman.",
+    "lat": 37.7420829,
+    "lng": -122.4569078
+  },
+  {
+    "name": "Commercial/Battery & Embarcadero 1.",
+    "lat": 37.7945971,
+    "lng": -122.4003246
+  },
+  {
+    "name": "McLaren Park. Excelsior at No. 1021, near Munich, into park.",
+    "lat": 37.722305,
+    "lng": -122.4252031
+  },
+  {
+    "name": "Munich/Ina & Excelsior.",
+    "lat": 37.722602,
+    "lng": -122.4255357
+  },
+  {
+    "name": "Liberty across from #342/Sanchez & Church.",
+    "lat": 37.7573014,
+    "lng": -122.4289043
+  },
+  {
+    "name": "Liberty near #366/Sanchez & Church.",
+    "lat": 37.7572739,
+    "lng": -122.4294117
+  },
+  {
+    "name": "Stanyan at Clarendon.",
+    "lat": 37.7586273,
+    "lng": -122.4514094
+  },
+  {
+    "name": "Prosper/16th St. & Pond.",
+    "lat": 37.7638756,
+    "lng": -122.4315796
+  },
+  {
+    "name": "Chaves & Del Sur.",
+    "lat": 37.7418007,
+    "lng": -122.454041
+  },
+  {
+    "name": "Baker/Green & Vallejo. Sidewalk stairway on both sides of the street.",
+    "lat": 37.794529,
+    "lng": -122.4451639
+  },
+  {
+    "name": "Lafayette Park. Gough at Washington, into park.",
+    "lat": 37.7924935,
+    "lng": -122.4262899
+  },
+  {
+    "name": "Lafayette Park. Laguna at Sacramento, into park.",
+    "lat": 37.7906028,
+    "lng": -122.4289982
+  },
+  {
+    "name": "Lafayette Park. Two stairways with bay views.",
+    "lat": 37.7920707,
+    "lng": -122.427519
+  },
+  {
+    "name": "Octavia/Washington & Jackson. Elegant stairway in middle of brick street.",
+    "lat": 37.7928972,
+    "lng": -122.4279207
+  },
+  {
+    "name": "Vallejo/Scott & Pierce. Sidewalk stairway on north side of street.",
+    "lat": 37.7947066,
+    "lng": -122.43942
+  },
+  {
+    "name": "Webster/Broadway & Vallejo. Sidewalk stairway on east side of street.",
+    "lat": 37.7950008,
+    "lng": -122.4333581
+  },
+  {
+    "name": "Vallejo at Lyon. Along a wall in the SW corner of the intersection.",
+    "lat": 37.7937927,
+    "lng": -122.4466092
+  },
+  {
+    "name": "Judah/LaPlaya & Great Highway.",
+    "lat": 37.7604389,
+    "lng": -122.5095888
+  },
+  {
+    "name": "McCoppin Square. 22nd Ave., near Taraval.",
+    "lat": 37.7436375,
+    "lng": -122.4792668
+  },
+  {
+    "name": "Stern Grove. Multiple stairways between bleachers, near 19th Avenue and Sloat.",
+    "lat": 37.7363255,
+    "lng": -122.4794843
+  },
+  {
+    "name": "Medical Center Way, No. 134, behind the clinics at UCSF, with stairs up to Johnstone Drive and the Historic Trail through Sutro Forest.",
+    "lat": 37.7624628,
+    "lng": -122.45615
+  },
+  {
+    "name": "Farnsworth/Edgewood & Willard.",
+    "lat": 37.763834,
+    "lng": -122.4546355
+  },
+  {
+    "name": "Kirkham at 4th Ave., up to 1550 5th Ave., behind UC Medical School.",
+    "lat": 37.7604592,
+    "lng": -122.4608461
+  },
+  {
+    "name": "Belgrave, at end of street, to Tank Hill.",
+    "lat": 37.7596908,
+    "lng": -122.4482455
+  },
+  {
+    "name": "Twin Peaks Blvd., next to No. 192, opposite Crown Terrace up to Tank Hill.",
+    "lat": 37.7591564,
+    "lng": -122.448047
+  },
+  {
+    "name": "Goettingen & Dwight.",
+    "lat": 37.7232346,
+    "lng": -122.4049887
+  },
+  {
+    "name": "Dwight/Goettingen & Hamilton.",
+    "lat": 37.7225768,
+    "lng": -122.4076072
+  },
+  {
+    "name": "Campus Lane/Princeton & Burrows.",
+    "lat": 37.7259416,
+    "lng": -122.4153531
+  },
+  {
+    "name": "Letterman Digital Arts Center. Gorgas Gate at Gorgas & Lyon.",
+    "lat": 37.8004849,
+    "lng": -122.4483149
+  },
+  {
+    "name": "Moraga/Funston & Barnard.",
+    "lat": 37.7970556,
+    "lng": -122.4571951
+  },
+  {
+    "name": "MacArthur Ave., to end at El Polin Spring.",
+    "lat": 37.7937134,
+    "lng": -122.4558043
+  },
+  {
+    "name": "12th Ave. at playground into Mountain Lake Park.",
+    "lat": 37.7871422,
+    "lng": -122.4717744
+  },
+  {
+    "name": "8th Ave./Lake & Mountain Lake Park.",
+    "lat": 37.7869606,
+    "lng": -122.4668772
+  },
+  {
+    "name": "48th Ave. & Balboa. Sidewalk stairway on both sides of street.",
+    "lat": 37.7753675,
+    "lng": -122.5091182
+  },
+  {
+    "name": "Macondray Lane/Jones & Taylor.",
+    "lat": 37.7994094,
+    "lng": -122.4142131
+  },
+  {
+    "name": "Chestnut/Polk & Larkin.",
+    "lat": 37.8027451,
+    "lng": -122.4219538
+  },
+  {
+    "name": "Havens/Leavenworth & Hyde, in cul-de-sac.",
+    "lat": 37.7998768,
+    "lng": -122.4177796
+  },
+  {
+    "name": "Green/Jones & Taylor, next to No. 940 Green.",
+    "lat": 37.7989336,
+    "lng": -122.4143468
+  },
+  {
+    "name": "Vallejo/Mason & Taylor, into Ina Coolbrith Park.",
+    "lat": 37.798088,
+    "lng": -122.4128423
+  },
+  {
+    "name": "Vallejo/Jones & Taylor.",
+    "lat": 37.7978828,
+    "lng": -122.4141025
+  },
+  {
+    "name": "Lombard/Hyde & Leavenworth. On both sides of curvy section of Lombard Street.",
+    "lat": 37.8020831,
+    "lng": -122.4187395
+  },
+  {
+    "name": "Greenwich/Hyde & Leavenworth.",
+    "lat": 37.8012633,
+    "lng": -122.4181348
+  },
+  {
+    "name": "Greenwich/Hyde & Larkin.",
+    "lat": 37.8008028,
+    "lng": -122.4209059
+  },
+  {
+    "name": "Filbert/Hyde & Leavenworth. Sidewalk stairway on both sides of street.",
+    "lat": 37.8002221,
+    "lng": -122.4184195
+  },
+  {
+    "name": "Francisco/Upper Leavenworth & Hyde.",
+    "lat": 37.8038907,
+    "lng": -122.4192499
+  },
+  {
+    "name": "Francisco/Lower Leavenworth & Francisco.",
+    "lat": 37.8041453,
+    "lng": -122.4184612
+  },
+  {
+    "name": "Culebra Terrace/No.1250 Lombard & Chestnut.",
+    "lat": 37.8018665,
+    "lng": -122.4221685
+  },
+  {
+    "name": "Bengal Alley/Lansdale & Miraloma.",
+    "lat": 37.7381409,
+    "lng": -122.4611314
+  },
+  {
+    "name": "Baker Beach Sand Ladder.",
+    "lat": 37.796531,
+    "lng": -122.4808726
+  },
+  {
+    "name": "Park Trail between SF National Cemetery Overlook and Park Blvd.",
+    "lat": 37.7975176,
+    "lng": -122.466164
+  },
+  {
+    "name": "Connector trail below Immigrant Point Overlook.",
+    "lat": 37.7956432,
+    "lng": -122.478095
+  },
+  {
+    "name": "Simonds Loop East.",
+    "lat": 37.7959092,
+    "lng": -122.4488443
+  },
+  {
+    "name": "Dragonfly Creek",
+    "lat": 37.7997082,
+    "lng": -122.4726249
+  },
+  {
+    "name": "Larkin/Francisco & Bay.",
+    "lat": 37.8037047,
+    "lng": -122.4216484
+  },
+  {
+    "name": "Larkin/Chestnut & Francisco, beginning at No. 2745 Larkin.",
+    "lat": 37.8032858,
+    "lng": -122.4216265
+  },
+  {
+    "name": "Russian Hill Park at Bay/Hyde & Larkin.",
+    "lat": 37.8042188,
+    "lng": -122.4216768
+  },
+  {
+    "name": "Florence/Broadway & Vallejo.",
+    "lat": 37.79698,
+    "lng": -122.41466
+  },
+  {
+    "name": "Hyde & Francisco. Just a few steps.",
+    "lat": 37.8038202,
+    "lng": -122.4198924
+  },
+  {
+    "name": "Upper to Lower Jones at Vallejo.",
+    "lat": 37.7977715,
+    "lng": -122.4153655
+  },
+  {
+    "name": "Montclair Terrace/Lombard & Chestnut.",
+    "lat": 37.8029244,
+    "lng": -122.4190535
+  },
+  {
+    "name": "Fay Park interior. Attached to gazebos.",
+    "lat": 37.8029901,
+    "lng": -122.4179458
+  },
+  {
+    "name": "Yukon/Eagle & Short. Into Kite Hill.",
+    "lat": 37.7578348,
+    "lng": -122.4422232
+  },
+  {
+    "name": "Clover Lane/No. 101 Caselli & No. 4612 19th St. Cross alley and continue up to Kite Hill.",
+    "lat": 37.7595157,
+    "lng": -122.4410752
+  },
+  {
+    "name": "Short/Market & Yukon.",
+    "lat": 37.7577939,
+    "lng": -122.4430869
+  },
+  {
+    "name": "Acme Alley/Corwin No. 95 & Grand View.",
+    "lat": 37.756968,
+    "lng": -122.4404973
+  },
+  {
+    "name": "Acme Alley in Seward Mini Park.",
+    "lat": 37.7576476,
+    "lng": -122.4399072
+  },
+  {
+    "name": "Seward at Douglass and No. 31 Seward.",
+    "lat": 37.7579105,
+    "lng": -122.4392707
+  },
+  {
+    "name": "Douglass at Corwin.",
+    "lat": 37.7570448,
+    "lng": -122.4390721
+  },
+  {
+    "name": "Douglass at Romain.",
+    "lat": 37.7565316,
+    "lng": -122.4390077
+  },
+  {
+    "name": "Douglass at No. 414/Corwin & Romain.",
+    "lat": 37.7568115,
+    "lng": -122.4390479
+  },
+  {
+    "name": "Douglass/20th St. & Corwin.",
+    "lat": 37.7573012,
+    "lng": -122.4390526
+  },
+  {
+    "name": "Dixie/No. 3801 Market & No. 285 Grand View near Alvarado.",
+    "lat": 37.7534741,
+    "lng": -122.4421156
+  },
+  {
+    "name": "Grand View to Stanton at Market.",
+    "lat": 37.7567962,
+    "lng": -122.4421443
+  },
+  {
+    "name": "Crocker-Amazon Park. Geneva, opposite No. 1572, into park.",
+    "lat": 37.7127551,
+    "lng": -122.4303651
+  },
+  {
+    "name": "8th Ave./Moraga & Lawton. Few small stairways along block.",
+    "lat": 37.7574603,
+    "lng": -122.4647437
+  },
+  {
+    "name": "9th Ave./Lawton & Moraga. Few small stairways along block.",
+    "lat": 37.7574433,
+    "lng": -122.4659024
+  },
+  {
+    "name": "Marine Cemetery Vista Overlook.",
+    "lat": 37.7898618,
+    "lng": -122.4736754
+  },
+  {
+    "name": "3rd Ave. Nos. 1-11 at Lake.",
+    "lat": 37.7872357,
+    "lng": -122.4615211
+  },
+  {
+    "name": "Lake/EI Camino del Mar to 30th Ave. Multiple stairways along south side of Lake.",
+    "lat": 37.7851881,
+    "lng": -122.4913475
+  },
+  {
+    "name": "Clement/43rd and 44th Aves. up to VA Medical Center.",
+    "lat": 37.7811698,
+    "lng": -122.504505
+  },
+  {
+    "name": "Broadway/Jones and Taylor. Sidewalk stairways on both sides of street.",
+    "lat": 37.7969285,
+    "lng": -122.4142648
+  },
+  {
+    "name": "George Sterling Park at Larkin & Lombard.",
+    "lat": 37.8016938,
+    "lng": -122.4210531
+  },
+  {
+    "name": "Himmelman Place to Salmon.",
+    "lat": 37.7969212,
+    "lng": -122.4128949
+  },
+  {
+    "name": "Valparaiso/Filbert & Greenwich down to Taylor.",
+    "lat": 37.8011906,
+    "lng": -122.4148726
+  },
+  {
+    "name": "Broadway Tunnel West Mini Park/Cyrus & Hyde.",
+    "lat": 37.7964726,
+    "lng": -122.4175215
+  },
+  {
+    "name": "Hastings/Filbert & Union.",
+    "lat": 37.7995343,
+    "lng": -122.4190054
+  },
+  {
+    "name": "Houston/Jones & Columbus. End of Houston or next to 2430 Jones.",
+    "lat": 37.8038649,
+    "lng": -122.4161792
+  },
+  {
+    "name": "Redfield Alley. (Stairway isn't great, but check out this dirt road!)",
+    "lat": 37.8003854,
+    "lng": -122.4137305
+  },
+  {
+    "name": "Sea Cliff Ave. at No. 330, linking Sea Cliff Ave. and El Camino del Mar.",
+    "lat": 37.7880347,
+    "lng": -122.4896369
+  },
+  {
+    "name": "West side of China Beach parking lot down to beach.",
+    "lat": 37.7873595,
+    "lng": -122.4908302
+  },
+  {
+    "name": "China Beach. Few stairways at recreational building.",
+    "lat": 37.7879005,
+    "lng": -122.4909724
+  },
+  {
+    "name": "North 25th Ave. to Baker Beach.",
+    "lat": 37.7899154,
+    "lng": -122.4853686
+  },
+  {
+    "name": "Yerba Buena Gardens. Howard/3rd & 4th Sts.",
+    "lat": 37.7842703,
+    "lng": -122.402618
+  },
+  {
+    "name": "Yerba Buena Gardens/Mission between 3rd & 4th Sts.",
+    "lat": 37.7852133,
+    "lng": -122.4031083
+  },
+  {
+    "name": "Yerba Buena Gardens Esplanade East Side.",
+    "lat": 37.7852811,
+    "lng": -122.4022178
+  },
+  {
+    "name": "Lansing/1st St. & Essex.",
+    "lat": 37.7856422,
+    "lng": -122.394452
+  },
+  {
+    "name": "Junipero Serra Blvd./Darien & Monterey.",
+    "lat": 37.7325782,
+    "lng": -122.4713801
+  },
+  {
+    "name": "St. Francis Blvd. at San Anselmo, Upper Fountain.",
+    "lat": 37.7350436,
+    "lng": -122.4644936
+  },
+  {
+    "name": "St. Francis Blvd. at Santa Ana, Lower Fountain.",
+    "lat": 37.7348438,
+    "lng": -122.467995
+  },
+  {
+    "name": "San Anselmo & Santa Ana at Portola.",
+    "lat": 37.7372882,
+    "lng": -122.468212
+  },
+  {
+    "name": "Terrace Drive, opposite No. 141., down to tennis courts. Similar stairway on other side of courts.",
+    "lat": 37.7367484,
+    "lng": -122.4643848
+  },
+  {
+    "name": "Baden and Joost Mini Park/Nos. 242 & 250 Joost and Nos. 149 & 151 Mangels.",
+    "lat": 37.7326342,
+    "lng": -122.4408694
+  },
+  {
+    "name": "Next to No. 233 Joost, down to Monterey Blvd., via historic Sunnyside Conservatory.",
+    "lat": 37.7317942,
+    "lng": -122.4407836
+  },
+  {
+    "name": "Upper Detroit Steps. Detroit/Joost & Monterey.",
+    "lat": 37.73177,
+    "lng": -122.4443298
+  },
+  {
+    "name": "Melrose Stairway/Teresita to MangeIs to Sunnyside Playground.",
+    "lat": 37.7335666,
+    "lng": -122.4466693
+  },
+  {
+    "name": "Foerster at Melrose, across from Sunnyside Playground. Two steps.",
+    "lat": 37.733861,
+    "lng": -122.4489395
+  },
+  {
+    "name": "Monterey: Upper Monterey to Lower Monterey at Miramar.",
+    "lat": 37.7308349,
+    "lng": -122.4583212
+  },
+  {
+    "name": "Union at Icehouse Alley/Sansome & Battery.",
+    "lat": 37.8013015,
+    "lng": -122.4022212
+  },
+  {
+    "name": "Vallejo at No. 474/Montgomery & Kearny.",
+    "lat": 37.799055,
+    "lng": -122.4052955
+  },
+  {
+    "name": "Twin Peaks: Noe Peak.",
+    "lat": 37.7515124,
+    "lng": -122.447768
+  },
+  {
+    "name": "Twin Peaks: Eureka Peak.",
+    "lat": 37.7534114,
+    "lng": -122.4473576
+  },
+  {
+    "name": "Clayton at Corbett. Alongside community garden.",
+    "lat": 37.7587752,
+    "lng": -122.4461834
+  },
+  {
+    "name": "Crestline across from no. 74. Wood stairs up to Twin Peaks Blvd.",
+    "lat": 37.7520011,
+    "lng": -122.4467822
+  },
+  {
+    "name": "Vista Lane/Burnett Parkridge. to Crestline at No. 70.",
+    "lat": 37.7518124,
+    "lng": -122.4459664
+  },
+  {
+    "name": "Copper/Graystone & Corbett, next to No. 301 Graystone & No. 592 Corbett.",
+    "lat": 37.7568578,
+    "lng": -122.4438212
+  },
+  {
+    "name": "Cuesta Court.",
+    "lat": 37.7512786,
+    "lng": -122.443444
+  },
+  {
+    "name": "Iron Alley/No. 495 Corbett & No. 1499 Clayton, with an extension to Graystone.",
+    "lat": 37.7580928,
+    "lng": -122.4446282
+  },
+  {
+    "name": "Burnett at Hopkins to Upper Burnett to Gardenside at No. 120.",
+    "lat": 37.7531654,
+    "lng": -122.4447763
+  },
+  {
+    "name": "Fredela Lane/Clairview Court & Farview Court.",
+    "lat": 37.7548695,
+    "lng": -122.4504156
+  },
+  {
+    "name": "Fredela Lane/Lower Marview & Clairview Court.",
+    "lat": 37.7543626,
+    "lng": -122.4499408
+  },
+  {
+    "name": "Glendale at Corbett.",
+    "lat": 37.7561194,
+    "lng": -122.4431106
+  },
+  {
+    "name": "Vista Lane/Burnett at No. 535 to Gardenside to Parkridge.",
+    "lat": 37.7525806,
+    "lng": -122.4452777
+  },
+  {
+    "name": "Market/Romain & Glendale.",
+    "lat": 37.7564734,
+    "lng": -122.4418858
+  },
+  {
+    "name": "Vulcan/Levant & Ord. Caring neighbors and cobblestone\u2014not to be missed.",
+    "lat": 37.7635248,
+    "lng": -122.4411819
+  },
+  {
+    "name": "Ashbury Terrace, next to No. 64.1911-1912 development.",
+    "lat": 37.764805,
+    "lng": -122.4447861
+  },
+  {
+    "name": "Upper Terrace. Monument Way at 17th Ave./Clayton & Roosevelt, to Upper Terrace. View.",
+    "lat": 37.7619752,
+    "lng": -122.4463684
+  },
+  {
+    "name": "Upper Terrace. Steps to Mt. Olympus monument.",
+    "lat": 37.7632726,
+    "lng": -122.4454658
+  },
+  {
+    "name": "Saturn/end of Saturn & Ord. Redesigned by Department of Public Works. Benches and planted areas augment curving stairway.",
+    "lat": 37.7627725,
+    "lng": -122.4405936
+  },
+  {
+    "name": "Lower Terrace & Saturn.",
+    "lat": 37.7628255,
+    "lng": -122.4415779
+  },
+  {
+    "name": "Corbin Place/No. 200 Corbett & No. 4399 17th St.",
+    "lat": 37.7618643,
+    "lng": -122.4429006
+  },
+  {
+    "name": "Upper Terrace. No. 480 at Mt. Olympus down to Upper Terrace No. 227. View. Neighborly.",
+    "lat": 37.7633193,
+    "lng": -122.4449744
+  },
+  {
+    "name": "Danvers/18th St. & Market. A 1946 stairway.",
+    "lat": 37.7604641,
+    "lng": -122.4433678
+  },
+  {
+    "name": "Corbett Slope Community Park. Few wood steps.",
+    "lat": 37.7602259,
+    "lng": -122.4445509
+  },
+  {
+    "name": "Douglass/States & 17th St. Charming, tree-lined cul-de-sac, with an assortment of Victorians.",
+    "lat": 37.7635141,
+    "lng": -122.4395226
+  },
+  {
+    "name": "Ord Court at No. 2 to Douglass cul-de-sac. Surprise.",
+    "lat": 37.7635311,
+    "lng": -122.4397935
+  },
+  {
+    "name": "Levant/States & Roosevelt. High retaining wall covered with vines. Butterflies and chickadees abound in the foliage. Curved street complements stairway.",
+    "lat": 37.7651528,
+    "lng": -122.4423944
+  },
+  {
+    "name": "Ord/Storrie & Market, down to Ord at 18th St. Happy wall mural on No. 176 Ord at end of stairway.",
+    "lat": 37.760978,
+    "lng": -122.4401524
+  },
+  {
+    "name": "Roosevelt Way to Lower Terrace No.180. Alongside Lower Terrace Greenspace.",
+    "lat": 37.7634114,
+    "lng": -122.4428903
+  },
+  {
+    "name": "Corbett & Mars.",
+    "lat": 37.760963,
+    "lng": -122.4444121
+  },
+  {
+    "name": "Ashbury/No. 57 & No. 81 Ashbury Terrace. Seven small stairways between street and sidewalk.",
+    "lat": 37.7647399,
+    "lng": -122.444491
+  },
+  {
+    "name": "Saturn/Lower Terrace and top of Saturn Stairway Seven useful stairways interacting with sidewalk and street.",
+    "lat": 37.76277,
+    "lng": -122.4412083
+  },
+  {
+    "name": "Roosevelt at 17th St. Rounding a corner.",
+    "lat": 37.7619356,
+    "lng": -122.445238
+  },
+  {
+    "name": "Corbett & 17th St. The two steps serve the purpose of rounding the corner.",
+    "lat": 37.7621871,
+    "lng": -122.439596
+  },
+  {
+    "name": "Campbell/Elliot & Visitacion Ave. Unexpected, long, in open-space setting",
+    "lat": 37.7163898,
+    "lng": -122.4103925
+  },
+  {
+    "name": "Visitacion Valley Greenway Herb Garden/Arleta & Teddy.",
+    "lat": 37.7134262,
+    "lng": -122.4059829
+  },
+  {
+    "name": "Beeman Lane/Wabash & San Bruno.",
+    "lat": 37.714584,
+    "lng": -122.4003722
+  },
+  {
+    "name": "Campbell/San Bruno & Bayshore.",
+    "lat": 37.7152323,
+    "lng": -122.3993805
+  },
+  {
+    "name": "Cottage Row at Sutter to Bush/Webster & Fillmore.",
+    "lat": 37.7862322,
+    "lng": -122.4322876
+  },
+  {
+    "name": "Ward/Girard at No. 95 & San Bruno.",
+    "lat": 37.7190305,
+    "lng": -122.4008607
+  },
+  {
+    "name": "Alamo Square. Fulton at Pierce, into square.",
+    "lat": 37.777175,
+    "lng": -122.4348566
+  },
+  {
+    "name": "Alamo Square. Fulton at Steiner, into square.",
+    "lat": 37.7773615,
+    "lng": -122.4333546
+  },
+  {
+    "name": "Alamo Square. Grove at Scott, into square.",
+    "lat": 37.7761828,
+    "lng": -122.4362353
+  },
+  {
+    "name": "Alamo Square. Grove at Steiner, into square.",
+    "lat": 37.7765517,
+    "lng": -122.4331668
+  },
+  {
+    "name": "Alamo Square. Hayes at Pierce, into square.",
+    "lat": 37.775462,
+    "lng": -122.4345186
+  },
+  {
+    "name": "Koshland Park. Page at Buchanan, into park. Seven small stairways on path through park.",
+    "lat": 37.7732651,
+    "lng": -122.4265516
+  },
+  {
+    "name": "Waller/Laguna & Buchanan.",
+    "lat": 37.7717282,
+    "lng": -122.4259973
+  },
+  {
+    "name": "Alamo Square. Hayes/Scott & Pierce. Divided street, four separate stairways.",
+    "lat": 37.7753072,
+    "lng": -122.435073
+  },
+  {
+    "name": "Carmelita Street at end into Duboce Park.",
+    "lat": 37.7697827,
+    "lng": -122.4342515
+  },
+  {
+    "name": "Pierce Street at end into Duboce Park.",
+    "lat": 37.769806,
+    "lng": -122.4333681
+  },
+  {
+    "name": "Agave Trail",
+    "lat": 37.825171,
+    "lng": -122.4211271
+  },
+  {
+    "name": "Multiple stairways around the lighthouse and Administration Building.",
+    "lat": 37.8262472,
+    "lng": -122.4222053
+  },
+  {
+    "name": "Prisoner Garden/Recreation Yard",
+    "lat": 37.8270169,
+    "lng": -122.4241294
+  },
+  {
+    "name": "O'Farrell & Lyon. Rounding a corner.",
+    "lat": 37.781913,
+    "lng": -122.4439365
+  },
+  {
+    "name": "Bayview Park. Crumbling red stairway.",
+    "lat": 37.7148072,
+    "lng": -122.3934084
+  },
+  {
+    "name": "End of Oakdale Avenue into Adam Rogers Park.",
+    "lat": 37.7307584,
+    "lng": -122.3834662
+  },
+  {
+    "name": "End of Whitfield Court into Adam Rogers Park.",
+    "lat": 37.7312598,
+    "lng": -122.3832525
+  },
+  {
+    "name": "Center of Adam Rogers Park.",
+    "lat": 37.7310888,
+    "lng": -122.3837842
+  },
+  {
+    "name": "Naglee Avenue leading into Cayuga Park basketball courts.",
+    "lat": 37.714476,
+    "lng": -122.4497997
+  },
+  {
+    "name": "Key at 3rd Street.",
+    "lat": 37.7193738,
+    "lng": -122.3968745
+  },
+  {
+    "name": "Mirabel at No. 11 to Precita.",
+    "lat": 37.7461757,
+    "lng": -122.4175497
+  },
+  {
+    "name": "LaSalle to Hilltop Park/Osceola & Garlington Court.",
+    "lat": 37.7326804,
+    "lng": -122.384325
+  },
+  {
+    "name": "Franconia/Franconia & Brewster Stairway through Miller Dogpatch Community Garden",
+    "lat": 37.7450492,
+    "lng": -122.4071807
+  },
+  {
+    "name": "Rosenkrantz between Carver and Nevada",
+    "lat": 37.7422553,
+    "lng": -122.410677
+  },
+  {
+    "name": "Rosenkrantz to Bernal Heights Boulevard, between Nevada and Carver.",
+    "lat": 37.7423206,
+    "lng": -122.4110176
+  },
+  {
+    "name": "Buena Vista East at Nos. 355-399, into Buena Vista Park.",
+    "lat": 37.7669959,
+    "lng": -122.440654
+  },
+  {
+    "name": "Buena Vista East. Across from 437, into park.",
+    "lat": 37.7662919,
+    "lng": -122.4415767
+  },
+  {
+    "name": "Corona Heights Park, to summit. Starting from north of Randall Museum.",
+    "lat": 37.7651469,
+    "lng": -122.4381371
+  },
+  {
+    "name": "Corona Heights Park, to summit from Roosevelt Way entrance.",
+    "lat": 37.7649114,
+    "lng": -122.4400502
+  },
+  {
+    "name": "Corona Heights Park from 15th Street entrance, into the wooded side of park.",
+    "lat": 37.7654621,
+    "lng": -122.4379319
+  },
+  {
+    "name": "Buena Vista Park. First of two stairways north of dog run.",
+    "lat": 37.7690129,
+    "lng": -122.4416883
+  },
+  {
+    "name": "Buena Vista Park. North of tennis courts.",
+    "lat": 37.7701105,
+    "lng": -122.4399273
+  },
+  {
+    "name": "Buena Vista Park interior. Closest entrance is Buena Vista East betw. Park Hill Drive & Buena Vista Terrace.",
+    "lat": 37.7687705,
+    "lng": -122.4394365
+  },
+  {
+    "name": "Buena Vista East. Across from 351-355, into park.",
+    "lat": 37.7677262,
+    "lng": -122.4402736
+  },
+  {
+    "name": "Buena Vista East. Across from 65, into park.",
+    "lat": 37.770352,
+    "lng": -122.4395862
+  },
+  {
+    "name": "Portsmouth Square. Kearny & Clay.",
+    "lat": 37.7944689,
+    "lng": -122.4049288
+  },
+  {
+    "name": "Portsmouth Square. Interior of square toward Kearny.",
+    "lat": 37.7948254,
+    "lng": -122.4052045
+  },
+  {
+    "name": "Portsmouth Square. Kearny & Washington.",
+    "lat": 37.7952243,
+    "lng": -122.4051429
+  },
+  {
+    "name": "Portsmouth Square. Walter Lum Pl./Clay & Washington.",
+    "lat": 37.7944062,
+    "lng": -122.4056981
+  },
+  {
+    "name": "Portsmouth Square. Washington & Walter Lum Pl.",
+    "lat": 37.7951834,
+    "lng": -122.4057198
+  },
+  {
+    "name": "Portsmouth Square. Clay/Kearny & Walter Lum Pl.",
+    "lat": 37.7944274,
+    "lng": -122.4052906
+  },
+  {
+    "name": "Grant & Bush Stairway & Chinatown Gate.",
+    "lat": 37.7906212,
+    "lng": -122.4055818
+  },
+  {
+    "name": "Jones/Filbert & Union & Green. Sidewalk stairway.",
+    "lat": 37.7995917,
+    "lng": -122.4157874
+  },
+  {
+    "name": "Diamond Heights Blvd. & No. 5411, into Walter Haas Park.",
+    "lat": 37.7408138,
+    "lng": -122.4353155
+  },
+  {
+    "name": "Garcia/Vasquez & Edgehill Way, connecting Upper and Lower Garcia",
+    "lat": 37.7438366,
+    "lng": -122.4605352
+  },
+  {
+    "name": "Embarcadero Plaza. Multiple stairways throughout plaza.",
+    "lat": 37.7950669,
+    "lng": -122.3949491
+  },
+  {
+    "name": "Ferry Building at North End Plaza.",
+    "lat": 37.796208,
+    "lng": -122.394557
+  },
+  {
+    "name": "Jackson/Front & Davis. In Sydney G. Walton Square.",
+    "lat": 37.7971927,
+    "lng": -122.3990459
+  },
+  {
+    "name": "Clayton & Market.",
+    "lat": 37.7584214,
+    "lng": -122.4448101
+  },
+  {
+    "name": "Mono/Market & Eagle, with a ramp to Caselli.",
+    "lat": 37.758323,
+    "lng": -122.4435859
+  },
+  {
+    "name": "Douglass at 24th St., into Noe Valley Children's Playground.",
+    "lat": 37.7511492,
+    "lng": -122.4385387
+  },
+  {
+    "name": "Delta and Tucker, at corner.",
+    "lat": 37.7165346,
+    "lng": -122.4080521
+  },
+  {
+    "name": "McLaren Park. Brookdale/Geneva & Blythdale, into park.",
+    "lat": 37.7108104,
+    "lng": -122.4226214
+  },
+  {
+    "name": "McLaren Park. Visitacion near Mansell, into park.",
+    "lat": 37.7184933,
+    "lng": -122.4114003
+  },
+  {
+    "name": "Florence at Vallejo.",
+    "lat": 37.7977914,
+    "lng": -122.4148438
+  },
+  {
+    "name": "Vallejo between summit of Russian Hill and Russian Hill Place. Few of stairways along block.",
+    "lat": 37.7978637,
+    "lng": -122.4147794
+  },
+  {
+    "name": "Larkin/Lombard & Greenwich, into George Sterling Park.",
+    "lat": 37.8009719,
+    "lng": -122.4209891
+  },
+  {
+    "name": "Crocker-Amazon Park. Prague, near Russia, into park.",
+    "lat": 37.7161308,
+    "lng": -122.4293433
+  },
+  {
+    "name": "Ina Coolbrith Park. Stairways in interior of park.",
+    "lat": 37.7981547,
+    "lng": -122.4134128
+  },
+  {
+    "name": "Fallon Place",
+    "lat": 37.7976867,
+    "lng": -122.4135621
+  },
+  {
+    "name": "Leading to Horseshoe Pits near Conservatory Drive East & Arguello.",
+    "lat": 37.7734925,
+    "lng": -122.4561702
+  },
+  {
+    "name": "Anglers Lodge, off JFK Drive, opposite buffalo paddock.",
+    "lat": 37.7682757,
+    "lng": -122.4967537
+  },
+  {
+    "name": "Botanical Garden. Between Mesoamerican and South African Walk.",
+    "lat": 37.7675443,
+    "lng": -122.4698235
+  },
+  {
+    "name": "Botanical Garden Succulent Garden.",
+    "lat": 37.7667407,
+    "lng": -122.4725346
+  },
+  {
+    "name": "Conservatory of Flowers. Right side, east to Dahlia Gardens. Two stairways.",
+    "lat": 37.7725661,
+    "lng": -122.4595317
+  },
+  {
+    "name": "Kelloch & Velasco Mini Park. NW corner of park.",
+    "lat": 37.7090071,
+    "lng": -122.413769
+  },
+  {
+    "name": "Kelloch & Velasco Mini Park. Corner of Kelloch and Velasco",
+    "lat": 37.7085403,
+    "lng": -122.4138655
+  },
+  {
+    "name": "Kelloch & Velasco Mini Park. Kelloch/Rey and Schwerin.",
+    "lat": 37.708536,
+    "lng": -122.4125298
+  },
+  {
+    "name": "Kelloch & Velasco Mini Park. Velasco/Accacia and Schwerin.",
+    "lat": 37.7081965,
+    "lng": -122.4126371
+  },
+  {
+    "name": "Glen Park BART Station at Diamond/Bosworth & Monterey, down into station.",
+    "lat": 37.7331048,
+    "lng": -122.4338774
+  },
+  {
+    "name": "Forest Hill MUNI Metro Station at Laguna Honda, near Dewey, inside station",
+    "lat": 37.7481328,
+    "lng": -122.4590619
+  },
+  {
+    "name": "Glen Park BART Station at Monterey at Diamond.",
+    "lat": 37.733229,
+    "lng": -122.4340317
+  },
+  {
+    "name": "Market. Castro MUNI Metro Station at Castro & Market, down into station.",
+    "lat": 37.7624405,
+    "lng": -122.435239
+  },
+  {
+    "name": "Van Ness MUNI Metro Station at Van Ness & Market, down into station.",
+    "lat": 37.7754312,
+    "lng": -122.4190323
+  },
+  {
+    "name": "Clay (north side)/Battery & Davis. Just east of One Maritime Plaza and into Maritime Plaza.",
+    "lat": 37.7952238,
+    "lng": -122.3989232
+  },
+  {
+    "name": "Washington (south side)/Battery & Davis. East of 301 Washington St. parking garage.",
+    "lat": 37.7960935,
+    "lng": -122.3991279
+  },
+  {
+    "name": "Washington (north side)/Battery and Davis. To elevated walkway.",
+    "lat": 37.7962143,
+    "lng": -122.3987711
+  },
+  {
+    "name": "Washington/Battery and Davis. North side to Hinckley Walk.",
+    "lat": 37.7960702,
+    "lng": -122.399836
+  },
+  {
+    "name": "Embarcadero Center. Stairways on either side of skybridge between Embarcadero 3 and 4.",
+    "lat": 37.7950421,
+    "lng": -122.3967047
+  },
+  {
+    "name": "Embarcadero Center. Embarcadero Plaza up to Embarcadero 4.",
+    "lat": 37.7951554,
+    "lng": -122.3956652
+  },
+  {
+    "name": "Ironship Plaza East near Drumm & Washington.",
+    "lat": 37.7965544,
+    "lng": -122.3971716
+  },
+  {
+    "name": "Rob Hill Campground. Wood stairway toward the end of Central Magazine Drive.",
+    "lat": 37.7971201,
+    "lng": -122.4748208
+  },
+  {
+    "name": "Ruckman/Appleton & Ralston. Two stairways by baseball field.",
+    "lat": 37.8023354,
+    "lng": -122.4742162
+  },
+  {
+    "name": "Bowling Green Drive. Street to tennis courts.",
+    "lat": 37.7693762,
+    "lng": -122.460091
+  },
+  {
+    "name": "National AIDS Memorial. Two stairways into redwood grove.",
+    "lat": 37.7696995,
+    "lng": -122.4610605
+  },
+  {
+    "name": "National AIDS Memorial. Moonwalk Stairs, just past the Hemophilia Circle.",
+    "lat": 37.7697061,
+    "lng": -122.4623701
+  },
+  {
+    "name": "National AIDS Memorial. Crossroads Circle. Two small sets of steps.",
+    "lat": 37.7695543,
+    "lng": -122.4623542
+  },
+  {
+    "name": "National AIDS Memorial. Circle of Peace through fern grotto.",
+    "lat": 37.7692204,
+    "lng": -122.4638761
+  },
+  {
+    "name": "National AIDS Memorial. Stairs to a circle to the NW of the Circle of Friends.",
+    "lat": 37.7700268,
+    "lng": -122.4611001
+  },
+  {
+    "name": "National AIDS Memorial. Circle of Peace to West Portal.",
+    "lat": 37.7694644,
+    "lng": -122.4638825
+  },
+  {
+    "name": "Lincoln Way at 7th Ave., into Golden Gate Park.",
+    "lat": 37.7662574,
+    "lng": -122.4639691
+  },
+  {
+    "name": "Martin Luther King Drive. Street to Stow Lake.",
+    "lat": 37.7684388,
+    "lng": -122.4724718
+  },
+  {
+    "name": "Koret Children's Playground to Kezar Drive.",
+    "lat": 37.7679081,
+    "lng": -122.4565819
+  },
+  {
+    "name": "Koret Children's Quarter. North of carousel. Mosaic!",
+    "lat": 37.7681391,
+    "lng": -122.4584004
+  },
+  {
+    "name": "Robin Williams Meadow Picnic Area near Martin Luther King Jr. Dr., into Koret Children's Playground.",
+    "lat": 37.7676472,
+    "lng": -122.4587652
+  },
+  {
+    "name": "Stow Lake. Few steps up to Chinese Pavilion.",
+    "lat": 37.7684274,
+    "lng": -122.4736522
+  },
+  {
+    "name": "Stow Lake. Strawberry Hill/Stow Lake shore and top of waterfalls.",
+    "lat": 37.7693933,
+    "lng": -122.4746844
+  },
+  {
+    "name": "JFK Drive north side, down to North Lake.",
+    "lat": 37.7681557,
+    "lng": -122.5009023
+  },
+  {
+    "name": "JFK Drive: Intersection of Bernice Rogers Way & JFK Drive.",
+    "lat": 37.7667349,
+    "lng": -122.5059595
+  },
+  {
+    "name": "Stow Lake. Heading uphill from across Chinese Pavilion.",
+    "lat": 37.7683005,
+    "lng": -122.4739639
+  },
+  {
+    "name": "Stow Lake. Just south of Huntington Falls.",
+    "lat": 37.7687839,
+    "lng": -122.4737439
+  },
+  {
+    "name": "Stow Lake South Side/South Bridge & Chinese Pavilion.",
+    "lat": 37.7677429,
+    "lng": -122.4751145
+  },
+  {
+    "name": "Penny Lane to Surrey/Diamond & Castro. Penny Lane is a dirt road!",
+    "lat": 37.7353232,
+    "lng": -122.4332102
+  },
+  {
+    "name": "Beale/Main & Fremont to Harrison, opposite No. 228.",
+    "lat": 37.7876184,
+    "lng": -122.3912285
+  },
+  {
+    "name": "Bryant/1st St. & Rincon.",
+    "lat": 37.7847919,
+    "lng": -122.3912871
+  },
+  {
+    "name": "Yerba Buena Lane at 757 Market to Mission/2nd & 3rd Sts.",
+    "lat": 37.7857208,
+    "lng": -122.404285
+  },
+  {
+    "name": "Alynne Park at Green & Gough.",
+    "lat": 37.7972707,
+    "lng": -122.4276505
+  },
+  {
+    "name": "Gibbon Ct.",
+    "lat": 37.7963742,
+    "lng": -122.4478381
+  },
+  {
+    "name": "Letterman Digital Arts Center. Park Garden/Chestnut & Francisco.",
+    "lat": 37.8001332,
+    "lng": -122.4483524
+  },
+  {
+    "name": "Sutro Heights Park. Three stairways on stone parapet.",
+    "lat": 37.7777516,
+    "lng": -122.5119463
+  },
+  {
+    "name": "Sutro Heights Park. Near Balboa/No. 641 48th Ave. & LaPlaya.",
+    "lat": 37.7760344,
+    "lng": -122.5101468
+  },
+  {
+    "name": "Great Highway/Balboa & Sloat. Multiple stairways leading down to Ocean Beach.",
+    "lat": 37.771395,
+    "lng": -122.511163
+  },
+  {
+    "name": "Jefferson Square Park. Near intersection of Gough and Eddy",
+    "lat": 37.7822333,
+    "lng": -122.4243735
+  },
+  {
+    "name": "Near 1275 Geary. Few steps. At intersection with Peter Yorke Way.",
+    "lat": 37.7854373,
+    "lng": -122.4244124
+  },
+  {
+    "name": "Jefferson Square Park. Three stairways in north central section of park and between Laguna & Gough.",
+    "lat": 37.7820809,
+    "lng": -122.4257324
+  },
+  {
+    "name": "Jefferson Square Park. Turk. Midway between Laguna and Gough.",
+    "lat": 37.7813686,
+    "lng": -122.4255768
+  },
+  {
+    "name": "Jefferson Square Park. Intersection of Golden Gate and Octavia.",
+    "lat": 37.7805594,
+    "lng": -122.4255554
+  },
+  {
+    "name": "Bemis, Nos. 130 & 134 at Mateo.",
+    "lat": 37.7373562,
+    "lng": -122.4302585
+  },
+  {
+    "name": "Native Plant Garden, to upper nursery.",
+    "lat": 37.8010468,
+    "lng": -122.4708313
+  },
+  {
+    "name": "Glen Canyon Park. From Portola and around Ruth Asawa School, into the canyon.",
+    "lat": 37.7456632,
+    "lng": -122.4477548
+  },
+  {
+    "name": "Twin Peaks Blvd. (lower) to Twin Peaks Blvd. (upper), opposite the end of Midcrest.",
+    "lat": 37.7497301,
+    "lng": -122.4474401
+  },
+  {
+    "name": "Cuesta Court, No. 42 to 959 Corbett.",
+    "lat": 37.7510401,
+    "lng": -122.4436403
+  },
+  {
+    "name": "Glen Canyon Park up to tennis courts.",
+    "lat": 37.7369245,
+    "lng": -122.4404707
+  },
+  {
+    "name": "Glen Canyon Park. Coyote Crags Trail.",
+    "lat": 37.7387434,
+    "lng": -122.4403833
+  },
+  {
+    "name": "Glen Canyon Park. Trail between Gum Tree Girls and Coyote Crags Trails.\n\u00a0Number of stair sections.",
+    "lat": 37.7404455,
+    "lng": -122.4408642
+  },
+  {
+    "name": "Glen Canyon Park. On either side of Glen Canyon Boulders.",
+    "lat": 37.7421954,
+    "lng": -122.4436848
+  },
+  {
+    "name": "Glen Canyon Park. Near Turquoise Way Trailhead.",
+    "lat": 37.743474,
+    "lng": -122.4421366
+  },
+  {
+    "name": "Glen Canyon Park. Crags Court entrance.",
+    "lat": 37.7415939,
+    "lng": -122.4407831
+  },
+  {
+    "name": "Glen Canyon Park. Christopher Playground Entrance.",
+    "lat": 37.7423137,
+    "lng": -122.4414098
+  },
+  {
+    "name": "Ogden Terrace Community Garden. Ogden/Nevada & Prentiss.",
+    "lat": 37.7357441,
+    "lng": -122.4120646
+  },
+  {
+    "name": "McLaren Park. On the path/Lake McNab & Shelley Dr.",
+    "lat": 37.7212529,
+    "lng": -122.4150178
+  },
+  {
+    "name": "McLaren Park. Shelley Drive down to Upper Reservoir.",
+    "lat": 37.7222022,
+    "lng": -122.4225964
+  },
+  {
+    "name": "Fulton at 10th Ave.",
+    "lat": 37.7733334,
+    "lng": -122.4679185
+  },
+  {
+    "name": "Oak Woodlands Trail. Near Arguello and Conservatory Dr. East.",
+    "lat": 37.773312,
+    "lng": -122.4592259
+  },
+  {
+    "name": "Path between Fulton at 6th Ave. and JFK Drive, next to roller skating area.",
+    "lat": 37.7726167,
+    "lng": -122.4638714
+  },
+  {
+    "name": "Martin Luther King Drive. West at 19th Ave.",
+    "lat": 37.7661519,
+    "lng": -122.4780954
+  },
+  {
+    "name": "Portola/Santa Clara & Terrace Dr. (Seems a bit non public?)",
+    "lat": 37.7388096,
+    "lng": -122.4666349
+  },
+  {
+    "name": "Krausgrill at Filbert, near Stockton.",
+    "lat": 37.801583,
+    "lng": -122.4090384
+  },
+  {
+    "name": "Vallejo/Sansome & Battery at Cowell.",
+    "lat": 37.7994635,
+    "lng": -122.4017728
+  },
+  {
+    "name": "Market, opposite No. 3801.",
+    "lat": 37.7536615,
+    "lng": -122.4425153
+  },
+  {
+    "name": "Broderick/Broadway & Vallejo.",
+    "lat": 37.7938198,
+    "lng": -122.443414
+  },
+  {
+    "name": "Vermont Street. West side at end of curvy section. Large mural.",
+    "lat": 37.7583905,
+    "lng": -122.4040863
+  },
+  {
+    "name": "Kansas/22nd & 21st Sts., from No. 980 to No. 965 Kansas.",
+    "lat": 37.7573733,
+    "lng": -122.402778
+  },
+  {
+    "name": "Connecticut (end), up to Arkansas at 22nd St. Stairway",
+    "lat": 37.7572825,
+    "lng": -122.3972973
+  },
+  {
+    "name": "Long Avenue up to Battery East Trail.",
+    "lat": 37.8083045,
+    "lng": -122.4719719
+  },
+  {
+    "name": "Golden Gate Bridge. Next to Joseph Strauss Statue.",
+    "lat": 37.8079912,
+    "lng": -122.4752824
+  },
+  {
+    "name": "Golden Gate Bridge Postcard Viewpoint.",
+    "lat": 37.8085083,
+    "lng": -122.4753791
+  },
+  {
+    "name": "Powell BART-Muni Metro Station at Halladie Plaza, west of Cyril Magnin.",
+    "lat": 37.7840472,
+    "lng": -122.4085475
+  },
+  {
+    "name": "Powell BART-Muni Metro Station at Halladie Plaza, east of Cyril Magnin. Two stairways.",
+    "lat": 37.7845249,
+    "lng": -122.4081451
+  },
+  {
+    "name": "Monterey to San Jose. Down to San Jose Ave. J station.",
+    "lat": 37.7322893,
+    "lng": -122.4339152
+  },
+  {
+    "name": "Market. Church at Market, down into MUNI Metro Station. Both sides of Market.",
+    "lat": 37.7676973,
+    "lng": -122.4289322
+  },
+  {
+    "name": "Mission. 16th St. BART Station at Mission, down into station. Two entrances.",
+    "lat": 37.7650734,
+    "lng": -122.419777
+  },
+  {
+    "name": "Mission. 24th St. BART Station at Mission, down into station. Two entrances.",
+    "lat": 37.7521961,
+    "lng": -122.4183994
+  },
+  {
+    "name": "Montgomery BART-MUNI Metro station. Multiple stairways.",
+    "lat": 37.7887832,
+    "lng": -122.4023368
+  },
+  {
+    "name": "Embarcadero BART-Muni Metro Station at Market/Spear & Davis, down into station.",
+    "lat": 37.7937872,
+    "lng": -122.3960133
+  },
+  {
+    "name": "West Portal MUNI Metro Station at West Portal & Ulloa.",
+    "lat": 37.7409084,
+    "lng": -122.4658498
+  },
+  {
+    "name": "Balboa Park BART-Muni Metro Station at Geneva & San Jose, down into station",
+    "lat": 37.721073,
+    "lng": -122.4466554
+  },
+  {
+    "name": "Civic Center BART-MUNI Metro station. Multiple stairways.",
+    "lat": 37.7790155,
+    "lng": -122.4145232
+  },
+  {
+    "name": "Gilman Playground from the intersection of Griffith & Ingerson.",
+    "lat": 37.7170705,
+    "lng": -122.3891587
+  },
+  {
+    "name": "Youngblood Coleman Recreation Center. Stairway through center of park and continuing down to Lane Street entrance.",
+    "lat": 37.7384282,
+    "lng": -122.3840189
+  },
+  {
+    "name": "Buena Vista Park. Near Entrance at Buena Vista East & Buena Vista West at Upper Terrace.",
+    "lat": 37.7662435,
+    "lng": -122.4422245
+  },
+  {
+    "name": "Buena Vista Park. South of tennis courts. Continues up to paved path above.",
+    "lat": 37.7693245,
+    "lng": -122.4394682
+  },
+  {
+    "name": "Buena Vista Park. Just north of the \"Window\" overlook.",
+    "lat": 37.767735,
+    "lng": -122.4430943
+  },
+  {
+    "name": "Buena Vista East/Park Hill Drive & Buena Vista Terrace. Across from a large house with a long fence.",
+    "lat": 37.7685422,
+    "lng": -122.4388154
+  },
+  {
+    "name": "Buena Vista East. Across from 165, into park.",
+    "lat": 37.7694764,
+    "lng": -122.438558
+  },
+  {
+    "name": "Glen Canyon Park. Elk Street Entrance.",
+    "lat": 37.7363143,
+    "lng": -122.4401366
+  },
+  {
+    "name": "Ogden/Moultrie & Anderson.\nFour steps.",
+    "lat": 37.7360085,
+    "lng": -122.4157201
+  },
+  {
+    "name": "Idora/Garcia & Laguna Honda, connecting Upper and Lower ldora.",
+    "lat": 37.7441413,
+    "lng": -122.4573429
+  },
+  {
+    "name": "McLaren Park. Near LaGrande & Brazil entrance. Parallel to Brazil Street.",
+    "lat": 37.7203833,
+    "lng": -122.4252692
+  },
+  {
+    "name": "Crocker-Amazon Playground Skate Park to McLaren Park.",
+    "lat": 37.7139471,
+    "lng": -122.4276024
+  },
+  {
+    "name": "Geary/Powell & Stockton. Into Union Square.",
+    "lat": 37.7875123,
+    "lng": -122.4074108
+  },
+  {
+    "name": "Union Square. Up from corner of Stockton & Geary.",
+    "lat": 37.7878132,
+    "lng": -122.4069817
+  },
+  {
+    "name": "Union Square. Across from Maiden Lane.",
+    "lat": 37.7880104,
+    "lng": -122.4069495
+  },
+  {
+    "name": "Union Square. Number of stairways north of Dewey Monument.",
+    "lat": 37.7881781,
+    "lng": -122.4075693
+  },
+  {
+    "name": "Post/Powell & Stockton. Two stairways into Union Square.",
+    "lat": 37.7883879,
+    "lng": -122.4076069
+  },
+  {
+    "name": "Parkside Square down to playground. 28th/Vicente and Wawona.",
+    "lat": 37.7377733,
+    "lng": -122.4849629
+  },
+  {
+    "name": "McKinley Square. Multiple stairways throughout park.",
+    "lat": 37.7589292,
+    "lng": -122.4046537
+  },
+  {
+    "name": "Clay (north side)/Front & Davis. Just west of One Maritime Plaza and into Maritime Plaza.",
+    "lat": 37.7951773,
+    "lng": -122.399368
+  },
+  {
+    "name": "Ironship Plaza West near Davis & Washington.",
+    "lat": 37.7964811,
+    "lng": -122.3980944
+  },
+  {
+    "name": "Grand View to Market, near Grand View Terrace.",
+    "lat": 37.7567885,
+    "lng": -122.441744
+  },
+  {
+    "name": "Seward at No. 30. Into Seward Mini Park.",
+    "lat": 37.75801,
+    "lng": -122.4397792
+  },
+  {
+    "name": "Pacheco-Upper Pacheco at No. 364 to Lower Pacheco.",
+    "lat": 37.7492464,
+    "lng": -122.4629694
+  },
+  {
+    "name": "Murphy Playground/8th Ave. entrance.",
+    "lat": 37.7521118,
+    "lng": -122.4644949
+  },
+  {
+    "name": "Murphy Playground near 9th Ave. entrance.",
+    "lat": 37.7519252,
+    "lng": -122.4655141
+  },
+  {
+    "name": "Maritime Museum Parking to lookout above bleachers.",
+    "lat": 37.8063526,
+    "lng": -122.4244438
+  },
+  {
+    "name": "Tennis courts: Multiple stairways into and around.",
+    "lat": 37.7994387,
+    "lng": -122.4729983
+  },
+  {
+    "name": "End of Ramsell Street.",
+    "lat": 37.7126926,
+    "lng": -122.4663239
+  },
+  {
+    "name": "Glen Canyon Park. Bosworth across from no. 1231, into park.",
+    "lat": 37.7356445,
+    "lng": -122.4410279
+  },
+  {
+    "name": "Fort Mason. Downhill from Black Point Battery.",
+    "lat": 37.8078532,
+    "lng": -122.4276257
+  },
+  {
+    "name": "Hyde/Jefferson & Beach, into Maritime Park.",
+    "lat": 37.8070446,
+    "lng": -122.4208084
+  },
+  {
+    "name": "Beach/Hyde & Larkin, into Maritime Park.",
+    "lat": 37.80675,
+    "lng": -122.4210846
+  },
+  {
+    "name": "Aquatic Park. West of Maritime Museum area bleachers.",
+    "lat": 37.8065713,
+    "lng": -122.4248109
+  },
+  {
+    "name": "Aquatic Park west bleachers. Just west of Maritime Museum.",
+    "lat": 37.8064569,
+    "lng": -122.424536
+  },
+  {
+    "name": "Ghiradelli Square. Beach and Columbus.",
+    "lat": 37.806963,
+    "lng": -122.4197149
+  },
+  {
+    "name": "Levi's Plaza. Union/Battery & The Embarcadero. Few small stairways.",
+    "lat": 37.8016377,
+    "lng": -122.4011126
+  },
+  {
+    "name": "Levi's Plaza. Filbert/Battery & The Embarcadero. Stairway closer to the Embarcadero.",
+    "lat": 37.8024382,
+    "lng": -122.4008868
+  },
+  {
+    "name": "Levi's Plaza. Filbert/Battery & The Embarcadero. Stairway closer to Battery.",
+    "lat": 37.8022877,
+    "lng": -122.4017102
+  },
+  {
+    "name": "Levi's Plaza. Filbert/Sansome & Battery.",
+    "lat": 37.8022178,
+    "lng": -122.4028019
+  },
+  {
+    "name": "16th Ave./Pacheco & Quintara. Multiple small stairways on east side of street.",
+    "lat": 37.7498114,
+    "lng": -122.4729321
+  },
+  {
+    "name": "Huntington Park. Taylor/California & Sacramento, into park.",
+    "lat": 37.7921304,
+    "lng": -122.4124696
+  },
+  {
+    "name": "Sacramento/Jones & Taylor. Up to Grace Cathedral.",
+    "lat": 37.7925001,
+    "lng": -122.412997
+  },
+  {
+    "name": "Legion of Honor. Stairs down to Holocaust Memorial.",
+    "lat": 37.7856031,
+    "lng": -122.4999505
+  },
+  {
+    "name": "Legion of Honor. El Camino del Mar parking area to side of museum.",
+    "lat": 37.7849862,
+    "lng": -122.501115
+  },
+  {
+    "name": "Legion of Honor. East side of museum down to El Camino del Mar parking area.",
+    "lat": 37.7851976,
+    "lng": -122.5007106
+  },
+  {
+    "name": "Lands End Trail between Mile Rock Beach and Eagle's Point.",
+    "lat": 37.7871498,
+    "lng": -122.5009765
+  },
+  {
+    "name": "End of El Camino del Mar to VA Medical Center.",
+    "lat": 37.7841724,
+    "lng": -122.5034928
+  },
+  {
+    "name": "Clement and 40th. To VA Medical Center.",
+    "lat": 37.7813474,
+    "lng": -122.5010877
+  },
+  {
+    "name": "27th Street, next to #581 and up to Castro-Duncan Open Space",
+    "lat": 37.7464157,
+    "lng": -122.433531
+  },
+  {
+    "name": "In Horseshoe Pits near Conservatory Drive East & Arguello. Number of stairways around stone wall.",
+    "lat": 37.773722,
+    "lng": -122.4556688
+  },
+  {
+    "name": "JFK Drive. Tunnel from Conservatory of Flowers across the street.",
+    "lat": 37.7713373,
+    "lng": -122.4600579
+  },
+  {
+    "name": "Music Concourse. Multiple stairways off Music Concourse Drive and Hagiwara Tea Garden Drive.",
+    "lat": 37.7700454,
+    "lng": -122.4675459
+  },
+  {
+    "name": "Japanese Tea Garden/Back of garden & east side of Stow Lake.",
+    "lat": 37.7696352,
+    "lng": -122.4706042
+  },
+  {
+    "name": "Martin Luther King Drive and 7th Avenue. Leading down to baseball field.",
+    "lat": 37.7664715,
+    "lng": -122.4644036
+  },
+  {
+    "name": "JFK Drive. Down into Queen Wilhelmina Tulip Garden.",
+    "lat": 37.7699575,
+    "lng": -122.509109
+  },
+  {
+    "name": "Martin Luther King Drive. Between Millwright Cottage and Murphy Windmill.",
+    "lat": 37.7650477,
+    "lng": -122.5084814
+  },
+  {
+    "name": "Martin Luther King Drive. Murphy Windmill & Lincoln Way.",
+    "lat": 37.7645515,
+    "lng": -122.5095382
+  },
+  {
+    "name": "Lincoln Way and 19th Ave. Under arch, into park.",
+    "lat": 37.7655696,
+    "lng": -122.4775295
+  },
+  {
+    "name": "JFK Drive: Up to restrooms past buffalo paddock.",
+    "lat": 37.7678732,
+    "lng": -122.501783
+  },
+  {
+    "name": "Worcester, near Alemany. Down to shopping center.",
+    "lat": 37.711192,
+    "lng": -122.4667895
+  },
+  {
+    "name": "Mt. Davidson Summit. East Ridge Trail near summit.",
+    "lat": 37.7384982,
+    "lng": -122.4532645
+  },
+  {
+    "name": "Casitas at Cresta Vista.",
+    "lat": 37.7354847,
+    "lng": -122.4596711
+  },
+  {
+    "name": "Melrose at Mangels & Ridgewood.",
+    "lat": 37.7330663,
+    "lng": -122.4536585
+  },
+  {
+    "name": "Hazelwood & Los Palmos.",
+    "lat": 37.7345215,
+    "lng": -122.4574072
+  },
+  {
+    "name": "Mt. Davidson. Near start of St. Croix Trail.",
+    "lat": 37.7373683,
+    "lng": -122.4548317
+  },
+  {
+    "name": "Mt. Davidson. St. Croix Fire Road near summit.",
+    "lat": 37.7388254,
+    "lng": -122.455173
+  },
+  {
+    "name": "Mt. Davidson. At foot of cross.",
+    "lat": 37.7383164,
+    "lng": -122.4547277
+  },
+  {
+    "name": "Mt. Davidson. Intersection of Juanita, Native Garden, and St. Croix Trails.",
+    "lat": 37.7384333,
+    "lng": -122.4554842
+  },
+  {
+    "name": "Burlwood & Los Palmos.",
+    "lat": 37.7347449,
+    "lng": -122.4554793
+  },
+  {
+    "name": "Mt. Davidson. East Ridge Trail behind cross.",
+    "lat": 37.7384471,
+    "lng": -122.4545286
+  },
+  {
+    "name": "Goldberg/Clay & Sacramento",
+    "lat": 37.7903851,
+    "lng": -122.4337139
+  },
+  {
+    "name": "Stanyan, near No.1289/Belgrave & 17th St. Stairways on both sides of street.",
+    "lat": 37.7598549,
+    "lng": -122.4516772
+  },
+  {
+    "name": "Belgrave, near Stanyan, into the Interior Greenbelt.",
+    "lat": 37.7594626,
+    "lng": -122.4520334
+  },
+  {
+    "name": "Connector Trail. Lincoln Blvd./Pershing Drive. Few stair sections.",
+    "lat": 37.7959495,
+    "lng": -122.4790059
+  },
+  {
+    "name": "Amatury Loop/Nauman Rd. & Park Blvd.",
+    "lat": 37.7958566,
+    "lng": -122.468524
+  },
+  {
+    "name": "Battery East Trail. Few steps on either side of tunnel.",
+    "lat": 37.8083793,
+    "lng": -122.4745578
+  },
+  {
+    "name": "Golden Gate Transit Stairway West",
+    "lat": 37.8070227,
+    "lng": -122.4759092
+  },
+  {
+    "name": "Cranston Road, to Battery Cranston Road parking lot",
+    "lat": 37.8066589,
+    "lng": -122.4759095
+  },
+  {
+    "name": "Merchant & Lincoln.",
+    "lat": 37.8043303,
+    "lng": -122.4758064
+  },
+  {
+    "name": "Corwin Community Garden.",
+    "lat": 37.7574754,
+    "lng": -122.4403383
+  },
+  {
+    "name": "Seward across from No. 25 up to sidewalk.",
+    "lat": 37.7579549,
+    "lng": -122.4395441
+  },
+  {
+    "name": "Mt. Davidson. Sherwood Trail.",
+    "lat": 37.7377597,
+    "lng": -122.4535461
+  },
+  {
+    "name": "Stern Grove. Next to Trocadero Clubhouse.",
+    "lat": 37.736146,
+    "lng": -122.4778587
+  },
+  {
+    "name": "Stern Grove. At and across from tennis courts.",
+    "lat": 37.7349,
+    "lng": -122.4778184
+  },
+  {
+    "name": "Stern Grove Playground.",
+    "lat": 37.7349085,
+    "lng": -122.4771317
+  },
+  {
+    "name": "Infantry Terrace. Down to tennis courts from east side.",
+    "lat": 37.7964343,
+    "lng": -122.4624326
+  },
+  {
+    "name": "Infantry Terrace up to Presidio Chapel and Fisher Loop.",
+    "lat": 37.7992142,
+    "lng": -122.4613061
+  },
+  {
+    "name": "Mountain Lake. Near playground down to lake.",
+    "lat": 37.7872906,
+    "lng": -122.4712413
+  },
+  {
+    "name": "Baker Beach. Battery Chamberlin. Numerous small stairways on battery.",
+    "lat": 37.7940069,
+    "lng": -122.4825739
+  },
+  {
+    "name": "Golden Gate Bridge. Viewing platform above Battery Lancaster.",
+    "lat": 37.8082101,
+    "lng": -122.4759033
+  },
+  {
+    "name": "Golden Gate Bridge. Few steps between Golden Gate Bridge Outdoor Exhibition and Highway 101.",
+    "lat": 37.8081231,
+    "lng": -122.4761043
+  },
+  {
+    "name": "Golden Gate Bridge. From Strauss Plaza to Battery East Trail.",
+    "lat": 37.8082561,
+    "lng": -122.475324
+  },
+  {
+    "name": "Golden Gate Bridge. Few stairs north of Round House Cafe.",
+    "lat": 37.8079155,
+    "lng": -122.4759208
+  },
+  {
+    "name": "Golden Gate Bridge Welcome Stairs. Up to Round House Cafe.",
+    "lat": 37.8077518,
+    "lng": -122.4755164
+  },
+  {
+    "name": "Embarcadero leading up to Pier 7.",
+    "lat": 37.7986387,
+    "lng": -122.3967134
+  },
+  {
+    "name": "George Sterling Park. Steps up to tennis courts.",
+    "lat": 37.801125,
+    "lng": -122.4199951
+  },
+  {
+    "name": "Lincoln Blvd./Hoffman & Battery East Parking Lot.",
+    "lat": 37.8062714,
+    "lng": -122.4711066
+  },
+  {
+    "name": "Macondray Lane/Leavenworth & Jones.",
+    "lat": 37.7991712,
+    "lng": -122.4158189
+  },
+  {
+    "name": "Broadway Tunnel East Mini Park/Himmelman Place at Broadway.",
+    "lat": 37.7969399,
+    "lng": -122.4129159
+  },
+  {
+    "name": "Sea Cliff Ave./26th & 27th Ave. Number of stairways along block.",
+    "lat": 37.7887329,
+    "lng": -122.4873209
+  },
+  {
+    "name": "Stonestown Stairway/19th Ave. & Stonestown Galleria.",
+    "lat": 37.7289588,
+    "lng": -122.4750467
+  },
+  {
+    "name": "Child/Lombard & Telegraph Place.",
+    "lat": 37.8033876,
+    "lng": -122.4076409
+  },
+  {
+    "name": "Coit Tower. Rear lawn area. Pioneer Park.",
+    "lat": 37.8022363,
+    "lng": -122.4057759
+  },
+  {
+    "name": "Filbert/Kearny & Telegraph Hill Blvd.",
+    "lat": 37.8017261,
+    "lng": -122.4059325
+  },
+  {
+    "name": "Telegraph Hill Blvd. at Greenwich Stairway (west side).",
+    "lat": 37.8028692,
+    "lng": -122.4053351
+  },
+  {
+    "name": "Coit Tower. Entrance (north side).",
+    "lat": 37.8024746,
+    "lng": -122.4058543
+  },
+  {
+    "name": "Pollard and Vallejo. Two steps in sidewalk",
+    "lat": 37.7990775,
+    "lng": -122.4065079
+  },
+  {
+    "name": "Locust/Mayfair & California. Into shopping center parking lot.",
+    "lat": 37.7859803,
+    "lng": -122.4516441
+  },
+  {
+    "name": "Lobos Creek Valley Trail, into cypress grove.",
+    "lat": 37.7886386,
+    "lng": -122.4788759
+  },
+  {
+    "name": "Filbert/Grant & Varennes. Sidewalk stairway.",
+    "lat": 37.8015893,
+    "lng": -122.4075966
+  },
+  {
+    "name": "17th and Florida at SW corner.",
+    "lat": 37.7642007,
+    "lng": -122.411372
+  },
+  {
+    "name": "George Sterling Park. Two stairways west of tennis courts.",
+    "lat": 37.8014711,
+    "lng": -122.4207999
+  },
+  {
+    "name": "Collingwood/20th & 21st. Sidewalk stairway on both sides of the street.",
+    "lat": 37.7574126,
+    "lng": -122.4358148
+  },
+  {
+    "name": "Beacon Trail between Walter Haas Playground and Billy Goat Hill.",
+    "lat": 37.7408159,
+    "lng": -122.433792
+  },
+  {
+    "name": "Twin Peaks Boulevard up to Noe Peak.",
+    "lat": 37.7505651,
+    "lng": -122.4483171
+  },
+  {
+    "name": "Trail connecting Stow Lake Drive East and Pioneer East Meadow.",
+    "lat": 37.7705328,
+    "lng": -122.4759425
+  },
+  {
+    "name": "South of Rhododendron Dell",
+    "lat": 37.7712929,
+    "lng": -122.46446
+  },
+  {
+    "name": "DeYoung Museum near observation tower.",
+    "lat": 37.7720946,
+    "lng": -122.4681582
+  },
+  {
+    "name": "Stow Lake Summit west side.",
+    "lat": 37.768765,
+    "lng": -122.4763319
+  },
+  {
+    "name": "Path between JFK Drive and Crossover Drive. Just west of Prayerbrook Cross.",
+    "lat": 37.7713191,
+    "lng": -122.4788997
+  },
+  {
+    "name": "Saturn at No.154/Temple & Roosevelt.",
+    "lat": 37.762687,
+    "lng": -122.4438461
+  },
+  {
+    "name": "San Bruno to Bayshore Blvd., near Arletta. See the inscription \"SAFETY SUBWAY\" on the concrete wall of corner staircase.",
+    "lat": 37.7123849,
+    "lng": -122.4022503
+  },
+  {
+    "name": "Steiner/Geary & Post. Stairway to skyway over Geary. WILL SOON BE REMOVED.",
+    "lat": 37.7844653,
+    "lng": -122.4346598
+  },
+  {
+    "name": "St. Mary's Dog Park to Alemany Farm.",
+    "lat": 37.7323554,
+    "lng": -122.4205572
+  },
+  {
+    "name": "Oak Woodlands Trail. South of Horseshoe Pits.",
+    "lat": 37.773158,
+    "lng": -122.4553523
+  },
+  {
+    "name": "Alta Plaza. Stairways in interior of park.",
+    "lat": 37.7910615,
+    "lng": -122.436726
+  },
+  {
+    "name": "India Basin Shoreline Park. In Playground.",
+    "lat": 37.7342448,
+    "lng": -122.3754275
+  },
+  {
+    "name": "27th Ave. and Sea Cliff & Ave., at corner. Stairways on both sides of the intersection.",
+    "lat": 37.7886576,
+    "lng": -122.4880638
+  },
+  {
+    "name": "Washington (south side)/Battery & Davis. West of 301 Washington St. parking garage.",
+    "lat": 37.7960427,
+    "lng": -122.3995771
+  },
+  {
+    "name": "Oak Woodlands. Close to Fulton between 2nd and 3rd Aves.",
+    "lat": 37.7734052,
+    "lng": -122.4598813
+  },
+  {
+    "name": "Duboce Park. Just south of Harvey Milk Center.",
+    "lat": 37.7693278,
+    "lng": -122.4345216
+  },
+  {
+    "name": "Multiple stairways in Baker Beach Apartments area. Up from Lincoln and between Pershing & Stilwell.",
+    "lat": 37.7936346,
+    "lng": -122.4798675
+  },
+  {
+    "name": "Stairs down to Point Lobos.",
+    "lat": 37.7811133,
+    "lng": -122.5132751
+  },
+  {
+    "name": "Park Trail up to Marine Cemetery Vista. (Also accessible from Wyman Ave.)",
+    "lat": 37.7897144,
+    "lng": -122.4718551
+  },
+  {
+    "name": "Pacheco & Magellan.",
+    "lat": 37.7463349,
+    "lng": -122.4617468
+  },
+  {
+    "name": "Off JFK Drive and West of Dutch Windmill.",
+    "lat": 37.7705657,
+    "lng": -122.510202
+  },
+  {
+    "name": "Disc Golf Course near 28th Ave./Fulton & JFK Dr.",
+    "lat": 37.77148,
+    "lng": -122.4872895
+  },
+  {
+    "name": "Disc Golf Course near 29th & 30 Ave./Fulton & JFK Dr.",
+    "lat": 37.7717683,
+    "lng": -122.4890705
+  },
+  {
+    "name": "Sunnyside Recreation Center. Melrose to Mangels.",
+    "lat": 37.7337594,
+    "lng": -122.448377
+  },
+  {
+    "name": "Clarendon Trail, just off Clarendon Avenue. Few steps.",
+    "lat": 37.7571385,
+    "lng": -122.4541496
+  },
+  {
+    "name": "Santa Rita & San Marcos",
+    "lat": 37.7468337,
+    "lng": -122.4655704
+  },
+  {
+    "name": "Buena Vista West/Central & Waller.",
+    "lat": 37.7694651,
+    "lng": -122.4425523
+  },
+  {
+    "name": "Buena Vista East. Across from 111, into park.",
+    "lat": 37.7697164,
+    "lng": -122.4388562
+  },
+  {
+    "name": "17th St. & Mars. Rounding a corner.",
+    "lat": 37.7619038,
+    "lng": -122.4442899
+  },
+  {
+    "name": "Clifford Terrace at Roosevelt No. 475.",
+    "lat": 37.7636595,
+    "lng": -122.4430623
+  },
+  {
+    "name": "Botanical Garden. Garden of Fragrance.",
+    "lat": 37.7681463,
+    "lng": -122.4686102
+  },
+  {
+    "name": "Botanical Garden. Hill between fountain and Rhododendron Garden. North side.",
+    "lat": 37.7683011,
+    "lng": -122.468795
+  },
+  {
+    "name": "Botanical Garden. Hill between fountain and Rhododendron Garden. South side.",
+    "lat": 37.7680374,
+    "lng": -122.469141
+  },
+  {
+    "name": "Botanical Garden. Between Mesoamerican Cloud Forest and California Native Garden.",
+    "lat": 37.7665075,
+    "lng": -122.4691591
+  },
+  {
+    "name": "Botanical Garden. In Southeast Asian Cloud Forest.",
+    "lat": 37.7676376,
+    "lng": -122.4716911
+  },
+  {
+    "name": "Botanical Garden. Between Moon Viewing Garden & Garden of Perennials.",
+    "lat": 37.7682511,
+    "lng": -122.4720801
+  },
+  {
+    "name": "Upper and Lower Sanchez between #725 and #720.",
+    "lat": 37.7575416,
+    "lng": -122.4302457
+  },
+  {
+    "name": "McCoppin Square, near playground on 17th St. side.",
+    "lat": 37.7644929,
+    "lng": -122.4098932
+  },
+  {
+    "name": "McCoppin Hub. Valencia at McCoppin St.",
+    "lat": 37.7716275,
+    "lng": -122.4228003
+  },
+  {
+    "name": "El Camino del Mar down to Lands End Main Parking Lot.",
+    "lat": 37.7806423,
+    "lng": -122.5103504
+  },
+  {
+    "name": "El Camino del Mar to Lands End Trail, near USS San Francisco parking lot.",
+    "lat": 37.7819206,
+    "lng": -122.5109179
+  },
+  {
+    "name": "Eagle's Point at El Camino del Mar.",
+    "lat": 37.7866106,
+    "lng": -122.4962707
+  },
+  {
+    "name": "Fort Miley. Multiple stairways on Battery Chester.",
+    "lat": 37.7826828,
+    "lng": -122.5086969
+  },
+  {
+    "name": "Fort Miley. Veterans Dr. down to Battery Chester.",
+    "lat": 37.7823741,
+    "lng": -122.5082504
+  },
+  {
+    "name": "Fort Miley. Few stairs off main walkway.",
+    "lat": 37.78216,
+    "lng": -122.5094125
+  },
+  {
+    "name": "Lands End Trailhead from Merrie Way Parking Lot.",
+    "lat": 37.7807385,
+    "lng": -122.5117344
+  },
+  {
+    "name": "Point Lobos Ave to behind Lands End Lookout Visitor Center",
+    "lat": 37.7795301,
+    "lng": -122.511654
+  },
+  {
+    "name": "Sutro Baths, south side. Stairway in ruins.",
+    "lat": 37.7795827,
+    "lng": -122.5139714
+  },
+  {
+    "name": "Sutro Baths along main basin.",
+    "lat": 37.7801466,
+    "lng": -122.5140561
+  },
+  {
+    "name": "Fort Miley. Wood stairway near north end of Battery Chester.",
+    "lat": 37.7831225,
+    "lng": -122.5084846
+  },
+  {
+    "name": "Holly Park. Into basketball courts.",
+    "lat": 37.7370921,
+    "lng": -122.4205891
+  },
+  {
+    "name": "Bernal Heights Park. Intersection of Folsom St. & Bernal Heights Blvd.",
+    "lat": 37.7429076,
+    "lng": -122.410089
+  },
+  {
+    "name": "Golden Gate Bridge. Steps down to Battery Lancaster.",
+    "lat": 37.8082315,
+    "lng": -122.4758359
+  },
+  {
+    "name": "Battery East.",
+    "lat": 37.807203,
+    "lng": -122.4721058
+  },
+  {
+    "name": "Glen Park Village Garden. Diamond at No. 2783, into garden.",
+    "lat": 37.735042,
+    "lng": -122.4337391
+  },
+  {
+    "name": "Noe at 1319/26th & Cesar Chavez. Few steps in sidewalk.",
+    "lat": 37.7478968,
+    "lng": -122.4315293
+  },
+  {
+    "name": "Greenwich/Grant & Telegraph Hill Blvd. Multiple stairways along block.",
+    "lat": 37.8026037,
+    "lng": -122.407189
+  },
+  {
+    "name": "Molinari Mana Park. Redfield Alley & Marion Pl.",
+    "lat": 37.8001872,
+    "lng": -122.4152513
+  },
+  {
+    "name": "Hyde and Greenwich, southwest corner.",
+    "lat": 37.801019,
+    "lng": -122.4195208
+  },
+  {
+    "name": "George Sterling Park. Hyde and Greenwich into park.",
+    "lat": 37.8011928,
+    "lng": -122.4195155
+  },
+  {
+    "name": "Buena Vista East. Across from 3, into park.",
+    "lat": 37.7706928,
+    "lng": -122.4400155
+  },
+  {
+    "name": "Mason/Columbus & Lombard. Between North Beach Library & Pool.",
+    "lat": 37.8025902,
+    "lng": -122.4129707
+  },
+  {
+    "name": "Ansel Adams Historic Social Path between El Camino del Mar & 24th Ave.",
+    "lat": 37.7871376,
+    "lng": -122.4844226
+  },
+  {
+    "name": "Argent Alley at Corbett & Hopkins. Leads down to a dirt road.",
+    "lat": 37.7528141,
+    "lng": -122.4436203
+  },
+  {
+    "name": "Stanyan near intersection with 17th Street, into Interior Greenbelt.",
+    "lat": 37.7612931,
+    "lng": -122.4519766
+  },
+  {
+    "name": "Banks at Bernal Heights Blvd.",
+    "lat": 37.7421847,
+    "lng": -122.412547
+  },
+  {
+    "name": "Buena Vista Park interior. Closest entrance is Buena Vista East across from Nos. 355-399.",
+    "lat": 37.7677624,
+    "lng": -122.4408424
+  },
+  {
+    "name": "Buena Vista Park interior. Buena Vista East near Duboce. First of two stairways leading up to a viewpoint.",
+    "lat": 37.7689021,
+    "lng": -122.4394374
+  },
+  {
+    "name": "Buena Vista Park interior. Nearest entrance is Buena Vista East near Duboce. Second of two stairways leading\u00a0 up to a viewpoint.",
+    "lat": 37.769023,
+    "lng": -122.4393825
+  },
+  {
+    "name": "Buena Vista Park interior. Closest entrance is Buena Vista East near Duboce. Connects with one of the stairways that leads up a viewpoint.",
+    "lat": 37.7691527,
+    "lng": -122.4396024
+  },
+  {
+    "name": "Buena Vista Park. First of two stairways off paved path toward north of park.",
+    "lat": 37.7700915,
+    "lng": -122.4409427
+  },
+  {
+    "name": "Buena Vista Park interior. Stairway down to dog run.",
+    "lat": 37.7689678,
+    "lng": -122.4417388
+  },
+  {
+    "name": "Dragon's Tail Stairway. Bella Vista Way/Avoca Alley & Sequoa Way. Into Miraloma sports fields. Mosaic!",
+    "lat": 37.7379982,
+    "lng": -122.4498513
+  },
+  {
+    "name": "18th/Dolores & Church",
+    "lat": 37.7613643,
+    "lng": -122.4275111
+  },
+  {
+    "name": "14th, Church, and Market Street. Into shopping center.",
+    "lat": 37.7679746,
+    "lng": -122.4287544
+  },
+  {
+    "name": "Precita Park. Corner of Folsom and Precita. Just a few steps.",
+    "lat": 37.7468008,
+    "lng": -122.4134438
+  },
+  {
+    "name": "11th Ave., down into Mountain Lake Park.",
+    "lat": 37.7867551,
+    "lng": -122.4700728
+  },
+  {
+    "name": "Rincon Place. Elkhart at Main.",
+    "lat": 37.7886703,
+    "lng": -122.3911182
+  },
+  {
+    "name": "Florida Street up to 15th Street.",
+    "lat": 37.7667633,
+    "lng": -122.411547
+  },
+  {
+    "name": "Funston and Santiago",
+    "lat": 37.7450336,
+    "lng": -122.4693522
+  },
+  {
+    "name": "Magellan/Dorantes & Montalvo. Multiple small stairways on the block.",
+    "lat": 37.7451185,
+    "lng": -122.463311
+  },
+  {
+    "name": "West Portal Branch Library from Lenox Way.",
+    "lat": 37.7413835,
+    "lng": -122.4659014
+  },
+  {
+    "name": "Waldo Alley at Glover Street/Broadway and Vallejo St.",
+    "lat": 37.7970889,
+    "lng": -122.4170482
+  },
+  {
+    "name": "Vinton Court at Grant/California & Pine",
+    "lat": 37.7917816,
+    "lng": -122.4059117
+  },
+  {
+    "name": "Presidio Boulevard & MacArthur Avenue.",
+    "lat": 37.7987741,
+    "lng": -122.4535428
+  },
+  {
+    "name": "Lafayette Park. Small stairway in the trees.",
+    "lat": 37.7919074,
+    "lng": -122.4277723
+  },
+  {
+    "name": "Fillmore & O'Farrell, in shopping center plaza.",
+    "lat": 37.78343,
+    "lng": -122.4323165
+  },
+  {
+    "name": "Duboce Ave. down to shopping center.",
+    "lat": 37.769442,
+    "lng": -122.4275958
+  },
+  {
+    "name": "Fulton & 4th Ave. Wood stairway leading into Golden Gate Park.",
+    "lat": 37.7738068,
+    "lng": -122.4617455
+  },
+  {
+    "name": "Fulton near 5th Avenue. From paved path up to dirt path.",
+    "lat": 37.7735156,
+    "lng": -122.462121
+  },
+  {
+    "name": "Oak Woodlands Trail. Up from Fulton and Stanyan.",
+    "lat": 37.7744976,
+    "lng": -122.4548174
+  },
+  {
+    "name": "Stow Lake. Just north of Huntington Falls. Stopping and then continuing to reservoir level.",
+    "lat": 37.76903,
+    "lng": -122.4737949
+  },
+  {
+    "name": "Stow Lake. Directly across from Chinese Pavilion. Barely there.",
+    "lat": 37.7684001,
+    "lng": -122.4737795
+  },
+  {
+    "name": "Stow Lake. NW end of loop path to reservoir level.",
+    "lat": 37.7694112,
+    "lng": -122.4763635
+  },
+  {
+    "name": "Stow Lake: Huntington Falls to reservoir.",
+    "lat": 37.7688154,
+    "lng": -122.4743027
+  },
+  {
+    "name": "Stow Lake. Up to Strawberry Hill from reservoir.",
+    "lat": 37.7685843,
+    "lng": -122.4743832
+  },
+  {
+    "name": "Stow Lake. Strawberry Hill to middle-level path.",
+    "lat": 37.7682132,
+    "lng": -122.4754828
+  },
+  {
+    "name": "Stow Lake Drive up to paved path. Just west of crosswalk at SW corner of lake.",
+    "lat": 37.7674874,
+    "lng": -122.4773854
+  },
+  {
+    "name": "Glen Canyon Park. Toward north of park after a boardwalk section.",
+    "lat": 37.7440681,
+    "lng": -122.446159
+  },
+  {
+    "name": "MacArthur Ave. near Portola Street.",
+    "lat": 37.7971382,
+    "lng": -122.4545574
+  },
+  {
+    "name": "Paul Goode Field, near restrooms.",
+    "lat": 37.7920197,
+    "lng": -122.4535169
+  },
+  {
+    "name": "Ecology Trail, up to Inspiration Point.",
+    "lat": 37.7917867,
+    "lng": -122.4582581
+  },
+  {
+    "name": "Cherry Street at Pacific Aveune.",
+    "lat": 37.7899492,
+    "lng": -122.4575152
+  },
+  {
+    "name": "Lincoln and Mesa.",
+    "lat": 37.8011048,
+    "lng": -122.455167
+  },
+  {
+    "name": "Lincoln & Keyes.",
+    "lat": 37.8012701,
+    "lng": -122.4556283
+  },
+  {
+    "name": "Arguello Blvd./Moraga & Sheridan Aves., up to Pershing Square.",
+    "lat": 37.7985326,
+    "lng": -122.4591715
+  },
+  {
+    "name": "Parking area between Taylor Road & Infantry Terrace/Bliss St. & Sheridan Ave. Two stairways.",
+    "lat": 37.7996844,
+    "lng": -122.4606775
+  },
+  {
+    "name": "Fisher Loop. Next to Golden Gate Club.",
+    "lat": 37.800203,
+    "lng": -122.4619732
+  },
+  {
+    "name": "Presidio Bowl parking lot. Montgomery Street/Bliss Rd. & Sheridan Ave.",
+    "lat": 37.7989867,
+    "lng": -122.4596702
+  },
+  {
+    "name": "Presidio Branch Library. Clay/Baker & Lyon.",
+    "lat": 37.789194,
+    "lng": -122.4449227
+  },
+  {
+    "name": "Dolores Park. Near sports courts and bathrooms.",
+    "lat": 37.7608041,
+    "lng": -122.4274687
+  },
+  {
+    "name": "Connecting Belles and Hays Streets.",
+    "lat": 37.7889116,
+    "lng": -122.4736957
+  },
+  {
+    "name": "Belles Street. Stairway to nowhere. (Probably connected to Marine Cemetery Vista stairway to nowhere at some point.)",
+    "lat": 37.7892571,
+    "lng": -122.4733739
+  },
+  {
+    "name": "Just east of Marine Cemetery Vista. Stairway to nowhere. (Probably connected to Belles Street at some point.)",
+    "lat": 37.7896895,
+    "lng": -122.4738325
+  },
+  {
+    "name": "Mountain Lake Trail near Mountain Lake.",
+    "lat": 37.787537,
+    "lng": -122.4694514
+  },
+  {
+    "name": "Mountain Lake Trail/7th & 8th Aves.",
+    "lat": 37.7884206,
+    "lng": -122.4662509
+  },
+  {
+    "name": "Mission Pool building entrance at 19th and Linda.",
+    "lat": 37.7596987,
+    "lng": -122.4227355
+  },
+  {
+    "name": "Hyde/Vallejo & Green. Hyde & Vallejo Mini Park.",
+    "lat": 37.7976492,
+    "lng": -122.4189999
+  },
+  {
+    "name": "Prentiss/Chapman & Powhattan",
+    "lat": 37.7415486,
+    "lng": -122.4119611
+  },
+  {
+    "name": "SF Lawn Bowling Club",
+    "lat": 37.7685366,
+    "lng": -122.460841
+  },
+  {
+    "name": "Kezar Stadium, number of stairways around stadium.",
+    "lat": 37.7662512,
+    "lng": -122.4552755
+  },
+  {
+    "name": "National AIDS Memorial. Few wood steps.",
+    "lat": 37.7692442,
+    "lng": -122.4636721
+  },
+  {
+    "name": "Virginia & Elsie. Virginia Garden Walk.",
+    "lat": 37.7414632,
+    "lng": -122.4187267
+  },
+  {
+    "name": "Fort Scott Community Garden.",
+    "lat": 37.7982913,
+    "lng": -122.4718673
+  },
+  {
+    "name": "7th Ave./Kirkham & Lawton/Warren. Garden for the Environment.",
+    "lat": 37.7587952,
+    "lng": -122.4637288
+  },
+  {
+    "name": "Buena Vista Park. Second of two stairways off paved path toward north of park.",
+    "lat": 37.7700919,
+    "lng": -122.4408568
+  },
+  {
+    "name": "Glen Canyon Park Recreation Center. Few stairways.",
+    "lat": 37.7370821,
+    "lng": -122.4410813
+  },
+  {
+    "name": "Buena Vista Park. NW of entrance at intersection of Buena Vista East and Buena Vista West.",
+    "lat": 37.7664261,
+    "lng": -122.4426893
+  },
+  {
+    "name": "Buena Vista Park. Between the \"Window\" overlook and the dog run.",
+    "lat": 37.7684433,
+    "lng": -122.4422999
+  },
+  {
+    "name": "Buena Vista Park. Second of two stairways north of dog run.",
+    "lat": 37.7690874,
+    "lng": -122.4416591
+  },
+  {
+    "name": "To verify: Is this stairway here or is my GPS off? :)",
+    "lat": 37.7704077,
+    "lng": -122.4414079
+  },
+  {
+    "name": "Buena Vista Park. A maze of stairways: Part II",
+    "lat": 37.769619,
+    "lng": -122.4413566
+  },
+  {
+    "name": "Buena Vista Park. A maze of stairways: Part I",
+    "lat": 37.7689532,
+    "lng": -122.4407504
+  },
+  {
+    "name": "Montalvo at No. 376/Castenada & San Marcos",
+    "lat": 37.746453,
+    "lng": -122.4655264
+  },
+  {
+    "name": "Raymond Kimbell Playground. Pierce St./O'Farrell & Ellis Sts. Down to sports fields.",
+    "lat": 37.7829092,
+    "lng": -122.4356963
+  },
+  {
+    "name": "Pacheco & 9th Ave. Next to Forest Hill Lamp Post. Two Steps.",
+    "lat": 37.7510028,
+    "lng": -122.4654395
+  },
+  {
+    "name": "Greenwich/Leavenworth & Jones. Michaelangelo Playground. Two steps.",
+    "lat": 37.8013589,
+    "lng": -122.4169884
+  },
+  {
+    "name": "Dolores Park. SE corner of 18th & Church Streets, up to J Church platform.",
+    "lat": 37.7611221,
+    "lng": -122.4281516
+  },
+  {
+    "name": "Union Square. Number of stairways south of Dewey Monument.",
+    "lat": 37.7877133,
+    "lng": -122.4074652
+  },
+  {
+    "name": "Bush/Stockton & Grant. In front of Sutter Stockton Garage.",
+    "lat": 37.790397,
+    "lng": -122.4065695
+  },
+  {
+    "name": "Embarcadero Plaza Bocce Ball Courts. In the middle of the Embarcadero/Don Chee Way/Steuart Street. Two small stairways.",
+    "lat": 37.7943788,
+    "lng": -122.3940633
+  },
+  {
+    "name": "Embarcadero Plaza. Don Chee Way/Steuart St. & The Embarcadero.",
+    "lat": 37.7940913,
+    "lng": -122.3935752
+  },
+  {
+    "name": "Harry Bridges Plaza. The Embarcadero/Ferry Plaza & Washington Street.",
+    "lat": 37.7951355,
+    "lng": -122.3940661
+  },
+  {
+    "name": "Ridge Lane/Caine Ave. & San Miguel St.",
+    "lat": 37.7181893,
+    "lng": -122.4501615
+  },
+  {
+    "name": "Los Palmos Garden. Between Los Palmos Drive and Verna Street.",
+    "lat": 37.7353697,
+    "lng": -122.4481172
+  },
+  {
+    "name": "Native Plant Garden. Few steps off Appleton St.",
+    "lat": 37.8008734,
+    "lng": -122.4706175
+  },
+  {
+    "name": "Rod Road. Few stairways along the block.",
+    "lat": 37.8013905,
+    "lng": -122.4698665
+  },
+  {
+    "name": "Esmeralda/Winfield & Elsie. Up to Bernal Heights Park.",
+    "lat": 37.7432219,
+    "lng": -122.4174862
+  },
+  {
+    "name": "Esmeralda/Coleridge & Lundys.",
+    "lat": 37.7439296,
+    "lng": -122.4192007
+  },
+  {
+    "name": "24th Ave./W. Clay St. & Lake St. Number of interesting stairways on west side of street.",
+    "lat": 37.7863113,
+    "lng": -122.4841906
+  },
+  {
+    "name": "Lower Carolina & Upper Carolina/22nd & 23rd.",
+    "lat": 37.7557435,
+    "lng": -122.3997626
+  },
+  {
+    "name": "23rd St./Carolina & Wisconsin. Sidewalk stairway.",
+    "lat": 37.7547524,
+    "lng": -122.3992823
+  },
+  {
+    "name": "Detroit/Monterey & Hearst.",
+    "lat": 37.7312848,
+    "lng": -122.4443059
+  },
+  {
+    "name": "Simonds Loop West.",
+    "lat": 37.7962069,
+    "lng": -122.4506415
+  },
+  {
+    "name": "To VERIFY: Public stairs here?",
+    "lat": 37.795393,
+    "lng": -122.4495901
+  },
+  {
+    "name": "Sumner Ave, north of Liggett Ave.",
+    "lat": 37.7972075,
+    "lng": -122.4519096
+  },
+  {
+    "name": "Lyon/Broadway & Pacific. Over fence lining west side of Lyon.",
+    "lat": 37.7923795,
+    "lng": -122.4466542
+  },
+  {
+    "name": "Sanches Street.",
+    "lat": 37.7942276,
+    "lng": -122.4520734
+  },
+  {
+    "name": "Wallen Street.",
+    "lat": 37.794572,
+    "lng": -122.4561158
+  },
+  {
+    "name": "Torney Avenue, Just west of #1016. Near the intersection of Lincoln & Torney.",
+    "lat": 37.8006475,
+    "lng": -122.4528733
+  },
+  {
+    "name": "Thornburg Road, at end.",
+    "lat": 37.8020199,
+    "lng": -122.4518962
+  },
+  {
+    "name": "Thornburg Road, to the side of building 1059.",
+    "lat": 37.8017126,
+    "lng": -122.4510969
+  },
+  {
+    "name": "China Beach stairway down to beach.",
+    "lat": 37.7877443,
+    "lng": -122.4916254
+  },
+  {
+    "name": "Upper & Lower El Camino del Mar./Sea Cliff Ave. & 30th Ave. North stairway.",
+    "lat": 37.7869931,
+    "lng": -122.4897333
+  },
+  {
+    "name": "Upper & Lower El Camino del Mar./Sea Cliff Ave. & 30th Ave. South stairway.",
+    "lat": 37.7865946,
+    "lng": -122.490003
+  },
+  {
+    "name": "General Kennedy Ave & Thornburg Rd. Two steps near building 1056.",
+    "lat": 37.8016439,
+    "lng": -122.4506746
+  },
+  {
+    "name": "Upper and Lower Lake. El Camino del Mar & 30th Ave.",
+    "lat": 37.7854757,
+    "lng": -122.4918832
+  },
+  {
+    "name": "El Camino del Mar/30th Ave. & Sea Cliff Ave. Number of stairways on south side of street.",
+    "lat": 37.7868023,
+    "lng": -122.4896965
+  },
+  {
+    "name": "27th Ave./Sea Cliff Ave. & El Camino del Mar. Number of stairwas along the west side of the street.",
+    "lat": 37.7882973,
+    "lng": -122.4879511
+  },
+  {
+    "name": "Sibert Loop, up to parking lot.",
+    "lat": 37.7957335,
+    "lng": -122.4609258
+  },
+  {
+    "name": "Sibert Loop, stairway to nowhere.",
+    "lat": 37.7957918,
+    "lng": -122.4608535
+  },
+  {
+    "name": "Washintgon Boulevard to Piper Loop. Park Boulevard & Nauman Road.",
+    "lat": 37.7961618,
+    "lng": -122.4662431
+  },
+  {
+    "name": "Lendrum Court, near Armistead Road.",
+    "lat": 37.8050526,
+    "lng": -122.4711736
+  },
+  {
+    "name": "Lendrum Court, at end.",
+    "lat": 37.8052391,
+    "lng": -122.4718737
+  },
+  {
+    "name": "Washington Boulevard, to Dudley Rd./Nauman & Deems.",
+    "lat": 37.795526,
+    "lng": -122.4644858
+  },
+  {
+    "name": "Crissy Field. East of Marine Drive.",
+    "lat": 37.8047688,
+    "lng": -122.4659819
+  },
+  {
+    "name": "Santa Ana Ave./Portola & St. Francis Boulevard. A number of stairways along the block.",
+    "lat": 37.7359498,
+    "lng": -122.4680214
+  },
+  {
+    "name": "San Anselmo/San Benito & Santa Clara. Two steps.",
+    "lat": 37.7368083,
+    "lng": -122.4664919
+  },
+  {
+    "name": "Santa Clara/San Anselmo & Terrace Dr. Few stairways along the block.",
+    "lat": 37.7368471,
+    "lng": -122.4660435
+  },
+  {
+    "name": "Glen Park BART station. Two small stairways near bike share area.",
+    "lat": 37.7329873,
+    "lng": -122.4339605
+  },
+  {
+    "name": "Stow Lake. Intermittent stairs leading to Huntington Falls.",
+    "lat": 37.7679164,
+    "lng": -122.4745549
+  },
+  {
+    "name": "The Embarcadero/Mission & Howard. Up to Gate G.",
+    "lat": 37.7936901,
+    "lng": -122.3922031
+  },
+  {
+    "name": "Embarcadero Plaza. Market Street/Steuart & The Embarcadero. South stairway.",
+    "lat": 37.7947707,
+    "lng": -122.3944514
+  },
+  {
+    "name": "Embarcadero Plaza. Market Street/Steuart & The Embarcadero. North stairway.",
+    "lat": 37.7948239,
+    "lng": -122.3944809
+  },
+  {
+    "name": "22nd and Texas. Alongside of The Landing apartment building.",
+    "lat": 37.7575738,
+    "lng": -122.3946938
+  },
+  {
+    "name": "Curtis and Prague at their acute intersection. A curving set of stairs.",
+    "lat": 37.7102637,
+    "lng": -122.4381328
+  },
+  {
+    "name": "To Add: Marina Stairs visited 9/7/20",
+    "lat": 37.8055161,
+    "lng": -122.4469992
+  },
+  {
+    "name": "Brooks Park. Shields & Arch Sts.",
+    "lat": 37.7179462,
+    "lng": -122.4671944
+  },
+  {
+    "name": "Felix Avenue at 19th Ave & Junipero Serra Blvd.",
+    "lat": 37.7170195,
+    "lng": -122.4729112
+  },
+  {
+    "name": "Need to add: Oceanview Playground Corner of Lobos St. & Plymouth Ave.",
+    "lat": 37.7149048,
+    "lng": -122.4561243
+  },
+  {
+    "name": "Need to add: Oceanview Playground at Lobos St. & Capitol Ave.",
+    "lat": 37.7149515,
+    "lng": -122.4590479
+  },
+  {
+    "name": "Brooks Park. Vernon St./Shields & Sargent Sts.",
+    "lat": 37.7170722,
+    "lng": -122.4679939
+  },
+  {
+    "name": "Wyton Lane/19th Ave. & Denslowe Dr.",
+    "lat": 37.7230803,
+    "lng": -122.4748712
+  },
+  {
+    "name": "Montalvo/9th Ave & Mendosa Ave.",
+    "lat": 37.7477821,
+    "lng": -122.4661137
+  },
+  {
+    "name": "Cayuga Park. Up to Playground.",
+    "lat": 37.7142509,
+    "lng": -122.4500754
+  },
+  {
+    "name": "Cayuga Park Clubhouse.",
+    "lat": 37.7143763,
+    "lng": -122.4496087
+  },
+  {
+    "name": "Cayuga Park. Through sculptures and leading up to Alemany Boulevard.",
+    "lat": 37.7134677,
+    "lng": -122.4506011
+  },
+  {
+    "name": "Cayuga Park. Behind playground.",
+    "lat": 37.7139939,
+    "lng": -122.4500003
+  },
+  {
+    "name": "Minnie & Lovie Ward Recreational Center. Stairs (and slide!) near recreation building.",
+    "lat": 37.7159959,
+    "lng": -122.457646
+  },
+  {
+    "name": "Unity Plaza. Ocean & City College Terminal. Mosaic!",
+    "lat": 37.7237749,
+    "lng": -122.4534046
+  },
+  {
+    "name": "Parque Ni\u00f1os Unidos",
+    "lat": 37.7543929,
+    "lng": -122.4136667
+  },
+  {
+    "name": "In Chan Kaajal Park",
+    "lat": 37.7639709,
+    "lng": -122.4158774
+  },
+  {
+    "name": "Grattan Playground.",
+    "lat": 37.7629214,
+    "lng": -122.4515208
+  },
+  {
+    "name": "Bigler Avenue at Belgrave, near Tank Hill.",
+    "lat": 37.7596649,
+    "lng": -122.4486046
+  },
+  {
+    "name": "Belmont Ave./Edgewood & Willard. One stairway on either side of the street.",
+    "lat": 37.763004,
+    "lng": -122.4545852
+  },
+  {
+    "name": "Hill Point Avenue to Carl Street.",
+    "lat": 37.7647959,
+    "lng": -122.4556557
+  },
+  {
+    "name": "To ADD: Waller/Central & Buena Vista Ave. W.",
+    "lat": 37.7695914,
+    "lng": -122.4431035
+  },
+  {
+    "name": "Crocker Amazon Park soccer fields east side.",
+    "lat": 37.713511,
+    "lng": -122.4278064
+  },
+  {
+    "name": "Crocker Amazon Park soccer field restrooms.",
+    "lat": 37.7136676,
+    "lng": -122.4300703
+  },
+  {
+    "name": "McLaren Park. Just north of basketball courts by LaGrande Ave.",
+    "lat": 37.7156048,
+    "lng": -122.4274612
+  },
+  {
+    "name": "Crane Cove Park. East of Illinois near 19th Street.",
+    "lat": 37.7616503,
+    "lng": -122.3870414
+  },
+  {
+    "name": "USS San Francisco Memorial",
+    "lat": 37.7827991,
+    "lng": -122.5115337
+  },
+  {
+    "name": "El Camino del Mar to Lands End Trail/ USS San Francisco parking lot & Seal Rock Dr.",
+    "lat": 37.781335,
+    "lng": -122.5104462
+  },
+  {
+    "name": "37th and Fulton, up to Golden Gate Park Senior Center.",
+    "lat": 37.7719804,
+    "lng": -122.4970598
+  },
+  {
+    "name": "Molimo Dr., almost at end, at trailhead for Mt. Davidson.",
+    "lat": 37.739889,
+    "lng": -122.4516836
+  },
+  {
+    "name": "Clay St. at East End/Sue Bierman Park &\u00a0 Four Embarcadero Center.",
+    "lat": 37.7955973,
+    "lng": -122.3961321
+  },
+  {
+    "name": "Fresno St./Romolo & Kearny. Two steps.",
+    "lat": 37.7986565,
+    "lng": -122.4061513
+  },
+  {
+    "name": "Sansome St./Broadway & Pacific.\n\u00a0One step!",
+    "lat": 37.7982816,
+    "lng": -122.4021816
+  },
+  {
+    "name": "Palace of Fine Arts. Intersection of Palace Dr., Lyon St., and Bay St.",
+    "lat": 37.8017415,
+    "lng": -122.4479239
+  },
+  {
+    "name": "Gorgas Ave., near intersection with O'Reilly Ave.",
+    "lat": 37.8015348,
+    "lng": -122.4500443
+  },
+  {
+    "name": "Junipero Serra Blvd. across from number 150/Woodacre Dr. & Ocean Ave.",
+    "lat": 37.7324997,
+    "lng": -122.4721199
+  },
+  {
+    "name": "Merced Manor Reservoir. 22nd Ave./Sloat Blvd. & Ocean Ave.",
+    "lat": 37.7333451,
+    "lng": -122.4778957
+  },
+  {
+    "name": "La Salle Ave., up to high school",
+    "lat": 37.7317277,
+    "lng": -122.3819804
+  },
+  {
+    "name": "Hillview Court/Whitney Young Cir. & Cashmere St.",
+    "lat": 37.735801,
+    "lng": -122.3847363
+  },
+  {
+    "name": "Hilltop Park. Up to sundial.",
+    "lat": 37.7330283,
+    "lng": -122.3836463
+  },
+  {
+    "name": "Adam Rogers Park. Down to playground.",
+    "lat": 37.7308475,
+    "lng": -122.3837476
+  },
+  {
+    "name": "Adam Rogers Park. Up to basketball court.",
+    "lat": 37.7306502,
+    "lng": -122.3838871
+  },
+  {
+    "name": "Adam Rogers Park, leading to Garlington Ct.",
+    "lat": 37.7311022,
+    "lng": -122.3842736
+  },
+  {
+    "name": "Juan Bautista Community Garden. West of Juan Bautista Circle.",
+    "lat": 37.7182304,
+    "lng": -122.4797174
+  },
+  {
+    "name": "Merced Manor Reservoir. 23rd Ave./Sloat Blvd. & Ocean Ave.",
+    "lat": 37.7332584,
+    "lng": -122.4792931
+  },
+  {
+    "name": "Merced Manor Reservoir. From grass lawn south of Sloat up to top of reservoir.",
+    "lat": 37.7339013,
+    "lng": -122.4785099
+  },
+  {
+    "name": "Merced Manor Reservoir. Sloat Blvd./22nd & 23rd St.",
+    "lat": 37.7344188,
+    "lng": -122.4790356
+  },
+  {
+    "name": "Hoffman St., up to Lendrum Court.",
+    "lat": 37.8057428,
+    "lng": -122.4710991
+  },
+  {
+    "name": "Hoffman Street, up to Ramsel Court",
+    "lat": 37.8063531,
+    "lng": -122.4728692
+  },
+  {
+    "name": "Golden Gate Transit Stairway East",
+    "lat": 37.8074126,
+    "lng": -122.4752373
+  },
+  {
+    "name": "Upton Avenue up to Ralston Avenue",
+    "lat": 37.8015985,
+    "lng": -122.4732757
+  },
+  {
+    "name": "Need to add: Ralston Ave",
+    "lat": 37.8010977,
+    "lng": -122.4735701
+  },
+  {
+    "name": "Presidio Blvd. at Nos. 548-550, near MacArthur Ave./Lombard & Lincoln Blvd.",
+    "lat": 37.7988639,
+    "lng": -122.4524673
+  },
+  {
+    "name": "Mission Bay. 409-499 Illinois St./16th St. & Terry A. Fran\u00e7ois Blvd.",
+    "lat": 37.7661183,
+    "lng": -122.3871412
+  },
+  {
+    "name": "Golden Gate Overlook",
+    "lat": 37.8040402,
+    "lng": -122.4770094
+  },
+  {
+    "name": "Battery Boutelle",
+    "lat": 37.804613,
+    "lng": -122.477142
+  },
+  {
+    "name": "Battery Godfrey",
+    "lat": 37.8037825,
+    "lng": -122.4775332
+  },
+  {
+    "name": "Battery Marcus Miller - number of stairways around battery",
+    "lat": 37.8061687,
+    "lng": -122.4768198
+  },
+  {
+    "name": "Bowman Trail",
+    "lat": 37.8049557,
+    "lng": -122.4767942
+  },
+  {
+    "name": "Forest Hill MUNI, up to front entrance.",
+    "lat": 37.7481264,
+    "lng": -122.4590941
+  },
+  {
+    "name": "To ADD: Merced Heights Playground",
+    "lat": 37.7177217,
+    "lng": -122.4700874
+  },
+  {
+    "name": "Embarcadero Center. Skybridge between Embarcadero 1 and 2. Front/Clay & Sacramento.",
+    "lat": 37.7947457,
+    "lng": -122.3990788
+  },
+  {
+    "name": "Embarcadero Center. Stairways on either side of skybridge between Embarcadero 2 and 3.",
+    "lat": 37.7948277,
+    "lng": -122.3978875
+  },
+  {
+    "name": "Shakespeare and Bepler.",
+    "lat": 37.7088242,
+    "lng": -122.4636712
+  },
+  {
+    "name": "Wilson Street/De Long St. & Rhine St.Many stairways along block.",
+    "lat": 37.7094371,
+    "lng": -122.4617796
+  },
+  {
+    "name": "De Long/Flournoy Street & Goethe Street",
+    "lat": 37.7096238,
+    "lng": -122.4622409
+  },
+  {
+    "name": "Visitacion Valley Greenway Children's Play Garden. Leland/Teddy & Campbell Aves.",
+    "lat": 37.7149127,
+    "lng": -122.4059695
+  },
+  {
+    "name": "Visitacion Valley Greenway Agriculture Lot. Leland/Campbell & Tucker Aves.",
+    "lat": 37.7154703,
+    "lng": -122.4062476
+  },
+  {
+    "name": "Civic Center UN Plaza Fountain. Intersection of Market, Fulton, and Leavenworth.",
+    "lat": 37.7799496,
+    "lng": -122.4133895
+  },
+  {
+    "name": "Point 1010",
+    "lat": 37.7912007,
+    "lng": -122.400322
+  },
+  {
+    "name": "Market Street/Sutter, Sansome, and Battery. Old E-Trade Plaza.",
+    "lat": 37.7905329,
+    "lng": -122.3999143
+  },
+  {
+    "name": "Excelsior Playground.",
+    "lat": 37.7199274,
+    "lng": -122.4336165
+  },
+  {
+    "name": "Mission at Trumbull to Alemany.",
+    "lat": 37.7309154,
+    "lng": -122.4293021
+  },
+  {
+    "name": "Loma Vista/Roosevelt Way. Few small stairways along west side of block.",
+    "lat": 37.7651004,
+    "lng": -122.4432604
+  },
+  {
+    "name": "Stow Lake. Path between boathouse and JFK Drive.",
+    "lat": 37.7706894,
+    "lng": -122.4780641
+  },
+  {
+    "name": "Mother's Meadow Playground to Stow Lake.",
+    "lat": 37.7672877,
+    "lng": -122.4760465
+  },
+  {
+    "name": "Unity Plaza. East side.",
+    "lat": 37.7237706,
+    "lng": -122.4532041
+  },
+  {
+    "name": "Zircon Place. Off 29th Street/Diamond & Castro.",
+    "lat": 37.7427949,
+    "lng": -122.4345959
+  },
+  {
+    "name": "Chenery at Carrie. One side of a right-of-way that leads you to Glen Park Village Garden.",
+    "lat": 37.7345743,
+    "lng": -122.4327237
+  },
+  {
+    "name": "Path between Arguello and Infantry Terrace.",
+    "lat": 37.7967058,
+    "lng": -122.4601273
+  },
+  {
+    "name": "Infantry Terrace. Down to tennis courts from east side.",
+    "lat": 37.796117,
+    "lng": -122.4615729
+  },
+  {
+    "name": "Korean War Memorial",
+    "lat": 37.801432,
+    "lng": -122.4605445
+  },
+  {
+    "name": "Keyes Ave., near intersection with Mesa.",
+    "lat": 37.7984905,
+    "lng": -122.4579392
+  },
+  {
+    "name": "Redwood Playground Picnic Area",
+    "lat": 37.7218363,
+    "lng": -122.4207024
+  },
+  {
+    "name": "Twin Peaks Blvd. and Raccoon Dr.",
+    "lat": 37.7577226,
+    "lng": -122.4480311
+  },
+  {
+    "name": "Upper Noe Valley Recreation Center",
+    "lat": 37.7420982,
+    "lng": -122.4277907
+  },
+  {
+    "name": "29th/Castro & Zircon. Few steps in sidewalk in front of #618",
+    "lat": 37.7433093,
+    "lng": -122.4340724
+  },
+  {
+    "name": "Walkway between Bryant and Florida between 18th and 19th Streets.",
+    "lat": 37.7610782,
+    "lng": -122.4101387
+  },
+  {
+    "name": "Sunset Recreation Center Tennis Courts.",
+    "lat": 37.756862,
+    "lng": -122.4874548
+  },
+  {
+    "name": "Mission Playground & Pool, up to basketball courts. Two steps.",
+    "lat": 37.7592725,
+    "lng": -122.422416
+  },
+  {
+    "name": "Randolph and Bright Mini Park",
+    "lat": 37.7143269,
+    "lng": -122.4637683
+  },
+  {
+    "name": "Coit Tower. Paved Path up to Rear lawn.",
+    "lat": 37.8021872,
+    "lng": -122.4060348
+  },
+  {
+    "name": "Potrero Ave., just north of Cesar Chavez.",
+    "lat": 37.7493961,
+    "lng": -122.405047
+  },
+  {
+    "name": "Hahn Street between Visitacion Avenue and Sunnydale Avenue",
+    "lat": 37.7127028,
+    "lng": -122.4157303
+  },
+  {
+    "name": "Raymond Avenue at western end. Down to Leland Avenue and McLaren Park Community Garden.",
+    "lat": 37.7151979,
+    "lng": -122.4153446
+  },
+  {
+    "name": "Clay and Buchanan through the medical center.",
+    "lat": 37.791157,
+    "lng": -122.4309539
+  },
+  {
+    "name": "Felton/Colby & Dartmouth, to dirt path on south side of street.",
+    "lat": 37.7278486,
+    "lng": -122.4129783
+  },
+  {
+    "name": "Burrows St. at eastern end, into Burrows Pocket Park.",
+    "lat": 37.7289449,
+    "lng": -122.403693
+  },
+  {
+    "name": "Fallen Bridge Park near 18th and Utah",
+    "lat": 37.7623893,
+    "lng": -122.4061612
+  },
+  {
+    "name": "Mission Bay Commons. Mission Bay Boulevard North/Bridgeview Way & Terry A. Francois Blvd.",
+    "lat": 37.7712184,
+    "lng": -122.3871746
+  },
+  {
+    "name": "Mission Bay Commons. Mission Bay Boulevard South/Bridgeview Way & Terry A. Francois Blvd.",
+    "lat": 37.7708107,
+    "lng": -122.387158
+  },
+  {
+    "name": "Mission Bay Commons. 3rd Street/Mission Bay Boulevard North & South",
+    "lat": 37.7708928,
+    "lng": -122.3893302
+  },
+  {
+    "name": "Geary and Broderick",
+    "lat": 37.7828097,
+    "lng": -122.4410784
+  },
+  {
+    "name": "Rhode Island/25th and 26th Streets. Multiple stairways along the block.",
+    "lat": 37.7515505,
+    "lng": -122.401313
+  },
+  {
+    "name": "Lundys Lane & Fair Ave. Just a few steps.",
+    "lat": 37.7449857,
+    "lng": -122.4182531
+  },
+  {
+    "name": "End of 19th Street, near Indiana Street. Next to Dogpatch Arts Plaza.",
+    "lat": 37.7615726,
+    "lng": -122.3918608
+  },
+  {
+    "name": "Fort Mason. Franklin Street up to MacArthur Ave.",
+    "lat": 37.804086,
+    "lng": -122.4267947
+  },
+  {
+    "name": "Warriors Way/3rd Street & Terry A. Fran\u00e7ois Boulevard. Across from Bridgeview Way.",
+    "lat": 37.7689507,
+    "lng": -122.3876367
+  },
+  {
+    "name": "Thrive City. 3rd Avenue/16th Street and Campus Way.",
+    "lat": 37.76776,
+    "lng": -122.3890834
+  },
+  {
+    "name": "Duncombe Court.",
+    "lat": 37.796025,
+    "lng": -122.4076021
+  },
+  {
+    "name": "Bonview at end. Three steps into Bernal Heights Park.",
+    "lat": 37.7420889,
+    "lng": -122.4174927
+  },
+  {
+    "name": "Bunch of stairways along Greenough Ave.",
+    "lat": 37.7994983,
+    "lng": -122.4750674
+  },
+  {
+    "name": "Ralston Avenue Few stairways.",
+    "lat": 37.8023551,
+    "lng": -122.4755394
+  },
+  {
+    "name": "Hodges Alley. Two steps.",
+    "lat": 37.7993628,
+    "lng": -122.4037112
+  },
+  {
+    "name": "Levi's Plaza",
+    "lat": 37.8030973,
+    "lng": -122.4013093
+  },
+  {
+    "name": "Disc Golf Course near 25th Avenue. Few stairways.",
+    "lat": 37.7715047,
+    "lng": -122.4843887
+  },
+  {
+    "name": "Youngblood Coleman Recreation Center. Hudson Ave./Mendell & Keith. Stairways alongside concrete slide.",
+    "lat": 37.7379793,
+    "lng": -122.3842969
+  },
+  {
+    "name": "Path up to Arguello Bouelvard near Infantry Terrace.",
+    "lat": 37.7964073,
+    "lng": -122.4594581
+  },
+  {
+    "name": "Loyola Terrace. Few two-step stairways on west side of street.",
+    "lat": 37.7758961,
+    "lng": -122.44903
+  },
+  {
+    "name": "Promontory Park. Part of Hunters View housing development. Fairfax Ave./Keith St. & Acacia Ave. Multiple stairways around periphery of park.",
+    "lat": 37.7370329,
+    "lng": -122.3812331
+  },
+  {
+    "name": "Francisco Park. Exiting the park on Hyde Street at Francisco Street.",
+    "lat": 37.8039119,
+    "lng": -122.420131
+  },
+  {
+    "name": "Eaton Place at Green Street",
+    "lat": 37.7991255,
+    "lng": -122.4119473
+  },
+  {
+    "name": "Jefferson / Jones & Leavenworth. Few stairways along the block.",
+    "lat": 37.808113,
+    "lng": -122.4166723
+  },
+  {
+    "name": "Battery Bluff Park. Lincoln Boulevard entrance across from San Francisco National Cemetery.",
+    "lat": 37.8019002,
+    "lng": -122.4641209
+  },
+  {
+    "name": "Battery Bluff Park. Down to Battery Slaughter.",
+    "lat": 37.8018522,
+    "lng": -122.4631058
+  },
+  {
+    "name": "Battery Bluff Park. Down to Battery Blaney.",
+    "lat": 37.8018384,
+    "lng": -122.4620735
+  },
+  {
+    "name": "Battery Bluff Park. Park Trail Connector stairway.",
+    "lat": 37.8023637,
+    "lng": -122.4654823
+  },
+  {
+    "name": "Battery Bluff Park Overlook. Stairway is just three steps, but view of Golden Gate Bridge is great!",
+    "lat": 37.8023981,
+    "lng": -122.4643859
+  },
+  {
+    "name": "Across from McLaren Upper Reservoir",
+    "lat": 37.7215195,
+    "lng": -122.422003
+  },
+  {
+    "name": "St. Mary's Square. Up to children's play area and Comfort Women memorial.",
+    "lat": 37.7917861,
+    "lng": -122.4048822
+  },
+  {
+    "name": "Miguel/Laidley & Whitney. Two sets of two steps.",
+    "lat": 37.7373259,
+    "lng": -122.4278007
+  },
+  {
+    "name": "Bay Bridge Trail Lookout",
+    "lat": 37.8107239,
+    "lng": -122.3633156
+  },
+  {
+    "name": "Shopping Center to Christopher Playground.",
+    "lat": 37.7439535,
+    "lng": -122.439998
+  },
+  {
+    "name": "Diamond Heights Boulevard. Stairway in Safeway parking lot.",
+    "lat": 37.7446258,
+    "lng": -122.4399149
+  },
+  {
+    "name": "Prayerbook Cross. Heading down from east side.",
+    "lat": 37.7717375,
+    "lng": -122.4780081
+  },
+  {
+    "name": "24th and Minnesota: Minnesota Grove",
+    "lat": 37.7540539,
+    "lng": -122.3898676
+  },
+  {
+    "name": "Minnesota / 23rd and 24th Street: Minnesota Grove",
+    "lat": 37.753721,
+    "lng": -122.3898515
+  },
+  {
+    "name": "Presidio Nursery",
+    "lat": 37.8010296,
+    "lng": -122.4712261
+  },
+  {
+    "name": "Yerba Buena Gardens. 4th Street. Mission Street & Howard Street. Three stairways with images printed on vinyl.",
+    "lat": 37.7840143,
+    "lng": -122.4034178
+  },
+  {
+    "name": "21st Avenue at end. Two stairways on east side of block.",
+    "lat": 37.7867452,
+    "lng": -122.4809207
+  },
+  {
+    "name": "McLaren at 28th Avenue",
+    "lat": 37.7863148,
+    "lng": -122.4884716
+  },
+  {
+    "name": "Little Hollywood Park",
+    "lat": 37.7100411,
+    "lng": -122.3980533
+  },
+  {
+    "name": "Foerster up from Melrose. Multiple flights of stairs. Interesting circular block.",
+    "lat": 37.73375,
+    "lng": -122.4492515
+  },
+  {
+    "name": "Congo at Monterey. Few steps for no apparent reason. ;)",
+    "lat": 37.7314098,
+    "lng": -122.4419903
+  },
+  {
+    "name": "Congo @ Mangels. Need to double check if these are private.",
+    "lat": 37.7330498,
+    "lng": -122.4420092
+  },
+  {
+    "name": "Fort Point, near restrooms",
+    "lat": 37.8095909,
+    "lng": -122.476295
+  },
+  {
+    "name": "Wisser Court, few stairways along street",
+    "lat": 37.7982695,
+    "lng": -122.4724182
+  }
+]

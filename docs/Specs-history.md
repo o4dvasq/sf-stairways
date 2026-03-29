@@ -2,6 +2,7 @@
 
 | Description | Implemented | Spec File |
 |---|---|---|
+| Import 762 Urban Hiker SF stairways; 4 coord fills; 8 new neighborhoods | 2026-03-29 | SPEC_urban-hiker-data-enrichment.md |
 | Add photos from Mac; drag-drop; inline notes editing; macOS thumbnails | 2026-03-29 | SPEC_macos-photo-add.md |
 | Remove retroactive HealthKit pull; clear bad step/elevation data | 2026-03-29 | SPEC_healthkit-data-cleanup.md |
 | macOS admin dashboard: browser, detail, hygiene, bulk ops | 2026-03-29 | SPEC_admin-dashboard-design.md |

@@ -35,17 +35,21 @@ _Last updated: 2026-03-29_
 |---|---|
 | Walked stairways | 8 |
 | With photos | 0 |
-| All SF stairways (catalog) | 382 |
+| All SF stairways (catalog) | **1,144** (was 382) |
+| Neighborhoods | **61** (53 original + 8 new) |
 
 ## Recent Completions
 
-### 2026-03-29
-- **macOS photo add + notes editing** — "Add Photos..." button (NSOpenPanel) + drag-drop in detail panel photos section; inline notes editing (Edit → TextEditor → Save/Cancel); proper macOS thumbnail generation using NSImage + NSBitmapImageRep at 300px JPEG 0.7; HEIC/PNG auto-converted to JPEG 0.85 on import. `WalkPhoto.swift` gains `#elseif canImport(AppKit)` import.
-- **DataHygieneView bug fix** — `canRetroactivelyPullStats` removed from WalkRecord in HealthKit cleanup; fixed reference to use `walkStartTime != nil` instead.
-- **HealthKit data accuracy fix** — removed retroactive full-day HealthKit pull (inaccurate per-stairway data); `statsRow` now only shows stepCount/elevationGain when `walkStartTime != nil` (active walks only); one-time migration clears bad full-day step counts from manually logged walks.
-- **macOS Admin Dashboard** — new macOS target with three-column browser, detail panel (curator edits, tag mgmt, photo grid), data hygiene dashboard, bulk operations + CSV export. `WalkPhoto.swift` made cross-platform. `SupabaseModels.swift` guarded with `#if !os(macOS)`.
-- **Photo sync fix** — photo upload logging, auth check, failed vs pending badge.
-- **Map launch cleanup** — removed auto-zoom-to-nearest on launch; HealthKit entitlement added; ProgressCard header changed to amber accent bar.
+### 2026-03-29 (this session)
+- **Urban Hiker SF data import** — `scripts/import_urban_hiker_locations.py` imports 762 new stairways from Urban Hiker SF (Alexandra Kenin) KMZ data. 4 coordinate gap-fills applied (Pemberton Place, Clover Lane, Acme Alley, Moraga Street). 8 new neighborhoods created (Presidio, Golden Gate Park, Lands End, Fort Mason, Embarcadero, Downtown, Alcatraz Island, Unclassified). Script is idempotent with `--dry-run` / `--apply` modes; produces `data/import_report.md` for review.
+
+### 2026-03-29 (earlier)
+- **macOS photo add + notes editing** — "Add Photos..." button (NSOpenPanel) + drag-drop in detail panel photos section; inline notes editing; proper macOS thumbnail generation.
+- **DataHygieneView bug fix** — `canRetroactivelyPullStats` removed; fixed to use `walkStartTime != nil`.
+- **HealthKit data accuracy fix** — removed retroactive full-day pull; stats display restricted to active walks only; one-time migration clears bad data.
+- **macOS Admin Dashboard** — three-column browser, detail panel, data hygiene, bulk operations + CSV export.
+- **Photo sync fix** — upload logging, auth check, failed vs pending badge.
+- **Map launch cleanup** — removed auto-zoom-to-nearest; HealthKit entitlement; ProgressCard amber bar header.
 
 ### 2026-03-28
 - **Remove Saved concept + layout tweaks** — two-state model; search bottom-right; settings leading; Progress tab renamed Stats; one-time migration.
@@ -55,7 +59,7 @@ _Last updated: 2026-03-29_
 - **Stairway Tags v1** — StairwayTag + TagAssignment models, tag editor, map filter, preset tags.
 - **Active walk mode** — timer, HealthKit steps/elevation, end/cancel flow.
 - **Photo suggestions** — PHAsset dedup, dismiss, add from walk day.
-- **Photo camera roll save** and **photo persistence fix** (PhotoSource enum, is_public fix).
+- **Photo camera roll save** and **photo persistence fix**.
 - Launch zoom to nearest, map pin tap targets, curator notes-to-commentary, expandable bottom sheet.
 
 ### 2026-03-27 and earlier
@@ -65,7 +69,7 @@ _Last updated: 2026-03-29_
 
 ## Pending Specs
 
-None.
+- `docs/specs/SPEC_macos-tag-management.md` — macOS tag CRUD
 
 ## Known Issues
 
@@ -76,6 +80,7 @@ None.
 - **supabase-swift** package + new files from curator social layer not yet confirmed added to Xcode target.
 - **Sign in with Apple:** `signInError` display is temporary for debugging — remove after auth is confirmed working.
 - **Supabase Apple provider** config not yet manually verified (required for Sign in with Apple to work).
+- **Stairway count in iOS app** still shows 382 — `all_stairways.json` bundle resource needs to be re-bundled into the Xcode build for the expanded 1,144-entry dataset to appear on device.
 
 ## Repository
 
