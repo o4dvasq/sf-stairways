@@ -2,6 +2,9 @@
 
 | Description | Implemented | Spec File |
 |---|---|---|
+| HealthKit walk stats visibility, diagnostics, retroactive pull | 2026-03-28 | SPEC_healthkit-walk-stats-display.md |
+| Remove Saved concept; search bottom-right; settings left; Stats tab | 2026-03-28 | SPEC_remove-saved-and-layout-tweaks.md |
+| Camera button in active walk banner; WalkRecord created on start | 2026-03-28 | SPEC_camera-during-active-walk.md |
 | Tags: model, editor sheet, map filter, search tab, CloudKit sync | 2026-03-28 | SPEC_stairway-tags-v1.md |
 | Hard Mode confirmation prompt; amber badge for unverified walks | 2026-03-28 | SPEC_hard-mode-confirmation-prompt.md |
 | Active walk mode: timer, HealthKit steps/elevation, end/cancel flow | 2026-03-28 | SPEC_active-walk-mode.md |

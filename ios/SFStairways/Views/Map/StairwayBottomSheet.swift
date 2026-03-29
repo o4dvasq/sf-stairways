@@ -40,6 +40,8 @@ struct StairwayBottomSheet: View {
     @State private var triggerCuratorPromote = false
     @State private var showCancelWalkAlert = false
     @State private var showHardModeAlert = false
+    @State private var showRetroactivePullAlert = false
+    @State private var isRetroactivePullInProgress = false
     @State private var toastMessage: String? = nil
 
     private enum CuratorField: Hashable {
@@ -69,11 +71,10 @@ struct StairwayBottomSheet: View {
         return !locationManager.isWithinRadius(150, ofLatitude: stairway.lat ?? 0, longitude: stairway.lng ?? 0)
     }
 
-    private enum StairwayState { case unsaved, saved, walked }
+    private enum StairwayState { case unwalked, walked }
 
     private var state: StairwayState {
-        guard let record = walkRecord else { return .unsaved }
-        return record.walked ? .walked : .saved
+        isWalked ? .walked : .unwalked
     }
 
     var body: some View {
@@ -184,6 +185,15 @@ struct StairwayBottomSheet: View {
         } message: {
             Text("You're not near this stairway. You can still log it, but it won't count as proximity-verified.")
         }
+        .alert(
+            "Add HealthKit Stats for \(walkRecord?.dateWalked?.formatted(date: .abbreviated, time: .omitted) ?? "this date")?",
+            isPresented: $showRetroactivePullAlert
+        ) {
+            Button("Cancel", role: .cancel) { }
+            Button("Add Stats") { retroactivelyPullHealthKitStats() }
+        } message: {
+            Text("Will search for steps and elevation data recorded on your iPhone on this date.")
+        }
         .sheet(isPresented: $showTagEditor) {
             TagEditorSheet(stairwayID: stairway.id)
                 .presentationDetents([.medium])
@@ -211,7 +221,7 @@ struct StairwayBottomSheet: View {
             guard let record = walkRecord, record.walked, let dateWalked = record.dateWalked else {
                 return
             }
-            await suggestionService.fetch(
+            suggestionService.fetch(
                 dateWalked: dateWalked,
                 addedPhotoAssetIDs: record.addedPhotoAssetIDs,
                 dismissedPhotoIDs: record.dismissedPhotoIDs
@@ -252,20 +262,17 @@ struct StairwayBottomSheet: View {
                 }
             }
             Spacer()
-            HStack(spacing: 12) {
-                Menu {
-                    Button { showCamera = true } label: {
-                        Label("Take Photo", systemImage: "camera")
-                    }
-                    Button { showPhotoPicker = true } label: {
-                        Label("Choose from Library", systemImage: "photo.on.rectangle")
-                    }
-                } label: {
-                    Image(systemName: "camera")
-                        .font(.system(size: 16))
-                        .foregroundStyle(.secondary)
+            Menu {
+                Button { showCamera = true } label: {
+                    Label("Take Photo", systemImage: "camera")
                 }
-                stateIndicator
+                Button { showPhotoPicker = true } label: {
+                    Label("Choose from Library", systemImage: "photo.on.rectangle")
+                }
+            } label: {
+                Image(systemName: "camera.fill")
+                    .font(.system(size: 18))
+                    .foregroundStyle(Color.forestGreen)
             }
         }
     }
@@ -292,6 +299,11 @@ struct StairwayBottomSheet: View {
                 Text("\(Int(elevation)) ft gained")
                     .font(.caption)
                     .foregroundStyle(.secondary)
+            } else if isWalked && walkRecord?.walkStartTime != nil {
+                Text("HealthKit data not found")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+                    .italic()
             }
             let photoCount = mergedPhotos.count
             if photoCount > 0 {
@@ -330,6 +342,26 @@ struct StairwayBottomSheet: View {
                 Spacer()
             }
             HStack(spacing: 10) {
+                Menu {
+                    Button {
+                        showCamera = true
+                    } label: {
+                        Label("Take Photo", systemImage: "camera.fill")
+                    }
+                    Button {
+                        showPhotoPicker = true
+                    } label: {
+                        Label("Choose from Library", systemImage: "photo.on.rectangle")
+                    }
+                } label: {
+                    Image(systemName: "camera.fill")
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .frame(width: 44, height: 44)
+                        .background(Color.forestGreen)
+                        .foregroundStyle(.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                }
                 Button {
                     endWalkSession()
                 } label: {
@@ -393,6 +425,32 @@ struct StairwayBottomSheet: View {
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
+                        if let record = walkRecord {
+                            if isRetroactivePullInProgress {
+                                HStack(spacing: 4) {
+                                    ProgressView()
+                                        .scaleEffect(0.7)
+                                    Text("Fetching HealthKit stats…")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding(.top, 2)
+                            } else if record.canRetroactivelyPullStats {
+                                Button {
+                                    showRetroactivePullAlert = true
+                                } label: {
+                                    Text("Logged manually · Tap to add HealthKit stats")
+                                        .font(.caption)
+                                        .foregroundStyle(Color.brandAmber)
+                                }
+                                .padding(.top, 2)
+                            } else {
+                                Text(record.walkMethod)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                    .padding(.top, 2)
+                            }
+                        }
                     }
                     Spacer()
                     Button {
@@ -449,67 +507,15 @@ struct StairwayBottomSheet: View {
     @ViewBuilder
     private var actionButtons: some View {
         switch state {
-        case .unsaved:
+        case .unwalked:
             HStack(spacing: 10) {
                 ActionButton(title: "Start Walk", icon: "figure.walk", color: Color.forestGreen, action: startWalk)
                     .opacity(isStartWalkDisabled ? 0.4 : 1.0)
                     .disabled(isStartWalkDisabled)
-                ActionButton(title: "Save", icon: "bookmark", color: Color.brandAmber, action: saveStairway)
-                ActionButton(title: "Mark Walked", icon: "checkmark.circle", color: Color.walkedGreen, action: attemptMarkWalked)
-            }
-        case .saved:
-            HStack(spacing: 10) {
-                ActionButton(title: "Start Walk", icon: "figure.walk", color: Color.forestGreen, action: startWalk)
-                    .opacity(isStartWalkDisabled ? 0.4 : 1.0)
-                    .disabled(isStartWalkDisabled)
-                ActionButton(title: "Unsave", icon: "bookmark.slash", color: .secondary, action: removeRecord)
                 ActionButton(title: "Mark Walked", icon: "checkmark.circle", color: Color.walkedGreen, action: attemptMarkWalked)
             }
         case .walked:
-            HStack(spacing: 10) {
-                ActionButton(title: "Unmark Walk", icon: "arrow.uturn.backward", color: Color.brandAmber, action: unmarkWalk)
-                ActionButton(title: "Remove", icon: "trash", color: .secondary, action: removeRecord)
-            }
-        }
-    }
-
-    // MARK: - State Indicator
-
-    @ViewBuilder
-    private var stateIndicator: some View {
-        switch state {
-        case .unsaved:
-            EmptyView()
-        case .saved:
-            VStack(spacing: 4) {
-                ZStack {
-                    Circle()
-                        .fill(Color.brandAmber.opacity(0.15))
-                        .frame(width: 40, height: 40)
-                    Image(systemName: "bookmark.fill")
-                        .font(.system(size: 17))
-                        .foregroundStyle(Color.brandAmber)
-                }
-                Text("Saved")
-                    .font(.caption2)
-                    .fontWeight(.bold)
-                    .foregroundStyle(Color.brandAmber)
-            }
-        case .walked:
-            VStack(spacing: 4) {
-                ZStack {
-                    Circle()
-                        .fill(Color.walkedGreenDim)
-                        .frame(width: 40, height: 40)
-                    Image(systemName: "checkmark")
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundStyle(.white)
-                }
-                Text("Walked")
-                    .font(.caption2)
-                    .fontWeight(.bold)
-                    .foregroundStyle(Color.walkedGreen)
-            }
+            ActionButton(title: "Not Walked", icon: "arrow.uturn.backward", color: Color.brandAmber, action: removeRecord)
         }
     }
 
@@ -601,8 +607,10 @@ struct StairwayBottomSheet: View {
 
     private var stairwayTags: [StairwayTag] {
         let assignedTagIDs = Set(allAssignments.filter { $0.stairwayID == stairway.id }.map(\.tagID))
+        // Deduplicate by id (CloudKit + seed can create duplicates)
+        var seen = Set<String>()
         return allTags
-            .filter { assignedTagIDs.contains($0.id) }
+            .filter { assignedTagIDs.contains($0.id) && seen.insert($0.id).inserted }
             .sorted { $0.name.lowercased() < $1.name.lowercased() }
     }
 
@@ -747,13 +755,6 @@ struct StairwayBottomSheet: View {
 
     // MARK: - Walk Record Actions
 
-    private func saveStairway() {
-        guard walkRecord == nil else { return }
-        let record = WalkRecord(stairwayID: stairway.id, walked: false)
-        modelContext.insert(record)
-        try? modelContext.save()
-    }
-
     private func attemptMarkWalked() {
         guard authManager.hardModeEnabled else {
             markWalked(proximityVerified: nil)
@@ -789,6 +790,12 @@ struct StairwayBottomSheet: View {
             toastMessage = "Finish your walk at \(name) first."
             return
         }
+        // Create WalkRecord immediately so photos taken mid-walk have a record to attach to.
+        if walkRecord == nil {
+            let record = WalkRecord(stairwayID: stairway.id)
+            modelContext.insert(record)
+            try? modelContext.save()
+        }
         activeWalkManager.startWalk(stairwayID: stairway.id, name: stairway.name)
     }
 
@@ -822,11 +829,29 @@ struct StairwayBottomSheet: View {
         try? modelContext.save()
     }
 
-    private func unmarkWalk() {
-        guard let record = walkRecord else { return }
-        record.walked = false
-        record.updatedAt = Date()
-        try? modelContext.save()
+    private func retroactivelyPullHealthKitStats() {
+        guard let record = walkRecord, let dateWalked = record.dateWalked else { return }
+        guard record.canRetroactivelyPullStats else { return }
+        isRetroactivePullInProgress = true
+        Task {
+            let start = Calendar.current.startOfDay(for: dateWalked)
+            let end = Calendar.current.date(byAdding: .second, value: -1,
+                to: Calendar.current.startOfDay(
+                    for: Calendar.current.date(byAdding: .day, value: 1, to: dateWalked)!
+                ))!
+            let stats = await HealthKitService.fetchWalkStats(from: start, to: end)
+            await MainActor.run {
+                if stats.steps == nil && stats.elevationFeet == nil {
+                    toastMessage = "No HealthKit data found for this date."
+                } else {
+                    if let steps = stats.steps { record.stepCount = steps }
+                    if let elevation = stats.elevationFeet { record.elevationGain = elevation }
+                    record.updatedAt = Date()
+                    try? modelContext.save()
+                }
+                isRetroactivePullInProgress = false
+            }
+        }
     }
 
     private func removeRecord() {
@@ -876,7 +901,7 @@ struct StairwayBottomSheet: View {
             defer { addingAssetID = nil }
             guard let imageData = await suggestionService.loadFullImage(asset: asset) else { return }
             withAnimation {
-                suggestionService.suggestions.removeAll { $0.localIdentifier == id }
+                suggestionService.removeSuggestion(withID: id)
             }
             record.addedPhotoAssetIDs.append(id)
             record.updatedAt = Date()
@@ -888,7 +913,7 @@ struct StairwayBottomSheet: View {
         guard let record = walkRecord else { return }
         let id = asset.localIdentifier
         withAnimation {
-            suggestionService.suggestions.removeAll { $0.localIdentifier == id }
+            suggestionService.removeSuggestion(withID: id)
         }
         record.dismissedPhotoIDs.append(id)
         record.updatedAt = Date()

@@ -1,6 +1,6 @@
 # Project State — sf-stairways
 
-_Last updated: 2026-03-28_
+_Last updated: 2026-03-28 (healthkit-walk-stats-display)_
 
 ## Platform
 
@@ -30,6 +30,7 @@ _Last updated: 2026-03-28_
 
 ### 1. Solo UX — recent completions (2026-03-28)
 
+- **Camera during active walk** — camera `Menu` button in `activeSessionBanner` (Take Photo / Choose from Library); `WalkRecord(walked: false)` created immediately on Start Walk so mid-walk photos attach correctly; Cancel leaves the record with photos intact.
 - **Hard Mode confirmation prompt** — Mark Walked is never disabled; Hard Mode ON + out of range shows confirmation alert ("Mark Anyway" logs with `proximityVerified = false`). Amber `xmark.seal.fill` badge on unverified walks in list rows and detail sheet. Active Walk Mode completion auto-sets `proximityVerified = true`.
 - **Stairway Tags v1** — personal tagging system: `StairwayTag` + `TagAssignment` SwiftData models, tag editor sheet on detail view, tag pills in detail + search, map filter button (additive with state filter), preset tags from bundled JSON.
 - **Active walk mode** — timer, HealthKit steps/elevation, end/cancel flow
@@ -54,7 +55,8 @@ _Last updated: 2026-03-28_
 
 ### 2. Pending Specs
 
-No specs currently pending. `docs/specs/` is empty.
+- `SPEC_healthkit-walk-stats-display.md` — HealthKit walk stats visibility, diagnostics, retroactive pull
+- `SPEC_remove-saved-and-layout-tweaks.md` — Remove Saved concept; search bottom-right; settings left; Stats tab
 
 ### 3. App Store — Scaffold multi-user architecture
 
