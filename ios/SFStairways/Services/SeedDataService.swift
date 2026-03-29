@@ -24,6 +24,23 @@ struct SeedStairway: Codable {
 enum SeedDataService {
     private static let hasSeededKey = "com.sfstairways.hasSeededData"
     private static let hasSeededTagsKey = "com.sfstairways.hasSeededTags"
+    private static let hasCleanedUnwalkedKey = "com.sfstairways.hasCleanedUnwalked"
+
+    /// One-time migration: delete any WalkRecord where walked == false.
+    /// These were "saved but not walked" records from the old Saved concept, now orphaned.
+    static func cleanUnwalkedRecordsIfNeeded(modelContext: ModelContext) {
+        guard !UserDefaults.standard.bool(forKey: hasCleanedUnwalkedKey) else { return }
+        let descriptor = FetchDescriptor<WalkRecord>(predicate: #Predicate { !$0.walked })
+        let unwalked = (try? modelContext.fetch(descriptor)) ?? []
+        for record in unwalked {
+            modelContext.delete(record)
+        }
+        if !unwalked.isEmpty {
+            try? modelContext.save()
+            print("[SeedDataService] Cleaned up \(unwalked.count) unwalked (saved-only) records")
+        }
+        UserDefaults.standard.set(true, forKey: hasCleanedUnwalkedKey)
+    }
 
     static func seedIfNeeded(modelContext: ModelContext) {
         // Check for existing records first — CloudKit may have already delivered data

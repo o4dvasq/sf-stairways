@@ -1,4 +1,5 @@
 import AuthenticationServices
+import HealthKit
 import Supabase
 import SwiftUI
 
@@ -7,6 +8,9 @@ struct SettingsView: View {
     @Environment(SyncStatusManager.self) private var syncManager
 
     @AppStorage("curatorModeActive") private var curatorModeActive = false
+
+    // nil = checking, true = authorized, false = not authorized
+    @State private var healthKitAuthorized: Bool? = nil
 
     var body: some View {
         NavigationStack {
@@ -17,9 +21,13 @@ struct SettingsView: View {
                     curatorSection
                 }
                 iCloudSection
+                buildSection
             }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
+            .task {
+                healthKitAuthorized = await HealthKitService.isAuthorized()
+            }
         }
     }
 
@@ -122,6 +130,76 @@ struct SettingsView: View {
                 }
             }
             .disabled(!authManager.isAuthenticated)
+
+            healthKitRow
+        }
+    }
+
+    @ViewBuilder
+    private var healthKitRow: some View {
+        if !HKHealthStore.isHealthDataAvailable() {
+            Label {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("HealthKit: Not Available")
+                        .font(.subheadline)
+                    Text("HealthKit is not supported on this device")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            } icon: {
+                Image(systemName: "heart.slash")
+                    .foregroundStyle(.secondary)
+            }
+        } else if let authorized = healthKitAuthorized {
+            if authorized {
+                Label {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("HealthKit: Authorized")
+                            .font(.subheadline)
+                        Text("Steps and elevation captured during active walks")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                } icon: {
+                    Image(systemName: "heart.fill")
+                        .foregroundStyle(.green)
+                }
+            } else {
+                VStack(alignment: .leading, spacing: 8) {
+                    Label {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("HealthKit: Not Authorized")
+                                .font(.subheadline)
+                            Text("Walk stats won't be captured until access is granted")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    } icon: {
+                        Image(systemName: "heart.slash")
+                            .foregroundStyle(Color.brandAmber)
+                    }
+
+                    Button {
+                        Task {
+                            await HealthKitService.requestAuthorization()
+                            healthKitAuthorized = await HealthKitService.isAuthorized()
+                        }
+                    } label: {
+                        Text("Request Permission")
+                            .font(.subheadline)
+                            .foregroundStyle(Color.forestGreen)
+                    }
+                }
+                .padding(.vertical, 4)
+            }
+        } else {
+            Label {
+                Text("HealthKit")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            } icon: {
+                ProgressView()
+            }
         }
     }
 
@@ -192,6 +270,50 @@ struct SettingsView: View {
         case .unavailable:          return "Sync unavailable"
         case .error:                return "Sync error"
         }
+    }
+
+    // MARK: - Build Info
+
+    private var buildSection: some View {
+        Section {
+            HStack(spacing: 12) {
+                Image(systemName: "hammer")
+                    .foregroundStyle(.secondary)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(buildVersionString)
+                        .font(.subheadline)
+                    Text(buildDateString)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+            }
+            .padding(.vertical, 4)
+        }
+    }
+
+    private var buildVersionString: String {
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?"
+        let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "?"
+        return "v\(version) (\(build))"
+    }
+
+    private var buildDateString: String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return "Built \(formatter.string(from: buildDate))"
+    }
+
+    private var buildDate: Date {
+        // __DATE__ and __TIME__ aren't available in Swift, so use the
+        // executable's modification date as a reliable build timestamp.
+        guard let execURL = Bundle.main.executableURL,
+              let attrs = try? FileManager.default.attributesOfItem(atPath: execURL.path),
+              let date = attrs[.modificationDate] as? Date else {
+            return Date()
+        }
+        return date
     }
 
     private var syncDetail: String {

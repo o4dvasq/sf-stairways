@@ -68,7 +68,7 @@ struct TeardropShape: Shape {
 /// Three-state map pin: colored circles (gray/orange/green) per walk state.
 struct StairwayPin: View {
     enum PinState {
-        case unsaved, saved, walked
+        case unsaved, walked
     }
 
     let state: PinState
@@ -94,12 +94,11 @@ struct StairwayPin: View {
 
     private var pinSize: CGFloat {
         let base: CGFloat
-        if isSelected { base = 24 }
+        if isSelected { base = 28 }
         else {
             switch state {
-            case .unsaved: base = 12
-            case .saved: base = 16
-            case .walked: base = 16
+            case .unsaved: base = 18
+            case .walked: base = 22
             }
         }
         return base * scale
@@ -110,13 +109,11 @@ struct StairwayPin: View {
         if isSelected {
             switch state {
             case .unsaved: return Color.brandAmberDark
-            case .saved: return Color.pinSavedDark
             case .walked: return Color.walkedGreenDark
             }
         }
         switch state {
         case .unsaved: return Color.brandAmber
-        case .saved: return Color.pinSaved
         case .walked: return Color.walkedGreen
         }
     }
@@ -134,17 +131,14 @@ struct StairwayPin: View {
     HStack(spacing: 20) {
         VStack(spacing: 16) {
             StairwayPin(state: .unsaved)
-            StairwayPin(state: .saved)
             StairwayPin(state: .walked)
         }
-            VStack(spacing: 16) {
+        VStack(spacing: 16) {
             StairwayPin(state: .unsaved, isSelected: true)
-            StairwayPin(state: .saved, isSelected: true)
             StairwayPin(state: .walked, isSelected: true)
         }
         VStack(spacing: 16) {
             StairwayPin(state: .unsaved, isDimmed: true)
-            StairwayPin(state: .saved, isDimmed: true)
             StairwayPin(state: .walked, isDimmed: true)
         }
     }

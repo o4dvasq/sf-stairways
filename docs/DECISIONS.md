@@ -1,5 +1,16 @@
 # Architecture Decisions — sf-stairways
 
+## HealthKit authorization status: statusForAuthorizationRequest as proxy
+**Date:** 2026-03-28
+
+HealthKit does not expose read authorization status for read-only types — `authorizationStatus(for:)` always returns `.sharingDenied` for read-only types (iOS privacy protection). There is no direct API equivalent of "did the user say yes to Health read access?"
+
+**Chosen proxy: `statusForAuthorizationRequest(toShare:read:)`.** This async method returns `.unnecessary` once the authorization prompt has fired (regardless of the user's choice) and `.shouldRequest` before it has. We use `.unnecessary` as the "HealthKit connected" signal in the Settings view: it means the user has been asked and made a decision (step and elevation queries will run; whether they return data depends on what the user allowed, not on the status enum). If the user has never been asked (`.shouldRequest`), we show "Not Authorized" and a "Request Permission" button.
+
+**Why not attempt a test query.** Running a real HealthKit query at Settings-view-open time just to check authorization adds latency and potentially background activity. The `statusForAuthorizationRequest` call is fast, async, and semantically correct for our purpose.
+
+**`requestAuthorization()` as a public method.** The existing private `requestAuthorization(store:types:)` was exposed via a new public static `requestAuthorization()` for use from the Settings "Request Permission" button. If already determined, it completes instantly with no dialog — so tapping the button after prior denial opens nothing (expected behavior; directing users to iOS Settings > Health is the correct path for re-authorization but is not implemented, as it's an edge case for a personal app).
+
 ## Hard Mode: confirmation prompt over button disabling
 **Date:** 2026-03-28
 
@@ -290,3 +301,25 @@ The stair icon was also removed from the MapTab nav bar in this same session —
 **Full opacity on unsaved pins.** `Color.brandAmber.opacity(0.5)` on unsaved pins was nearly invisible on the dark map — transparency that reads as "de-emphasized" on white reads as "ghost" on dark. States are now differentiated by hue only (amber / light green / green), not transparency. Transparency is reserved for the `isDimmed` and `isClosed` states via the `opacity` modifier on the outer container.
 
 **Shadow updated for dark backgrounds.** Single dark shadow (`radius: 2, opacity: 0.2`) was invisible on a dark map. Replaced with a two-layer shadow: white glow (radius 3, opacity 0.3) for lift, plus black drop (radius 2, opacity 0.3, y: 2) for depth.
+
+## Saved concept removed: two-state model (Unsaved / Walked)
+**Date:** 2026-03-28
+
+The three-state model (Unsaved / Saved / Walked) was introduced to let users bookmark stairways for later. In practice the "Saved" state added complexity — a separate filter pill, Save/Unsave buttons in the action row, a bookmark badge in the bottom sheet, and a `WalkRecord(walked: false)` record that had to survive walk deletion — without providing meaningful value for a solo user who primarily discovers stairways by walking them.
+
+**Collapsed to two states.** Every stairway is either Unsaved (no WalkRecord) or Walked (WalkRecord.walked == true). The Saved intermediate state is gone. `StairwayAnnotation` now returns `.unsaved` for any record where `walked == false`. Action buttons for an unwalked stairway are "Start Walk" + "Mark Walked" (no Save). For a walked stairway, "Not Walked" calls `removeRecord()` directly — it no longer just sets `walked = false`, which would have recreated the old Saved state.
+
+**One-time migration.** `SeedDataService.cleanUnwalkedRecordsIfNeeded` (key: `com.sfstairways.hasCleanedUnwalked`) deletes any existing `WalkRecord` where `walked == false` on first launch. Called from `SFStairwaysApp` alongside the other seed calls. Walked records are untouched.
+
+**"Saved" filter pills removed** from both `StairwayFilter` (MapTab) and `ListFilter` (ListTab). `savedStairwayIDs` computed properties deleted. ListTab picker narrowed to 140pt (was 200pt) for the two remaining options.
+
+## Layout tweaks: search bottom-right, settings leading, Stats tab rename
+**Date:** 2026-03-28
+
+Three small UX changes bundled in the same spec:
+
+**Search button to bottom-right float.** The magnifyingglass button was removed from the trailing top bar buttons and added as a 32×32 circle floating above the ProgressCard in the `.overlay(alignment: .bottomTrailing)`. This clears the top bar and puts search closer to thumb reach.
+
+**Settings gear to leading.** The gear icon moved from the trailing HStack (where it competed with Around Me + Tag Filter) to the leading side of the top bar ZStack. The trailing side now holds only the two functional map controls: Around Me and Tag Filter.
+
+**Progress → Stats.** The tab label and navigation title were renamed from "Progress" to "Stats" (`ContentView.swift` tab label + `ProgressTab.swift` `.navigationTitle`). "Stats" is more concise and accurately describes the content (completion metrics, neighborhood breakdown, recent walks) without implying a goal-setting workflow.

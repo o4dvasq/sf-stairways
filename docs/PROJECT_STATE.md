@@ -1,13 +1,13 @@
 # Project State — sf-stairways
 
-_Last updated: 2026-03-28 (healthkit-walk-stats-display)_
+_Last updated: 2026-03-28_
 
 ## Platform
 
 ### iOS App (sole platform)
-- Swift/SwiftUI/iOS 17+ with Map, List, and Progress tabs
+- Swift/SwiftUI/iOS 17+ with Map, List, and **Stats** tabs
 - SwiftData + CloudKit — container init with CloudKit configured; falls back to local-only with detailed error logging if CloudKit fails
-- `SyncStatusManager` tracks live CloudKit event notifications; cloud icon in Progress tab shows sync state
+- `SyncStatusManager` tracks live CloudKit event notifications; cloud icon in Stats tab shows sync state
 - Supabase SDK integrated; `AuthManager` manages Sign in with Apple session
 - Photo capture with thumbnails, location services, seed data import
 - Successfully archived in Xcode on 2026-03-23
@@ -22,7 +22,6 @@ _Last updated: 2026-03-28 (healthkit-walk-stats-display)_
 | Metric | Value |
 |---|---|
 | Walked stairways | 8 |
-| Saved (un-walked) | 5 |
 | With photos | 0 |
 | All SF stairways (catalog) | 382 |
 
@@ -30,19 +29,21 @@ _Last updated: 2026-03-28 (healthkit-walk-stats-display)_
 
 ### 1. Solo UX — recent completions (2026-03-28)
 
-- **Camera during active walk** — camera `Menu` button in `activeSessionBanner` (Take Photo / Choose from Library); `WalkRecord(walked: false)` created immediately on Start Walk so mid-walk photos attach correctly; Cancel leaves the record with photos intact.
-- **Hard Mode confirmation prompt** — Mark Walked is never disabled; Hard Mode ON + out of range shows confirmation alert ("Mark Anyway" logs with `proximityVerified = false`). Amber `xmark.seal.fill` badge on unverified walks in list rows and detail sheet. Active Walk Mode completion auto-sets `proximityVerified = true`.
-- **Stairway Tags v1** — personal tagging system: `StairwayTag` + `TagAssignment` SwiftData models, tag editor sheet on detail view, tag pills in detail + search, map filter button (additive with state filter), preset tags from bundled JSON.
+- **Remove Saved concept + layout tweaks** — Two-state model (Unsaved / Walked); Save/Unsave buttons and Saved filter pills removed everywhere; "Not Walked" deletes the record; search button moves to bottom-right floating circle; settings gear to leading of top bar; Around Me + Tag Filter remain trailing; Progress tab renamed "Stats"; one-time migration deletes walked==false WalkRecords on first launch.
+- **HealthKit walk stats visibility** — walk method badge ("Active Walk" / "Active Walk (no HealthKit data)" / "Logged manually") below date in bottom sheet; "HealthKit data not found" diagnostic in stats row; retroactive HealthKit pull for manually-logged walks (amber CTA → confirmation alert → full-day query → silent update or toast); HealthKit auth status row in Settings.
+- **Camera during active walk** — camera button in activeSessionBanner; WalkRecord created on walk start so mid-walk photos attach correctly.
+- **Hard Mode confirmation prompt** — Mark Walked never disabled; Hard Mode ON + out of range shows confirmation alert. Amber badge on unverified walks. Active Walk completion sets proximityVerified=true.
+- **Stairway Tags v1** — StairwayTag + TagAssignment models, tag editor, pills in detail + search, map filter, preset tags.
 - **Active walk mode** — timer, HealthKit steps/elevation, end/cancel flow
 - **Photo suggestions** — suggested photos from walk day; PHAsset dedup, dismiss, add actions
-- **Photo camera roll save** — in-app camera captures saved via `PHPhotoLibrary`
-- **Photo persistence fix** — local photos visible in carousel; `PhotoSource` enum; `is_public` fix
+- **Photo camera roll save** — in-app camera captures saved via PHPhotoLibrary
+- **Photo persistence fix** — local photos visible in carousel; PhotoSource enum; is_public fix
 
 ### Previous completions (2026-03-28)
 - Launch zoom to nearest stairway after splash dismisses
 - Map pin tap targets 44pt min; zoom-responsive scale 1x–2x
 - Curator notes-to-commentary promotion flow wired
-- Expandable bottom sheet replaces two-view map flow, deletes `StairwayDetail`
+- Expandable bottom sheet replaces two-view map flow, deletes StairwayDetail
 
 ### Previous completions (2026-03-27 and earlier)
 - UI overhaul: amber accent, top bar redesign, splash fix, pin colors
@@ -50,29 +51,28 @@ _Last updated: 2026-03-28 (healthkit-walk-stats-display)_
 - Bug Fixes Round 1: map pins, Sign in with Apple code path, Hard Mode toggle
 - Curator social layer: photo carousel, curator commentary, photo likes, user-level Hard Mode (Supabase)
 - Supabase iOS integration: SDK, AuthManager, Sign in with Apple, SettingsView
-- Curator data layer: `StairwayOverride` model, verified stats with badge
-- See: `docs/specs/implemented/` for full spec history
+- Curator data layer: StairwayOverride model, verified stats with badge
+- See: docs/specs/implemented/ for full spec history
 
 ### 2. Pending Specs
 
-- `SPEC_healthkit-walk-stats-display.md` — HealthKit walk stats visibility, diagnostics, retroactive pull
-- `SPEC_remove-saved-and-layout-tweaks.md` — Remove Saved concept; search bottom-right; settings left; Stats tab
+No specs currently pending. docs/specs/ is empty.
 
 ### 3. App Store — Scaffold multi-user architecture
 
-- Supabase project: create project, run `supabase/schema.sql`, configure Apple provider in Dashboard
+- Supabase project: create project, run supabase/schema.sql, configure Apple provider in Dashboard
 
 ## Known Issues
 
 - CloudKit sync may still fall back to local if Xcode target lacks Background Modes → Remote Notifications capability (manual Xcode step — not in repo)
-- CKErrorDomain error 2 (not authenticated) surfaces as red error icon on Progress tab — separate from Supabase auth; requires CloudKit investigation
-- `supabase-swift` package + new files from curator social layer not yet confirmed added to Xcode target
-- Sign in with Apple: `signInError` display is temporary for debugging — remove after auth is confirmed working
+- CKErrorDomain error 2 (not authenticated) surfaces as red error icon on Stats tab — separate from Supabase auth; requires CloudKit investigation
+- supabase-swift package + new files from curator social layer not yet confirmed added to Xcode target
+- Sign in with Apple: signInError display is temporary for debugging — remove after auth is confirmed working
 - Supabase Apple provider config not yet manually verified (required for Sign in with Apple to work)
 
 ## Repository
 
-- `sf-stairways` (Dropbox) is the official project repository
-- Xcode project: `ios/SFStairways.xcodeproj` (in repo)
-- iOS source: `ios/SFStairways/` (Swift/SwiftUI)
-- See `docs/IOS_REFERENCE.md` for build details
+- sf-stairways (Dropbox) is the official project repository
+- Xcode project: ios/SFStairways.xcodeproj (in repo)
+- iOS source: ios/SFStairways/ (Swift/SwiftUI)
+- See docs/IOS_REFERENCE.md for build details

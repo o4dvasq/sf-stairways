@@ -18,7 +18,7 @@ struct StairwayAnnotation: View {
     }
 
     private var pinState: StairwayPin.PinState {
-        guard let record = walkRecord else { return .unsaved }
-        return record.walked ? .walked : .saved
+        guard let record = walkRecord, record.walked else { return .unsaved }
+        return .walked
     }
 }

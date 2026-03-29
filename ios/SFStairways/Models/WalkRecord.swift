@@ -54,4 +54,19 @@ final class WalkRecord {
     var photoArray: [WalkPhoto] {
         photos ?? []
     }
+
+    // Human-readable label for how the walk was recorded.
+    var walkMethod: String {
+        if walkStartTime != nil {
+            return stepCount != nil || elevationGain != nil ? "Active Walk" : "Active Walk (no HealthKit data)"
+        } else {
+            return "Logged manually"
+        }
+    }
+
+    // True when the walk was manually marked and has no HealthKit stats yet —
+    // meaning a retroactive pull could add data.
+    var canRetroactivelyPullStats: Bool {
+        walked && walkStartTime == nil && stepCount == nil && elevationGain == nil
+    }
 }

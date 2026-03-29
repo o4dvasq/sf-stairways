@@ -61,6 +61,7 @@ struct SFStairwaysApp: App {
                         print("[SFStairways] Store loaded \(store.stairways.count) stairways")
                         SeedDataService.seedIfNeeded(modelContext: modelContainer.mainContext)
                         SeedDataService.seedTagsIfNeeded(modelContext: modelContainer.mainContext)
+                        SeedDataService.cleanUnwalkedRecordsIfNeeded(modelContext: modelContainer.mainContext)
                     }
 
                 if showSplash {

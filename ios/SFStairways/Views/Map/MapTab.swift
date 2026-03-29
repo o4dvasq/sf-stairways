@@ -29,7 +29,6 @@ struct MapTab: View {
 
     enum StairwayFilter: String, CaseIterable {
         case all = "All"
-        case saved = "Saved"
         case walked = "Walked"
         case nearby = "Nearby"
     }
@@ -58,7 +57,7 @@ struct MapTab: View {
                     }
                 }
             }
-            .onMapCameraChange(frequency: .continuous) { context in
+            .onMapCameraChange(frequency: .onEnd) { context in
                 mapSpan = context.region.span.latitudeDelta
             }
             .mapStyle(.standard(elevation: .realistic))
@@ -69,11 +68,23 @@ struct MapTab: View {
                 MapScaleView()
             }
             .overlay(alignment: .bottomTrailing) {
-                ProgressCard(
-                    walkedCount: walkedCount,
-                    totalHeightFt: totalHeightFt,
-                    totalSteps: totalSteps
-                )
+                VStack(alignment: .trailing, spacing: 8) {
+                    Button {
+                        showSearch = true
+                    } label: {
+                        Image(systemName: "magnifyingglass")
+                            .font(.system(size: 15, weight: .semibold))
+                            .foregroundStyle(.white)
+                            .frame(width: 32, height: 32)
+                            .background(Color.white.opacity(0.2))
+                            .clipShape(Circle())
+                    }
+                    ProgressCard(
+                        walkedCount: walkedCount,
+                        totalHeightFt: totalHeightFt,
+                        totalSteps: totalSteps
+                    )
+                }
                 .padding(.trailing, 12)
                 .padding(.bottom, 24)
             }
@@ -162,32 +173,23 @@ struct MapTab: View {
                 .fill(Color.white)
                 .frame(width: 20, height: 20)
 
-            // Buttons pinned to trailing edge
             HStack {
+                // Settings on the leading side
+                Button {
+                    showSettings = true
+                } label: {
+                    Image(systemName: "gearshape")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .frame(width: 32, height: 32)
+                        .background(Color.white.opacity(0.2))
+                        .clipShape(Circle())
+                }
+
                 Spacer()
+
+                // Around Me + Tag Filter on the trailing side
                 HStack(spacing: 8) {
-                    Button {
-                        showSettings = true
-                    } label: {
-                        Image(systemName: "gearshape")
-                            .font(.system(size: 15, weight: .semibold))
-                            .foregroundStyle(.white)
-                            .frame(width: 32, height: 32)
-                            .background(Color.white.opacity(0.2))
-                            .clipShape(Circle())
-                    }
-
-                    Button {
-                        showSearch = true
-                    } label: {
-                        Image(systemName: "magnifyingglass")
-                            .font(.system(size: 15, weight: .semibold))
-                            .foregroundStyle(.white)
-                            .frame(width: 32, height: 32)
-                            .background(Color.white.opacity(0.2))
-                            .clipShape(Circle())
-                    }
-
                     Button {
                         toggleAroundMe()
                     } label: {
@@ -293,18 +295,8 @@ struct MapTab: View {
 
     // MARK: - Computed Properties
 
-    /// Lerps pin scale from 1.0 (city-wide) to 2.0 (street-level) based on map zoom.
-    private var pinScale: CGFloat {
-        let streetLevel: Double = 0.005
-        let cityLevel: Double = 0.05
-        let clamped = min(max(mapSpan, streetLevel), cityLevel)
-        let t = (cityLevel - clamped) / (cityLevel - streetLevel)
-        return CGFloat(1.0 + t)
-    }
-
-    private var savedStairwayIDs: Set<String> {
-        Set(walkRecords.filter { !$0.walked }.map(\.stairwayID))
-    }
+    /// Static pin scale — no dynamic resizing for performance.
+    private var pinScale: CGFloat { 1.0 }
 
     private var walkedStairwayIDs: Set<String> {
         Set(walkRecords.filter(\.walked).map(\.stairwayID))
@@ -333,8 +325,6 @@ struct MapTab: View {
         switch filter {
         case .all:
             return valid
-        case .saved:
-            return valid.filter { savedStairwayIDs.contains($0.id) }
         case .walked:
             return valid.filter { walkedStairwayIDs.contains($0.id) }
         case .nearby:
