@@ -2,6 +2,7 @@
 
 | Description | Implemented | Spec File |
 |---|---|---|
+| Map pin labels: 4-word truncation, hide at wide zoom | 2026-03-29 | SPEC_map-label-cleanup.md |
 | Green readability, notes bug fix, collapsible neighborhoods, Search tab | 2026-03-29 | SPEC_ux-fixes-round3.md |
 | Attribution links on detail screens; iOS + macOS acknowledgements section | 2026-03-29 | SPEC_attribution-and-acknowledgements.md |
 | macOS tag CRUD, table sorting nil-last, sidebar tag filter, iOS read-only, app icon | 2026-03-29 | SPEC_macos-tag-management.md |

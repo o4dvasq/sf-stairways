@@ -33,4 +33,17 @@ struct Stairway: Codable, Identifiable, Hashable {
         let stairLocation = CLLocation(latitude: lat, longitude: lng)
         return location.distance(from: stairLocation)
     }
+
+    /// Truncated name for map pin labels: first 4 words, trailing .,; stripped from each.
+    /// Full `name` is used everywhere else (detail sheet, list, search, progress tab).
+    var displayName: String {
+        let words = name.split(separator: " ", omittingEmptySubsequences: true).map(String.init)
+        guard words.count > 4 else { return name }
+        let truncated = words.prefix(4).map { word -> String in
+            var w = word
+            while let last = w.last, ".,;".contains(last) { w.removeLast() }
+            return w
+        }.filter { !$0.isEmpty }
+        return truncated.joined(separator: " ")
+    }
 }

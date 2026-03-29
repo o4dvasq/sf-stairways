@@ -45,6 +45,9 @@ _Last updated: 2026-03-29_
 ## Recent Completions
 
 ### 2026-03-29 (this session)
+- **Map label cleanup** — `Stairway.displayName` computed property truncates names to first 4 words, stripping trailing `.,;` from each word; used only for map annotation labels; at `mapSpan > 0.02` (city-wide zoom) labels are hidden entirely (`""` passed to `Annotation`); at `mapSpan <= 0.02` (neighborhood zoom or closer) the truncated `displayName` appears; full `name` unchanged everywhere else.
+
+### 2026-03-29 (earlier)
 - **UX fixes round 3** — `forestGreen` brightened to RGB 80/200/120 (#50C878) for dark-mode readability; notes auto-save on dismiss removed (explicit Save button only); collapsible `DisclosureGroup` neighborhoods in Stats tab (collapsed by default, expand to show walks sorted by date with name/steps/date); Stats card orange bar now contains "Stats" label (white text on brandAmber, replaces 4pt stripe); search promoted from floating circle to 4th tab (Map | List | Stats | Search) via new `SearchTab` wrapper in ContentView; `NavigationCoordinator` (`@Observable`) enables cross-tab stairway/neighborhood selection from Search; floating search circle + `showSearch` state removed from MapTab; annotation labels use `displayName` (first 4 words, trailing punctuation stripped, no ellipsis); labels hidden at `mapSpan > 0.02` (wider than neighborhood level).
 
 ### 2026-03-29 (earlier)
@@ -77,7 +80,7 @@ _Last updated: 2026-03-29_
 
 ## Pending Specs
 
-None.
+- `docs/specs/SPEC_ios-admin-app.md`
 
 ## Known Issues
 

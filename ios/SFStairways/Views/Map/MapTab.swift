@@ -38,7 +38,7 @@ struct MapTab: View {
 
                 ForEach(filteredStairways) { stairway in
                     if let coord = stairway.coordinate {
-                        Annotation(stairway.name, coordinate: coord, anchor: .bottom) {
+                        Annotation(mapSpan <= 0.02 ? stairway.displayName : "", coordinate: coord, anchor: .bottom) {
                             StairwayAnnotation(
                                 stairway: stairway,
                                 walkRecord: walkRecord(for: stairway),

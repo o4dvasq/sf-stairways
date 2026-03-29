@@ -179,7 +179,7 @@ Source at `ios/SFStairways/`. iOS is the primary user-facing platform. Web app d
 | `StairwayOverride` | `stairwayID`, `verifiedStepCount: Int?`, `verifiedHeightFt: Double?`, `stairwayDescription: String?`, `createdAt`, `updatedAt` |
 | `StairwayTag` | `id` (slug), `name`, `isPreset: Bool`, `createdAt` |
 | `TagAssignment` | `stairwayID`, `tagID`, `assignedAt` — many-to-many join; independent of `WalkRecord` |
-| `Stairway` | Value type loaded from `all_stairways.json` bundle resource; computed `displayName` truncates to first 4 words (strips trailing comma/period from 4th word, no ellipsis) — used for map annotation labels only; full `name` used everywhere else |
+| `Stairway` | Value type loaded from `all_stairways.json` bundle resource; computed `displayName` truncates to first 4 words, stripping trailing `.,;` from each word (no ellipsis) — used for map annotation labels only; full `name` used everywhere else |
 | `PhotoSource` | Enum (not SwiftData): `.remote(SupabasePhoto)` / `.local(WalkPhoto)`; `Identifiable`; `createdAt` for merged sort |
 
 #### Two-State Stairway Model
