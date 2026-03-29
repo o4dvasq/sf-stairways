@@ -58,6 +58,8 @@ struct SupabasePhoto: Codable, Identifiable {
         return formatter.date(from: createdAt)
     }
 
+    // SupabaseManager is iOS-only — macOS has no Supabase integration.
+#if !os(macOS)
     func thumbnailURL() -> URL? {
         let path = thumbnailPath ?? storagePath
         return SupabaseManager.shared.photoURL(storagePath: path)
@@ -66,6 +68,7 @@ struct SupabasePhoto: Codable, Identifiable {
     func fullImageURL() -> URL? {
         SupabaseManager.shared.photoURL(storagePath: storagePath)
     }
+#endif
 
     enum CodingKeys: String, CodingKey {
         case id, caption
