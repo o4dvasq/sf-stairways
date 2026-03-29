@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import Photos
 
 struct StairwayBottomSheet: View {
     let stairway: Stairway
@@ -8,8 +9,11 @@ struct StairwayBottomSheet: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(AuthManager.self) private var authManager
+    @Environment(ActiveWalkManager.self) private var activeWalkManager
     @Query private var walkRecords: [WalkRecord]
     @Query private var overrides: [StairwayOverride]
+    @Query private var allTags: [StairwayTag]
+    @Query private var allAssignments: [TagAssignment]
 
     @State private var showPhotoPicker = false
     @State private var showCamera = false
@@ -27,10 +31,16 @@ struct StairwayBottomSheet: View {
     // Supabase services
     @State private var curatorService = CuratorService()
     @State private var photoLikeService = PhotoLikeService()
+    @State private var suggestionService = PhotoSuggestionService()
+    @State private var addingAssetID: String?
 
     @AppStorage("curatorModeActive") private var curatorModeActive = false
 
+    @State private var showTagEditor = false
     @State private var triggerCuratorPromote = false
+    @State private var showCancelWalkAlert = false
+    @State private var showHardModeAlert = false
+    @State private var toastMessage: String? = nil
 
     private enum CuratorField: Hashable {
         case stepCount, height, description
@@ -53,7 +63,8 @@ struct StairwayBottomSheet: View {
         return (remote + local).sorted { $0.createdAt > $1.createdAt }
     }
 
-    private var isMarkWalkedDisabled: Bool {
+    // Start Walk remains proximity-gated — you should be at the stairway to begin a session.
+    private var isStartWalkDisabled: Bool {
         guard authManager.hardModeEnabled else { return false }
         return !locationManager.isWithinRadius(150, ofLatitude: stairway.lat ?? 0, longitude: stairway.lng ?? 0)
     }
@@ -74,8 +85,12 @@ struct StairwayBottomSheet: View {
 
                 headerSection
                 statsRow
-                walkStatusCard
-                actionButtons
+                if activeWalkManager.isActive(for: stairway.id) {
+                    activeSessionBanner
+                } else {
+                    walkStatusCard
+                    actionButtons
+                }
 
                 // ── Expanded content (revealed by dragging to .large) ─────
 
@@ -89,6 +104,8 @@ struct StairwayBottomSheet: View {
 
                 notesSection
 
+                tagsSection
+
                 // Curator editor (curator mode only — below notes)
                 if authManager.isCurator && curatorModeActive, let userId = authManager.userId {
                     CuratorEditorView(
@@ -100,6 +117,8 @@ struct StairwayBottomSheet: View {
                     )
                     .id("curatorEditor")
                 }
+
+                suggestedPhotosSection
 
                 PhotoCarousel(
                     photos: mergedPhotos,
@@ -134,6 +153,41 @@ struct StairwayBottomSheet: View {
             .padding(20)
         }
         .scrollDismissesKeyboard(.interactively)
+        .overlay(alignment: .top) {
+            if let msg = toastMessage {
+                Text(msg)
+                    .font(.subheadline)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 10)
+                    .background(Color(.systemGray2))
+                    .foregroundStyle(.white)
+                    .clipShape(Capsule())
+                    .padding(.top, 8)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+            }
+        }
+        .animation(.spring(), value: toastMessage)
+        .task(id: toastMessage) {
+            guard toastMessage != nil else { return }
+            try? await Task.sleep(for: .seconds(3))
+            toastMessage = nil
+        }
+        .alert("Cancel this walk?", isPresented: $showCancelWalkAlert) {
+            Button("Cancel Walk", role: .destructive) { activeWalkManager.cancelWalk() }
+            Button("Keep Walking", role: .cancel) { }
+        } message: {
+            Text("Your progress won't be saved.")
+        }
+        .alert("Mark as walked?", isPresented: $showHardModeAlert) {
+            Button("Cancel", role: .cancel) { }
+            Button("Mark Anyway") { markWalked(proximityVerified: false) }
+        } message: {
+            Text("You're not near this stairway. You can still log it, but it won't count as proximity-verified.")
+        }
+        .sheet(isPresented: $showTagEditor) {
+            TagEditorSheet(stairwayID: stairway.id)
+                .presentationDetents([.medium])
+        }
         .sheet(isPresented: $showPhotoPicker) {
             PhotoPicker { imageData in addPhoto(imageData: imageData) }
         }
@@ -152,6 +206,16 @@ struct StairwayBottomSheet: View {
                 await curatorService.fetchPublished(stairwayId: stairway.id)
             }
             await photoLikeService.fetchPhotos(stairwayId: stairway.id, userId: authManager.userId)
+        }
+        .task(id: walkRecord?.dateWalked) {
+            guard let record = walkRecord, record.walked, let dateWalked = record.dateWalked else {
+                return
+            }
+            await suggestionService.fetch(
+                dateWalked: dateWalked,
+                addedPhotoAssetIDs: record.addedPhotoAssetIDs,
+                dismissedPhotoIDs: record.dismissedPhotoIDs
+            )
         }
         .onChange(of: curatorFocus) { _, newFocus in
             if newFocus == nil && curatorDirty { saveCuratorData() }
@@ -224,6 +288,11 @@ struct StairwayBottomSheet: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
+            if let elevation = walkRecord?.elevationGain {
+                Text("\(Int(elevation)) ft gained")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
             let photoCount = mergedPhotos.count
             if photoCount > 0 {
                 Text("\(photoCount) \(photoCount == 1 ? "photo" : "photos")")
@@ -244,6 +313,60 @@ struct StairwayBottomSheet: View {
         .foregroundStyle(.secondary)
     }
 
+    // MARK: - Active Session Banner
+
+    private var activeSessionBanner: some View {
+        VStack(spacing: 14) {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Walking now")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .foregroundStyle(Color.walkedGreen)
+                    Text(formatElapsed(activeWalkManager.elapsedSeconds))
+                        .font(.system(size: 36, weight: .semibold, design: .monospaced))
+                        .foregroundStyle(.primary)
+                }
+                Spacer()
+            }
+            HStack(spacing: 10) {
+                Button {
+                    endWalkSession()
+                } label: {
+                    Text("End Walk")
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .background(Color.walkedGreen)
+                        .foregroundStyle(.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                }
+                Button {
+                    showCancelWalkAlert = true
+                } label: {
+                    Text("Cancel")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .background(Color(.systemGray5))
+                        .foregroundStyle(.secondary)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                }
+            }
+        }
+        .padding(14)
+        .background(Color.walkedGreen.opacity(0.08))
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+    }
+
+    private func formatElapsed(_ seconds: Int) -> String {
+        let m = seconds / 60
+        let s = seconds % 60
+        return String(format: "%02d:%02d", m, s)
+    }
+
     // MARK: - Walk Status Card
 
     private var walkStatusCard: some View {
@@ -254,10 +377,17 @@ struct StairwayBottomSheet: View {
                         .font(.title3)
                         .foregroundStyle(Color.walkedGreen)
                     VStack(alignment: .leading, spacing: 1) {
-                        Text("Walked")
-                            .font(.subheadline)
-                            .fontWeight(.medium)
-                            .foregroundStyle(Color.walkedGreen)
+                        HStack(spacing: 4) {
+                            Text("Walked")
+                                .font(.subheadline)
+                                .fontWeight(.medium)
+                                .foregroundStyle(Color.walkedGreen)
+                            if walkRecord?.proximityVerified == false {
+                                Image(systemName: "xmark.seal.fill")
+                                    .font(.caption)
+                                    .foregroundStyle(Color.brandAmber)
+                            }
+                        }
                         if let date = walkRecord?.dateWalked {
                             Text(date.formatted(date: .long, time: .omitted))
                                 .font(.caption)
@@ -278,7 +408,7 @@ struct StairwayBottomSheet: View {
                 .clipShape(RoundedRectangle(cornerRadius: 10))
             } else {
                 Button {
-                    markWalked()
+                    attemptMarkWalked()
                 } label: {
                     HStack(spacing: 8) {
                         Image(systemName: "checkmark.circle")
@@ -292,14 +422,6 @@ struct StairwayBottomSheet: View {
                     .background(Color.walkedGreen)
                     .foregroundStyle(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
-                }
-                .opacity(isMarkWalkedDisabled ? 0.4 : 1.0)
-                .disabled(isMarkWalkedDisabled)
-
-                if isMarkWalkedDisabled {
-                    Text("Hard Mode: get within 150m to mark as walked")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
                 }
             }
 
@@ -329,17 +451,19 @@ struct StairwayBottomSheet: View {
         switch state {
         case .unsaved:
             HStack(spacing: 10) {
+                ActionButton(title: "Start Walk", icon: "figure.walk", color: Color.forestGreen, action: startWalk)
+                    .opacity(isStartWalkDisabled ? 0.4 : 1.0)
+                    .disabled(isStartWalkDisabled)
                 ActionButton(title: "Save", icon: "bookmark", color: Color.brandAmber, action: saveStairway)
-                ActionButton(title: "Mark Walked", icon: "checkmark.circle", color: Color.walkedGreen, action: markWalked)
-                    .opacity(isMarkWalkedDisabled ? 0.4 : 1.0)
-                    .disabled(isMarkWalkedDisabled)
+                ActionButton(title: "Mark Walked", icon: "checkmark.circle", color: Color.walkedGreen, action: attemptMarkWalked)
             }
         case .saved:
             HStack(spacing: 10) {
+                ActionButton(title: "Start Walk", icon: "figure.walk", color: Color.forestGreen, action: startWalk)
+                    .opacity(isStartWalkDisabled ? 0.4 : 1.0)
+                    .disabled(isStartWalkDisabled)
                 ActionButton(title: "Unsave", icon: "bookmark.slash", color: .secondary, action: removeRecord)
-                ActionButton(title: "Mark Walked", icon: "checkmark.circle", color: Color.walkedGreen, action: markWalked)
-                    .opacity(isMarkWalkedDisabled ? 0.4 : 1.0)
-                    .disabled(isMarkWalkedDisabled)
+                ActionButton(title: "Mark Walked", icon: "checkmark.circle", color: Color.walkedGreen, action: attemptMarkWalked)
             }
         case .walked:
             HStack(spacing: 10) {
@@ -473,6 +597,82 @@ struct StairwayBottomSheet: View {
         }
     }
 
+    // MARK: - Tags Section
+
+    private var stairwayTags: [StairwayTag] {
+        let assignedTagIDs = Set(allAssignments.filter { $0.stairwayID == stairway.id }.map(\.tagID))
+        return allTags
+            .filter { assignedTagIDs.contains($0.id) }
+            .sorted { $0.name.lowercased() < $1.name.lowercased() }
+    }
+
+    private var tagsSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Tags")
+                .font(.subheadline)
+                .fontWeight(.medium)
+
+            FlowLayout(spacing: 8) {
+                ForEach(stairwayTags) { tag in
+                    Text(tag.name)
+                        .font(.subheadline)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .foregroundStyle(Color.forestGreen)
+                        .clipShape(Capsule())
+                        .overlay(Capsule().stroke(Color.forestGreen, lineWidth: 1))
+                }
+
+                Button {
+                    showTagEditor = true
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: "plus")
+                            .font(.system(size: 11, weight: .semibold))
+                        Text("Add Tag")
+                            .font(.subheadline)
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .foregroundStyle(.secondary)
+                    .clipShape(Capsule())
+                    .overlay(Capsule().stroke(Color(.separator), lineWidth: 0.5))
+                }
+            }
+        }
+    }
+
+    // MARK: - Suggested Photos Section
+
+    @ViewBuilder
+    private var suggestedPhotosSection: some View {
+        if isWalked,
+           let record = walkRecord,
+           let dateWalked = record.dateWalked,
+           !suggestionService.suggestions.isEmpty {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Suggested from \(dateWalked.formatted(date: .long, time: .omitted))")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(suggestionService.suggestions, id: \.localIdentifier) { asset in
+                            SuggestedPhotoCard(
+                                asset: asset,
+                                isAdding: addingAssetID == asset.localIdentifier,
+                                onAdd: { addSuggestedPhoto(asset: asset) },
+                                onDismiss: { dismissSuggestedPhoto(asset: asset) }
+                            )
+                        }
+                    }
+                    .padding(.vertical, 4)
+                }
+            }
+            .transition(.opacity)
+        }
+    }
+
     // MARK: - Curator Section (local StairwayOverride)
 
     @ViewBuilder
@@ -554,17 +754,71 @@ struct StairwayBottomSheet: View {
         try? modelContext.save()
     }
 
-    private func markWalked() {
+    private func attemptMarkWalked() {
+        guard authManager.hardModeEnabled else {
+            markWalked(proximityVerified: nil)
+            return
+        }
+        let isWithinRange = locationManager.isWithinRadius(150, ofLatitude: stairway.lat ?? 0, longitude: stairway.lng ?? 0)
+        if isWithinRange {
+            markWalked(proximityVerified: true)
+        } else {
+            showHardModeAlert = true
+        }
+    }
+
+    private func markWalked(proximityVerified: Bool? = nil) {
         if let record = walkRecord {
             record.walked = true
             record.dateWalked = record.dateWalked ?? Date()
             record.hardModeAtCompletion = authManager.hardModeEnabled
+            record.proximityVerified = proximityVerified
             record.updatedAt = Date()
         } else {
             let record = WalkRecord(stairwayID: stairway.id, walked: true, dateWalked: Date())
             record.hardModeAtCompletion = authManager.hardModeEnabled
+            record.proximityVerified = proximityVerified
             modelContext.insert(record)
         }
+        try? modelContext.save()
+    }
+
+    private func startWalk() {
+        if activeWalkManager.hasActiveSession && !activeWalkManager.isActive(for: stairway.id) {
+            let name = activeWalkManager.activeStairwayName ?? "another stairway"
+            toastMessage = "Finish your walk at \(name) first."
+            return
+        }
+        activeWalkManager.startWalk(stairwayID: stairway.id, name: stairway.name)
+    }
+
+    private func endWalkSession() {
+        guard let window = activeWalkManager.endWalk() else { return }
+        Task {
+            let stats = await HealthKitService.fetchWalkStats(from: window.startTime, to: window.endTime)
+            await MainActor.run {
+                finalizeActiveWalk(startTime: window.startTime, endTime: window.endTime, steps: stats.steps, elevation: stats.elevationFeet)
+            }
+        }
+    }
+
+    private func finalizeActiveWalk(startTime: Date, endTime: Date, steps: Int?, elevation: Double?) {
+        let record: WalkRecord
+        if let existing = walkRecord {
+            record = existing
+        } else {
+            record = WalkRecord(stairwayID: stairway.id)
+            modelContext.insert(record)
+        }
+        record.walked = true
+        record.dateWalked = startTime
+        record.walkStartTime = startTime
+        record.walkEndTime = endTime
+        record.hardModeAtCompletion = authManager.hardModeEnabled
+        record.proximityVerified = authManager.hardModeEnabled ? true : nil
+        if let steps { record.stepCount = steps }
+        if let elevation { record.elevationGain = elevation }
+        record.updatedAt = Date()
         try? modelContext.save()
     }
 
@@ -614,6 +868,33 @@ struct StairwayBottomSheet: View {
         }
     }
 
+    private func addSuggestedPhoto(asset: PHAsset) {
+        guard let record = walkRecord else { return }
+        let id = asset.localIdentifier
+        addingAssetID = id
+        Task {
+            defer { addingAssetID = nil }
+            guard let imageData = await suggestionService.loadFullImage(asset: asset) else { return }
+            withAnimation {
+                suggestionService.suggestions.removeAll { $0.localIdentifier == id }
+            }
+            record.addedPhotoAssetIDs.append(id)
+            record.updatedAt = Date()
+            addPhoto(imageData: imageData)
+        }
+    }
+
+    private func dismissSuggestedPhoto(asset: PHAsset) {
+        guard let record = walkRecord else { return }
+        let id = asset.localIdentifier
+        withAnimation {
+            suggestionService.suggestions.removeAll { $0.localIdentifier == id }
+        }
+        record.dismissedPhotoIDs.append(id)
+        record.updatedAt = Date()
+        try? modelContext.save()
+    }
+
     private func saveNotes() {
         if let record = walkRecord {
             record.notes = notesText.isEmpty ? nil : notesText
@@ -661,6 +942,86 @@ struct StairwayBottomSheet: View {
         override.stairwayDescription = descValue
         override.updatedAt = Date()
         try? modelContext.save()
+    }
+}
+
+// MARK: - Suggested Photo Card
+
+private struct SuggestedPhotoCard: View {
+    let asset: PHAsset
+    let isAdding: Bool
+    let onAdd: () -> Void
+    let onDismiss: () -> Void
+
+    @State private var thumbnail: UIImage?
+
+    var body: some View {
+        ZStack(alignment: .topTrailing) {
+            Group {
+                if let img = thumbnail {
+                    Image(uiImage: img)
+                        .resizable()
+                        .scaledToFill()
+                } else {
+                    Color(.systemGray5)
+                }
+            }
+            .frame(width: 100, height: 100)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+
+            // Dismiss button — top-right
+            Button(action: onDismiss) {
+                Image(systemName: "xmark.circle.fill")
+                    .font(.system(size: 18))
+                    .foregroundStyle(.white)
+                    .shadow(radius: 1)
+            }
+            .padding(4)
+            .disabled(isAdding)
+
+            if isAdding {
+                ZStack {
+                    Color.black.opacity(0.35)
+                    ProgressView()
+                        .tint(.white)
+                }
+                .frame(width: 100, height: 100)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+            } else {
+                // Add button — bottom-left
+                VStack {
+                    Spacer()
+                    HStack {
+                        Button(action: onAdd) {
+                            Image(systemName: "plus.circle.fill")
+                                .font(.system(size: 22))
+                                .foregroundStyle(.white)
+                                .shadow(radius: 1)
+                        }
+                        .padding(4)
+                        Spacer()
+                    }
+                }
+                .frame(width: 100, height: 100)
+            }
+        }
+        .frame(width: 100, height: 100)
+        .task {
+            let options = PHImageRequestOptions()
+            options.deliveryMode = .highQualityFormat
+            options.isNetworkAccessAllowed = true
+            options.isSynchronous = false
+            thumbnail = await withCheckedContinuation { continuation in
+                PHImageManager.default().requestImage(
+                    for: asset,
+                    targetSize: CGSize(width: 200, height: 200),
+                    contentMode: .aspectFill,
+                    options: options
+                ) { image, _ in
+                    continuation.resume(returning: image)
+                }
+            }
+        }
     }
 }
 

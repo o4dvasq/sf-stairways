@@ -63,9 +63,15 @@ struct StairwayRow: View {
                 }
 
                 if isWalked {
-                    Image(systemName: "checkmark")
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(Color.walkedGreen)
+                    if walkRecord?.proximityVerified == false {
+                        Image(systemName: "xmark.seal.fill")
+                            .font(.system(size: 14))
+                            .foregroundStyle(Color.brandAmber)
+                    } else {
+                        Image(systemName: "checkmark")
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundStyle(Color.walkedGreen)
+                    }
                 } else {
                     Circle()
                         .stroke(Color(.separator), lineWidth: 1.5)
