@@ -6,9 +6,10 @@ struct SFStairwaysApp: App {
     let modelContainer: ModelContainer
     let syncStatusManager: SyncStatusManager
     let authManager: AuthManager
+    let activeWalkManager = ActiveWalkManager()
 
     init() {
-        let schema = Schema([WalkRecord.self, WalkPhoto.self, StairwayOverride.self])
+        let schema = Schema([WalkRecord.self, WalkPhoto.self, StairwayOverride.self, StairwayTag.self, TagAssignment.self])
         let manager = SyncStatusManager()
 
         // Attempt CloudKit-backed container. Common failure reasons:
@@ -59,6 +60,7 @@ struct SFStairwaysApp: App {
                         let store = StairwayStore()
                         print("[SFStairways] Store loaded \(store.stairways.count) stairways")
                         SeedDataService.seedIfNeeded(modelContext: modelContainer.mainContext)
+                        SeedDataService.seedTagsIfNeeded(modelContext: modelContainer.mainContext)
                     }
 
                 if showSplash {
@@ -77,5 +79,6 @@ struct SFStairwaysApp: App {
         .modelContainer(modelContainer)
         .environment(syncStatusManager)
         .environment(authManager)
+        .environment(activeWalkManager)
     }
 }

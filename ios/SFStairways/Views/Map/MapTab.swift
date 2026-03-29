@@ -5,6 +5,8 @@ import SwiftData
 struct MapTab: View {
     @Query private var walkRecords: [WalkRecord]
     @Query private var overrides: [StairwayOverride]
+    @Query private var allTags: [StairwayTag]
+    @Query private var allTagAssignments: [TagAssignment]
     @State private var store = StairwayStore()
     @State private var locationManager = LocationManager()
     @State private var aroundMe = AroundMeManager()
@@ -17,8 +19,10 @@ struct MapTab: View {
     )
     @State private var mapSpan: Double = 0.06
     @State private var filter: StairwayFilter = .all
+    @State private var activeTagFilter: String? = nil
     @State private var showSearch: Bool = false
     @State private var showSettings: Bool = false
+    @State private var showTagFilter: Bool = false
     @State private var toastMessage: String? = nil
     @State private var hasZoomedToNearest = false
     @State private var launchTime: Date = .now
@@ -102,6 +106,10 @@ struct MapTab: View {
                 .presentationDragIndicator(.visible)
                 .presentationBackgroundInteraction(.enabled(upThrough: .height(390)))
         }
+        .sheet(isPresented: $showTagFilter) {
+            TagFilterSheet(activeTagID: $activeTagFilter)
+                .presentationDetents([.medium])
+        }
         .sheet(isPresented: $showSettings) {
             SettingsView()
         }
@@ -126,6 +134,12 @@ struct MapTab: View {
         }
         .onAppear {
             locationManager.requestPermission()
+        }
+        .onChange(of: activeTagFilter) { _, newTagID in
+            showTagDroppedToastIfNeeded(for: newTagID)
+        }
+        .onChange(of: filter) { _, _ in
+            showTagDroppedToastIfNeeded(for: activeTagFilter)
         }
         .onChange(of: locationManager.currentLocation) { _, newLocation in
             guard let location = newLocation, !hasZoomedToNearest else { return }
@@ -182,6 +196,17 @@ struct MapTab: View {
                             .foregroundStyle(.white)
                             .frame(width: 32, height: 32)
                             .background(aroundMe.isActive ? Color.white.opacity(0.35) : Color.white.opacity(0.2))
+                            .clipShape(Circle())
+                    }
+
+                    Button {
+                        showTagFilter = true
+                    } label: {
+                        Image(systemName: activeTagFilter != nil ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle")
+                            .font(.system(size: 15, weight: .semibold))
+                            .foregroundStyle(activeTagFilter != nil ? Color.brandAmber : .white)
+                            .frame(width: 32, height: 32)
+                            .background(activeTagFilter != nil ? Color.brandAmber.opacity(0.25) : Color.white.opacity(0.2))
                             .clipShape(Circle())
                     }
                 }
@@ -302,7 +327,8 @@ struct MapTab: View {
         walkRecords.filter(\.walked).compactMap(\.stepCount).reduce(0, +)
     }
 
-    private var filteredStairways: [Stairway] {
+    /// Stairways passing the state filter only (no tag filter applied).
+    private var stateFilteredStairways: [Stairway] {
         let valid = store.stairways.filter { $0.hasValidCoordinate }
         switch filter {
         case .all:
@@ -316,6 +342,32 @@ struct MapTab: View {
             return valid
                 .filter { $0.distance(from: location) < 1500 }
                 .sorted { $0.distance(from: location) < $1.distance(from: location) }
+        }
+    }
+
+    /// Stairways passing both the state filter and the active tag filter (AND logic).
+    /// If AND yields zero results the state filter is dropped and only the tag filter applies.
+    private var filteredStairways: [Stairway] {
+        let stateResult = stateFilteredStairways
+        guard let activeTag = activeTagFilter else { return stateResult }
+
+        let taggedIDs = Set(allTagAssignments.filter { $0.tagID == activeTag }.map(\.stairwayID))
+        let combined = stateResult.filter { taggedIDs.contains($0.id) }
+
+        if combined.isEmpty {
+            // Drop state filter — show all stairways matching the tag
+            return store.stairways.filter { $0.hasValidCoordinate && taggedIDs.contains($0.id) }
+        }
+        return combined
+    }
+
+    private func showTagDroppedToastIfNeeded(for tagID: String?) {
+        guard let tagID, filter != .all else { return }
+        let taggedIDs = Set(allTagAssignments.filter { $0.tagID == tagID }.map(\.stairwayID))
+        let stateMatchCount = stateFilteredStairways.filter { taggedIDs.contains($0.id) }.count
+        if stateMatchCount == 0 {
+            let tagName = allTags.first(where: { $0.id == tagID })?.name ?? tagID
+            toastMessage = "No \(filter.rawValue.lowercased()) stairways with "\(tagName)" — showing all tagged."
         }
     }
 

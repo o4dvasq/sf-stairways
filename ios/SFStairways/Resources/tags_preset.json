@@ -1,0 +1,11 @@
+[
+  {"id": "views", "name": "Views"},
+  {"id": "easy", "name": "Easy"},
+  {"id": "short", "name": "Short"},
+  {"id": "long", "name": "Long"},
+  {"id": "good-workout", "name": "Good workout"},
+  {"id": "coffee-nearby", "name": "Coffee nearby"},
+  {"id": "easy-parking", "name": "Easy parking"},
+  {"id": "hidden-gem", "name": "Hidden gem"},
+  {"id": "kid-friendly", "name": "Kid-friendly"}
+]

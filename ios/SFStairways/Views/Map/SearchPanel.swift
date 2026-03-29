@@ -1,6 +1,7 @@
 import SwiftUI
 import MapKit
 import CoreLocation
+import SwiftData
 
 struct SearchPanel: View {
     let store: StairwayStore
@@ -10,14 +11,19 @@ struct SearchPanel: View {
     let onSelectNeighborhood: (String) -> Void
     let onDismiss: () -> Void
 
+    @Query private var allTags: [StairwayTag]
+    @Query private var allAssignments: [TagAssignment]
+
     @State private var query: String = ""
     @State private var activeTab: SearchTab = .name
+    @State private var selectedTag: StairwayTag? = nil
     @FocusState private var isSearchFocused: Bool
 
     enum SearchTab: String, CaseIterable {
         case name = "Name"
         case street = "Street"
         case neighborhood = "Neighborhood"
+        case tags = "Tags"
     }
 
     var body: some View {
@@ -76,6 +82,8 @@ struct SearchPanel: View {
                 // Results
                 if activeTab == .neighborhood {
                     neighborhoodResults
+                } else if activeTab == .tags {
+                    tagsResults
                 } else {
                     stairwayResults
                 }
@@ -89,6 +97,10 @@ struct SearchPanel: View {
             }
         }
         .onAppear { isSearchFocused = true }
+        .onChange(of: activeTab) { _, _ in
+            selectedTag = nil
+            query = ""
+        }
     }
 
     // MARK: - Stairway Results (Name / Street tabs)
@@ -149,6 +161,98 @@ struct SearchPanel: View {
         .overlay {
             if groups.isEmpty {
                 ContentUnavailableView.search(text: query)
+            }
+        }
+    }
+
+    // MARK: - Tags Results
+
+    @ViewBuilder
+    private var tagsResults: some View {
+        if let tag = selectedTag {
+            tagStairwayList(for: tag)
+        } else {
+            tagPillGrid
+        }
+    }
+
+    private var tagPillGrid: some View {
+        let tagsWithAssignments = allTags
+            .filter { tag in allAssignments.contains(where: { $0.tagID == tag.id }) }
+            .sorted { $0.name.lowercased() < $1.name.lowercased() }
+
+        return ScrollView {
+            if tagsWithAssignments.isEmpty {
+                ContentUnavailableView(
+                    "No tags yet",
+                    systemImage: "tag",
+                    description: Text("Tag stairways from their detail view")
+                )
+                .padding(.top, 40)
+            } else {
+                FlowLayout(spacing: 8) {
+                    ForEach(tagsWithAssignments) { tag in
+                        let count = allAssignments.filter { $0.tagID == tag.id }.count
+                        Button {
+                            selectedTag = tag
+                        } label: {
+                            VStack(spacing: 2) {
+                                Text(tag.name)
+                                    .font(.subheadline)
+                                    .fontWeight(.medium)
+                                Text("\(count)")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 10)
+                            .background(Color(.systemGray6))
+                            .foregroundStyle(.primary)
+                            .clipShape(Capsule())
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding()
+            }
+        }
+    }
+
+    private func tagStairwayList(for tag: StairwayTag) -> some View {
+        let taggedIDs = Set(allAssignments.filter { $0.tagID == tag.id }.map(\.stairwayID))
+        let stairways = store.stairways
+            .filter { taggedIDs.contains($0.id) }
+            .sorted { $0.name < $1.name }
+
+        return VStack(alignment: .leading, spacing: 0) {
+            Button {
+                selectedTag = nil
+            } label: {
+                HStack(spacing: 4) {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 13, weight: .semibold))
+                    Text(tag.name)
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                }
+                .foregroundStyle(Color.forestGreen)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 10)
+            }
+
+            List(stairways) { stairway in
+                Button {
+                    onSelectStairway(stairway)
+                } label: {
+                    StairwaySearchRow(stairway: stairway, userLocation: userLocation)
+                }
+                .buttonStyle(.plain)
+            }
+            .listStyle(.plain)
+            .overlay {
+                if stairways.isEmpty {
+                    ContentUnavailableView("No stairways tagged", systemImage: "tag")
+                }
             }
         }
     }
