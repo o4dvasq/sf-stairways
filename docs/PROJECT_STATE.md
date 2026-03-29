@@ -28,20 +28,20 @@ _Last updated: 2026-03-28_
 
 ## Active Workstreams
 
-### 1. Solo UX — Photo Camera Roll Save (just completed 2026-03-28)
+### 1. Solo UX — recent completions (2026-03-28)
 
-In-app camera captures now save to the system camera roll via `PHPhotoLibrary`:
-
-- **`CameraPicker.Coordinator`** fires `PHPhotoLibrary.shared().performChanges(...)` immediately after capturing — saves to camera roll before calling `onCapture`, which is fire-and-forget (no completion handler, silent failure on permission denial).
-- **`NSPhotoLibraryAddUsageDescription`** added to `Info.plist` — add-only permission, does not request full library read access.
-- Photo picker path (`PhotoPicker`) is unchanged — images chosen from library are already in the camera roll.
+- **Hard Mode confirmation prompt** — Mark Walked is never disabled; Hard Mode ON + out of range shows confirmation alert ("Mark Anyway" logs with `proximityVerified = false`). Amber `xmark.seal.fill` badge on unverified walks in list rows and detail sheet. Active Walk Mode completion auto-sets `proximityVerified = true`.
+- **Stairway Tags v1** — personal tagging system: `StairwayTag` + `TagAssignment` SwiftData models, tag editor sheet on detail view, tag pills in detail + search, map filter button (additive with state filter), preset tags from bundled JSON.
+- **Active walk mode** — timer, HealthKit steps/elevation, end/cancel flow
+- **Photo suggestions** — suggested photos from walk day; PHAsset dedup, dismiss, add actions
+- **Photo camera roll save** — in-app camera captures saved via `PHPhotoLibrary`
+- **Photo persistence fix** — local photos visible in carousel; `PhotoSource` enum; `is_public` fix
 
 ### Previous completions (2026-03-28)
-- Fix local photos invisible: carousel merges Supabase + local SwiftData photos; `PhotoInsert` sets `is_public = true`
-- Launch zoom to nearest stairway after splash dismisses; falls back to city-wide default
+- Launch zoom to nearest stairway after splash dismisses
 - Map pin tap targets 44pt min; zoom-responsive scale 1x–2x
-- Curator notes-to-commentary promotion flow wired (pre-fill editor, scroll, binding)
-- Expandable bottom sheet replaces two-view map flow, deletes `StairwayDetail`; `ListTab` updated to use same sheet; `MapTab` simplified
+- Curator notes-to-commentary promotion flow wired
+- Expandable bottom sheet replaces two-view map flow, deletes `StairwayDetail`
 
 ### Previous completions (2026-03-27 and earlier)
 - UI overhaul: amber accent, top bar redesign, splash fix, pin colors
@@ -50,16 +50,11 @@ In-app camera captures now save to the system camera roll via `PHPhotoLibrary`:
 - Curator social layer: photo carousel, curator commentary, photo likes, user-level Hard Mode (Supabase)
 - Supabase iOS integration: SDK, AuthManager, Sign in with Apple, SettingsView
 - Curator data layer: `StairwayOverride` model, verified stats with badge
-- UI Improvements v2: slimmer nav bar, icon-free pins, ProgressCard width fix, detail mini-map, Save button
-- Hard Mode: per-stairway proximity-gated walk verification with unverified badge
 - See: `docs/specs/implemented/` for full spec history
 
-### 2. Pending Specs (ready for Claude Code)
+### 2. Pending Specs
 
-Two specs in `docs/specs/` awaiting implementation:
-
-- **SPEC_photo-time-window-suggestions.md** — Suggest photos from the user's camera roll taken near a stairway during a walk window.
-- **SPEC_active-walk-mode.md** — Active walk mode: start/stop a timed walk session with location tracking.
+No specs currently pending. `docs/specs/` is empty.
 
 ### 3. App Store — Scaffold multi-user architecture
 

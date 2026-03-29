@@ -1,5 +1,33 @@
 # Architecture Decisions — sf-stairways
 
+## Hard Mode: confirmation prompt over button disabling
+**Date:** 2026-03-28
+
+The original Hard Mode spec disabled the Mark Walked button when the user was >150m from the stairway. This was punitive UX — users with Hard Mode on couldn't log a walk at all from a distance, even if they genuinely walked it and just forgot to log it in time.
+
+**Confirmation prompt approach.** Mark Walked is now always enabled. When Hard Mode is ON and the user is >150m away, tapping fires a `.alert("Mark as walked?")` with a "Mark Anyway" path that logs with `proximityVerified = false`. Within 150m, it marks immediately with `proximityVerified = true`. Hard Mode OFF marks with `proximityVerified = nil` (no Hard Mode context).
+
+**Start Walk remains proximity-gated.** Unlike Mark Walked, Start Walk implies you are physically beginning a session at the stairway. The gate was preserved there via a renamed `isStartWalkDisabled` property (same logic, different name). Active Walk Mode completion always sets `proximityVerified = true` — starting a session is proof of presence.
+
+**`xmark.seal.fill` badge, not `exclamationmark.triangle.fill`.** The triangle felt harsh for a soft signal ("you logged this from a distance"). The seal shape matches the `checkmark.seal.fill` verified badge exactly in shape and size, just amber+xmark instead of green+checkmark. Same visual vocabulary — unverified is the inverse of verified, not an error.
+
+## Stairway Tags: TagAssignment as independent model, FlowLayout for pill grids
+**Date:** 2026-03-28
+
+Tags are stored as two independent SwiftData models (`StairwayTag` + `TagAssignment`) rather than as an array field on `WalkRecord` or `Stairway`.
+
+**Why independent of WalkRecord.** Tags are an annotation on a *place*, not a *walk event*. A stairway can be tagged before it's ever walked, and tags should survive if a walk record is deleted or reset. Keying by `stairwayID` (same pattern as `StairwayOverride`) gives tags a lifecycle independent of walk state — no cascading deletes, no ordering ambiguity.
+
+**Why not embed tags on Stairway.** `Stairway` is a value type loaded from a bundled JSON file — it's read-only catalog data. Mutable user annotations must live in SwiftData, not in the static catalog.
+
+**Slug-based IDs.** Tag IDs are lowercase slugs derived from the name (spaces → hyphens, non-alphanumeric stripped). This makes preset tags human-readable in the data store, avoids UUID collision with user-created tags that happen to have the same name as a preset (they'll share the same ID and thus the same `StairwayTag` row), and is stable across devices because CloudKit delivers the same `id` string.
+
+**FlowLayout via SwiftUI Layout protocol.** A custom `FlowLayout: Layout` wraps pill buttons into rows, respecting variable pill widths. `LazyVGrid(.adaptive(minimum:))` was rejected because it makes all cells the same width — pill widths should be content-driven. The `Layout` implementation is ~30 lines and works on iOS 16+ (app targets iOS 17+). It's defined in `TagEditorSheet.swift` and used by both the editor sheet and the filter sheet.
+
+**Single-select tag filter on the map.** The spec allows exactly one active tag filter at a time for the map. Multi-select AND logic would quickly produce empty result sets (most tags have a handful of assignments), making the feature feel broken. Single-select keeps the mental model simple: "show me stairways with this tag." The AND with the state filter is already one level of compounding; adding multi-tag AND on top would create a combinatorially empty UI with no good recovery path.
+
+**State-filter drop on zero AND results, not a user-configurable OR.** When the AND of state + tag yields zero, the app silently drops the state filter and shows all tagged stairways, with a toast explaining what happened. An OR mode was rejected because it would require a different filter paradigm (radio buttons → checkboxes → OR/AND toggle) and significantly complicate the UI. The drop behavior is transparent and self-explaining via the toast.
+
 ## Photo persistence: PhotoSource enum + local-first display with upload dedup
 **Date:** 2026-03-28
 

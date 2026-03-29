@@ -116,7 +116,7 @@ Source at `ios/SFStairways/`. **iOS is the sole active platform** — web app de
 | File | Role |
 |---|---|
 | `SyncStatusManager.swift` | `@Observable` — listens to `NSPersistentCloudKitContainer.eventChangedNotification`, exposes `.state` enum |
-| `SeedDataService.swift` | Seeds `WalkRecord` data from `target_list.json` on first launch; skips if records already exist (CloudKit delivery) or UserDefaults flag set |
+| `SeedDataService.swift` | Seeds `WalkRecord` data from `target_list.json` on first launch (key: `com.sfstairways.hasSeededData`); seeds preset `StairwayTag` records from `tags_preset.json` on first launch (key: `com.sfstairways.hasSeededTags`); both seed paths check existing record count first to handle CloudKit delivery |
 | `LocationManager.swift` | CLLocationManager wrapper for current location; `isWithinRadius(_:ofLatitude:longitude:)` for Hard Mode proximity check |
 | `PhotoService.swift` | Photo capture, thumbnail generation; `CameraPicker.Coordinator` saves to system camera roll via `PHPhotoLibrary.performChanges` (fire-and-forget, silent failure on permission denial) |
 | `SupabaseManager.swift` | Singleton Supabase client; reads project URL + anon key from `Config/Supabase.plist` (gitignored); crashes with clear message if plist is missing |
@@ -129,6 +129,8 @@ Source at `ios/SFStairways/`. **iOS is the sole active platform** — web app de
 | `WalkRecord` | `stairwayID`, `walked`, `dateWalked`, `notes`, `stepCount`, `photos: [WalkPhoto]?`, `hardMode: Bool`, `proximityVerified: Bool?` |
 | `WalkPhoto` | `imageData` (externalStorage), `thumbnailData` (externalStorage), `caption`, `walkRecord` |
 | `StairwayOverride` | `stairwayID`, `verifiedStepCount: Int?`, `verifiedHeightFt: Double?`, `stairwayDescription: String?`, `createdAt`, `updatedAt` |
+| `StairwayTag` | `id` (slug), `name`, `isPreset: Bool`, `createdAt` |
+| `TagAssignment` | `stairwayID`, `tagID`, `assignedAt` — many-to-many join; independent of `WalkRecord` |
 | `Stairway` | Value type loaded from `all_stairways.json` bundle resource |
 | `PhotoSource` | Enum (not SwiftData): `.remote(SupabasePhoto)` / `.local(WalkPhoto)`; `Identifiable`; `createdAt` for merged sort |
 
@@ -141,7 +143,7 @@ Every stairway exists in one of three states, derived from `WalkRecord`:
 
 **Pins** are colored circles: gray (`Color(white: 0.55)`) for unsaved, `brandOrange` for saved, `walkedGreen` for walked. Selected pins use darker variants and expand to 24pt diameter. Unselected base sizes: 12pt (unsaved), 16pt (saved/walked). All sizes are multiplied by a `scale` factor (1.0–2.0) driven by map zoom level. Tap target is `max(44, scaledSize)` via an outer frame + `.contentShape(Rectangle())`. Thin dark stroke overlay (0.3 opacity, 1pt). Dimmed pins render at 30% opacity. Closed stairways use `unwalkedSlate` at 40% opacity. `TeardropShape` and `StairShape` are kept in `TeardropPin.swift` for future use.
 
-**Unverified badge:** Walked pins with `hardMode = true` and `proximityVerified = false` display a 10pt amber (`accentAmber` #E8A838) circle with an exclamation mark at the top-right of the bulb. Computed via `WalkRecord.showUnverifiedBadge`, passed through `StairwayAnnotation` to `StairwayPin.showUnverifiedBadge`.
+**Unverified badge:** Walk records with `proximityVerified == false` show an amber `xmark.seal.fill` icon — same shape as the green `checkmark.seal.fill` verified badge, different color and icon. Shown inline next to "Walked" in `StairwayBottomSheet` and replaces the green checkmark in `StairwayRow`.
 
 #### StairwayOverride Fallback Chain
 
@@ -150,14 +152,14 @@ For any stat display (stair count, height): use `StairwayOverride` value if non-
 ### Views
 
 - `ContentView` — `TabView` (Map / List / Progress)
-- `MapTab` — MapKit full-screen map (dark appearance), plain `brandOrange` top bar with trailing icon buttons (search, Around Me), filter pills (All/Saved/Walked/Nearby), floating `ProgressCard` (bottom-right, 120pt wide) with `brandOrange` header; tracks `mapSpan` via `.onMapCameraChange(frequency: .continuous)` and passes a lerped `pinScale` (1.0–2.0) to each annotation; on first location fix, zooms to nearest stairway at `latDelta 0.01` after a time-based splash guard (3.1s from launch); no walk-record action logic (all in sheet)
+- `MapTab` — MapKit full-screen map (dark appearance), plain `brandOrange` top bar with trailing icon buttons (search, Around Me, Filter), filter pills (All/Saved/Walked/Nearby), floating `ProgressCard` (bottom-right, 120pt wide) with `brandOrange` header; tracks `mapSpan` via `.onMapCameraChange(frequency: .continuous)` and passes a lerped `pinScale` (1.0–2.0) to each annotation; on first location fix, zooms to nearest stairway at `latDelta 0.01` after a time-based splash guard (3.1s from launch); `activeTagFilter: String?` applies AND logic on top of state filter via `stateFilteredStairways` + `filteredStairways`; if AND yields zero, state filter is dropped and a toast fires; Filter button shows filled `brandAmber` icon when a tag filter is active; no walk-record action logic (all in sheet)
 - `ListTab` — searchable, filterable stairway list (All/Walked/Saved); tap row → `StairwayBottomSheet` sheet; queries `StairwayOverride` and passes to each row
 - `ProgressTab` — completion ring, stats grid, neighborhood breakdown, recent walks; toolbar has sync icon + gear icon; height stat uses `resolvedHeightFt`
 - `SettingsView` — sheet from gear icon in ProgressTab toolbar; Account section (Sign in with Apple / signed-in state + Sign Out); iCloud Sync section (mirrors sync status)
-- `StairwayBottomSheet` — **single detail surface for the whole app** (replaces deleted `StairwayDetail`); self-contained with `@Query`, `@Environment(\.modelContext)`, `@Environment(\.dismiss)`; two detent states: collapsed `.height(390)` (header, stats, walk status card, action buttons) and expanded `.large` (curator commentary → notes → curator editor → photo carousel → StairwayOverride fields → source link); "Promote to Commentary" button sets `triggerCuratorPromote = true`, which pre-fills the editor via binding and scrolls to it via `ScrollViewReader`; `mergedPhotos: [PhotoSource]` combines remote `photoLikeService.sortedPhotos` + local `walkRecord.photoArray` sorted by date; on successful Supabase upload the local `WalkPhoto` is deleted (dedup); all walk record writes handled internally
+- `StairwayBottomSheet` — **single detail surface for the whole app** (replaces deleted `StairwayDetail`); self-contained with `@Query`, `@Environment(\.modelContext)`, `@Environment(\.dismiss)`; two detent states: collapsed `.height(390)` (header, stats, walk status card, action buttons) and expanded `.large` (curator commentary → notes → **tags section** → curator editor → photo carousel → StairwayOverride fields → source link); tags section shows `forestGreen`-outlined pills for assigned tags + "+ Add Tag" button that opens `TagEditorSheet`; "Promote to Commentary" button sets `triggerCuratorPromote = true`, which pre-fills the editor via binding and scrolls to it via `ScrollViewReader`; `mergedPhotos: [PhotoSource]` combines remote `photoLikeService.sortedPhotos` + local `walkRecord.photoArray` sorted by date; on successful Supabase upload the local `WalkPhoto` is deleted (dedup); all walk record writes handled internally
 - `StairwayAnnotation` — delegates to `StairwayPin` with three-state + dimming + unverified badge support; accepts `scale: CGFloat` and passes through to `StairwayPin`
 - `TeardropPin` — `StairwayPin` view (colored circles, three-state colors + dimming); `TeardropShape` and `StairShape` structs kept for future use; `showUnverifiedBadge` amber overlay
-- `SearchPanel` — full-screen search modal with Name/Street/Neighborhood tabs
+- `SearchPanel` — full-screen search modal with Name/Street/Neighborhood/Tags tabs; Tags tab shows pill grid of all assigned tags (with stairway count) → tap to drill into stairway list; `@Query` for `StairwayTag` + `TagAssignment` injected directly (no prop drilling); `selectedTag: StairwayTag?` state drives pill grid vs. stairway list sub-view
 - `AroundMeManager` — `@Observable`; nearest-centroid neighborhood detection, adjacency lookup, pin dimming state
 - `ToastView` + `.toast()` modifier — auto-dismissing toast messages
 
@@ -168,6 +170,7 @@ For any stat display (stair count, height): use `StairwayOverride` value if non-
 | `all_stairways.json` | 382 SF stairways catalog (read-only) |
 | `neighborhood_centroids.json` | Avg lat/lng per neighborhood (from `scripts/build_neighborhood_adjacency.py`) |
 | `neighborhood_adjacency.json` | Neighborhood → neighbors map (≤2.5km centroid distance) |
+| `tags_preset.json` | 9 preset tag suggestions seeded into SwiftData on first launch |
 
 To regenerate neighborhood data: `python3 scripts/build_neighborhood_adjacency.py`
 
@@ -188,12 +191,16 @@ neighborhood_adjacency.json ─┘
 
 SwiftData (WalkRecord)       ◄──► CloudKit ──► synced across devices
 SwiftData (StairwayOverride) ◄──► CloudKit ──► synced across devices
+SwiftData (StairwayTag)      ◄──► CloudKit ──► synced across devices
+SwiftData (TagAssignment)    ◄──► CloudKit ──► synced across devices
          │
          └──► resolvedStepCount / resolvedHeightFt ──► stats display everywhere
+
+tags_preset.json ──► SeedDataService.seedTagsIfNeeded ──► StairwayTag (preset records, once)
 
 Supabase.plist (gitignored) ──► SupabaseManager ──► AuthManager ──► SettingsView
                                                           │
                                               session (Keychain) + auth state changes
 ```
 
-`StairwayStore` loads stairway data at init and exposes search/filter/region/resolver helpers. `WalkRecord` and `StairwayOverride` are independent write paths, both keyed by `stairwayID`. `AuthManager` manages the Supabase session independently of SwiftData — the two persistence layers coexist without interaction in the current phase.
+`StairwayStore` loads stairway data at init and exposes search/filter/region/resolver helpers. `WalkRecord`, `StairwayOverride`, `StairwayTag`, and `TagAssignment` are independent write paths, all keyed by `stairwayID` (or `tagID`). `AuthManager` manages the Supabase session independently of SwiftData — the two persistence layers coexist without interaction in the current phase.

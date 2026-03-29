@@ -2,6 +2,10 @@
 
 | Description | Implemented | Spec File |
 |---|---|---|
+| Tags: model, editor sheet, map filter, search tab, CloudKit sync | 2026-03-28 | SPEC_stairway-tags-v1.md |
+| Hard Mode confirmation prompt; amber badge for unverified walks | 2026-03-28 | SPEC_hard-mode-confirmation-prompt.md |
+| Active walk mode: timer, HealthKit steps/elevation, end/cancel flow | 2026-03-28 | SPEC_active-walk-mode.md |
+| Suggested photos from walk day; PHAsset dedup, dismiss, add actions | 2026-03-28 | SPEC_photo-time-window-suggestions.md |
 | Save camera captures to system camera roll via PHPhotoLibrary | 2026-03-28 | SPEC_photo-camera-roll-fix.md |
 | Fix local photos invisible; add is_public to upload; merge remote+local | 2026-03-28 | SPEC_photo-persistence-fix.md |
 | Launch zoom to nearest stairway after splash dismisses | 2026-03-28 | SPEC_launch-zoom-nearest.md |
