@@ -102,9 +102,9 @@ struct DataHygieneView: View {
                     stairwayName: stairway.name,
                     neighborhood: stairway.neighborhood,
                     issueType: .missingHealthKit,
-                    detail: record.canRetroactivelyPullStats
-                        ? "Manually logged — candidate for retroactive pull on iOS"
-                        : "Walk started via app but HealthKit returned no data"
+                    detail: record.walkStartTime != nil
+                        ? "Walk started via app but HealthKit returned no data"
+                        : "Manually logged — no HealthKit session"
                 ))
             }
 

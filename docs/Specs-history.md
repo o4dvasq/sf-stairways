@@ -2,6 +2,7 @@
 
 | Description | Implemented | Spec File |
 |---|---|---|
+| Add photos from Mac; drag-drop; inline notes editing; macOS thumbnails | 2026-03-29 | SPEC_macos-photo-add.md |
 | Remove retroactive HealthKit pull; clear bad step/elevation data | 2026-03-29 | SPEC_healthkit-data-cleanup.md |
 | macOS admin dashboard: browser, detail, hygiene, bulk ops | 2026-03-29 | SPEC_admin-dashboard-design.md |
 | Photo upload logging, auth check, failed vs pending badge | 2026-03-29 | SPEC_photo-sync-fix.md |

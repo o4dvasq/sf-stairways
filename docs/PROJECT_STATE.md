@@ -10,6 +10,7 @@ _Last updated: 2026-03-29_
 - `SyncStatusManager` tracks live CloudKit event notifications; cloud icon in Stats tab shows sync state
 - Supabase SDK integrated; `AuthManager` manages Sign in with Apple session
 - Photo capture with thumbnails, location services, seed data import
+- Tags are **read-only** on iOS (display + filter only) — all tag CRUD is macOS-only
 - Successfully archived in Xcode on 2026-03-23
 - See `docs/IOS_REFERENCE.md` for full build details
 
@@ -18,7 +19,8 @@ _Last updated: 2026-03-29_
 - Shares the same CloudKit container (`iCloud.com.o4dvasq.sfstairways`) as iOS — all walk data, overrides, tags sync automatically
 - Shares SwiftData model files with iOS (same `Models/*.swift`)
 - Three-column `NavigationSplitView`: neighborhood sidebar → sortable stairway table → detail panel
-- Detail panel: catalog vs. walk data comparison, editable curator overrides, notes → promote, tag add/remove, local photo grid with delete
+- Detail panel: catalog vs. walk data comparison, editable curator overrides, notes editing, tag add/remove, photo grid with delete + **Add Photos button (NSOpenPanel + drag-drop)**
+- **Photo import from Mac**: NSOpenPanel multi-select or drag-drop, JPEG 0.85 compression, proper macOS thumbnail generation (NSImage + NSBitmapImageRep, 300px, JPEG 0.7)
 - Data Hygiene sheet: flags missing height, missing coordinates, no HealthKit data, promotion candidates, proximity unverified
 - Bulk Operations sheet: bulk tag assign, bulk mark walked (with date picker), CSV export via NSSavePanel
 - No Supabase, no HealthKit fetching on macOS (displays synced walk data only)
@@ -38,6 +40,8 @@ _Last updated: 2026-03-29_
 ## Recent Completions
 
 ### 2026-03-29
+- **macOS photo add + notes editing** — "Add Photos..." button (NSOpenPanel) + drag-drop in detail panel photos section; inline notes editing (Edit → TextEditor → Save/Cancel); proper macOS thumbnail generation using NSImage + NSBitmapImageRep at 300px JPEG 0.7; HEIC/PNG auto-converted to JPEG 0.85 on import. `WalkPhoto.swift` gains `#elseif canImport(AppKit)` import.
+- **DataHygieneView bug fix** — `canRetroactivelyPullStats` removed from WalkRecord in HealthKit cleanup; fixed reference to use `walkStartTime != nil` instead.
 - **HealthKit data accuracy fix** — removed retroactive full-day HealthKit pull (inaccurate per-stairway data); `statsRow` now only shows stepCount/elevationGain when `walkStartTime != nil` (active walks only); one-time migration clears bad full-day step counts from manually logged walks.
 - **macOS Admin Dashboard** — new macOS target with three-column browser, detail panel (curator edits, tag mgmt, photo grid), data hygiene dashboard, bulk operations + CSV export. `WalkPhoto.swift` made cross-platform. `SupabaseModels.swift` guarded with `#if !os(macOS)`.
 - **Photo sync fix** — photo upload logging, auth check, failed vs pending badge.
@@ -61,7 +65,7 @@ _Last updated: 2026-03-29_
 
 ## Pending Specs
 
-- `SPEC_macos-photo-add.md`
+None.
 
 ## Known Issues
 

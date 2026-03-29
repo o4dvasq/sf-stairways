@@ -32,6 +32,19 @@ struct StairwayRow: Identifiable {
 
     var elevationGain: Double? { walkRecord?.elevationGain }
     var dateWalked: Date? { walkRecord?.dateWalked }
+    var hasNotes: Bool {
+        guard let notes = walkRecord?.notes, !notes.isEmpty else { return false }
+        return true
+    }
+    var hasCuratorDescription: Bool {
+        guard let desc = override?.stairwayDescription, !desc.isEmpty else { return false }
+        return true
+    }
+    var notesPreview: String? {
+        guard let notes = walkRecord?.notes, !notes.isEmpty else { return nil }
+        let trimmed = notes.trimmingCharacters(in: .whitespacesAndNewlines)
+        return String(trimmed.prefix(30)) + (trimmed.count > 30 ? "…" : "")
+    }
 }
 
 // MARK: - Main Browser
@@ -268,6 +281,44 @@ struct StairwayBrowser: View {
                 }
             }
             .width(60)
+
+            TableColumn("Notes") { row in
+                if row.hasNotes && row.hasCuratorDescription {
+                    Label {
+                        Text(row.notesPreview ?? "")
+                            .font(.system(size: 11))
+                            .lineLimit(1)
+                    } icon: {
+                        Image(systemName: "checkmark.seal.fill")
+                            .font(.system(size: 9))
+                            .foregroundStyle(Color.walkedGreen)
+                    }
+                } else if let preview = row.notesPreview {
+                    Label {
+                        Text(preview)
+                            .font(.system(size: 11))
+                            .lineLimit(1)
+                    } icon: {
+                        Image(systemName: "arrow.up.circle")
+                            .font(.system(size: 9))
+                            .foregroundStyle(Color.brandAmber)
+                    }
+                } else if row.hasCuratorDescription {
+                    Label {
+                        Text("Curated")
+                            .font(.system(size: 11))
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                    } icon: {
+                        Image(systemName: "checkmark.seal.fill")
+                            .font(.system(size: 9))
+                            .foregroundStyle(Color.walkedGreen)
+                    }
+                } else {
+                    Text("—").foregroundStyle(.tertiary)
+                }
+            }
+            .width(150)
 
             TableColumn("Date Walked") { row in
                 if let date = row.dateWalked {

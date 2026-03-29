@@ -366,3 +366,14 @@ The retroactive HealthKit pull queried steps and elevation for the entire day a 
 **Active walk HealthKit remains unchanged.** `endWalkSession()` still fetches HealthKit stats using the actual session `walkStartTime`/`walkEndTime` window — this produces accurate per-stairway step count and elevation, and is unaffected by this change.
 
 **Design rule going forward:** HealthKit data is only ever captured during active walk sessions. Manually logged walks (via "Mark as Walked") intentionally have no HealthKit stats. This is correct because there is no reliable time window to query.
+
+## macOS photo import: NSImage + NSBitmapImageRep for thumbnail generation
+**Date:** 2026-03-29
+
+`WalkPhoto.generateThumbnail(from:)` used `UIGraphicsImageRenderer` (UIKit-only) for thumbnail generation on iOS, with a stub `#else` branch on macOS that returned the original data unchanged. This meant photos added from Mac had full-resolution thumbnails, wasting CloudKit storage.
+
+**Fix: proper macOS thumbnail path.** The `#else` branch now uses NSImage + NSBitmapImageRep to scale the image to 300px max width and encode as JPEG at 0.7 quality — identical parameters to the iOS path. The macro was extended to `#elseif canImport(AppKit) import AppKit` so AppKit types are available in the shared model file.
+
+**Photo import compression.** Photos added via NSOpenPanel or drag-drop are first loaded as NSImage, then re-encoded as JPEG at 0.85 quality (matching iOS PhotoService). HEIC files are converted automatically because NSImage can decode HEIC and NSBitmapImageRep re-encodes to JPEG. This happens in `importImages(from:)` before creating the WalkPhoto object.
+
+**canRetroactivelyPullStats removal side-effect.** DataHygieneView referenced `WalkRecord.canRetroactivelyPullStats` (removed in the HealthKit cleanup spec). Fixed by replacing the ternary with `walkStartTime != nil` — which correctly identifies app-session walks vs. manually logged ones, which is exactly what the original property was testing.

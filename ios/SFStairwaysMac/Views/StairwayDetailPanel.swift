@@ -1,6 +1,7 @@
 import SwiftUI
 import SwiftData
 import AppKit
+import UniformTypeIdentifiers
 
 struct StairwayDetailPanel: View {
     @Environment(\.modelContext) private var modelContext
@@ -20,6 +21,13 @@ struct StairwayDetailPanel: View {
     // Tag picker state
     @State private var showTagPicker = false
 
+    // Notes editing state
+    @State private var isEditingNotes = false
+    @State private var editNotesText: String = ""
+
+    // Photo drop state
+    @State private var isPhotoDropTargeted = false
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
@@ -34,7 +42,10 @@ struct StairwayDetailPanel: View {
         }
         .navigationTitle(stairway.name)
         .onAppear { loadOverrideFields() }
-        .onChange(of: stairway.id) { loadOverrideFields() }
+        .onChange(of: stairway.id) {
+            loadOverrideFields()
+            isEditingNotes = false
+        }
     }
 
     // MARK: - Header
@@ -209,14 +220,39 @@ struct StairwayDetailPanel: View {
     private var notesSection: some View {
         GroupBox("Notes") {
             VStack(alignment: .leading, spacing: 10) {
-                if let notes = walkRecord?.notes, !notes.isEmpty {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Personal Notes")
-                            .font(.caption.bold())
-                            .foregroundStyle(.secondary)
-                        Text(notes)
-                            .font(.system(size: 12))
+                HStack {
+                    Text("Personal Notes")
+                        .font(.caption.bold())
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    if walkRecord != nil && !isEditingNotes {
+                        Button("Edit") {
+                            editNotesText = walkRecord?.notes ?? ""
+                            isEditingNotes = true
+                        }
+                        .buttonStyle(.bordered)
+                        .controlSize(.small)
                     }
+                }
+
+                if isEditingNotes {
+                    TextEditor(text: $editNotesText)
+                        .font(.system(size: 12))
+                        .frame(minHeight: 80)
+                        .border(Color.secondary.opacity(0.3))
+                    HStack {
+                        Button("Save") {
+                            saveNotes()
+                        }
+                        .buttonStyle(.borderedProminent)
+                        Button("Cancel") {
+                            isEditingNotes = false
+                        }
+                        .buttonStyle(.bordered)
+                    }
+                } else if let notes = walkRecord?.notes, !notes.isEmpty {
+                    Text(notes)
+                        .font(.system(size: 12))
                     Button("Promote to Curator Description") {
                         promoteNotes(notes)
                     }
@@ -298,19 +334,49 @@ struct StairwayDetailPanel: View {
 
     private var photosSection: some View {
         GroupBox("Photos") {
-            let photos = walkRecord?.photoArray ?? []
-            if photos.isEmpty {
-                Text("No local photos for this walk.")
-                    .font(.system(size: 12))
-                    .foregroundStyle(.secondary)
-                    .padding(8)
-            } else {
-                LazyVGrid(columns: Array(repeating: .init(.fixed(100)), count: 4), spacing: 8) {
-                    ForEach(photos) { photo in
-                        PhotoThumbnailView(photo: photo)
+            VStack(alignment: .leading, spacing: 8) {
+                let photos = walkRecord?.photoArray ?? []
+
+                if photos.isEmpty {
+                    Text("No local photos for this walk.")
+                        .font(.system(size: 12))
+                        .foregroundStyle(.secondary)
+                } else {
+                    LazyVGrid(columns: Array(repeating: .init(.fixed(100)), count: 4), spacing: 8) {
+                        ForEach(photos) { photo in
+                            PhotoThumbnailView(photo: photo)
+                        }
                     }
                 }
-                .padding(8)
+
+                HStack {
+                    if walkRecord != nil {
+                        Button("Add Photos...") {
+                            openPhotoPicker()
+                        }
+                        .buttonStyle(.bordered)
+                    } else {
+                        Text("Mark as walked first to add photos.")
+                            .font(.system(size: 12))
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+            .padding(8)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(isPhotoDropTargeted ? Color.brandAmber.opacity(0.12) : Color.clear)
+            .onDrop(of: [UTType.fileURL], isTargeted: $isPhotoDropTargeted) { providers in
+                guard walkRecord != nil else { return false }
+                for provider in providers {
+                    _ = provider.loadObject(ofClass: URL.self) { url, _ in
+                        guard let url = url else { return }
+                        let ext = url.pathExtension.lowercased()
+                        guard ["jpg", "jpeg", "png", "heic"].contains(ext) else { return }
+                        guard let data = try? Data(contentsOf: url) else { return }
+                        DispatchQueue.main.async { importImages(from: [data]) }
+                    }
+                }
+                return true
             }
         }
     }
@@ -362,6 +428,39 @@ struct StairwayDetailPanel: View {
     private func removeTag(tagID: String) {
         let toDelete = tagAssignments.filter { $0.stairwayID == stairway.id && $0.tagID == tagID }
         toDelete.forEach { modelContext.delete($0) }
+        try? modelContext.save()
+    }
+
+    private func saveNotes() {
+        walkRecord?.notes = editNotesText
+        try? modelContext.save()
+        isEditingNotes = false
+    }
+
+    private func openPhotoPicker() {
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = true
+        panel.canChooseDirectories = false
+        panel.allowedContentTypes = [.jpeg, .png, .heic, .image]
+        guard panel.runModal() == .OK else { return }
+        let dataItems = panel.urls.compactMap { try? Data(contentsOf: $0) }
+        importImages(from: dataItems)
+    }
+
+    private func importImages(from dataItems: [Data]) {
+        guard let record = walkRecord else { return }
+        for rawData in dataItems {
+            guard let nsImage = NSImage(data: rawData),
+                  let tiff = nsImage.tiffRepresentation,
+                  let bitmapRep = NSBitmapImageRep(data: tiff),
+                  let jpegData = bitmapRep.representation(
+                      using: .jpeg,
+                      properties: [.compressionFactor: NSNumber(value: 0.85)]
+                  ) else { continue }
+            let photo = WalkPhoto(imageData: jpegData)
+            photo.walkRecord = record
+            modelContext.insert(photo)
+        }
         try? modelContext.save()
     }
 }

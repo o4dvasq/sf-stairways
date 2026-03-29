@@ -3,6 +3,8 @@ import SwiftData
 
 #if canImport(UIKit)
 import UIKit
+#elseif canImport(AppKit)
+import AppKit
 #endif
 
 @Model
@@ -52,8 +54,26 @@ final class WalkPhoto {
         }
         return thumbnailImage.jpegData(compressionQuality: 0.7)
 #else
-        // On macOS, return the original data — NSImage can decode it directly.
-        return imageData
+        guard let nsImage = NSImage(data: imageData) else { return nil }
+        let originalSize = nsImage.size
+        guard originalSize.width > maxWidth else { return imageData }
+        let scale = maxWidth / originalSize.width
+        let newSize = NSSize(width: maxWidth, height: originalSize.height * scale)
+
+        let thumbnail = NSImage(size: newSize)
+        thumbnail.lockFocus()
+        NSGraphicsContext.current?.imageInterpolation = .high
+        nsImage.draw(
+            in: NSRect(origin: .zero, size: newSize),
+            from: NSRect(origin: .zero, size: originalSize),
+            operation: .copy,
+            fraction: 1.0
+        )
+        thumbnail.unlockFocus()
+
+        guard let tiffData = thumbnail.tiffRepresentation,
+              let bitmapRep = NSBitmapImageRep(data: tiffData) else { return nil }
+        return bitmapRep.representation(using: .jpeg, properties: [.compressionFactor: NSNumber(value: 0.7)])
 #endif
     }
 }
