@@ -1,16 +1,10 @@
-//
-//  SFStairwaysMacApp.swift
-//  SFStairwaysMac
-//
-//  Created by Oscar Vasquez on 3/29/26.
-//
-
 import SwiftUI
 import SwiftData
 
 @main
-struct SFStairwaysMacApp: App {
+struct SFStairwaysAdminApp: App {
     let modelContainer: ModelContainer
+    let syncStatusManager: SyncStatusManager
 
     init() {
         let schema = Schema([
@@ -21,9 +15,8 @@ struct SFStairwaysMacApp: App {
             TagAssignment.self,
             StairwayDeletion.self
         ])
+        let manager = SyncStatusManager()
 
-        // Attempt CloudKit-backed container using the same container as iOS.
-        // Requires: iCloud signed in on Mac, CloudKit schema deployed, entitlement present.
         do {
             let cloudConfig = ModelConfiguration(
                 "SFStairways",
@@ -31,9 +24,11 @@ struct SFStairwaysMacApp: App {
                 cloudKitDatabase: .private("iCloud.com.o4dvasq.sfstairways")
             )
             modelContainer = try ModelContainer(for: schema, configurations: [cloudConfig])
-            print("[SFStairwaysMac] CloudKit ModelContainer created successfully")
+            print("[SFStairwaysAdmin] CloudKit ModelContainer created successfully")
         } catch {
-            print("[SFStairwaysMac] CloudKit init failed: \(error). Falling back to local storage.")
+            let nsError = error as NSError
+            print("[SFStairwaysAdmin] CloudKit init failed — \(nsError). Falling back to local storage.")
+            manager.markUnavailable(reason: nsError.localizedDescription)
             do {
                 let localConfig = ModelConfiguration(
                     "SFStairways",
@@ -41,18 +36,20 @@ struct SFStairwaysMacApp: App {
                     cloudKitDatabase: .none
                 )
                 modelContainer = try ModelContainer(for: schema, configurations: [localConfig])
-                print("[SFStairwaysMac] Local ModelContainer created successfully")
+                print("[SFStairwaysAdmin] Local ModelContainer created successfully")
             } catch {
-                fatalError("[SFStairwaysMac] Cannot create any ModelContainer: \(error)")
+                fatalError("[SFStairwaysAdmin] Cannot create any ModelContainer: \(error)")
             }
         }
+
+        syncStatusManager = manager
     }
 
     var body: some Scene {
         WindowGroup {
-            StairwayBrowser()
+            AdminBrowser()
         }
         .modelContainer(modelContainer)
-        .defaultSize(width: 1200, height: 720)
+        .environment(syncStatusManager)
     }
 }

@@ -150,6 +150,41 @@ No Supabase, no HealthKit fetching on macOS. HealthKit data (stepCount, elevatio
 
 ---
 
+## iOS Admin App
+
+Source at `ios/SFStairwaysAdmin/`. Separate iOS target in `SFStairways.xcodeproj`, bundle ID `com.o4dvasq.SFStairways.admin`. Field maintenance tool for catalog corrections, deletion, and tag management. No map, no photo management, no HealthKit, no Supabase.
+
+### Shared Code (admin target membership)
+
+- All `Models/*.swift` (WalkRecord, WalkPhoto, StairwayOverride, StairwayTag, TagAssignment, StairwayDeletion)
+- `Models/StairwayStore.swift`, `Models/Stairway.swift`
+- `Resources/AppColors.swift`
+- `Services/SyncStatusManager.swift`
+- `all_stairways.json`, `tags_preset.json` bundle resources
+
+### Admin Views
+
+| File | Purpose |
+|---|---|
+| `SFStairwaysAdminApp.swift` | App entry point; same schema + CloudKit setup as iOS and macOS (all six SwiftData models); falls back to local storage on CloudKit failure |
+| `Views/AdminBrowser.swift` | Root: searchable stairway list; filter chips (All/Walked/Unwalked/Has Override/Has Issues); sort menu (Name/Neighborhood/Date Walked); row shows walked icon, override indicator (pencil), tag count badge; toolbar: Tag Manager + Removed Stairways buttons |
+| `Views/AdminDetailView.swift` | Push-navigation detail: catalog data (read-only), walk record summary (read-only), editable override fields (step count, height ft, curator description) with Save/Cancel, tag chips with X-to-remove + Add Tag (picker + "Create Tag…" inline), "Remove Stairway" destructive action with optional reason field |
+| `Views/AdminTagManager.swift` | Modal: preset tags (read-only, counts); custom tags (inline rename, delete with cascade count confirmation, create new) |
+| `Views/RemovedStairwaysView.swift` | Modal: list of StairwayDeletion records (name, date, reason); swipe to restore (deletes the record, stairway reappears everywhere) |
+
+### Admin Data Flow
+
+```
+all_stairways.json ──► StairwayStore ──► AdminBrowser (all stairways)
+                                              │
+                              StairwayDeletion (CloudKit) ──► applyDeletions → filtered out
+                              WalkRecord (CloudKit, read-only) ──► walked state + detail
+                              StairwayOverride (CloudKit, read+write) ──► override fields
+                              StairwayTag + TagAssignment (CloudKit, read+write) ──► tag management
+```
+
+---
+
 ## iOS App Structure
 
 Source at `ios/SFStairways/`. iOS is the primary user-facing platform. Web app deprecated 2026-03-25.
@@ -179,6 +214,7 @@ Source at `ios/SFStairways/`. iOS is the primary user-facing platform. Web app d
 | `StairwayOverride` | `stairwayID`, `verifiedStepCount: Int?`, `verifiedHeightFt: Double?`, `stairwayDescription: String?`, `createdAt`, `updatedAt` |
 | `StairwayTag` | `id` (slug), `name`, `isPreset: Bool`, `createdAt` |
 | `TagAssignment` | `stairwayID`, `tagID`, `assignedAt` — many-to-many join; independent of `WalkRecord` |
+| `StairwayDeletion` | `stairwayID` (@Attribute(.unique)), `deletedAt`, `reason: String?` — inserted when a stairway is hidden/removed from the catalog; syncs via CloudKit; all targets (iOS, macOS, admin) filter stairways against this table via `StairwayStore.applyDeletions(_:)`; delete the record to restore |
 | `Stairway` | Value type loaded from `all_stairways.json` bundle resource; computed `displayName` truncates to first 4 words, stripping trailing `.,;` from each word (no ellipsis) — used for map annotation labels only; full `name` used everywhere else |
 | `PhotoSource` | Enum (not SwiftData): `.remote(SupabasePhoto)` / `.local(WalkPhoto)`; `Identifiable`; `createdAt` for merged sort |
 
@@ -254,4 +290,4 @@ NavigationCoordinator (ContentView @State) ──► .environment() ──► Ma
                                                                 ──► SearchTab → sets pendingStairway/pendingNeighborhood → switches to tab 0
 ```
 
-`StairwayStore` loads stairway data at init and exposes search/filter/region/resolver helpers. `WalkRecord`, `StairwayOverride`, `StairwayTag`, and `TagAssignment` are independent write paths, all keyed by `stairwayID` (or `tagID`). `AuthManager` manages the Supabase session independently of SwiftData — the two persistence layers coexist without interaction in the current phase.
+`StairwayStore` loads stairway data at init and exposes search/filter/region/resolver helpers. The `stairways` computed property filters `_allStairways` against `deletedIDs` (a `Set<String>` updated via `applyDeletions(_:)`); views call `applyDeletions` in `.onAppear` and `.onChange(of: deletions)` to keep the exclusion set current. `WalkRecord`, `StairwayOverride`, `StairwayTag`, `TagAssignment`, and `StairwayDeletion` are independent write paths, all keyed by `stairwayID` (or `tagID`). `AuthManager` manages the Supabase session independently of SwiftData — the two persistence layers coexist without interaction in the current phase.

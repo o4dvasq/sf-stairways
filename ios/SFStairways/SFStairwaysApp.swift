@@ -9,7 +9,7 @@ struct SFStairwaysApp: App {
     let activeWalkManager = ActiveWalkManager()
 
     init() {
-        let schema = Schema([WalkRecord.self, WalkPhoto.self, StairwayOverride.self, StairwayTag.self, TagAssignment.self])
+        let schema = Schema([WalkRecord.self, WalkPhoto.self, StairwayOverride.self, StairwayTag.self, TagAssignment.self, StairwayDeletion.self])
         let manager = SyncStatusManager()
 
         // Attempt CloudKit-backed container. Common failure reasons:

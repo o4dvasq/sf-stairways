@@ -765,6 +765,9 @@ struct StairwayBottomSheet: View {
             let stats = await HealthKitService.fetchWalkStats(from: window.startTime, to: window.endTime)
             await MainActor.run {
                 finalizeActiveWalk(startTime: window.startTime, endTime: window.endTime, steps: stats.steps, elevation: stats.elevationFeet)
+                if stats.steps == nil && stats.elevationFeet == nil {
+                    toastMessage = "Could not read Health data for this walk"
+                }
             }
         }
     }

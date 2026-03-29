@@ -23,14 +23,25 @@ struct HealthKitService {
     }
 
     static func fetchWalkStats(from start: Date, to end: Date) async -> (steps: Int?, elevationFeet: Double?) {
-        guard HKHealthStore.isHealthDataAvailable() else { return (nil, nil) }
+        print("[HealthKit] fetchWalkStats called: \(start) → \(end)")
+        guard HKHealthStore.isHealthDataAvailable() else {
+            print("[HealthKit] HealthKit not available on this device")
+            return (nil, nil)
+        }
 
         let store = HKHealthStore()
         let stepType = HKQuantityType(.stepCount)
         let flightsType = HKQuantityType(.flightsClimbed)
 
         let authorized = await requestAuthorization(store: store, types: [stepType, flightsType])
-        guard authorized else { return (nil, nil) }
+        guard authorized else {
+            print("[HealthKit] Authorization failed — returning nil")
+            return (nil, nil)
+        }
+
+        // Short delay to allow HealthKit to flush data recorded during the walk.
+        // Queries run immediately after walk end can miss data that hasn't been written yet.
+        try? await Task.sleep(for: .seconds(1))
 
         let predicate = HKQuery.predicateForSamples(withStart: start, end: end)
 
@@ -38,6 +49,8 @@ struct HealthKitService {
         async let flightsValue = querySum(store: store, type: flightsType, predicate: predicate, unit: .count())
 
         let (steps, flights) = await (stepsValue, flightsValue)
+
+        print("[HealthKit] Query result — steps: \(steps.map(String.init) ?? "nil"), flights: \(flights.map(String.init) ?? "nil")")
 
         return (steps.map(Int.init), flights.map { $0 * 10 })
     }

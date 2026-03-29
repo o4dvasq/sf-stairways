@@ -5,11 +5,22 @@ import Observation
 
 @Observable
 final class StairwayStore {
-    private(set) var stairways: [Stairway] = []
+    private var _allStairways: [Stairway] = []
+    private var deletedIDs: Set<String> = []
     private(set) var neighborhoodGroups: [(name: String, stairways: [Stairway])] = []
+
+    var stairways: [Stairway] {
+        deletedIDs.isEmpty ? _allStairways : _allStairways.filter { !deletedIDs.contains($0.id) }
+    }
 
     init() {
         loadStairways()
+    }
+
+    /// Call whenever the set of deleted stairway IDs changes. Rebuilds neighborhood groups.
+    func applyDeletions(_ ids: [String]) {
+        deletedIDs = Set(ids)
+        buildNeighborhoodGroups()
     }
 
     private func loadStairways() {
@@ -67,8 +78,8 @@ final class StairwayStore {
 
         let decoder = JSONDecoder()
         do {
-            stairways = try decoder.decode([Stairway].self, from: data)
-            print("[SFStairways] Loaded \(stairways.count) stairways successfully")
+            _allStairways = try decoder.decode([Stairway].self, from: data)
+            print("[SFStairways] Loaded \(_allStairways.count) stairways successfully")
             buildNeighborhoodGroups()
         } catch {
             print("[SFStairways] ERROR: Failed to decode stairways: \(error)")

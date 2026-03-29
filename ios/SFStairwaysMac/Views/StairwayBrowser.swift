@@ -63,6 +63,7 @@ struct StairwayBrowser: View {
     @Query private var overrides: [StairwayOverride]
     @Query private var tags: [StairwayTag]
     @Query private var tagAssignments: [TagAssignment]
+    @Query private var deletions: [StairwayDeletion]
 
     @State private var stairwayStore = StairwayStore()
     @State private var selectedNeighborhood: String? = nil
@@ -218,6 +219,12 @@ struct StairwayBrowser: View {
         }
         .searchable(text: $searchText, prompt: "Search stairways")
         .toolbar { toolbarItems }
+        .onAppear {
+            stairwayStore.applyDeletions(deletions.map(\.stairwayID))
+        }
+        .onChange(of: deletions) { _, d in
+            stairwayStore.applyDeletions(d.map(\.stairwayID))
+        }
         .sheet(isPresented: $showHygiene) {
             DataHygieneView(
                 stairways: stairwayStore.stairways,

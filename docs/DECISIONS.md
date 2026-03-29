@@ -1,5 +1,16 @@
 # Architecture Decisions — sf-stairways
 
+## StairwayDeletion: soft delete via CloudKit-synced model
+**Date:** 2026-03-29
+
+Deleting a stairway from the field hides it across all devices by inserting a `StairwayDeletion` SwiftData record rather than modifying the bundled JSON (which is read-only at runtime). The `StairwayStore.stairways` computed property filters out any stairway whose ID appears in `deletedIDs`.
+
+**Why not hard delete from JSON.** `all_stairways.json` is a bundled resource — it cannot be modified at runtime. Even if it could, changes wouldn't sync across devices. The soft-delete model syncs instantly via the shared CloudKit container, affecting all three targets simultaneously.
+
+**Why a dedicated model, not a flag on StairwayOverride.** `StairwayOverride` models corrections (step count, height, description). Deletion is a lifecycle concept, not a data correction — mixing them would complicate the StairwayOverride schema and make restore operations ambiguous. An independent model with `@Attribute(.unique)` on `stairwayID` ensures no duplicate deletion records.
+
+**Why views call applyDeletions in onAppear + onChange.** `StairwayStore` is an `@Observable` non-SwiftData class that doesn't automatically react to `@Query` changes. Views that own a `@Query private var deletions: [StairwayDeletion]` call `store.applyDeletions(deletions.map(\.stairwayID))` in `.onAppear` and `.onChange(of: deletions)` to keep the exclusion set in sync.
+
 ## Visual refresh: UIColor dynamicProvider for adaptive color tokens
 **Date:** 2026-03-29
 
