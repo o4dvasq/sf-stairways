@@ -98,7 +98,7 @@ struct ProgressTab: View {
                 }
                 .padding(16)
             }
-            .navigationTitle("Stats")
+            .navigationTitle("Progress")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {

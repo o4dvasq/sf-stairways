@@ -1,30 +1,43 @@
-SPEC: Map Launch Behavior + ProgressCard Label + HealthKit Check | Project: sf-stairways | Date: 2026-03-28 | Status: Ready for implementation
+SPEC: Map UI Fixes + Bottom Sheet Cleanup | Project: sf-stairways | Date: 2026-03-29 | Status: Ready for implementation
 
 ## 1. Objective
 
-Three small fixes: (A) stop auto-zooming to nearest stairway on app launch, (B) rename the floating ProgressCard header from "Progress" to avoid label collision with the Stats tab, and (C) investigate the HealthKit "Not Authorized" display in Settings.
+Fix several map UI issues: label swap between the floating card and the tab bar, reposition the search button, remove auto-zoom on launch, and clean up the bottom sheet to hide internal metadata from end users.
 
 ## 2. Scope
 
-**A. Remove zoom-to-nearest on launch**
-- Currently: when the user's location is first obtained, the map auto-zooms to the nearest stairway (MapTab lines 156-162, `zoomToNearest` function at line 284).
-- New behavior: the map stays at the default city-wide view (`latitudeDelta: 0.06`, centered on SF). The user can manually zoom or use the location button.
-- Remove `hasZoomedToNearest` state variable, the `.onChange(of: locationManager.currentLocation)` handler that calls `zoomToNearest`, the `launchTime` state variable and splash timing logic, and the `zoomToNearest(from:)` function itself.
-- Keep `flyToUserLocation` and `flyTo(stairway)` — those are triggered by explicit user actions.
+**A. Swap "Stats" / "Progress" labels**
+- The floating ProgressCard on the map (MapTab ~line 378) currently says "Progress". Change it to "Stats".
+- The tab bar label in ContentView (line 25) currently says "Stats". Change it to "Progress".
+- The ProgressTab navigation title (line 101) currently says "Stats". Change it to "Progress".
+- Rationale: the floating card shows quick stats (counts, heights). The tab is the full progress view (completion ring, neighborhood breakdown, recent walks).
 
-**B. Rename ProgressCard header**
-- The floating card on the map (MapTab line 378) says `Text("Progress")`, which sits directly above the tab bar where the "Stats" tab label lives. Two instances of similar words stacked vertically is redundant.
-- Remove the "Progress" title text from the card entirely. Let the numbers (stairway count, feet, steps) speak for themselves. The card already has a distinctive amber header bar, so removing the label keeps it clean.
+**B. Reposition search button**
+- The search magnifying glass is currently in a VStack above the ProgressCard in the bottomTrailing overlay (MapTab lines 68-88). It's not visible or easily discoverable there.
+- Move it to the bottom of the screen, at the same vertical height as the tab bar, as its own standalone circle to the right of the tab bar. Same 32x32 size, same white-on-translucent styling as the top bar buttons.
+- This means removing it from the bottomTrailing overlay and placing it as a floating circle that sits at tab-bar level on the trailing edge.
 
-**C. HealthKit authorization display**
-- Settings currently shows "HealthKit: Not Authorized" with a "Request Permission" button. The `isAuthorized()` check uses `statusForAuthorizationRequest` which returns `.unnecessary` only after the system prompt has fired.
-- Verify that tapping "Request Permission" actually triggers the iOS HealthKit permission dialog and that the status updates afterward.
-- If the issue is that the entitlements file is missing the HealthKit capability, add it. Check the Xcode project for the HealthKit capability under Signing & Capabilities.
-- Note: HealthKit entitlement (`com.apple.developer.healthkit`) must be present in the entitlements file AND enabled in the Xcode project target capabilities. The current entitlements file only has CloudKit/iCloud entries.
+**C. Remove zoom-to-nearest on launch**
+- Currently: when the user's location is first obtained, the map auto-zooms to the nearest stairway (MapTab `zoomToNearest` triggered by `.onChange` of location).
+- New behavior: the map stays at the default city-wide view (latitudeDelta: 0.06, centered on SF). User navigates manually.
+- Remove: `hasZoomedToNearest` state var, the `.onChange(of: locationManager.currentLocation)` handler, `launchTime` state var and splash timing logic, and the `zoomToNearest(from:)` function.
+- Keep: `flyToUserLocation` and `flyTo(stairway)` (explicit user actions).
+
+**D. Bottom sheet: hide metadata, keep elevation gained**
+- The statsRow in StairwayBottomSheet currently shows: step count, height, elevation gained, "HealthKit data not found", and photo count.
+- Hide from end users:
+  - "HealthKit data not found" text (line ~303)
+  - Photo count ("2 photos" / "3 photos") (line ~310)
+- Keep visible:
+  - Stairway height (from scraped/verified data)
+  - Elevation gained (from HealthKit, when available) — this is useful UX data
+  - Verified step count (from curator overrides)
+- The walkStatusCard currently shows walk method text: "Logged manually", "Active Walk (no HealthKit data)", "Fetching HealthKit stats...", and the retroactive HealthKit pull button. Hide all of this from end users. The card should show: "Walked" + date + edit pencil. Nothing else.
+- These hidden data points will be accessible through the upcoming admin/management dashboard instead.
 
 ## 3. Business Rules
 
-- No data changes. These are all UI/UX fixes.
+No data changes. UI display only.
 
 ## 4. Data Model / Schema Changes
 
@@ -32,30 +45,45 @@ None.
 
 ## 5. UI / Interface
 
-**Map on launch:** Shows full SF city view (37.76, -122.44, span 0.06). User's blue dot appears when location is available but map does not auto-navigate.
+**Floating card on map:** Header says "Stats" (was "Progress"). Shows stairway count, feet, steps.
 
-**ProgressCard:** No title text. Just the amber header bar (now acting as a thin color accent) followed by the three stat lines.
+**Tab bar:** Third tab labeled "Progress" with chart icon (was "Stats").
 
-**Settings HealthKit row:** Should transition from "Not Authorized" to "Authorized" after the user grants permission. If the HealthKit entitlement is missing, fix it so the system prompt can appear.
+**Progress tab navigation title:** "Progress" (was "Stats").
+
+**Search button:** Standalone 32x32 circle with magnifying glass, floating at tab-bar height on the trailing edge. Visually separate from the tab bar but at the same vertical level.
+
+**Bottom sheet statsRow for a walked stairway:**
+- Shows: verified step count (if available), stairway height, elevation gained (if available)
+- Does NOT show: "HealthKit data not found", photo count
+
+**Bottom sheet walkStatusCard for a walked stairway:**
+- Shows: green checkmark, "Walked", date, edit pencil
+- Does NOT show: "Logged manually", "Active Walk (no HealthKit data)", "Fetching HealthKit stats...", retroactive pull button
 
 ## 6. Integration Points
 
-- HealthKit entitlement may need to be added to SFStairways.entitlements
+None.
 
 ## 7. Constraints
 
-- Do not remove the `flyToUserLocation` or `flyTo(stairway)` functions — those serve explicit user navigation.
+- Do not remove `flyToUserLocation` or `flyTo(stairway)` functions.
+- Do not remove the HealthKit data fetching logic itself — just hide the status text from the UI. The data still gets stored on WalkRecord.
+- Elevation gained should remain visible when available.
 
 ## 8. Acceptance Criteria
 
-- App launches showing the full SF city map, does not auto-zoom to nearest stairway
-- ProgressCard on map shows stats without a "Progress" title label
-- Tapping "Request Permission" for HealthKit in Settings triggers the iOS permission dialog
-- After granting HealthKit permission, Settings row updates to "Authorized"
+- Floating card on map says "Stats"
+- Tab bar third tab says "Progress"
+- Progress tab navigation title says "Progress"
+- Search button appears as a floating circle at tab-bar height on the right edge
+- App launches at city-wide zoom, does not auto-zoom to nearest stairway
+- Bottom sheet for a walked stairway shows height + elevation gained, no HealthKit status text, no photo count, no walk method text
 - Feedback loop prompt has been run
 
 ## 9. Files Likely Touched
 
-- `ios/SFStairways/Views/Map/MapTab.swift` — remove zoom-to-nearest logic, remove ProgressCard title text
-- `ios/SFStairways.entitlements` — add HealthKit entitlement if missing
-- `ios/SFStairways/SFStairways.xcodeproj/project.pbxproj` — HealthKit capability (if not already present)
+- `ios/SFStairways/Views/Map/MapTab.swift` — ProgressCard title, search button repositioning, remove zoom-to-nearest
+- `ios/SFStairways/Views/ContentView.swift` — tab bar label change
+- `ios/SFStairways/Views/Progress/ProgressTab.swift` — navigation title change
+- `ios/SFStairways/Views/Map/StairwayBottomSheet.swift` — statsRow cleanup, walkStatusCard cleanup

@@ -43,6 +43,7 @@ struct StairwayBottomSheet: View {
     @State private var showRetroactivePullAlert = false
     @State private var isRetroactivePullInProgress = false
     @State private var toastMessage: String? = nil
+    @State private var failedPhotoIDs: Set<PersistentIdentifier> = []
 
     private enum CuratorField: Hashable {
         case stepCount, height, description
@@ -125,6 +126,7 @@ struct StairwayBottomSheet: View {
                     photos: mergedPhotos,
                     likedPhotoIds: photoLikeService.likedPhotoIds,
                     userId: authManager.userId,
+                    failedPhotoIDs: failedPhotoIDs,
                     onLikeTap: { photo in
                         if let userId = authManager.userId {
                             Task { await photoLikeService.toggleLike(photo: photo, userId: userId) }
@@ -299,17 +301,6 @@ struct StairwayBottomSheet: View {
                 Text("\(Int(elevation)) ft gained")
                     .font(.caption)
                     .foregroundStyle(.secondary)
-            } else if isWalked && walkRecord?.walkStartTime != nil {
-                Text("HealthKit data not found")
-                    .font(.caption)
-                    .foregroundStyle(.tertiary)
-                    .italic()
-            }
-            let photoCount = mergedPhotos.count
-            if photoCount > 0 {
-                Text("\(photoCount) \(photoCount == 1 ? "photo" : "photos")")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
             }
         }
     }
@@ -424,32 +415,6 @@ struct StairwayBottomSheet: View {
                             Text(date.formatted(date: .long, time: .omitted))
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
-                        }
-                        if let record = walkRecord {
-                            if isRetroactivePullInProgress {
-                                HStack(spacing: 4) {
-                                    ProgressView()
-                                        .scaleEffect(0.7)
-                                    Text("Fetching HealthKit stats…")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-                                .padding(.top, 2)
-                            } else if record.canRetroactivelyPullStats {
-                                Button {
-                                    showRetroactivePullAlert = true
-                                } label: {
-                                    Text("Logged manually · Tap to add HealthKit stats")
-                                        .font(.caption)
-                                        .foregroundStyle(Color.brandAmber)
-                                }
-                                .padding(.top, 2)
-                            } else {
-                                Text(record.walkMethod)
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                                    .padding(.top, 2)
-                            }
                         }
                     }
                     Spacer()
@@ -875,7 +840,10 @@ struct StairwayBottomSheet: View {
         record.photos?.append(photo)
         try? modelContext.save()
 
-        guard let userId = authManager.userId else { return }
+        guard let userId = authManager.userId else {
+            print("[StairwayBottomSheet] Photo upload skipped — user not authenticated")
+            return
+        }
         Task { @MainActor in
             do {
                 try await photoLikeService.uploadPhoto(
@@ -887,7 +855,8 @@ struct StairwayBottomSheet: View {
                 modelContext.delete(photo)
                 try? modelContext.save()
             } catch {
-                // Local photo stays as offline fallback
+                // Local photo stays as offline fallback; mark as failed for badge UI
+                failedPhotoIDs.insert(photo.persistentModelID)
                 print("[StairwayBottomSheet] Supabase photo upload failed: \(error)")
             }
         }

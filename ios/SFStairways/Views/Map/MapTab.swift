@@ -66,25 +66,27 @@ struct MapTab: View {
                 MapScaleView()
             }
             .overlay(alignment: .bottomTrailing) {
-                VStack(alignment: .trailing, spacing: 8) {
-                    Button {
-                        showSearch = true
-                    } label: {
-                        Image(systemName: "magnifyingglass")
-                            .font(.system(size: 15, weight: .semibold))
-                            .foregroundStyle(.white)
-                            .frame(width: 32, height: 32)
-                            .background(Color.white.opacity(0.2))
-                            .clipShape(Circle())
-                    }
-                    ProgressCard(
-                        walkedCount: walkedCount,
-                        totalHeightFt: totalHeightFt,
-                        totalSteps: totalSteps
-                    )
-                }
+                ProgressCard(
+                    walkedCount: walkedCount,
+                    totalHeightFt: totalHeightFt,
+                    totalSteps: totalSteps
+                )
                 .padding(.trailing, 12)
                 .padding(.bottom, 24)
+            }
+            .overlay(alignment: .bottomTrailing) {
+                Button {
+                    showSearch = true
+                } label: {
+                    Image(systemName: "magnifyingglass")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .frame(width: 32, height: 32)
+                        .background(Color.white.opacity(0.2))
+                        .clipShape(Circle())
+                }
+                .padding(.trailing, 12)
+                .padding(.bottom, 16)
             }
 
             // Top bar + filter pills + neighborhood chip stacked from the top
@@ -355,6 +357,11 @@ struct ProgressCard: View {
                 .frame(height: 4)
 
             VStack(alignment: .leading, spacing: 2) {
+                Text("Stats")
+                    .font(.caption2)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.secondary)
+                    .padding(.bottom, 2)
                 Text(walkedCount > 0 ? "\(walkedCount) stairways" : "—")
                     .font(.caption)
                     .fontWeight(.semibold)
