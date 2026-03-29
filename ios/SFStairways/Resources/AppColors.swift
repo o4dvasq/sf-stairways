@@ -1,7 +1,7 @@
 import SwiftUI
 
 extension Color {
-    static let forestGreen = Color(red: 45/255, green: 95/255, blue: 63/255)
+    static let forestGreen = Color(red: 80/255, green: 200/255, blue: 120/255)
 
     // Brand colors
     static let brandOrange = Color(red: 0.91, green: 0.376, blue: 0.173)             // #E8602C — app brand

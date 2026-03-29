@@ -5,7 +5,7 @@ _Last updated: 2026-03-29_
 ## Platforms
 
 ### iOS App (primary)
-- Swift/SwiftUI/iOS 17+ with Map, List, and **Stats** tabs
+- Swift/SwiftUI/iOS 17+ with Map, List, Stats, and **Search** tabs
 - SwiftData + CloudKit — container init with CloudKit configured; falls back to local-only with detailed error logging if CloudKit fails
 - `SyncStatusManager` tracks live CloudKit event notifications; cloud icon in Stats tab shows sync state
 - Supabase SDK integrated; `AuthManager` manages Sign in with Apple session
@@ -26,6 +26,7 @@ _Last updated: 2026-03-29_
 - Bulk Operations: bulk tag assign + **"Create new tag…" inline option** + **"Remove Tag from All Selected"** section, bulk mark walked, CSV export
 - Data Hygiene sheet: flags missing height, missing coordinates, no HealthKit data, promotion candidates, proximity unverified
 - **App icon**: white StairShape silhouette on brandOrange (#E8602C) background, all 10 required macOS sizes generated
+- **Acknowledgements**: `info.circle` toolbar button opens `AcknowledgementsSheet` with data source credits and links
 - No Supabase, no HealthKit fetching on macOS (displays synced walk data only)
 
 ### Web App (deprecated)
@@ -44,15 +45,15 @@ _Last updated: 2026-03-29_
 ## Recent Completions
 
 ### 2026-03-29 (this session)
-- **Attribution & acknowledgements** — iOS bottom sheet shows "View on Urban Hiker SF Map" link for stairways with `geocodeSource == "urban_hiker"` (alongside existing sfstairways.com link for stairways with both sources); macOS detail panel adds "UH Map" row in data comparison grid for Urban Hiker stairways; iOS Settings gains a new "Acknowledgements" section (SF Stairways attribution, Urban Hiker SF attribution + Stairway Map link, Buy a Matcha link with amber cup icon, book credit); macOS gets an `info.circle` toolbar button opening `AcknowledgementsSheet` with the same content.
+- **UX fixes round 3** — `forestGreen` brightened to RGB 80/200/120 (#50C878) for dark-mode readability; notes auto-save on dismiss removed (explicit Save button only); collapsible `DisclosureGroup` neighborhoods in Stats tab (collapsed by default, expand to show walks sorted by date with name/steps/date); Stats card orange bar now contains "Stats" label (white text on brandAmber, replaces 4pt stripe); search promoted from floating circle to 4th tab (Map | List | Stats | Search) via new `SearchTab` wrapper in ContentView; `NavigationCoordinator` (`@Observable`) enables cross-tab stairway/neighborhood selection from Search; floating search circle + `showSearch` state removed from MapTab; annotation labels use `displayName` (first 4 words, trailing punctuation stripped, no ellipsis); labels hidden at `mapSpan > 0.02` (wider than neighborhood level).
 
 ### 2026-03-29 (earlier)
+- **Attribution & acknowledgements** — iOS bottom sheet shows "View on Urban Hiker SF Map" link for stairways with `geocodeSource == "urban_hiker"` (alongside existing sfstairways.com link for stairways with both sources); macOS detail panel adds "UH Map" row in data comparison grid for Urban Hiker stairways; iOS Settings gains a new "Acknowledgements" section (SF Stairways attribution, Urban Hiker SF attribution + Stairway Map link, Buy a Matcha link with amber cup icon, book credit); macOS gets an `info.circle` toolbar button opening `AcknowledgementsSheet` with the same content.
 - **macOS tag management** — `TagManagerSheet.swift` with full CRUD (create, inline rename, delete with cascade to TagAssignments, preset tags read-only); sidebar Tags section in `StairwayBrowser` with per-tag counts and filter intersecting neighborhood filter; all numeric table columns sortable with nil-last logic; "Create & Assign…" inline option in detail panel Add Tag menu; Remove Tag and Create New Tag sections in BulkOperationsSheet; iOS `TagEditorSheet` deleted and tags made fully read-only on iOS; macOS app icon generated (white StairShape on brandOrange, all 10 sizes).
 
 ### 2026-03-29 (earlier)
-- **Urban Hiker SF data import** — `scripts/import_urban_hiker_locations.py` imports 762 new stairways from Urban Hiker SF (Alexandra Kenin) KMZ data. 4 coordinate gap-fills applied (Pemberton Place, Clover Lane, Acme Alley, Moraga Street). 8 new neighborhoods created (Presidio, Golden Gate Park, Lands End, Fort Mason, Embarcadero, Downtown, Alcatraz Island, Unclassified). Script is idempotent with `--dry-run` / `--apply` modes; produces `data/import_report.md` for review.
+- **Urban Hiker SF data import** — `scripts/import_urban_hiker_locations.py` imports 762 new stairways from Urban Hiker SF (Alexandra Kenin) KMZ data. 4 coordinate gap-fills applied. 8 new neighborhoods created. Script is idempotent with `--dry-run` / `--apply` modes.
 - **macOS photo add + notes editing** — "Add Photos..." button (NSOpenPanel) + drag-drop in detail panel photos section; inline notes editing; proper macOS thumbnail generation.
-- **DataHygieneView bug fix** — `canRetroactivelyPullStats` removed; fixed to use `walkStartTime != nil`.
 - **HealthKit data accuracy fix** — removed retroactive full-day pull; stats display restricted to active walks only; one-time migration clears bad data.
 - **macOS Admin Dashboard** — three-column browser, detail panel, data hygiene, bulk operations + CSV export.
 - **Photo sync fix** — upload logging, auth check, failed vs pending badge.
@@ -76,7 +77,7 @@ _Last updated: 2026-03-29_
 
 ## Pending Specs
 
-- `docs/specs/SPEC_ux-fixes-round3.md` — UX fixes round 3
+None.
 
 ## Known Issues
 

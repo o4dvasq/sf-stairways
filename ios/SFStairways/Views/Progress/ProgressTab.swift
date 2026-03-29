@@ -7,6 +7,23 @@ struct ProgressTab: View {
     @Query private var overrides: [StairwayOverride]
     @State private var store = StairwayStore()
     @State private var showSyncDetails = false
+    @State private var expandedNeighborhoods: Set<String> = []
+
+    private struct NeighborhoodData: Identifiable {
+        var id: String { name }
+        let name: String
+        let walked: Int
+        let total: Int
+        let walks: [WalkItem]
+
+        struct WalkItem: Identifiable {
+            var id: String { stairwayID }
+            let stairwayID: String
+            let name: String
+            let stepCount: Int?
+            let date: Date?
+        }
+    }
 
     private var walkedRecords: [WalkRecord] {
         walkRecords.filter(\.walked)
@@ -65,16 +82,34 @@ struct ProgressTab: View {
         return days.count
     }
 
-    private var neighborhoodProgress: [(name: String, walked: Int, total: Int)] {
+    private var neighborhoodData: [NeighborhoodData] {
         let walkedIDs = Set(walkedRecords.map(\.stairwayID))
         let grouped = Dictionary(grouping: store.stairways, by: \.neighborhood)
 
         return grouped
-            .map { neighborhood, stairways in
-                let walked = stairways.filter { walkedIDs.contains($0.id) }.count
-                return (name: neighborhood, walked: walked, total: stairways.count)
+            .compactMap { neighborhood, stairways -> NeighborhoodData? in
+                let walkedStairways = stairways.filter { walkedIDs.contains($0.id) }
+                guard !walkedStairways.isEmpty else { return nil }
+
+                let walkItems = walkedStairways.compactMap { stairway -> NeighborhoodData.WalkItem? in
+                    guard let record = walkedRecords.first(where: { $0.stairwayID == stairway.id }) else { return nil }
+                    let steps = override(for: stairway)?.verifiedStepCount ?? record.stepCount
+                    return NeighborhoodData.WalkItem(
+                        stairwayID: stairway.id,
+                        name: stairway.name,
+                        stepCount: steps,
+                        date: record.dateWalked
+                    )
+                }
+                .sorted { ($0.date ?? .distantPast) > ($1.date ?? .distantPast) }
+
+                return NeighborhoodData(
+                    name: neighborhood,
+                    walked: walkedStairways.count,
+                    total: stairways.count,
+                    walks: walkItems
+                )
             }
-            .filter { $0.walked > 0 }
             .sorted { Double($0.walked) / Double($0.total) > Double($1.walked) / Double($1.total) }
     }
 
@@ -98,7 +133,7 @@ struct ProgressTab: View {
                 }
                 .padding(16)
             }
-            .navigationTitle("Progress")
+            .navigationTitle("Stats")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
@@ -193,36 +228,77 @@ struct ProgressTab: View {
                 .font(.subheadline)
                 .fontWeight(.medium)
 
-            if neighborhoodProgress.isEmpty {
+            if neighborhoodData.isEmpty {
                 Text("Walk some stairways to see neighborhood progress!")
                     .font(.caption)
                     .foregroundStyle(.tertiary)
                     .padding(.vertical, 12)
             } else {
-                ForEach(neighborhoodProgress, id: \.name) { item in
-                    VStack(spacing: 4) {
-                        HStack {
-                            Text(item.name)
-                                .font(.subheadline)
-                            Spacer()
-                            Text("\(item.walked) / \(item.total)")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                        GeometryReader { geo in
-                            ZStack(alignment: .leading) {
-                                RoundedRectangle(cornerRadius: 3)
-                                    .fill(Color(.systemGray5))
-                                    .frame(height: 6)
-                                RoundedRectangle(cornerRadius: 3)
-                                    .fill(Color.walkedGreen)
-                                    .frame(
-                                        width: geo.size.width * Double(item.walked) / Double(item.total),
-                                        height: 6
-                                    )
+                ForEach(neighborhoodData) { item in
+                    DisclosureGroup(
+                        isExpanded: Binding(
+                            get: { expandedNeighborhoods.contains(item.name) },
+                            set: { isExpanded in
+                                if isExpanded {
+                                    expandedNeighborhoods.insert(item.name)
+                                } else {
+                                    expandedNeighborhoods.remove(item.name)
+                                }
+                            }
+                        )
+                    ) {
+                        VStack(spacing: 6) {
+                            ForEach(item.walks) { walk in
+                                HStack {
+                                    Text(walk.name)
+                                        .font(.subheadline)
+                                        .foregroundStyle(.primary)
+                                    Spacer()
+                                    if let steps = walk.stepCount {
+                                        Text("\(steps)")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    } else {
+                                        Text("—")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    if let date = walk.date {
+                                        Text(date.formatted(.dateTime.month(.abbreviated).day()))
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                            .frame(width: 44, alignment: .trailing)
+                                    }
+                                }
+                                .padding(.leading, 8)
                             }
                         }
-                        .frame(height: 6)
+                        .padding(.top, 6)
+                    } label: {
+                        VStack(spacing: 4) {
+                            HStack {
+                                Text(item.name)
+                                    .font(.subheadline)
+                                Spacer()
+                                Text("\(item.walked) / \(item.total)")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            GeometryReader { geo in
+                                ZStack(alignment: .leading) {
+                                    RoundedRectangle(cornerRadius: 3)
+                                        .fill(Color(.systemGray5))
+                                        .frame(height: 6)
+                                    RoundedRectangle(cornerRadius: 3)
+                                        .fill(Color.walkedGreen)
+                                        .frame(
+                                            width: geo.size.width * Double(item.walked) / Double(item.total),
+                                            height: 6
+                                        )
+                                }
+                            }
+                            .frame(height: 6)
+                        }
                     }
                 }
             }

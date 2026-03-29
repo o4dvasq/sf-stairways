@@ -8,11 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		55928EE52F7751A600B01C85 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 55928EE42F7751A600B01C85 /* Supabase */; };
+		55C7A2372F7998AD00CA13A0 /* all_stairways.json in Resources */ = {isa = PBXBuildFile; fileRef = 55C7A2362F7998AD00CA13A0 /* all_stairways.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		556E75582F708184007CD2B3 /* SFStairways.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SFStairways.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55C7A2102F7946DE00CA13A0 /* SFStairwaysMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SFStairwaysMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		55C7A2362F7998AD00CA13A0 /* all_stairways.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = all_stairways.json; path = ../data/all_stairways.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -20,6 +22,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
+				Resources/all_stairways.json,
 			);
 			target = 556E75572F708184007CD2B3 /* SFStairways */;
 		};
@@ -84,6 +87,7 @@
 		556E754F2F708184007CD2B3 = {
 			isa = PBXGroup;
 			children = (
+				55C7A2362F7998AD00CA13A0 /* all_stairways.json */,
 				556E755A2F708184007CD2B3 /* SFStairways */,
 				55C7A2112F7946DE00CA13A0 /* SFStairwaysMac */,
 				556E75592F708184007CD2B3 /* Products */,
@@ -193,6 +197,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55C7A2372F7998AD00CA13A0 /* all_stairways.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

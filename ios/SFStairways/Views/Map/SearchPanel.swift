@@ -9,7 +9,8 @@ struct SearchPanel: View {
     let userLocation: CLLocation?
     let onSelectStairway: (Stairway) -> Void
     let onSelectNeighborhood: (String) -> Void
-    let onDismiss: () -> Void
+    var onDismiss: () -> Void = {}
+    var isTabMode: Bool = false
 
     @Query private var allTags: [StairwayTag]
     @Query private var allAssignments: [TagAssignment]
@@ -91,12 +92,16 @@ struct SearchPanel: View {
             .navigationTitle("Search")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel", action: onDismiss)
+                if !isTabMode {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button("Cancel", action: onDismiss)
+                    }
                 }
             }
         }
-        .onAppear { isSearchFocused = true }
+        .onAppear {
+            if !isTabMode { isSearchFocused = true }
+        }
         .onChange(of: activeTab) { _, _ in
             selectedTag = nil
             query = ""

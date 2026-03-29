@@ -212,6 +212,7 @@ struct StairwayBottomSheet: View {
         }
         .onAppear {
             notesText = walkRecord?.notes ?? ""
+            editingNotes = false
             initCuratorFields()
         }
         .task {
@@ -236,7 +237,6 @@ struct StairwayBottomSheet: View {
             if newFocus == nil && curatorDirty { saveCuratorData() }
         }
         .onDisappear {
-            if editingNotes { saveNotes() }
             if curatorDirty { saveCuratorData() }
         }
         .onChange(of: triggerCuratorPromote) { _, shouldPromote in

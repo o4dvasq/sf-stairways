@@ -7,6 +7,7 @@ struct MapTab: View {
     @Query private var overrides: [StairwayOverride]
     @Query private var allTags: [StairwayTag]
     @Query private var allTagAssignments: [TagAssignment]
+    @Environment(NavigationCoordinator.self) private var coordinator
     @State private var store = StairwayStore()
     @State private var locationManager = LocationManager()
     @State private var aroundMe = AroundMeManager()
@@ -20,7 +21,6 @@ struct MapTab: View {
     @State private var mapSpan: Double = 0.06
     @State private var filter: StairwayFilter = .all
     @State private var activeTagFilter: String? = nil
-    @State private var showSearch: Bool = false
     @State private var showSettings: Bool = false
     @State private var showTagFilter: Bool = false
     @State private var toastMessage: String? = nil
@@ -74,20 +74,6 @@ struct MapTab: View {
                 .padding(.trailing, 12)
                 .padding(.bottom, 24)
             }
-            .overlay(alignment: .bottomTrailing) {
-                Button {
-                    showSearch = true
-                } label: {
-                    Image(systemName: "magnifyingglass")
-                        .font(.system(size: 15, weight: .semibold))
-                        .foregroundStyle(.white)
-                        .frame(width: 32, height: 32)
-                        .background(Color.white.opacity(0.2))
-                        .clipShape(Circle())
-                }
-                .padding(.trailing, 12)
-                .padding(.bottom, 16)
-            }
 
             // Top bar + filter pills + neighborhood chip stacked from the top
             VStack(spacing: 0) {
@@ -124,24 +110,18 @@ struct MapTab: View {
         .sheet(isPresented: $showSettings) {
             SettingsView()
         }
-        .fullScreenCover(isPresented: $showSearch) {
-            SearchPanel(
-                store: store,
-                walkRecords: walkRecords,
-                userLocation: locationManager.currentLocation,
-                onSelectStairway: { stairway in
-                    showSearch = false
-                    flyTo(stairway)
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                        selectedStairway = stairway
-                    }
-                },
-                onSelectNeighborhood: { neighborhood in
-                    showSearch = false
-                    flyToNeighborhood(neighborhood)
-                },
-                onDismiss: { showSearch = false }
-            )
+        .onChange(of: coordinator.pendingStairway) { _, stairway in
+            guard let stairway else { return }
+            coordinator.pendingStairway = nil
+            flyTo(stairway)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                selectedStairway = stairway
+            }
+        }
+        .onChange(of: coordinator.pendingNeighborhood) { _, neighborhood in
+            guard let neighborhood else { return }
+            coordinator.pendingNeighborhood = nil
+            flyToNeighborhood(neighborhood)
         }
         .onAppear {
             locationManager.requestPermission()
@@ -353,15 +333,16 @@ struct ProgressCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Color.brandAmber
-                .frame(height: 4)
+            Text("Stats")
+                .font(.caption2)
+                .fontWeight(.semibold)
+                .foregroundStyle(.white)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 4)
+                .background(Color.brandAmber)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text("Stats")
-                    .font(.caption2)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.secondary)
-                    .padding(.bottom, 2)
                 Text(walkedCount > 0 ? "\(walkedCount) stairways" : "—")
                     .font(.caption)
                     .fontWeight(.semibold)
