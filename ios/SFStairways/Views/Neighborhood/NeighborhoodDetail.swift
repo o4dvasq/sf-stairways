@@ -66,8 +66,8 @@ struct NeighborhoodDetail: View {
             if let neighborhood = neighborhoodStore.neighborhood(named: neighborhoodName) {
                 ForEach(Array(neighborhood.polygons.enumerated()), id: \.offset) { _, ring in
                     MapPolygon(coordinates: ring)
-                        .foregroundStyle(neighborhood.color.opacity(0.20))
-                        .stroke(neighborhood.color.opacity(0.50), lineWidth: 1)
+                        .foregroundStyle(neighborhood.color.opacity(0.30))
+                        .stroke(neighborhood.color.opacity(0.60), lineWidth: 1)
                 }
             }
 

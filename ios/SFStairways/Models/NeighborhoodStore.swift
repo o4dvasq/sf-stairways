@@ -143,22 +143,22 @@ final class NeighborhoodStore {
 
     // MARK: - Color Assignment
 
-    // Pastel palette for map overlays. Assigned round-robin by sorted name so
+    // Saturated palette for map overlays. Assigned round-robin by sorted name so
     // assignment is stable and adjacent neighborhoods tend to get different colors.
     // 12 colors gives better separation across 68 active neighborhoods.
     private let palette: [Color] = [
-        Color(red: 0.96, green: 0.76, blue: 0.76),  // soft rose
-        Color(red: 0.76, green: 0.88, blue: 0.96),  // sky blue
-        Color(red: 0.80, green: 0.96, blue: 0.80),  // mint green
-        Color(red: 0.96, green: 0.92, blue: 0.76),  // warm yellow
-        Color(red: 0.88, green: 0.80, blue: 0.96),  // lavender
-        Color(red: 0.96, green: 0.84, blue: 0.76),  // peach
-        Color(red: 0.76, green: 0.96, blue: 0.92),  // aqua
-        Color(red: 0.92, green: 0.76, blue: 0.88),  // pink-purple
-        Color(red: 0.76, green: 0.92, blue: 0.76),  // sage
-        Color(red: 0.96, green: 0.80, blue: 0.64),  // apricot
-        Color(red: 0.72, green: 0.84, blue: 0.96),  // cornflower
-        Color(red: 0.96, green: 0.96, blue: 0.72),  // light lemon
+        Color(red: 0.92, green: 0.55, blue: 0.55),  // rose
+        Color(red: 0.52, green: 0.75, blue: 0.92),  // sky blue
+        Color(red: 0.55, green: 0.90, blue: 0.55),  // mint green
+        Color(red: 0.92, green: 0.85, blue: 0.38),  // warm yellow
+        Color(red: 0.72, green: 0.52, blue: 0.92),  // lavender
+        Color(red: 0.92, green: 0.62, blue: 0.42),  // peach
+        Color(red: 0.38, green: 0.88, blue: 0.80),  // aqua
+        Color(red: 0.85, green: 0.48, blue: 0.76),  // pink-purple
+        Color(red: 0.48, green: 0.85, blue: 0.48),  // sage
+        Color(red: 0.92, green: 0.58, blue: 0.32),  // apricot
+        Color(red: 0.45, green: 0.65, blue: 0.92),  // cornflower
+        Color(red: 0.88, green: 0.88, blue: 0.35),  // lemon
     ]
 
     private func assignColors(_ raw: [(name: String, polygons: [[CLLocationCoordinate2D]])]) -> [Neighborhood] {

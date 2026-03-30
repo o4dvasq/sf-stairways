@@ -518,3 +518,12 @@ SwiftUI `Table` requires `TableColumn(value:)` to use a `KeyPath` pointing to a 
 **Option B (chosen): Sentinel sort keys + manual dispatch in `sortedRows`.** Non-optional `heightSortKey: Double`, `stepsSortKey: Int`, etc. are added to `StairwayRow` using `-.greatestFiniteMagnitude` / `.min` as nil sentinels. These satisfy the `TableColumn(value:)` requirement (clickable headers, sort direction arrows). `sortedRows` reads `sortOrder.first.keyPath`, matches it against known keypaths (`\StairwayRow.heightSortKey` etc.), and delegates to `nilLastSorted(_:asc:value:)` which applies nil-last logic for both directions. Non-optional columns (Name, Photos) fall through to `rows.sorted(using: sortOrder)`.
 
 The sentinel values are never shown in the UI — they only exist so the `Table` header has a sortable column type. The actual sort is fully controlled by `nilLastSorted`.
+
+## Neighborhood palette: saturated colors replace pastels
+**Date:** 2026-03-30
+
+The original 12-color neighborhood palette used pastel RGB values (dominant channels 0.80–0.96, recessive channels 0.64–0.76). At the overlay opacities in use (fill ~0.17, stroke ~0.30) the polygons were barely visible — pastels washed out to near-white at any transparency.
+
+Two changes together fix this: opacity levels were raised (fill 0.30/0.20 light/dark, stroke 0.50/0.40) and the palette was shifted toward more saturated colors (dominant channels ~0.88–0.92, recessive channels ~0.32–0.55). The hue families are preserved — each color is recognizably in the same family as its pastel predecessor — so the visual identity is maintained. Fully saturated primaries were avoided; the target was "clearly colored" rather than "neon."
+
+`NeighborhoodDetail` fill/stroke bumped to 0.30/0.60 to remain consistent with the new map baseline.

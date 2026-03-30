@@ -1,6 +1,6 @@
 # Project State — sf-stairways
 
-_Last updated: 2026-03-30 (remove-healthkit-walk-recording)_
+_Last updated: 2026-03-30 (neighborhood-color-saturation)_
 
 ## Platforms
 
@@ -60,6 +60,7 @@ _Last updated: 2026-03-30 (remove-healthkit-walk-recording)_
 ## Recent Completions
 
 ### 2026-03-30 (this session)
+- **Neighborhood Color Saturation** — Increased polygon overlay opacity (fill 0.17→0.30 light / 0.11→0.20 dark; stroke 0.30→0.50 / 0.22→0.40; dimmed 0.03→0.05 fill / 0.05→0.10 stroke). Replaced the 12-color pastel palette in `NeighborhoodStore` with more saturated equivalents (same hue families, reduced high channels for contrast). Bumped `NeighborhoodDetail` polygon to fill 0.30 / stroke 0.60 to match new baseline.
 - **Remove HealthKit & Walk Recording** — Deleted `HealthKitService.swift` and `ActiveWalkManager.swift` entirely. Removed "Start Walk" / active session banner / "End Walk" / "Cancel" UI from `StairwayBottomSheet`. "Mark Walked" is now the only walk-logging action. Removed HealthKit authorization section from `SettingsView`. Removed `com.apple.developer.healthkit` from both `.entitlements` files. Removed `walkMethod` computed property from `WalkRecord`. Removed `cleanRetroactiveStatsIfNeeded()` from `SeedDataService`. Removed `walkStartTime`/`walkEndTime` params from `PhotoSuggestionService.fetch` (falls back to full-day window). Removed `missingHealthKit` issue category from `DataHygieneView`. Relabeled Mac detail panel "Walk Data" column to "Walk Data (legacy)"; removed Walk Method row. Removed Elev. Gain column from `StairwayBrowser` table. Removed elevation/steps from CSV export. Removed Walk Data section from `AdminDetailView`. WalkRecord fields (`stepCount`, `elevationGain`, `walkStartTime`, `walkEndTime`) retained in schema to avoid CloudKit migration issues — existing data preserved, just no longer displayed or populated.
 
 ### 2026-03-29

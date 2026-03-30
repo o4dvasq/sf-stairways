@@ -42,8 +42,8 @@ struct MapTab: View {
                 // Neighborhood polygon overlays (drawn first, beneath all annotations)
                 ForEach(neighborhoodStore.neighborhoods) { hood in
                     let isDimmed = aroundMe.isDimmed(neighborhood: hood.name)
-                    let fillOpacity = isDimmed ? 0.03 : (colorScheme == .dark ? 0.11 : 0.17)
-                    let strokeOpacity = isDimmed ? 0.05 : (colorScheme == .dark ? 0.22 : 0.30)
+                    let fillOpacity = isDimmed ? 0.05 : (colorScheme == .dark ? 0.20 : 0.30)
+                    let strokeOpacity = isDimmed ? 0.10 : (colorScheme == .dark ? 0.40 : 0.50)
 
                     ForEach(Array(hood.polygons.enumerated()), id: \.offset) { _, ring in
                         MapPolygon(coordinates: ring)
