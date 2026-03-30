@@ -57,7 +57,7 @@ final class NeighborhoodStore {
 
     private struct GeoJSONFeature: Decodable {
         struct Properties: Decodable {
-            let nhood: String
+            let name: String
         }
         struct Geometry: Decodable {
             let type: String
@@ -114,7 +114,7 @@ final class NeighborhoodStore {
 
     private struct GeoJSONRoot: Decodable {
         struct Feature: Decodable {
-            struct Properties: Decodable { let nhood: String }
+            struct Properties: Decodable { let name: String }
             let properties: Properties
             let geometry: RawGeometry
         }
@@ -133,7 +133,7 @@ final class NeighborhoodStore {
             let root = try JSONDecoder().decode(GeoJSONRoot.self, from: data)
             return root.features.map { feature in
                 let polygons = feature.geometry.coordinates.outerRings
-                return (name: feature.properties.nhood, polygons: polygons)
+                return (name: feature.properties.name, polygons: polygons)
             }
         } catch {
             print("[NeighborhoodStore] ERROR: Failed to parse GeoJSON: \(error)")
@@ -145,6 +145,7 @@ final class NeighborhoodStore {
 
     // Pastel palette for map overlays. Assigned round-robin by sorted name so
     // assignment is stable and adjacent neighborhoods tend to get different colors.
+    // 12 colors gives better separation across 68 active neighborhoods.
     private let palette: [Color] = [
         Color(red: 0.96, green: 0.76, blue: 0.76),  // soft rose
         Color(red: 0.76, green: 0.88, blue: 0.96),  // sky blue
@@ -154,6 +155,10 @@ final class NeighborhoodStore {
         Color(red: 0.96, green: 0.84, blue: 0.76),  // peach
         Color(red: 0.76, green: 0.96, blue: 0.92),  // aqua
         Color(red: 0.92, green: 0.76, blue: 0.88),  // pink-purple
+        Color(red: 0.76, green: 0.92, blue: 0.76),  // sage
+        Color(red: 0.96, green: 0.80, blue: 0.64),  // apricot
+        Color(red: 0.72, green: 0.84, blue: 0.96),  // cornflower
+        Color(red: 0.96, green: 0.96, blue: 0.72),  // light lemon
     ]
 
     private func assignColors(_ raw: [(name: String, polygons: [[CLLocationCoordinate2D]])]) -> [Neighborhood] {

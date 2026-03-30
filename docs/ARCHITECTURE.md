@@ -251,8 +251,8 @@ For any stat display (stair count, height): use `StairwayOverride` value if non-
 
 | File | Purpose |
 |------|---------|
-| `all_stairways.json` | 382 SF stairways catalog (read-only); neighborhood field uses DataSF Analysis Neighborhood names |
-| `sf_neighborhoods.geojson` | 41 DataSF Analysis Neighborhood polygons; loaded by `NeighborhoodStore` at startup to compute centroids + adjacency |
+| `all_stairways.json` | 382 SF stairways catalog (read-only); neighborhood field uses SF 311 Neighborhood names |
+| `sf_neighborhoods.geojson` | 117 SF 311 Neighborhood polygons (property key `name`); loaded by `NeighborhoodStore` at startup to compute centroids + adjacency |
 | `tags_preset.json` | 9 preset tag suggestions seeded into SwiftData on first launch |
 
 Neighborhood data (centroids, adjacency) is computed at runtime from the GeoJSON — no separate pre-computed JSON files.

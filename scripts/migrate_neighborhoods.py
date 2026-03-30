@@ -2,15 +2,14 @@
 """
 migrate_neighborhoods.py
 
-One-time migration: reassigns neighborhood field in all_stairways.json and
-target_list.json from 53 scraped neighborhood names to the 41 official
-DataSF Analysis Neighborhoods.
+Reassigns neighborhood field in all_stairways.json and target_list.json
+from the DataSF Analysis Neighborhoods (41 neighborhoods) to the SF 311
+Neighborhoods dataset (117 neighborhoods).
 
 Algorithm:
-- Stairways with (lat, lng): point-in-polygon test against DataSF polygons
+- Stairways with (lat, lng): point-in-polygon test against 311 polygons
   (ray casting). Fallback to nearest centroid if outside all polygons.
-- Stairways without coordinates: nearest-centroid lookup from old neighborhood
-  centroid mapped to DataSF neighborhoods.
+- Stairways without coordinates: manual assignment by stairway ID.
 
 Usage:
     python3 scripts/migrate_neighborhoods.py
@@ -19,7 +18,6 @@ Usage:
 import json
 import math
 import os
-import sys
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO_ROOT = os.path.dirname(SCRIPT_DIR)
@@ -101,7 +99,7 @@ def haversine_km(lat1, lng1, lat2, lng2):
 
 
 # ---------------------------------------------------------------------------
-# Load GeoJSON
+# Load GeoJSON (SF 311 dataset — property key is "name", not "nhood")
 # ---------------------------------------------------------------------------
 
 def load_neighborhoods(geojson_path):
@@ -110,7 +108,7 @@ def load_neighborhoods(geojson_path):
 
     neighborhoods = []
     for feature in gj["features"]:
-        name = feature["properties"]["nhood"]
+        name = feature["properties"]["name"]
         geometry = feature["geometry"]
         centroid = compute_centroid(geometry)
         neighborhoods.append({
@@ -142,65 +140,26 @@ def find_neighborhood(lat, lng, neighborhoods):
 
 
 # ---------------------------------------------------------------------------
-# Manual fallback for stairways without coordinates
-# Maps old scraped neighborhood names to DataSF Analysis Neighborhood names.
-# Used only for the ~15 stairways that have no lat/lng.
+# Manual assignments for the 15 stairways with no coordinates.
+# Keyed by stairway ID. Values are SF 311 neighborhood names.
 # ---------------------------------------------------------------------------
 
-NO_COORDS_MAPPING = {
-    "Anza Vista": "Western Addition",
-    "Ashbury Heights/Mount Olympus": "Haight Ashbury",
-    "Bayview/Hunters Point": "Bayview Hunters Point",
-    "Bernal Heights": "Bernal Heights",
-    "Chinatown": "Chinatown",
-    "Clarendon Heights": "Twin Peaks",
-    "Corona Heights": "Castro/Upper Market",
-    "Crocker-Amazon": "Excelsior",
-    "Diamond Heights": "Glen Park",
-    "Dolores Heights": "Castro/Upper Market",
-    "Eureka Valley": "Castro/Upper Market",
-    "Excelsior": "Excelsior",
-    "Forest Hill": "West of Twin Peaks",
-    "Forest Knolls": "Twin Peaks",
-    "Glen Park": "Glen Park",
-    "Golden Gate Heights": "Inner Sunset",
-    "Ingleside": "Oceanview/Merced/Ingleside",
-    "Ingleside Terraces": "Oceanview/Merced/Ingleside",
-    "Inner Sunset": "Inner Sunset",
-    "Japantown": "Japantown",
-    "Lakeside": "Lakeshore",
-    "Laurel Heights": "Inner Richmond",
-    "Lone Mountain": "Lone Mountain/USF",
-    "Lower Haight": "Hayes Valley",
-    "Midtown Terrace": "Twin Peaks",
-    "Miraloma Park": "West of Twin Peaks",
-    "Mission Distrtict": "Mission",   # fix typo too
-    "Mission Terrace": "Outer Mission",
-    "Nob Hill": "Nob Hill",
-    "Noe Valley": "Noe Valley",
-    "North Beach": "North Beach",
-    "Northeast Waterfront": "Financial District/South Beach",
-    "Oceanview": "Oceanview/Merced/Ingleside",
-    "Outer Mission": "Outer Mission",
-    "Pacific Heights": "Pacific Heights",
-    "Parkmerced": "Lakeshore",
-    "Parkside": "Sunset/Parkside",
-    "Parnassus Heights": "Inner Sunset",
-    "Portola": "Portola",
-    "Potrero Hill": "Potrero Hill",
-    "Richmond District": "Outer Richmond",
-    "Rincon Hill": "South of Market",
-    "Russian Hill": "Russian Hill",
-    "Saint Francis Wood": "West of Twin Peaks",
-    "Sherwood Forest/Mount Davidson": "West of Twin Peaks",
-    "Silver Terrace": "Bayview Hunters Point",
-    "Sunnyside": "Excelsior",
-    "Telegraph Hill": "North Beach",
-    "Upper Market/Twin Peaks": "Twin Peaks",
-    "Visitacion Valley": "Visitacion Valley",
-    "West Portal": "West of Twin Peaks",
-    "Westwood Park": "West of Twin Peaks",
-    "Yerba Buena Island": "Treasure Island",
+NO_COORDS_MANUAL = {
+    "hudson-avenue-to-hawkins-lane":                    "Bayview",
+    "pemberton-place-at-crown-terrace":                 "Upper Market",
+    "miguel-street-to-beacon-street":                   "Glen Park",
+    "clover-lane-19th-street-to-kite-hill":             "Eureka Valley",
+    "acme-alley-corwin-street-to-grand-view-avenue":    "Eureka Valley",
+    "moraga-street-east-of-14th-avenue":                "Inner Sunset",
+    "ingleside-path":                                   "Ingleside Terraces",
+    "kirkham-street-to-5th-avenue":                     "Inner Sunset",
+    "lyon-street-between-broadway-and-pacific-avenue":  "Pacific Heights",
+    "summit-way-to-gonzalez-drive":                     "Stonestown",
+    "summit-way-to-font-boulevard":                     "Stonestown",
+    "28th-avenue-south-of-vicente-street":              "Parkside",
+    "mariposa-street-west-of-utah-street-north-side":   "Potrero Hill",
+    "reno-place":                                       "North Beach",
+    "dixie-alley-corbett-avenue-to-burnett-avenue":     "Upper Market",
 }
 
 
@@ -209,17 +168,17 @@ NO_COORDS_MAPPING = {
 # ---------------------------------------------------------------------------
 
 def migrate_stairways(stairways, neighborhoods):
-    datasf_names = {n["name"] for n in neighborhoods}
+    valid_names = {n["name"] for n in neighborhoods}
     results = []
     unassigned = []
     fallback_count = 0
-    mapping_count = 0
+    manual_count = 0
     pip_count = 0
 
     for s in stairways:
         lat = s.get("lat")
         lng = s.get("lng")
-        old_name = s.get("neighborhood", "")
+        stairway_id = s.get("id", "")
 
         if lat is not None and lng is not None:
             new_name, method = find_neighborhood(lat, lng, neighborhoods)
@@ -227,21 +186,21 @@ def migrate_stairways(stairways, neighborhoods):
                 pip_count += 1
             else:
                 fallback_count += 1
-                print(f"  FALLBACK ({method}): {s['id']} ({old_name}) → {new_name}")
+                print(f"  FALLBACK ({method}): {stairway_id} → {new_name}")
         else:
-            # No coordinates — use manual mapping
-            new_name = NO_COORDS_MAPPING.get(old_name)
-            method = "manual-mapping"
-            mapping_count += 1
+            # No coordinates — use manual assignment by stairway ID
+            new_name = NO_COORDS_MANUAL.get(stairway_id)
+            method = "manual"
+            manual_count += 1
             if new_name:
-                print(f"  MAPPED (no coords): {s['id']} ({old_name}) → {new_name}")
+                print(f"  MANUAL (no coords): {stairway_id} → {new_name}")
             else:
-                print(f"  WARNING: No mapping for '{old_name}' (id={s['id']})")
-                new_name = old_name
-                unassigned.append(s["id"])
+                print(f"  WARNING: No manual assignment for id='{stairway_id}'")
+                new_name = s.get("neighborhood", "")
+                unassigned.append(stairway_id)
 
-        if new_name not in datasf_names:
-            print(f"  ERROR: '{new_name}' is not a valid DataSF neighborhood!")
+        if new_name not in valid_names:
+            print(f"  ERROR: '{new_name}' is not a valid 311 neighborhood! (id={stairway_id})")
 
         updated = dict(s)
         updated["neighborhood"] = new_name
@@ -250,7 +209,7 @@ def migrate_stairways(stairways, neighborhoods):
     print(f"\nSummary:")
     print(f"  Point-in-polygon:  {pip_count}")
     print(f"  Centroid fallback: {fallback_count}")
-    print(f"  Manual mapping:    {mapping_count}")
+    print(f"  Manual (no coords): {manual_count}")
     print(f"  Unassigned:        {len(unassigned)}")
     if unassigned:
         print(f"  Unassigned IDs:    {unassigned}")
@@ -259,9 +218,9 @@ def migrate_stairways(stairways, neighborhoods):
 
 
 def main():
-    print("Loading GeoJSON...")
+    print("Loading GeoJSON (SF 311 Neighborhoods)...")
     neighborhoods = load_neighborhoods(GEOJSON_PATH)
-    print(f"  {len(neighborhoods)} DataSF neighborhoods loaded")
+    print(f"  {len(neighborhoods)} neighborhoods loaded")
 
     # --- Migrate all_stairways.json ---
     print(f"\nLoading {STAIRWAYS_PATH}...")
@@ -277,11 +236,11 @@ def main():
     print(f"\nWrote {len(updated_stairways)} stairways to {STAIRWAYS_PATH}")
 
     # Verify
-    new_hoods = sorted(set(s["neighborhood"] for s in updated_stairways))
-    print(f"\nNew neighborhood distribution ({len(new_hoods)} unique):")
     from collections import Counter
     counts = Counter(s["neighborhood"] for s in updated_stairways)
-    for name in sorted(counts):
+    unique_hoods = sorted(counts)
+    print(f"\nNeighborhood distribution ({len(unique_hoods)} unique):")
+    for name in unique_hoods:
         print(f"  {name}: {counts[name]}")
 
     # --- Migrate target_list.json ---

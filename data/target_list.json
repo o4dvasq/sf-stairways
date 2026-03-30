@@ -2,7 +2,7 @@
   {
     "id": "16th-avenue-tiled-steps",
     "name": "16th Avenue Tiled Steps",
-    "neighborhood": "Inner Sunset",
+    "neighborhood": "Golden Gate Heights",
     "lat": 37.75626533533746,
     "lng": -122.4731636575631,
     "step_count": 163,
@@ -14,7 +14,7 @@
   {
     "id": "hidden-garden-steps",
     "name": "Hidden Garden Steps",
-    "neighborhood": "Inner Sunset",
+    "neighborhood": "Golden Gate Heights",
     "lat": 37.75966354107957,
     "lng": -122.4736471316814,
     "step_count": 148,
@@ -26,7 +26,7 @@
   {
     "id": "lincoln-park-steps",
     "name": "Lincoln Park Steps",
-    "neighborhood": "Lincoln Park",
+    "neighborhood": "Lincoln Park / Ft. Miley",
     "lat": 37.78350612184164,
     "lng": -122.493611863928,
     "step_count": 30,
@@ -38,7 +38,7 @@
   {
     "id": "vulcan-stairway",
     "name": "Vulcan Stairway",
-    "neighborhood": "Castro/Upper Market",
+    "neighborhood": "Corona Heights",
     "lat": 37.7635107225629,
     "lng": -122.4411569400488,
     "step_count": 210,
@@ -50,7 +50,7 @@
   {
     "id": "saturn-street-west-of-ord-street",
     "name": "Saturn Street Steps",
-    "neighborhood": "Castro/Upper Market",
+    "neighborhood": "Corona Heights",
     "lat": 37.76274509257919,
     "lng": -122.4405967979573,
     "step_count": 77,
@@ -62,7 +62,7 @@
   {
     "id": "pemberton-place-clayton-street-to-villa-terrace",
     "name": "Pemberton Place Steps",
-    "neighborhood": "Castro/Upper Market",
+    "neighborhood": "Clarendon Heights",
     "lat": 37.75865477274935,
     "lng": -122.4466325986597,
     "step_count": 210,
@@ -74,7 +74,7 @@
   {
     "id": "lyon-street-vallejo-street-to-broadway",
     "name": "Lyon Street Steps",
-    "neighborhood": "Presidio",
+    "neighborhood": "Pacific Heights",
     "lat": 37.79328368348408,
     "lng": -122.4465234072123,
     "step_count": 332,
@@ -86,7 +86,7 @@
   {
     "id": "filbert-street-sansome-street-to-montgomery-street",
     "name": "Filbert Steps",
-    "neighborhood": "North Beach",
+    "neighborhood": "Telegraph Hill",
     "lat": 37.8020878930906,
     "lng": -122.4040064221076,
     "step_count": 450,
@@ -122,7 +122,7 @@
   {
     "id": "arelious-walker-drive-flights-of-fancy-mosaic-steps",
     "name": "Arelious Walker / Flights of Fancy",
-    "neighborhood": "Bayview Hunters Point",
+    "neighborhood": "Hunters Point",
     "lat": 37.73068063702443,
     "lng": -122.3740392547864,
     "step_count": 87,
@@ -134,7 +134,7 @@
   {
     "id": "arbol-lane",
     "name": "Arbol Lane",
-    "neighborhood": "Lone Mountain/USF",
+    "neighborhood": "Anza Vista",
     "lat": 37.7792766991284,
     "lng": -122.4438382689199,
     "step_count": null,
@@ -146,7 +146,7 @@
   {
     "id": "greenwich-street-sansome-street-to-montgomery-street",
     "name": "Greenwich Street - Sansome Street to Montgomery Street",
-    "neighborhood": "North Beach",
+    "neighborhood": "Telegraph Hill",
     "lat": 37.80292993022101,
     "lng": -122.4042711506839,
     "step_count": 350,

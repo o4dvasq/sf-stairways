@@ -2,6 +2,7 @@
 
 | Description | Implemented | Spec File |
 |---|---|---|
+| Replace DataSF with SF 311 GeoJSON; 117 hoods, 68 active, re-migrate 382 stairways | 2026-03-29 | SPEC_neighborhood-311-migration.md |
 | Neighborhood model, GeoJSON, migration 53→41 hoods, NeighborhoodStore | 2026-03-29 10:00 | SPEC_neighborhood-foundation.md |
 | HealthKit retry+error, no duplicate mark button, photo badges, iCloud error msg | 2026-03-29 | SPEC_ux-fixes-round4.md |
 | HealthKit logging + delay; toast on nil; "no data" steps; iCloud troubleshoot | 2026-03-29 | SPEC_healthkit-stats-and-sync-diagnosis.md |

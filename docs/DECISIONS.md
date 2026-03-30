@@ -1,5 +1,14 @@
 # Architecture Decisions — sf-stairways
 
+## SF 311 Neighborhoods over DataSF Analysis Neighborhoods
+**Date:** 2026-03-29
+
+`sf_neighborhoods.geojson` now contains the SF 311 Neighborhoods dataset (117 polygons, property key `name`) rather than the DataSF Analysis Neighborhoods dataset (41 polygons, property key `nhood`).
+
+**Why 311, not Analysis.** The Analysis dataset merges locally-recognized neighborhoods into large census-tract groupings — Forest Hill disappears into "West of Twin Peaks," Eureka Valley into "Castro/Upper Market," Clarendon Heights into "Twin Peaks." Residents don't identify with those merged names. The 311 dataset (defined in 2006 by the Mayor's Office of Neighborhood Services) preserves the granular names SF residents actually use, giving the app real neighborhood-level identity: 68 distinct neighborhoods with stairways vs. 34 before.
+
+**Migration approach.** 367 of 382 stairways were re-assigned via point-in-polygon against the new boundaries (0 centroid fallbacks — perfect coverage). The 15 stairways with null coordinates were manually assigned by stairway ID based on street intersections. The old `NO_COORDS_MAPPING` dict (by old neighborhood name) was replaced by `NO_COORDS_MANUAL` (by stairway ID) for precision. Color palette expanded from 8 → 12 pastel colors to reduce adjacent-neighborhood color collisions across the larger set.
+
 ## NeighborhoodStore: GeoJSON-backed, computed at startup, injected via environment
 **Date:** 2026-03-29
 

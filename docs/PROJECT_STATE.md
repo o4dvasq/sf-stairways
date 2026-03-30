@@ -1,6 +1,6 @@
 # Project State — sf-stairways
 
-_Last updated: 2026-03-29 (neighborhood-foundation)_
+_Last updated: 2026-03-29 (neighborhood-311-migration)_
 
 ## Platforms
 
@@ -13,7 +13,7 @@ _Last updated: 2026-03-29 (neighborhood-foundation)_
 - Tags are **read-only** on iOS (display + filter only) — all tag CRUD is macOS-only; `TagEditorSheet` removed
 - `StairwayStore` filters out deleted stairways via `applyDeletions(_:)` — map, list, search, progress all respect deletions
 - **Visual design: light-first** — warm terracotta `brandOrange`, SF Pro Rounded for display text, `surfaceCardElevated` stat cards, orange progress ring
-- **Neighborhoods: DataSF Analysis Neighborhoods** — 41 official neighborhoods, 34 with stairways; powered by `NeighborhoodStore` (GeoJSON-backed, computes centroids + adjacency at startup)
+- **Neighborhoods: SF 311 Neighborhoods** — 117 granular neighborhoods (as defined by Mayor's Office of Neighborhood Services, 2006), 68 with stairways; powered by `NeighborhoodStore` (GeoJSON-backed, computes centroids + adjacency at startup); property key `name`
 - Successfully archived in Xcode on 2026-03-23
 - See `docs/IOS_REFERENCE.md` for full build details
 
@@ -54,11 +54,12 @@ _Last updated: 2026-03-29 (neighborhood-foundation)_
 | Walked stairways | 8 |
 | With photos | 0 |
 | All SF stairways (catalog) | **382** |
-| DataSF Analysis Neighborhoods | **41** (34 with stairways) |
+| SF 311 Neighborhoods | **117** total, **68** with stairways |
 
 ## Recent Completions
 
 ### 2026-03-29 (this session)
+- **Neighborhood 311 Migration** — Replaced DataSF Analysis Neighborhoods GeoJSON (41 hoods) with SF 311 Neighborhoods dataset (117 hoods, granular locally-recognized names); `sf_neighborhoods.geojson` swapped in Resources; `NeighborhoodStore` updated to read `name` property (was `nhood`); color palette expanded from 8→12 colors for better coverage across 68 active neighborhoods; `all_stairways.json` re-migrated (367 point-in-polygon, 15 manual by stairway ID, 0 centroid fallbacks); `target_list.json` re-migrated (13/13 PIP); Forest Hill, Corona Heights, Diamond Heights, Eureka Valley, Clarendon Heights, Dolores Heights all now exist as separate neighborhoods with stairways assigned.
 - **Neighborhood Foundation** — `Neighborhood` struct + `NeighborhoodStore` (`@Observable`) replace two separate static JSON files; GeoJSON-backed (`sf_neighborhoods.geojson`, 41 DataSF Analysis Neighborhoods); centroids computed from polygon geometry at startup; adjacency computed from shared polygon vertex proximity (grid-bucketed, ~100m threshold); `AroundMeManager` refactored to accept `NeighborhoodStore` at activation call site instead of init; `SFStairwaysApp` initializes and injects `NeighborhoodStore` into SwiftUI environment; `MapTab` reads from environment; `all_stairways.json` migrated from 53 scraped names → 41 DataSF names (367 point-in-polygon, 15 manual mapping, 0 unassigned); "Mission Distrtict" typo eliminated; `neighborhood_centroids.json` and `neighborhood_adjacency.json` deleted.
 
 ### 2026-03-29 (earlier sessions)
