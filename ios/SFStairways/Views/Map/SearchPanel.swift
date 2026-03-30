@@ -91,6 +91,9 @@ struct SearchPanel: View {
             }
             .navigationTitle("Search")
             .navigationBarTitleDisplayMode(.inline)
+            .navigationDestination(for: String.self) { name in
+                NeighborhoodDetail(neighborhoodName: name)
+            }
             .toolbar {
                 if !isTabMode {
                     ToolbarItem(placement: .topBarLeading) {
@@ -142,9 +145,7 @@ struct SearchPanel: View {
     private var neighborhoodResults: some View {
         let groups = store.searchByNeighborhood(query)
         return List(groups, id: \.name) { group in
-            Button {
-                onSelectNeighborhood(group.name)
-            } label: {
+            NavigationLink(value: group.name) {
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(group.name)
@@ -155,12 +156,8 @@ struct SearchPanel: View {
                             .foregroundStyle(.secondary)
                     }
                     Spacer()
-                    Image(systemName: "chevron.right")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
                 }
             }
-            .buttonStyle(.plain)
         }
         .listStyle(.plain)
         .overlay {

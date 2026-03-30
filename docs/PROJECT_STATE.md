@@ -1,6 +1,6 @@
 # Project State — sf-stairways
 
-_Last updated: 2026-03-29 (neighborhood-311-migration)_
+_Last updated: 2026-03-29 (neighborhood-map-and-detail)_
 
 ## Platforms
 
@@ -59,6 +59,7 @@ _Last updated: 2026-03-29 (neighborhood-311-migration)_
 ## Recent Completions
 
 ### 2026-03-29 (this session)
+- **Neighborhood Map Overlays + Detail View** — `MapPolygon` overlays for all 117 neighborhoods with warm-toned pastel fills (light: 17% alpha, dark: 11%); centroid label annotations visible at mapSpan < 0.04 degrees (~5–7 neighborhoods visible); Around Me dimming applied to polygon opacity (3% when dimmed); label tap → `NeighborhoodDetail` sheet; `NeighborhoodDetail` view: navigation title, progress bar (walked/total), embedded 200pt map (neighborhood polygon + stairway pins), horizontal photo scroll (hidden if none), stairway list (walked first by date desc, then unwalked alphabetical); 4 navigation entry points: map label, ListTab section header (NavigationLink push), SearchPanel neighborhood tab (NavigationLink push, replaces fly-to-map), StairwayBottomSheet neighborhood name (tappable chevron link, opens sheet); `Views/Neighborhood/NeighborhoodDetail.swift` created; `PBXFileSystemSynchronizedRootGroup` auto-picks up new file.
 - **Neighborhood 311 Migration** — Replaced DataSF Analysis Neighborhoods GeoJSON (41 hoods) with SF 311 Neighborhoods dataset (117 hoods, granular locally-recognized names); `sf_neighborhoods.geojson` swapped in Resources; `NeighborhoodStore` updated to read `name` property (was `nhood`); color palette expanded from 8→12 colors for better coverage across 68 active neighborhoods; `all_stairways.json` re-migrated (367 point-in-polygon, 15 manual by stairway ID, 0 centroid fallbacks); `target_list.json` re-migrated (13/13 PIP); Forest Hill, Corona Heights, Diamond Heights, Eureka Valley, Clarendon Heights, Dolores Heights all now exist as separate neighborhoods with stairways assigned.
 - **Neighborhood Foundation** — `Neighborhood` struct + `NeighborhoodStore` (`@Observable`) replace two separate static JSON files; GeoJSON-backed (`sf_neighborhoods.geojson`, 41 DataSF Analysis Neighborhoods); centroids computed from polygon geometry at startup; adjacency computed from shared polygon vertex proximity (grid-bucketed, ~100m threshold); `AroundMeManager` refactored to accept `NeighborhoodStore` at activation call site instead of init; `SFStairwaysApp` initializes and injects `NeighborhoodStore` into SwiftUI environment; `MapTab` reads from environment; `all_stairways.json` migrated from 53 scraped names → 41 DataSF names (367 point-in-polygon, 15 manual mapping, 0 unassigned); "Mission Distrtict" typo eliminated; `neighborhood_centroids.json` and `neighborhood_adjacency.json` deleted.
 
@@ -82,7 +83,7 @@ _Last updated: 2026-03-29 (neighborhood-311-migration)_
 
 ## Pending Specs
 
-- `docs/specs/SPEC_neighborhood-map-and-detail.md`
+- `docs/specs/SPEC_neighborhood-311-migration.md`
 - `docs/specs/SPEC_neighborhood-progress-reframe.md`
 
 ## Known Issues

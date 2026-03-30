@@ -39,8 +39,10 @@ struct StairwayBottomSheet: View {
     @State private var triggerCuratorPromote = false
     @State private var showCancelWalkAlert = false
     @State private var showHardModeAlert = false
+    @State private var showRemoveWalkAlert = false
     @State private var toastMessage: String? = nil
     @State private var failedPhotoIDs: Set<PersistentIdentifier> = []
+    @State private var showNeighborhoodDetail = false
 
     private enum CuratorField: Hashable {
         case stepCount, height, description
@@ -203,6 +205,12 @@ struct StairwayBottomSheet: View {
         } message: {
             Text("You're not near this stairway. You can still log it, but it won't count as proximity-verified.")
         }
+        .alert("Mark as Not Walked?", isPresented: $showRemoveWalkAlert) {
+            Button("Cancel", role: .cancel) { }
+            Button("Remove", role: .destructive) { removeRecord() }
+        } message: {
+            Text("This will remove the walk record for this stairway.")
+        }
         .sheet(isPresented: $showPhotoPicker) {
             PhotoPicker { imageData in addPhoto(imageData: imageData) }
         }
@@ -245,6 +253,16 @@ struct StairwayBottomSheet: View {
             }
         }
         } // end ScrollViewReader
+        .sheet(isPresented: $showNeighborhoodDetail) {
+            NavigationStack {
+                NeighborhoodDetail(neighborhoodName: stairway.neighborhood)
+                    .toolbar {
+                        ToolbarItem(placement: .topBarLeading) {
+                            Button("Done") { showNeighborhoodDetail = false }
+                        }
+                    }
+            }
+        }
     }
 
     // MARK: - Header
@@ -255,9 +273,19 @@ struct StairwayBottomSheet: View {
                 Text(stairway.name)
                     .font(.title3)
                     .fontWeight(.medium)
-                Text(stairway.neighborhood)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                Button {
+                    showNeighborhoodDetail = true
+                } label: {
+                    HStack(spacing: 3) {
+                        Text(stairway.neighborhood)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 10, weight: .medium))
+                            .foregroundStyle(Color.secondary.opacity(0.6))
+                    }
+                }
+                .buttonStyle(.plain)
                 if stairway.closed {
                     Text("Closed")
                         .font(.caption)
@@ -401,28 +429,37 @@ struct StairwayBottomSheet: View {
         VStack(spacing: 10) {
             if isWalked {
                 HStack {
-                    Image(systemName: "checkmark.circle.fill")
-                        .font(.title3)
-                        .foregroundStyle(Color.walkedGreen)
-                    VStack(alignment: .leading, spacing: 1) {
-                        HStack(spacing: 4) {
-                            Text("Walked")
-                                .font(.subheadline)
-                                .fontWeight(.medium)
+                    // Tapping the walked banner prompts to remove the walk record.
+                    Button {
+                        showRemoveWalkAlert = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "checkmark.circle.fill")
+                                .font(.title3)
                                 .foregroundStyle(Color.walkedGreen)
-                            if walkRecord?.proximityVerified == false {
-                                Image(systemName: "xmark.seal.fill")
-                                    .font(.caption)
-                                    .foregroundStyle(Color.brandAmber)
+                            VStack(alignment: .leading, spacing: 1) {
+                                HStack(spacing: 4) {
+                                    Text("Walked")
+                                        .font(.subheadline)
+                                        .fontWeight(.medium)
+                                        .foregroundStyle(Color.walkedGreen)
+                                    if walkRecord?.proximityVerified == false {
+                                        Image(systemName: "xmark.seal.fill")
+                                            .font(.caption)
+                                            .foregroundStyle(Color.brandAmber)
+                                    }
+                                }
+                                if let date = walkRecord?.dateWalked {
+                                    Text(date.formatted(date: .long, time: .omitted))
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
                             }
-                        }
-                        if let date = walkRecord?.dateWalked {
-                            Text(date.formatted(date: .long, time: .omitted))
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                            Spacer()
                         }
                     }
-                    Spacer()
+                    .buttonStyle(.plain)
+
                     Button {
                         editingDate = true
                     } label: {
@@ -435,22 +472,12 @@ struct StairwayBottomSheet: View {
                 .background(Color.walkedGreen.opacity(0.1))
                 .clipShape(RoundedRectangle(cornerRadius: 10))
             } else {
-                Button {
-                    attemptMarkWalked()
-                } label: {
-                    HStack(spacing: 8) {
-                        Image(systemName: "checkmark.circle")
-                            .font(.system(size: 18, weight: .semibold))
-                        Text("Mark as Walked")
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 14)
-                    .background(Color.walkedGreen)
-                    .foregroundStyle(.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                }
+                // No action button here — "Start Walk" and "Mark Walked" live in actionButtons below.
+                Text("Not yet walked")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 4)
             }
 
             if editingDate, let record = walkRecord {
@@ -485,7 +512,7 @@ struct StairwayBottomSheet: View {
                 ActionButton(title: "Mark Walked", icon: "checkmark.circle", color: Color.walkedGreen, action: attemptMarkWalked)
             }
         case .walked:
-            ActionButton(title: "Not Walked", icon: "arrow.uturn.backward", color: Color.brandAmber, action: removeRecord)
+            EmptyView()
         }
     }
 
@@ -765,8 +792,8 @@ struct StairwayBottomSheet: View {
             let stats = await HealthKitService.fetchWalkStats(from: window.startTime, to: window.endTime)
             await MainActor.run {
                 finalizeActiveWalk(startTime: window.startTime, endTime: window.endTime, steps: stats.steps, elevation: stats.elevationFeet)
-                if stats.steps == nil && stats.elevationFeet == nil {
-                    toastMessage = "Could not read Health data for this walk"
+                if let errorMessage = stats.error {
+                    toastMessage = errorMessage
                 }
             }
         }

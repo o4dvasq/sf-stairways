@@ -35,14 +35,25 @@ struct ListTab: View {
                             .buttonStyle(.plain)
                         }
                     } header: {
-                        Text(group.name)
-                            .font(.system(.subheadline, design: .rounded))
+                        NavigationLink(value: group.name) {
+                            HStack {
+                                Text(group.name)
+                                    .font(.system(.subheadline, design: .rounded))
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.system(size: 10, weight: .medium))
+                            }
+                        }
+                        .foregroundStyle(.secondary)
                     }
                 }
             }
             .listStyle(.plain)
             .navigationTitle("Stairways")
             .searchable(text: $searchText, prompt: "Search stairways...")
+            .navigationDestination(for: String.self) { name in
+                NeighborhoodDetail(neighborhoodName: name)
+            }
             .sheet(item: $selectedStairway) { stairway in
                 StairwayBottomSheet(stairway: stairway, locationManager: locationManager)
                     .presentationDetents([.height(390), .large])

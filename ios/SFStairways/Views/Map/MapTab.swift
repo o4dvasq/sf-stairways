@@ -9,11 +9,14 @@ struct MapTab: View {
     @Query private var allTagAssignments: [TagAssignment]
     @Query private var deletions: [StairwayDeletion]
     @Environment(NavigationCoordinator.self) private var coordinator
+    @Environment(\.colorScheme) private var colorScheme
     @State private var store = StairwayStore()
     @State private var locationManager = LocationManager()
     @Environment(NeighborhoodStore.self) private var neighborhoodStore
     @State private var aroundMe = AroundMeManager()
     @State private var selectedStairway: Stairway?
+    @State private var showNeighborhoodDetail = false
+    @State private var neighborhoodDetailName = ""
     @State private var cameraPosition: MapCameraPosition = .region(
         MKCoordinateRegion(
             center: CLLocationCoordinate2D(latitude: 37.76, longitude: -122.44),
@@ -36,6 +39,34 @@ struct MapTab: View {
     var body: some View {
         ZStack(alignment: .top) {
             Map(position: $cameraPosition) {
+                // Neighborhood polygon overlays (drawn first, beneath all annotations)
+                ForEach(neighborhoodStore.neighborhoods) { hood in
+                    let isDimmed = aroundMe.isDimmed(neighborhood: hood.name)
+                    let fillOpacity = isDimmed ? 0.03 : (colorScheme == .dark ? 0.11 : 0.17)
+                    let strokeOpacity = isDimmed ? 0.05 : (colorScheme == .dark ? 0.22 : 0.30)
+
+                    ForEach(Array(hood.polygons.enumerated()), id: \.offset) { _, ring in
+                        MapPolygon(coordinates: ring)
+                            .foregroundStyle(hood.color.opacity(fillOpacity))
+                            .stroke(hood.color.opacity(strokeOpacity), lineWidth: 1)
+                    }
+                }
+
+                // Neighborhood centroid labels (visible at mid-to-close zoom; tap → NeighborhoodDetail)
+                if mapSpan < 0.04 {
+                    ForEach(neighborhoodStore.neighborhoods) { hood in
+                        Annotation("", coordinate: hood.centroid, anchor: .center) {
+                            Text(hood.name)
+                                .font(.system(.caption2, design: .rounded))
+                                .foregroundStyle(Color.textSecondary.opacity(0.7))
+                                .onTapGesture {
+                                    neighborhoodDetailName = hood.name
+                                    showNeighborhoodDetail = true
+                                }
+                        }
+                    }
+                }
+
                 UserAnnotation()
 
                 ForEach(filteredStairways) { stairway in
@@ -110,6 +141,16 @@ struct MapTab: View {
         }
         .sheet(isPresented: $showSettings) {
             SettingsView()
+        }
+        .sheet(isPresented: $showNeighborhoodDetail) {
+            NavigationStack {
+                NeighborhoodDetail(neighborhoodName: neighborhoodDetailName)
+                    .toolbar {
+                        ToolbarItem(placement: .topBarLeading) {
+                            Button("Done") { showNeighborhoodDetail = false }
+                        }
+                    }
+            }
         }
         .onChange(of: coordinator.pendingStairway) { _, stairway in
             guard let stairway else { return }

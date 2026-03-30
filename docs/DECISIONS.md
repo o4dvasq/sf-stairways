@@ -1,5 +1,16 @@
 # Architecture Decisions — sf-stairways
 
+## NeighborhoodDetail: label-tap instead of polygon-tap, mixed sheet/push navigation
+**Date:** 2026-03-29
+
+**Polygon tap fallback.** SwiftUI's `@MapContentBuilder` doesn't support distinguishing polygon area taps from pin annotation taps reliably — adding a `.onTapGesture` to the Map view intercepts all taps before annotations receive them, breaking pin behavior. The spec anticipated this and provides an explicit fallback: polygon overlays are visual-only, and neighborhood centroid label `Annotation` views are the tap target. This is the approach implemented.
+
+**Mixed navigation: sheet vs. push.** `NeighborhoodDetail` is presented differently depending on the entry point. From MapTab (no NavigationStack in scope) and StairwayBottomSheet (already inside a sheet), it's wrapped in a new `NavigationStack` and presented as a sheet. From ListTab and SearchPanel (both have NavigationStacks), it's pushed via `NavigationLink(value:)` with a `navigationDestination(for: String.self)` on the containing list. This avoids making the map view context a NavigationStack (which would conflict with the tab bar) while still getting push semantics where appropriate.
+
+**Neighborhood name as String identity.** `NeighborhoodDetail` receives a `neighborhoodName: String` and resolves everything internally via `NeighborhoodStore` + `StairwayStore`. This avoids threading the full `Neighborhood` model across unrelated views and keeps entry points simple.
+
+**SearchPanel neighborhood behavior change.** The Neighborhood tab in Search previously called `onSelectNeighborhood(group.name)`, which switched to the Map tab and flew to the neighborhood. This is now replaced with `NavigationLink(value:)` → push `NeighborhoodDetail` directly, which has its own embedded map. The `onSelectNeighborhood` callback is still wired in `ContentView` for `coordinator.pendingNeighborhood` but is no longer called from the Neighborhood results tab.
+
 ## SF 311 Neighborhoods over DataSF Analysis Neighborhoods
 **Date:** 2026-03-29
 
