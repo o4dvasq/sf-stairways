@@ -1,6 +1,6 @@
 # Project State — sf-stairways
 
-_Last updated: 2026-03-29 (neighborhood-map-and-detail)_
+_Last updated: 2026-03-29 (progress-reframe + ux-fixes-round4)_
 
 ## Platforms
 
@@ -59,19 +59,16 @@ _Last updated: 2026-03-29 (neighborhood-map-and-detail)_
 ## Recent Completions
 
 ### 2026-03-29 (this session)
-- **Neighborhood Map Overlays + Detail View** — `MapPolygon` overlays for all 117 neighborhoods with warm-toned pastel fills (light: 17% alpha, dark: 11%); centroid label annotations visible at mapSpan < 0.04 degrees (~5–7 neighborhoods visible); Around Me dimming applied to polygon opacity (3% when dimmed); label tap → `NeighborhoodDetail` sheet; `NeighborhoodDetail` view: navigation title, progress bar (walked/total), embedded 200pt map (neighborhood polygon + stairway pins), horizontal photo scroll (hidden if none), stairway list (walked first by date desc, then unwalked alphabetical); 4 navigation entry points: map label, ListTab section header (NavigationLink push), SearchPanel neighborhood tab (NavigationLink push, replaces fly-to-map), StairwayBottomSheet neighborhood name (tappable chevron link, opens sheet); `Views/Neighborhood/NeighborhoodDetail.swift` created; `PBXFileSystemSynchronizedRootGroup` auto-picks up new file.
-- **Neighborhood 311 Migration** — Replaced DataSF Analysis Neighborhoods GeoJSON (41 hoods) with SF 311 Neighborhoods dataset (117 hoods, granular locally-recognized names); `sf_neighborhoods.geojson` swapped in Resources; `NeighborhoodStore` updated to read `name` property (was `nhood`); color palette expanded from 8→12 colors for better coverage across 68 active neighborhoods; `all_stairways.json` re-migrated (367 point-in-polygon, 15 manual by stairway ID, 0 centroid fallbacks); `target_list.json` re-migrated (13/13 PIP); Forest Hill, Corona Heights, Diamond Heights, Eureka Valley, Clarendon Heights, Dolores Heights all now exist as separate neighborhoods with stairways assigned.
-- **Neighborhood Foundation** — `Neighborhood` struct + `NeighborhoodStore` (`@Observable`) replace two separate static JSON files; GeoJSON-backed (`sf_neighborhoods.geojson`, 41 DataSF Analysis Neighborhoods); centroids computed from polygon geometry at startup; adjacency computed from shared polygon vertex proximity (grid-bucketed, ~100m threshold); `AroundMeManager` refactored to accept `NeighborhoodStore` at activation call site instead of init; `SFStairwaysApp` initializes and injects `NeighborhoodStore` into SwiftUI environment; `MapTab` reads from environment; `all_stairways.json` migrated from 53 scraped names → 41 DataSF names (367 point-in-polygon, 15 manual mapping, 0 unassigned); "Mission Distrtict" typo eliminated; `neighborhood_centroids.json` and `neighborhood_adjacency.json` deleted.
+- **Progress Tab Reframe** — Full rewrite of `ProgressTab`. Compact ring (~80pt, `brandOrange`) in HStack alongside text block (walked/total, %+height ft, neighborhood count). Hero content is a 2-column `LazyVGrid` of `NeighborhoodCard` components (name, walked/total fraction, mini progress bar) for neighborhoods with ≥1 walk, sorted by completion % descending (tie-break: most recent walk). Collapsible "Undiscovered" section (`@AppStorage("progress.undiscovered.collapsed")`, default collapsed) lists all neighborhoods with 0 walks but stairways in catalog; each name is a `NavigationLink(value:)` → `NeighborhoodDetail`. Old `StatCard` grid and `DisclosureGroup` neighborhood breakdown removed. `StatCard` struct deleted. `NeighborhoodCard.swift` created in `Views/Progress/`.
+- **UX Fixes Round 4** — (A) HealthKit: checks `isAuthorized()` before re-requesting auth; logs error when auth throws; 2s post-walk delay (was 1s); retry once after 2s if both results nil; `fetchWalkStats` return type now includes `error: String?` with specific messages ("Health access denied…" vs "No step data recorded…"); `endWalkSession` toast shows specific error string. (B) Redundant mark-walked button: removed large "Mark as Walked" from `walkStatusCard` unwalked state (replaced with "Not yet walked" label); walked banner left-side is now tappable → "Mark as Not Walked?" confirmation alert (destructive Remove action) → calls `removeRecord()`; "Not Walked" `ActionButton` removed from walked state. (C) Photo badges: cloud badge hidden when `userId == nil`; only shows red `icloud.slash` for per-photo upload failures when signed in. (D) CloudKit error message: SwiftDataError code 1 maps to human-readable text about schema deployment.
+
+### 2026-03-29 (earlier this session)
+- **Neighborhood Map Overlays + Detail View** — `MapPolygon` overlays for all 117 neighborhoods with warm-toned pastel fills; centroid label annotations visible at mapSpan < 0.04 degrees; Around Me dimming applied to polygon opacity; label tap → `NeighborhoodDetail` sheet; `NeighborhoodDetail` view: progress bar, embedded 200pt map, horizontal photo scroll, stairway list; 4 navigation entry points: map label, ListTab section header, SearchPanel neighborhood tab, StairwayBottomSheet neighborhood name. `Views/Neighborhood/NeighborhoodDetail.swift` created.
+- **Neighborhood 311 Migration** — Replaced DataSF Analysis Neighborhoods GeoJSON (41 hoods) with SF 311 Neighborhoods dataset (117 hoods); `NeighborhoodStore` updated to read `name` property; color palette expanded 8→12 colors; `all_stairways.json` re-migrated (367 PIP, 15 manual, 0 centroid fallbacks).
+- **Neighborhood Foundation** — `Neighborhood` struct + `NeighborhoodStore` (`@Observable`); GeoJSON-backed centroids and adjacency; `SFStairwaysApp` initializes and injects `NeighborhoodStore`; `all_stairways.json` migrated from 53 scraped names → 41 DataSF names; `neighborhood_centroids.json` and `neighborhood_adjacency.json` deleted.
 
 ### 2026-03-29 (earlier sessions)
-- **iOS Admin App** — new iOS target `SFStairwaysAdmin` (bundle: `com.o4dvasq.SFStairways.admin`); shares CloudKit container and all SwiftData models; `AdminBrowser` with search/filter/sort, `AdminDetailView` with editable overrides + tag management + stairway removal, `AdminTagManager` CRUD sheet, `RemovedStairwaysView` for restore flow; `StairwayDeletion` model added to all three targets' ModelContainer schemas; `StairwayStore.applyDeletions()` filters deleted IDs from `stairways` computed property; main iOS app, macOS app, and admin app all respect deletions.
-- **HealthKit diagnostics** — added debug logging and 1-second post-walk delay in `HealthKitService.fetchWalkStats` to allow HealthKit time to flush walk data before querying; toast on nil stats result.
-- **Visual refresh phase 1** — light mode as default appearance; warm terracotta `brandOrange`; six new adaptive surface/text tokens; progress ring stroke changed to `brandOrange`; SF Pro Rounded on all display numbers; splash screen background changed to `brandOrange`.
-- **Map label cleanup** — `Stairway.displayName` truncates to first 4 words; labels hidden at `mapSpan > 0.02`.
-- **UX fixes round 3** — `forestGreen` brightened; notes Save button only; collapsible neighborhood `DisclosureGroup` in Stats; Search as 4th tab; `NavigationCoordinator` for cross-tab navigation.
-- **Attribution & acknowledgements** — "View on Urban Hiker SF Map" link; iOS Settings Acknowledgements section; macOS `AcknowledgementsSheet`.
-- **macOS tag management** — `TagManagerSheet` CRUD; sidebar Tags filter; nil-last table sorting; iOS tags read-only; macOS app icon.
-- **Urban Hiker SF data import**, **macOS photo add + notes editing**, **HealthKit data accuracy fix**, **macOS Admin Dashboard**, **Photo sync fix**, **Map launch cleanup**.
+- **iOS Admin App**, **HealthKit diagnostics**, **Visual refresh phase 1**, **Map label cleanup**, **UX fixes round 3**, **Attribution & acknowledgements**, **macOS tag management**, **Urban Hiker SF data import**, **macOS photo add + notes editing**, **HealthKit data accuracy fix**, **macOS Admin Dashboard**, **Photo sync fix**, **Map launch cleanup**.
 
 ### 2026-03-28
 - Remove Saved concept, HealthKit walk stats display, camera during active walk, Hard Mode confirmation prompt, Stairway Tags v1, Active walk mode, Photo suggestions, Photo camera roll save, photo persistence fix, Launch zoom to nearest, map pin tap targets, curator notes-to-commentary, expandable bottom sheet.
@@ -83,11 +80,12 @@ _Last updated: 2026-03-29 (neighborhood-map-and-detail)_
 
 ## Pending Specs
 
-- `docs/specs/SPEC_neighborhood-311-migration.md`
-- `docs/specs/SPEC_neighborhood-progress-reframe.md`
+- `docs/specs/SPEC_neighborhood-311-migration.md` (implemented but spec file not yet moved)
+- `docs/specs/SPEC_neighborhood-map-and-detail.md` (implemented but spec file not yet moved)
 
 ## Known Issues
 
+- **CloudKit schema:** SwiftDataError code 1 on first launch after new model types added means CloudKit schema needs deploying from Xcode to Dashboard (container: `iCloud.com.o4dvasq.sfstairways`). Error now shows a human-readable message in Settings.
 - **macOS CloudKit sync:** first launch on Mac requires a few minutes for CloudKit to sync iOS walk data down.
 - **HealthKit:** entitlement added to `.entitlements`; HealthKit capability must also be manually enabled in Xcode target Signing & Capabilities.
 - **CloudKit sync:** may fall back to local if Xcode target lacks Background Modes → Remote Notifications capability (manual Xcode step).

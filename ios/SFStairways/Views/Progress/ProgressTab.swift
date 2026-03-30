@@ -3,40 +3,32 @@ import SwiftData
 
 struct ProgressTab: View {
     @Environment(SyncStatusManager.self) private var syncManager
+    @Environment(NeighborhoodStore.self) private var neighborhoodStore
     @Query private var walkRecords: [WalkRecord]
     @Query private var overrides: [StairwayOverride]
     @Query private var deletions: [StairwayDeletion]
     @State private var store = StairwayStore()
     @State private var showSyncDetails = false
-    @State private var expandedNeighborhoods: Set<String> = []
+    @AppStorage("progress.undiscovered.collapsed") private var undiscoveredCollapsed = true
 
-    private struct NeighborhoodData: Identifiable {
+    private struct NeighborhoodCardData: Identifiable {
         var id: String { name }
         let name: String
         let walked: Int
         let total: Int
-        let walks: [WalkItem]
+        let lastWalked: Date?
 
-        struct WalkItem: Identifiable {
-            var id: String { stairwayID }
-            let stairwayID: String
-            let name: String
-            let stepCount: Int?
-            let date: Date?
-        }
+        var fraction: Double { total > 0 ? Double(walked) / Double(total) : 0 }
     }
+
+    // MARK: - Computed Properties
 
     private var walkedRecords: [WalkRecord] {
         walkRecords.filter(\.walked)
     }
 
-    private var totalStairways: Int {
-        store.stairways.count
-    }
-
-    private var walkedCount: Int {
-        walkedRecords.count
-    }
+    private var totalStairways: Int { store.stairways.count }
+    private var walkedCount: Int { walkedRecords.count }
 
     private var completionFraction: Double {
         guard totalStairways > 0 else { return 0 }
@@ -57,71 +49,49 @@ struct ProgressTab: View {
         overrides.first { $0.stairwayID == stairway.id }
     }
 
-    private var totalSteps: Int {
-        walkedRecords.compactMap(\.stepCount).reduce(0, +)
-    }
-
-    private var neighborhoodsVisited: Int {
-        let walkedIDs = Set(walkedRecords.map(\.stairwayID))
-        let neighborhoods = Set(
-            store.stairways.filter { walkedIDs.contains($0.id) }.map(\.neighborhood)
-        )
-        return neighborhoods.count
-    }
-
-    private var totalNeighborhoods: Int {
-        Set(store.stairways.map(\.neighborhood)).count
-    }
-
-    private var walkDays: Int {
-        let calendar = Calendar.current
-        let days = Set(
-            walkedRecords.compactMap(\.dateWalked).map {
-                calendar.startOfDay(for: $0)
-            }
-        )
-        return days.count
-    }
-
-    private var neighborhoodData: [NeighborhoodData] {
+    private var allNeighborhoodCards: [NeighborhoodCardData] {
         let walkedIDs = Set(walkedRecords.map(\.stairwayID))
         let grouped = Dictionary(grouping: store.stairways, by: \.neighborhood)
-
-        return grouped
-            .compactMap { neighborhood, stairways -> NeighborhoodData? in
-                let walkedStairways = stairways.filter { walkedIDs.contains($0.id) }
-                guard !walkedStairways.isEmpty else { return nil }
-
-                let walkItems = walkedStairways.compactMap { stairway -> NeighborhoodData.WalkItem? in
-                    guard let record = walkedRecords.first(where: { $0.stairwayID == stairway.id }) else { return nil }
-                    let steps = override(for: stairway)?.verifiedStepCount ?? record.stepCount
-                    return NeighborhoodData.WalkItem(
-                        stairwayID: stairway.id,
-                        name: stairway.name,
-                        stepCount: steps,
-                        date: record.dateWalked
-                    )
-                }
-                .sorted { ($0.date ?? .distantPast) > ($1.date ?? .distantPast) }
-
-                return NeighborhoodData(
-                    name: neighborhood,
-                    walked: walkedStairways.count,
-                    total: stairways.count,
-                    walks: walkItems
-                )
-            }
-            .sorted { Double($0.walked) / Double($0.total) > Double($1.walked) / Double($1.total) }
+        return grouped.map { name, stairways in
+            let walkedInHood = stairways.filter { walkedIDs.contains($0.id) }
+            let lastWalked = walkedInHood
+                .compactMap { s in walkRecords.first { $0.stairwayID == s.id }?.dateWalked }
+                .max()
+            return NeighborhoodCardData(
+                name: name,
+                walked: walkedInHood.count,
+                total: stairways.count,
+                lastWalked: lastWalked
+            )
+        }
     }
 
+    private var activeNeighborhoodCards: [NeighborhoodCardData] {
+        allNeighborhoodCards
+            .filter { $0.walked > 0 }
+            .sorted {
+                if $0.fraction != $1.fraction { return $0.fraction > $1.fraction }
+                return ($0.lastWalked ?? .distantPast) > ($1.lastWalked ?? .distantPast)
+            }
+    }
+
+    private var undiscoveredNeighborhoodNames: [String] {
+        allNeighborhoodCards
+            .filter { $0.walked == 0 }
+            .map(\.name)
+            .sorted()
+    }
+
+    // MARK: - Body
 
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 24) {
-                    completionRing
-                    statsGrid
-                    neighborhoodSection
+                VStack(alignment: .leading, spacing: 20) {
+                    compactSummary
+                    Divider()
+                    yourNeighborhoodsSection
+                    undiscoveredSection
                 }
                 .padding(16)
             }
@@ -132,6 +102,9 @@ struct ProgressTab: View {
                 store.applyDeletions(d.map(\.stairwayID))
             }
             .navigationTitle("Progress")
+            .navigationDestination(for: String.self) { neighborhoodName in
+                NeighborhoodDetail(neighborhoodName: neighborhoodName)
+            }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
@@ -149,6 +122,126 @@ struct ProgressTab: View {
             }
         }
     }
+
+    // MARK: - Compact Summary
+
+    private var compactSummary: some View {
+        HStack(alignment: .center, spacing: 16) {
+            ZStack {
+                Circle()
+                    .stroke(Color(.systemGray5), lineWidth: 8)
+                    .frame(width: 80, height: 80)
+                Circle()
+                    .trim(from: 0, to: completionFraction)
+                    .stroke(
+                        Color.brandOrange,
+                        style: StrokeStyle(lineWidth: 8, lineCap: .round)
+                    )
+                    .frame(width: 80, height: 80)
+                    .rotationEffect(.degrees(-90))
+                    .animation(.spring(response: 0.6), value: completionFraction)
+            }
+
+            VStack(alignment: .leading, spacing: 3) {
+                Text("\(walkedCount) of \(totalStairways)")
+                    .font(.system(.title3, design: .rounded, weight: .medium))
+                Text("\(Int(completionFraction * 100))% · \(totalHeightClimbed.formatted()) ft")
+                    .font(.system(.subheadline, design: .rounded))
+                    .foregroundStyle(.secondary)
+                let n = activeNeighborhoodCards.count
+                Text("\(n) neighborhood\(n == 1 ? "" : "s")")
+                    .font(.system(.subheadline, design: .rounded))
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+        }
+        .padding(.top, 8)
+    }
+
+    // MARK: - Your Neighborhoods
+
+    private var yourNeighborhoodsSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Your neighborhoods")
+                .font(.system(.subheadline, design: .rounded))
+                .fontWeight(.medium)
+
+            if activeNeighborhoodCards.isEmpty {
+                Text("Walk some stairways to see neighborhood progress!")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+                    .padding(.vertical, 8)
+            } else {
+                LazyVGrid(columns: [
+                    GridItem(.flexible(), spacing: 10),
+                    GridItem(.flexible(), spacing: 10)
+                ], spacing: 10) {
+                    ForEach(activeNeighborhoodCards) { card in
+                        NavigationLink(value: card.name) {
+                            NeighborhoodCard(name: card.name, walked: card.walked, total: card.total)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+            }
+        }
+    }
+
+    // MARK: - Undiscovered
+
+    private var undiscoveredSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Button {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    undiscoveredCollapsed.toggle()
+                }
+            } label: {
+                HStack {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Undiscovered")
+                            .font(.system(.subheadline, design: .rounded))
+                            .fontWeight(.medium)
+                            .foregroundStyle(.primary)
+                        let n = undiscoveredNeighborhoodNames.count
+                        Text("\(n) neighborhood\(n == 1 ? "" : "s")")
+                            .font(.system(.caption, design: .rounded))
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    Image(systemName: undiscoveredCollapsed ? "chevron.down" : "chevron.up")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            if !undiscoveredCollapsed {
+                VStack(alignment: .leading, spacing: 0) {
+                    ForEach(Array(undiscoveredNeighborhoodNames.enumerated()), id: \.element) { index, name in
+                        NavigationLink(value: name) {
+                            HStack {
+                                Text(name)
+                                    .font(.system(.subheadline, design: .rounded))
+                                    .foregroundStyle(.secondary)
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.caption2)
+                                    .foregroundStyle(.tertiary)
+                            }
+                            .padding(.vertical, 8)
+                        }
+                        .buttonStyle(.plain)
+
+                        if index < undiscoveredNeighborhoodNames.count - 1 {
+                            Divider()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // MARK: - Sync Icon
 
     private var syncIconName: String {
         switch syncManager.state {
@@ -168,141 +261,6 @@ struct ProgressTab: View {
         case .unavailable, .error:  return .red
         }
     }
-
-    // MARK: - Completion Ring
-
-    private var completionRing: some View {
-        VStack(spacing: 8) {
-            ZStack {
-                Circle()
-                    .stroke(Color(.systemGray5), lineWidth: 10)
-                    .frame(width: 160, height: 160)
-
-                Circle()
-                    .trim(from: 0, to: completionFraction)
-                    .stroke(
-                        Color.brandOrange,
-                        style: StrokeStyle(lineWidth: 10, lineCap: .round)
-                    )
-                    .frame(width: 160, height: 160)
-                    .rotationEffect(.degrees(-90))
-                    .animation(.spring(response: 0.6), value: completionFraction)
-
-                VStack(spacing: 0) {
-                    Text("\(walkedCount)")
-                        .font(.system(size: 36, weight: .medium, design: .rounded))
-                    Text("of \(totalStairways)")
-                        .font(.system(.subheadline, design: .rounded))
-                        .foregroundStyle(.secondary)
-                }
-            }
-
-            Text("\(Int(completionFraction * 100))% complete")
-                .font(.system(.subheadline, design: .rounded))
-                .foregroundStyle(.secondary)
-        }
-        .padding(.top, 8)
-    }
-
-    // MARK: - Stats Grid
-
-    private var statsGrid: some View {
-        LazyVGrid(columns: [
-            GridItem(.flexible(), spacing: 10),
-            GridItem(.flexible(), spacing: 10)
-        ], spacing: 10) {
-            StatCard(label: "Total height climbed", value: "\(totalHeightClimbed) ft")
-            StatCard(label: "Total steps", value: totalSteps > 0 ? "\(totalSteps)" : "—")
-            StatCard(label: "Neighborhoods", value: "\(neighborhoodsVisited) / \(totalNeighborhoods)")
-            StatCard(label: "Walk days", value: "\(walkDays)")
-        }
-    }
-
-    // MARK: - Neighborhood Breakdown
-
-    private var neighborhoodSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("By neighborhood")
-                .font(.system(.subheadline, design: .rounded))
-                .fontWeight(.medium)
-
-            if neighborhoodData.isEmpty {
-                Text("Walk some stairways to see neighborhood progress!")
-                    .font(.caption)
-                    .foregroundStyle(.tertiary)
-                    .padding(.vertical, 12)
-            } else {
-                ForEach(neighborhoodData) { item in
-                    DisclosureGroup(
-                        isExpanded: Binding(
-                            get: { expandedNeighborhoods.contains(item.name) },
-                            set: { isExpanded in
-                                if isExpanded {
-                                    expandedNeighborhoods.insert(item.name)
-                                } else {
-                                    expandedNeighborhoods.remove(item.name)
-                                }
-                            }
-                        )
-                    ) {
-                        VStack(spacing: 6) {
-                            ForEach(item.walks) { walk in
-                                HStack {
-                                    Text(walk.name)
-                                        .font(.subheadline)
-                                        .foregroundStyle(.primary)
-                                    Spacer()
-                                    if let steps = walk.stepCount {
-                                        Text("\(steps)")
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
-                                    } else {
-                                        Text("—")
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
-                                    }
-                                    if let date = walk.date {
-                                        Text(date.formatted(.dateTime.month(.abbreviated).day()))
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
-                                            .frame(width: 44, alignment: .trailing)
-                                    }
-                                }
-                                .padding(.leading, 8)
-                            }
-                        }
-                        .padding(.top, 6)
-                    } label: {
-                        VStack(spacing: 4) {
-                            HStack {
-                                Text(item.name)
-                                    .font(.system(.subheadline, design: .rounded))
-                                Spacer()
-                                Text("\(item.walked) / \(item.total)")
-                                    .font(.system(.caption, design: .rounded))
-                                    .foregroundStyle(Color.forestGreen)
-                            }
-                            GeometryReader { geo in
-                                ZStack(alignment: .leading) {
-                                    RoundedRectangle(cornerRadius: 3)
-                                        .fill(Color(.systemGray5))
-                                        .frame(height: 6)
-                                    RoundedRectangle(cornerRadius: 3)
-                                        .fill(Color.walkedGreen)
-                                        .frame(
-                                            width: geo.size.width * Double(item.walked) / Double(item.total),
-                                            height: 6
-                                        )
-                                }
-                            }
-                            .frame(height: 6)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
 }
 
 // MARK: - Sync Status Sheet
@@ -376,27 +334,5 @@ struct SyncStatusSheet: View {
         case .error(let message):
             return message
         }
-    }
-}
-
-// MARK: - Stat Card
-
-struct StatCard: View {
-    let label: String
-    let value: String
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(label)
-                .font(.system(.caption, design: .rounded))
-                .foregroundStyle(.secondary)
-            Text(value)
-                .font(.system(.title3, design: .rounded))
-                .fontWeight(.medium)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(14)
-        .background(Color.surfaceCardElevated)
-        .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 }

@@ -1,5 +1,25 @@
 # Architecture Decisions — sf-stairways
 
+## Progress tab: neighborhood cards as hero content, StairwayStore as data source
+**Date:** 2026-03-29
+
+The Progress tab now centers neighborhoods as the primary progress unit rather than global percentage. Key decisions:
+
+**StairwayStore (not NeighborhoodStore) drives card data.** The card grid is computed by grouping `store.stairways` by `stairway.neighborhood` — the same string field used everywhere else in the app. `NeighborhoodStore` is in the environment (used by `NeighborhoodDetail` for GeoJSON polygon lookups) but is not used to drive the card list. This avoids a dependency on GeoJSON name alignment and ensures cards only show neighborhoods that actually have stairways in the catalog.
+
+**String as NavigationLink value.** `NavigationLink(value: card.name)` with `.navigationDestination(for: String.self)` keeps the Progress tab's NavigationStack self-contained. `NeighborhoodDetail` receives a `neighborhoodName: String` and resolves everything internally — no model objects need to cross the navigation boundary.
+
+**StatCard deleted.** The 2x2 stat grid (height, steps, neighborhoods, walk days) was removed. Steps was unreliable (HealthKit issues); walk days wasn't earning its space. Height and neighborhood count are now in the compact summary alongside the ring. StatCard was only used within ProgressTab, so it was deleted outright rather than kept as dead code.
+
+## HealthKit: check-first before re-requesting auth, retry on nil results
+**Date:** 2026-03-29
+
+`fetchWalkStats` now calls `isAuthorized()` first and only calls `requestAuthorization` if not yet granted. Re-requesting authorization when already granted can throw in certain states (background execution, HealthKit store temporarily unavailable) — this caused the silent nil return that was masking successful walks.
+
+A 2-second post-walk delay (up from 1s) and a single retry after another 2s handle the common case where HealthKit needs extra time to flush pedometer data after motion stops. The retry adds up to 4s total latency in the failure case, which is acceptable for an end-of-walk flow.
+
+`fetchWalkStats` now returns `(steps: Int?, elevationFeet: Double?, error: String?)`. The caller (`endWalkSession`) shows the specific error string in the toast rather than a generic "could not read Health data" message. This gives actionable feedback: authorization failure → Settings guidance; no data → "try a longer walk."
+
 ## NeighborhoodDetail: label-tap instead of polygon-tap, mixed sheet/push navigation
 **Date:** 2026-03-29
 

@@ -241,6 +241,18 @@ struct SettingsView: View {
                 }
             }
             .padding(.vertical, 4)
+
+            if case .unavailable = syncManager.state {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Common fixes:")
+                        .font(.caption.bold())
+                        .foregroundStyle(.secondary)
+                    Text("• Sign into iCloud in iOS Settings\n• Enable iCloud Drive\n• Check iCloud > Apps Using iCloud > SFStairways is on")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.vertical, 4)
+            }
         }
     }
 

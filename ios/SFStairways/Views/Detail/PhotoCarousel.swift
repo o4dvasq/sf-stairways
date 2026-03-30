@@ -59,14 +59,17 @@ struct PhotoCarousel: View {
                 likeOverlay(for: photo)
                     .padding(6)
             case .local(let photo):
-                let uploadFailed = failedPhotoIDs.contains(photo.persistentModelID)
-                Image(systemName: "icloud.slash")
-                    .font(.system(size: 10, weight: .semibold))
-                    .foregroundStyle(uploadFailed ? Color.red : .white)
-                    .padding(5)
-                    .background(.black.opacity(0.5))
-                    .clipShape(RoundedRectangle(cornerRadius: 4))
-                    .padding(6)
+                // Only show the cloud badge when signed in AND this specific photo failed to upload.
+                // When userId is nil (not signed in), the badge is meaningless — hide it.
+                if userId != nil && failedPhotoIDs.contains(photo.persistentModelID) {
+                    Image(systemName: "icloud.slash")
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundStyle(Color.red)
+                        .padding(5)
+                        .background(.black.opacity(0.5))
+                        .clipShape(RoundedRectangle(cornerRadius: 4))
+                        .padding(6)
+                }
             }
         }
     }
