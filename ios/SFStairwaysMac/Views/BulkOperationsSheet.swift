@@ -299,17 +299,15 @@ struct BulkOperationsSheet: View {
     }
 
     private func exportCSV() {
-        var lines: [String] = ["Name,Neighborhood,Height (ft),Walked,Date Walked,Elevation Gain (ft),Steps"]
+        var lines: [String] = ["Name,Neighborhood,Height (ft),Walked,Date Walked"]
         for stairway in selectedStairways {
             let row = allRows.first { $0.stairway.id == stairway.id }
             let height = row?.heightFt.map { String(Int($0)) } ?? ""
             let walked = (row?.walked ?? false) ? "Yes" : "No"
             let dateWalked = row?.dateWalked.map { $0.formatted(date: .numeric, time: .omitted) } ?? ""
-            let elevation = row?.elevationGain.map { String(Int($0)) } ?? ""
-            let steps = row?.hkStepCount.map { String($0) } ?? ""
             let name = stairway.name.replacingOccurrences(of: ",", with: ";")
             let neighborhood = stairway.neighborhood.replacingOccurrences(of: ",", with: ";")
-            lines.append("\(name),\(neighborhood),\(height),\(walked),\(dateWalked),\(elevation),\(steps)")
+            lines.append("\(name),\(neighborhood),\(height),\(walked),\(dateWalked)")
         }
         let csvString = lines.joined(separator: "\n")
 

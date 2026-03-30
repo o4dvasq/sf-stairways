@@ -25,8 +25,6 @@ enum SeedDataService {
     private static let hasSeededKey = "com.sfstairways.hasSeededData"
     private static let hasSeededTagsKey = "com.sfstairways.hasSeededTags"
     private static let hasCleanedUnwalkedKey = "com.sfstairways.hasCleanedUnwalked"
-    private static let hasCleanedRetroactiveStatsKey = "com.sfstairways.hasCleanedRetroactiveStats"
-
     /// One-time migration: delete any WalkRecord where walked == false.
     /// These were "saved but not walked" records from the old Saved concept, now orphaned.
     static func cleanUnwalkedRecordsIfNeeded(modelContext: ModelContext) {
@@ -41,30 +39,6 @@ enum SeedDataService {
             print("[SeedDataService] Cleaned up \(unwalked.count) unwalked (saved-only) records")
         }
         UserDefaults.standard.set(true, forKey: hasCleanedUnwalkedKey)
-    }
-
-    /// One-time migration: clear stepCount and elevationGain on manually logged walks.
-    /// These fields were populated by a full-day HealthKit query (now removed), which
-    /// produced inaccurate per-day totals rather than per-stairway data.
-    /// Only active walks (walkStartTime != nil) have trustworthy HealthKit data.
-    static func cleanRetroactiveStatsIfNeeded(modelContext: ModelContext) {
-        guard !UserDefaults.standard.bool(forKey: hasCleanedRetroactiveStatsKey) else { return }
-        let descriptor = FetchDescriptor<WalkRecord>(predicate: #Predicate { $0.walked })
-        let walked = (try? modelContext.fetch(descriptor)) ?? []
-        var cleanedCount = 0
-        for record in walked where record.walkStartTime == nil {
-            if record.stepCount != nil || record.elevationGain != nil {
-                record.stepCount = nil
-                record.elevationGain = nil
-                record.updatedAt = Date()
-                cleanedCount += 1
-            }
-        }
-        if cleanedCount > 0 {
-            try? modelContext.save()
-            print("[SeedDataService] Cleared bad retroactive HealthKit data from \(cleanedCount) manually logged walks")
-        }
-        UserDefaults.standard.set(true, forKey: hasCleanedRetroactiveStatsKey)
     }
 
     static func seedIfNeeded(modelContext: ModelContext) {

@@ -55,13 +55,4 @@ final class WalkRecord {
         photos ?? []
     }
 
-    // Human-readable label for how the walk was recorded.
-    var walkMethod: String {
-        if walkStartTime != nil {
-            return stepCount != nil || elevationGain != nil ? "Active Walk" : "Active Walk (no HealthKit data)"
-        } else {
-            return "Logged manually"
-        }
-    }
-
 }

@@ -1,6 +1,6 @@
 # Project State — sf-stairways
 
-_Last updated: 2026-03-29 (progress-reframe + ux-fixes-round4)_
+_Last updated: 2026-03-30 (remove-healthkit-walk-recording)_
 
 ## Platforms
 
@@ -10,10 +10,11 @@ _Last updated: 2026-03-29 (progress-reframe + ux-fixes-round4)_
 - `SyncStatusManager` tracks live CloudKit event notifications; cloud icon in Stats tab shows sync state
 - Supabase SDK integrated; `AuthManager` manages Sign in with Apple session
 - Photo capture with thumbnails, location services, seed data import
-- Tags are **read-only** on iOS (display + filter only) — all tag CRUD is macOS-only; `TagEditorSheet` removed
+- Tags are **read-only** on iOS (display + filter only) — all tag CRUD is macOS-only
 - `StairwayStore` filters out deleted stairways via `applyDeletions(_:)` — map, list, search, progress all respect deletions
 - **Visual design: light-first** — warm terracotta `brandOrange`, SF Pro Rounded for display text, `surfaceCardElevated` stat cards, orange progress ring
-- **Neighborhoods: SF 311 Neighborhoods** — 117 granular neighborhoods (as defined by Mayor's Office of Neighborhood Services, 2006), 68 with stairways; powered by `NeighborhoodStore` (GeoJSON-backed, computes centroids + adjacency at startup); property key `name`
+- **Neighborhoods: SF 311 Neighborhoods** — 117 granular neighborhoods (68 with stairways); powered by `NeighborhoodStore` (GeoJSON-backed, computes centroids + adjacency at startup)
+- **No HealthKit, no active walk recording** — "Mark Walked" is the only walk-logging action
 - Successfully archived in Xcode on 2026-03-23
 - See `docs/IOS_REFERENCE.md` for full build details
 
@@ -23,7 +24,7 @@ _Last updated: 2026-03-29 (progress-reframe + ux-fixes-round4)_
 - Shares SwiftData model files with both iOS and macOS targets
 - **No map, no photo management, no HealthKit, no Supabase** — utility-only tool
 - `AdminBrowser` — searchable list of all stairways; filter chips (All/Walked/Unwalked/Has Override/Has Issues); sort by Name/Neighborhood/Date Walked; row indicators for walked status, override, tag count; toolbar: Tag Manager + Removed Stairways buttons
-- `AdminDetailView` — push-navigation detail: catalog data (read-only), walk data (read-only), editable overrides (step count, height, description) with Save/Cancel, tag chips with add/remove, "Remove Stairway" destructive action with reason field
+- `AdminDetailView` — push-navigation detail: catalog data (read-only), editable overrides (step count, height, description) with Save/Cancel, tag chips with add/remove, "Remove Stairway" destructive action
 - `AdminTagManager` — modal sheet: preset tags read-only with counts, custom tags with inline rename and delete (cascade confirmation), create new tag
 - `RemovedStairwaysView` — modal sheet: list of `StairwayDeletion` records with name/date/reason; swipe to restore
 
@@ -34,14 +35,14 @@ _Last updated: 2026-03-29 (progress-reframe + ux-fixes-round4)_
 - Three-column `NavigationSplitView`: sidebar (neighborhoods + tags filter) → sortable stairway table → detail panel
 - **Deletion filtering**: `StairwayBrowser` queries `StairwayDeletion` records and excludes matching stairways from the table
 - **Sidebar Tags section**: lists tags with assignment counts; clicking a tag filters table; intersects with neighborhood filter
-- **Table sorting**: all numeric columns sortable with nil-last logic via `nilLastSorted` helper
+- **Table sorting**: Name, Height, Steps, Photos, Date Walked (nil values sort to bottom via `nilLastSorted`)
 - **TagManagerSheet**: full tag CRUD — create custom tags, inline rename, delete with cascade confirmation, preset tags read-only
-- Detail panel: catalog vs. walk data comparison, editable curator overrides, notes editing, tag add/remove + "Create & Assign…" option, photo grid with delete + Add Photos
-- Bulk Operations: bulk tag assign + "Create new tag…" + "Remove Tag from All Selected," bulk mark walked, CSV export
-- Data Hygiene sheet: flags missing height, missing coordinates, no HealthKit data, promotion candidates, proximity unverified
+- Detail panel: catalog vs. walk data comparison (labeled "Walk Data (legacy)"), editable curator overrides, notes editing, tag add/remove, photo grid with delete + Add Photos
+- Bulk Operations: bulk tag assign/remove, bulk mark walked, CSV export (name, neighborhood, height, walked, date walked)
+- Data Hygiene sheet: flags missing height, missing coordinates, promotion candidates, proximity unverified
 - **App icon**: white StairShape silhouette on brandOrange background
 - **Acknowledgements**: `info.circle` toolbar button opens `AcknowledgementsSheet`
-- No Supabase, no HealthKit fetching on macOS (displays synced walk data only)
+- No Supabase, no HealthKit on macOS
 
 ### Web App (deprecated)
 - `index.html` remains in the repo for historical reference
@@ -58,36 +59,23 @@ _Last updated: 2026-03-29 (progress-reframe + ux-fixes-round4)_
 
 ## Recent Completions
 
-### 2026-03-29 (this session)
-- **Progress Tab Reframe** — Full rewrite of `ProgressTab`. Compact ring (~80pt, `brandOrange`) in HStack alongside text block (walked/total, %+height ft, neighborhood count). Hero content is a 2-column `LazyVGrid` of `NeighborhoodCard` components (name, walked/total fraction, mini progress bar) for neighborhoods with ≥1 walk, sorted by completion % descending (tie-break: most recent walk). Collapsible "Undiscovered" section (`@AppStorage("progress.undiscovered.collapsed")`, default collapsed) lists all neighborhoods with 0 walks but stairways in catalog; each name is a `NavigationLink(value:)` → `NeighborhoodDetail`. Old `StatCard` grid and `DisclosureGroup` neighborhood breakdown removed. `StatCard` struct deleted. `NeighborhoodCard.swift` created in `Views/Progress/`.
-- **UX Fixes Round 4** — (A) HealthKit: checks `isAuthorized()` before re-requesting auth; logs error when auth throws; 2s post-walk delay (was 1s); retry once after 2s if both results nil; `fetchWalkStats` return type now includes `error: String?` with specific messages ("Health access denied…" vs "No step data recorded…"); `endWalkSession` toast shows specific error string. (B) Redundant mark-walked button: removed large "Mark as Walked" from `walkStatusCard` unwalked state (replaced with "Not yet walked" label); walked banner left-side is now tappable → "Mark as Not Walked?" confirmation alert (destructive Remove action) → calls `removeRecord()`; "Not Walked" `ActionButton` removed from walked state. (C) Photo badges: cloud badge hidden when `userId == nil`; only shows red `icloud.slash` for per-photo upload failures when signed in. (D) CloudKit error message: SwiftDataError code 1 maps to human-readable text about schema deployment.
+### 2026-03-30 (this session)
+- **Remove HealthKit & Walk Recording** — Deleted `HealthKitService.swift` and `ActiveWalkManager.swift` entirely. Removed "Start Walk" / active session banner / "End Walk" / "Cancel" UI from `StairwayBottomSheet`. "Mark Walked" is now the only walk-logging action. Removed HealthKit authorization section from `SettingsView`. Removed `com.apple.developer.healthkit` from both `.entitlements` files. Removed `walkMethod` computed property from `WalkRecord`. Removed `cleanRetroactiveStatsIfNeeded()` from `SeedDataService`. Removed `walkStartTime`/`walkEndTime` params from `PhotoSuggestionService.fetch` (falls back to full-day window). Removed `missingHealthKit` issue category from `DataHygieneView`. Relabeled Mac detail panel "Walk Data" column to "Walk Data (legacy)"; removed Walk Method row. Removed Elev. Gain column from `StairwayBrowser` table. Removed elevation/steps from CSV export. Removed Walk Data section from `AdminDetailView`. WalkRecord fields (`stepCount`, `elevationGain`, `walkStartTime`, `walkEndTime`) retained in schema to avoid CloudKit migration issues — existing data preserved, just no longer displayed or populated.
 
-### 2026-03-29 (earlier this session)
-- **Neighborhood Map Overlays + Detail View** — `MapPolygon` overlays for all 117 neighborhoods with warm-toned pastel fills; centroid label annotations visible at mapSpan < 0.04 degrees; Around Me dimming applied to polygon opacity; label tap → `NeighborhoodDetail` sheet; `NeighborhoodDetail` view: progress bar, embedded 200pt map, horizontal photo scroll, stairway list; 4 navigation entry points: map label, ListTab section header, SearchPanel neighborhood tab, StairwayBottomSheet neighborhood name. `Views/Neighborhood/NeighborhoodDetail.swift` created.
-- **Neighborhood 311 Migration** — Replaced DataSF Analysis Neighborhoods GeoJSON (41 hoods) with SF 311 Neighborhoods dataset (117 hoods); `NeighborhoodStore` updated to read `name` property; color palette expanded 8→12 colors; `all_stairways.json` re-migrated (367 PIP, 15 manual, 0 centroid fallbacks).
-- **Neighborhood Foundation** — `Neighborhood` struct + `NeighborhoodStore` (`@Observable`); GeoJSON-backed centroids and adjacency; `SFStairwaysApp` initializes and injects `NeighborhoodStore`; `all_stairways.json` migrated from 53 scraped names → 41 DataSF names; `neighborhood_centroids.json` and `neighborhood_adjacency.json` deleted.
+### 2026-03-29
+- **Progress Tab Reframe** — Compact ring + 2-column `NeighborhoodCard` grid in `ProgressTab`; collapsible "Undiscovered" section. `StatCard` removed. `NeighborhoodCard.swift` created in `Views/Progress/`.
+- **UX Fixes Round 4** — HealthKit retry/error improvements, no-duplicate mark button, photo badges, iCloud error messages (all HealthKit-related improvements now superseded by removal).
+- **Neighborhood Map Overlays + Detail View** — `MapPolygon` overlays for 117 neighborhoods; centroid label annotations; `NeighborhoodDetail` view with 4 navigation entry points.
+- **Neighborhood 311 Migration** — Replaced DataSF GeoJSON with SF 311 Neighborhoods (117 hoods); re-migrated 382 stairways.
+- **Neighborhood Foundation** — `NeighborhoodStore`, GeoJSON-backed centroids and adjacency; migrated 53→41→117 neighborhoods.
 
-### 2026-03-29 (earlier sessions)
-- **iOS Admin App**, **HealthKit diagnostics**, **Visual refresh phase 1**, **Map label cleanup**, **UX fixes round 3**, **Attribution & acknowledgements**, **macOS tag management**, **Urban Hiker SF data import**, **macOS photo add + notes editing**, **HealthKit data accuracy fix**, **macOS Admin Dashboard**, **Photo sync fix**, **Map launch cleanup**.
-
-### 2026-03-28
-- Remove Saved concept, HealthKit walk stats display, camera during active walk, Hard Mode confirmation prompt, Stairway Tags v1, Active walk mode, Photo suggestions, Photo camera roll save, photo persistence fix, Launch zoom to nearest, map pin tap targets, curator notes-to-commentary, expandable bottom sheet.
-
-### 2026-03-27 and earlier
-- UI overhaul: amber accent, top bar redesign, splash fix, pin colors
-- Curator social layer, Supabase integration, curator data layer
-- See: `docs/specs/implemented/` for full spec history
-
-## Pending Specs
-
-- `docs/specs/SPEC_neighborhood-311-migration.md` (implemented but spec file not yet moved)
-- `docs/specs/SPEC_neighborhood-map-and-detail.md` (implemented but spec file not yet moved)
+### Earlier sessions
+- **iOS Admin App**, **Visual refresh**, **Map label cleanup**, **UX fixes**, **Attribution & acknowledgements**, **macOS tag management**, **Urban Hiker SF data import**, **macOS photo add + notes editing**, **macOS Admin Dashboard**, **Photo sync**, **Active walk mode** (now removed), **HealthKit integration** (now removed).
 
 ## Known Issues
 
 - **CloudKit schema:** SwiftDataError code 1 on first launch after new model types added means CloudKit schema needs deploying from Xcode to Dashboard (container: `iCloud.com.o4dvasq.sfstairways`). Error now shows a human-readable message in Settings.
 - **macOS CloudKit sync:** first launch on Mac requires a few minutes for CloudKit to sync iOS walk data down.
-- **HealthKit:** entitlement added to `.entitlements`; HealthKit capability must also be manually enabled in Xcode target Signing & Capabilities.
 - **CloudKit sync:** may fall back to local if Xcode target lacks Background Modes → Remote Notifications capability (manual Xcode step).
 - **CKErrorDomain error 2** (not authenticated) surfaces as red error icon on Stats tab — requires CloudKit investigation.
 - **supabase-swift** package not confirmed added to Xcode target membership.

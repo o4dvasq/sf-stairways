@@ -14,7 +14,6 @@ struct HygieneIssue: Identifiable {
     enum IssueType: String, CaseIterable {
         case missingHeight = "Missing Height"
         case missingCoordinates = "Missing Coordinates"
-        case missingHealthKit = "Missing HealthKit Data"
         case promotionCandidate = "Promotion Candidate"
         case unverifiedProximity = "Proximity Unverified"
 
@@ -22,7 +21,6 @@ struct HygieneIssue: Identifiable {
             switch self {
             case .missingHeight:        return "ruler"
             case .missingCoordinates:   return "location.slash"
-            case .missingHealthKit:     return "heart.text.square"
             case .promotionCandidate:   return "doc.text"
             case .unverifiedProximity:  return "mappin.slash"
             }
@@ -31,7 +29,7 @@ struct HygieneIssue: Identifiable {
         var color: Color {
             switch self {
             case .missingHeight, .missingCoordinates:   return Color.brandAmber
-            case .missingHealthKit, .unverifiedProximity: return .orange
+            case .unverifiedProximity:                  return .orange
             case .promotionCandidate:                   return .blue
             }
         }
@@ -89,22 +87,6 @@ struct DataHygieneView: View {
                     neighborhood: stairway.neighborhood,
                     issueType: .missingCoordinates,
                     detail: "Cannot be displayed on map"
-                ))
-            }
-
-            // Walked stairways missing HealthKit data
-            if let record = walkRecord,
-               record.walked,
-               record.stepCount == nil,
-               record.elevationGain == nil {
-                issues.append(HygieneIssue(
-                    stairwayID: stairway.id,
-                    stairwayName: stairway.name,
-                    neighborhood: stairway.neighborhood,
-                    issueType: .missingHealthKit,
-                    detail: record.walkStartTime != nil
-                        ? "Walk started via app but HealthKit returned no data"
-                        : "Manually logged — no HealthKit session"
                 ))
             }
 

@@ -9,7 +9,6 @@ struct StairwayBottomSheet: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(AuthManager.self) private var authManager
-    @Environment(ActiveWalkManager.self) private var activeWalkManager
     @Query private var walkRecords: [WalkRecord]
     @Query private var overrides: [StairwayOverride]
     @Query private var allTags: [StairwayTag]
@@ -37,7 +36,6 @@ struct StairwayBottomSheet: View {
     @AppStorage("curatorModeActive") private var curatorModeActive = false
 
     @State private var triggerCuratorPromote = false
-    @State private var showCancelWalkAlert = false
     @State private var showHardModeAlert = false
     @State private var showRemoveWalkAlert = false
     @State private var toastMessage: String? = nil
@@ -65,12 +63,6 @@ struct StairwayBottomSheet: View {
         return (remote + local).sorted { $0.createdAt > $1.createdAt }
     }
 
-    // Start Walk remains proximity-gated — you should be at the stairway to begin a session.
-    private var isStartWalkDisabled: Bool {
-        guard authManager.hardModeEnabled else { return false }
-        return !locationManager.isWithinRadius(150, ofLatitude: stairway.lat ?? 0, longitude: stairway.lng ?? 0)
-    }
-
     private enum StairwayState { case unwalked, walked }
 
     private var state: StairwayState {
@@ -86,12 +78,8 @@ struct StairwayBottomSheet: View {
 
                 headerSection
                 statsRow
-                if activeWalkManager.isActive(for: stairway.id) {
-                    activeSessionBanner
-                } else {
-                    walkStatusCard
-                    actionButtons
-                }
+                walkStatusCard
+                actionButtons
 
                 // ── Expanded content (revealed by dragging to .large) ─────
 
@@ -192,12 +180,6 @@ struct StairwayBottomSheet: View {
             guard toastMessage != nil else { return }
             try? await Task.sleep(for: .seconds(3))
             toastMessage = nil
-        }
-        .alert("Cancel this walk?", isPresented: $showCancelWalkAlert) {
-            Button("Cancel Walk", role: .destructive) { activeWalkManager.cancelWalk() }
-            Button("Keep Walking", role: .cancel) { }
-        } message: {
-            Text("Your progress won't be saved.")
         }
         .alert("Mark as walked?", isPresented: $showHardModeAlert) {
             Button("Cancel", role: .cancel) { }
@@ -316,22 +298,11 @@ struct StairwayBottomSheet: View {
         HStack(spacing: 12) {
             if let verifiedStairs = currentOverride?.verifiedStepCount {
                 verifiedStatText("\(verifiedStairs) stairs")
-            } else if let steps = walkRecord?.stepCount, walkRecord?.walkStartTime != nil {
-                // Only show HealthKit step count when it came from an active walk session.
-                Text("\(steps) steps")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
             }
             if let verifiedHeight = currentOverride?.verifiedHeightFt {
                 verifiedStatText("\(Int(verifiedHeight)) ft")
             } else if let height = stairway.heightFt {
                 Text("\(Int(height)) ft")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            if let elevation = walkRecord?.elevationGain, walkRecord?.walkStartTime != nil {
-                // Only show HealthKit elevation when it came from an active walk session.
-                Text("\(Int(elevation)) ft gained")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -347,80 +318,6 @@ struct StairwayBottomSheet: View {
         }
         .font(.caption)
         .foregroundStyle(.secondary)
-    }
-
-    // MARK: - Active Session Banner
-
-    private var activeSessionBanner: some View {
-        VStack(spacing: 14) {
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Walking now")
-                        .font(.subheadline)
-                        .fontWeight(.medium)
-                        .foregroundStyle(Color.walkedGreen)
-                    Text(formatElapsed(activeWalkManager.elapsedSeconds))
-                        .font(.system(size: 36, weight: .semibold, design: .monospaced))
-                        .foregroundStyle(.primary)
-                }
-                Spacer()
-            }
-            HStack(spacing: 10) {
-                Menu {
-                    Button {
-                        showCamera = true
-                    } label: {
-                        Label("Take Photo", systemImage: "camera.fill")
-                    }
-                    Button {
-                        showPhotoPicker = true
-                    } label: {
-                        Label("Choose from Library", systemImage: "photo.on.rectangle")
-                    }
-                } label: {
-                    Image(systemName: "camera.fill")
-                        .font(.subheadline)
-                        .fontWeight(.semibold)
-                        .frame(width: 44, height: 44)
-                        .background(Color.forestGreen)
-                        .foregroundStyle(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                }
-                Button {
-                    endWalkSession()
-                } label: {
-                    Text("End Walk")
-                        .font(.subheadline)
-                        .fontWeight(.semibold)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 12)
-                        .background(Color.walkedGreen)
-                        .foregroundStyle(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                }
-                Button {
-                    showCancelWalkAlert = true
-                } label: {
-                    Text("Cancel")
-                        .font(.subheadline)
-                        .fontWeight(.medium)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 12)
-                        .background(Color(.systemGray5))
-                        .foregroundStyle(.secondary)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                }
-            }
-        }
-        .padding(14)
-        .background(Color.walkedGreen.opacity(0.08))
-        .clipShape(RoundedRectangle(cornerRadius: 10))
-    }
-
-    private func formatElapsed(_ seconds: Int) -> String {
-        let m = seconds / 60
-        let s = seconds % 60
-        return String(format: "%02d:%02d", m, s)
     }
 
     // MARK: - Walk Status Card
@@ -505,12 +402,7 @@ struct StairwayBottomSheet: View {
     private var actionButtons: some View {
         switch state {
         case .unwalked:
-            HStack(spacing: 10) {
-                ActionButton(title: "Start Walk", icon: "figure.walk", color: Color.forestGreen, action: startWalk)
-                    .opacity(isStartWalkDisabled ? 0.4 : 1.0)
-                    .disabled(isStartWalkDisabled)
-                ActionButton(title: "Mark Walked", icon: "checkmark.circle", color: Color.walkedGreen, action: attemptMarkWalked)
-            }
+            ActionButton(title: "Mark Walked", icon: "checkmark.circle", color: Color.walkedGreen, action: attemptMarkWalked)
         case .walked:
             EmptyView()
         }
@@ -768,54 +660,6 @@ struct StairwayBottomSheet: View {
             record.proximityVerified = proximityVerified
             modelContext.insert(record)
         }
-        try? modelContext.save()
-    }
-
-    private func startWalk() {
-        if activeWalkManager.hasActiveSession && !activeWalkManager.isActive(for: stairway.id) {
-            let name = activeWalkManager.activeStairwayName ?? "another stairway"
-            toastMessage = "Finish your walk at \(name) first."
-            return
-        }
-        // Create WalkRecord immediately so photos taken mid-walk have a record to attach to.
-        if walkRecord == nil {
-            let record = WalkRecord(stairwayID: stairway.id)
-            modelContext.insert(record)
-            try? modelContext.save()
-        }
-        activeWalkManager.startWalk(stairwayID: stairway.id, name: stairway.name)
-    }
-
-    private func endWalkSession() {
-        guard let window = activeWalkManager.endWalk() else { return }
-        Task {
-            let stats = await HealthKitService.fetchWalkStats(from: window.startTime, to: window.endTime)
-            await MainActor.run {
-                finalizeActiveWalk(startTime: window.startTime, endTime: window.endTime, steps: stats.steps, elevation: stats.elevationFeet)
-                if let errorMessage = stats.error {
-                    toastMessage = errorMessage
-                }
-            }
-        }
-    }
-
-    private func finalizeActiveWalk(startTime: Date, endTime: Date, steps: Int?, elevation: Double?) {
-        let record: WalkRecord
-        if let existing = walkRecord {
-            record = existing
-        } else {
-            record = WalkRecord(stairwayID: stairway.id)
-            modelContext.insert(record)
-        }
-        record.walked = true
-        record.dateWalked = startTime
-        record.walkStartTime = startTime
-        record.walkEndTime = endTime
-        record.hardModeAtCompletion = authManager.hardModeEnabled
-        record.proximityVerified = authManager.hardModeEnabled ? true : nil
-        if let steps { record.stepCount = steps }
-        if let elevation { record.elevationGain = elevation }
-        record.updatedAt = Date()
         try? modelContext.save()
     }
 

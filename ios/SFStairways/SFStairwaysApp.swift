@@ -6,7 +6,6 @@ struct SFStairwaysApp: App {
     let modelContainer: ModelContainer
     let syncStatusManager: SyncStatusManager
     let authManager: AuthManager
-    let activeWalkManager = ActiveWalkManager()
     let neighborhoodStore = NeighborhoodStore()
 
     init() {
@@ -68,7 +67,6 @@ struct SFStairwaysApp: App {
                         SeedDataService.seedIfNeeded(modelContext: modelContainer.mainContext)
                         SeedDataService.seedTagsIfNeeded(modelContext: modelContainer.mainContext)
                         SeedDataService.cleanUnwalkedRecordsIfNeeded(modelContext: modelContainer.mainContext)
-                        SeedDataService.cleanRetroactiveStatsIfNeeded(modelContext: modelContainer.mainContext)
                     }
 
                 if showSplash {
@@ -87,7 +85,6 @@ struct SFStairwaysApp: App {
         .modelContainer(modelContainer)
         .environment(syncStatusManager)
         .environment(authManager)
-        .environment(activeWalkManager)
         .environment(neighborhoodStore)
     }
 }

@@ -50,9 +50,6 @@ struct AdminDetailView: View {
     var body: some View {
         Form {
             catalogSection
-            if let record = walkRecord {
-                walkDataSection(record)
-            }
             overridesSection
             tagsSection
             actionsSection
@@ -118,31 +115,6 @@ struct AdminDetailView: View {
                             .font(.callout)
                             .foregroundStyle(.secondary)
                     }
-                }
-            }
-        }
-    }
-
-    // MARK: - Walk Data Section
-
-    @ViewBuilder
-    private func walkDataSection(_ record: WalkRecord) -> some View {
-        Section("Walk Data") {
-            if let date = record.dateWalked {
-                LabeledContent("Date", value: date.formatted(date: .abbreviated, time: .omitted))
-            }
-            if let steps = record.stepCount {
-                LabeledContent("Steps", value: steps.formatted())
-            }
-            if let elev = record.elevationGain {
-                LabeledContent("Elevation Gain", value: "\(Int(elev)) ft")
-            }
-            if let notes = record.notes, !notes.isEmpty {
-                LabeledContent("Notes") {
-                    Text(notes)
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(3)
                 }
             }
         }

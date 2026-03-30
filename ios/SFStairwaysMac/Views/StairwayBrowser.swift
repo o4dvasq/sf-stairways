@@ -27,10 +27,8 @@ struct StairwayRow: Identifiable {
     // Curator-verified step count (HealthKit steps are in elevationGain context; this is curated).
     var verifiedStepCount: Int? { override?.verifiedStepCount }
 
-    // HealthKit steps recorded during the walk.
     var hkStepCount: Int? { walkRecord?.stepCount }
 
-    var elevationGain: Double? { walkRecord?.elevationGain }
     var dateWalked: Date? { walkRecord?.dateWalked }
     var hasNotes: Bool {
         guard let notes = walkRecord?.notes, !notes.isEmpty else { return false }
@@ -50,7 +48,6 @@ struct StairwayRow: Identifiable {
     // Actual nil-last sort logic lives in StairwayBrowser.sortedRows.
     var heightSortKey: Double { heightFt ?? -.greatestFiniteMagnitude }
     var stepsSortKey: Int { verifiedStepCount ?? hkStepCount ?? .min }
-    var elevationSortKey: Double { elevationGain ?? -.greatestFiniteMagnitude }
     var dateWalkedSortKey: Double { dateWalked?.timeIntervalSince1970 ?? -.greatestFiniteMagnitude }
 }
 
@@ -157,8 +154,6 @@ struct StairwayBrowser: View {
             return nilLastSorted(rows, asc: asc) { $0.heightFt }
         } else if kp == \StairwayRow.stepsSortKey {
             return nilLastSorted(rows, asc: asc) { $0.verifiedStepCount ?? $0.hkStepCount }
-        } else if kp == \StairwayRow.elevationSortKey {
-            return nilLastSorted(rows, asc: asc) { $0.elevationGain }
         } else if kp == \StairwayRow.photoCount {
             return rows.sorted { asc ? $0.photoCount < $1.photoCount : $0.photoCount > $1.photoCount }
         } else if kp == \StairwayRow.dateWalkedSortKey {
@@ -352,15 +347,6 @@ struct StairwayBrowser: View {
                 }
             }
             .width(60)
-
-            TableColumn("Elev. Gain", value: \.elevationSortKey) { row in
-                if let e = row.elevationGain {
-                    Text("\(Int(e)) ft")
-                } else {
-                    Text("—").foregroundStyle(.tertiary)
-                }
-            }
-            .width(75)
 
             TableColumn("Photos", value: \.photoCount) { row in
                 if row.photoCount > 0 {

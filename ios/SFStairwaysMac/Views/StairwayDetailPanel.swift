@@ -101,7 +101,7 @@ struct StairwayDetailPanel: View {
                     Text("Catalog")
                         .font(.caption.bold())
                         .foregroundStyle(.secondary)
-                    Text("Walk Data")
+                    Text("Walk Data (legacy)")
                         .font(.caption.bold())
                         .foregroundStyle(.secondary)
                 }
@@ -113,7 +113,7 @@ struct StairwayDetailPanel: View {
                 )
                 dataRow("Step Count",
                     catalog: "—",
-                    walk: walkRecord?.stepCount.map { "\($0) steps (HealthKit)" } ?? "—"
+                    walk: walkRecord?.stepCount.map { "\($0) steps" } ?? "—"
                 )
                 dataRow("Coordinates",
                     catalog: stairway.hasValidCoordinate
@@ -132,10 +132,6 @@ struct StairwayDetailPanel: View {
                 dataRow("Date Walked",
                     catalog: "—",
                     walk: walkRecord?.dateWalked.map { $0.formatted(date: .abbreviated, time: .omitted) } ?? "—"
-                )
-                dataRow("Walk Method",
-                    catalog: "—",
-                    walk: walkRecord?.walkMethod ?? "—"
                 )
                 dataRow("Proximity Verified",
                     catalog: "—",

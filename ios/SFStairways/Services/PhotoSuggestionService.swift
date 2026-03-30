@@ -8,8 +8,6 @@ final class PhotoSuggestionService {
 
     func fetch(
         dateWalked: Date,
-        walkStartTime: Date? = nil,
-        walkEndTime: Date? = nil,
         addedPhotoAssetIDs: [String],
         dismissedPhotoIDs: [String]
     ) {
@@ -19,7 +17,7 @@ final class PhotoSuggestionService {
             return
         }
 
-        let (start, end) = timeWindow(dateWalked: dateWalked, startTime: walkStartTime, endTime: walkEndTime)
+        let (start, end) = timeWindow(dateWalked: dateWalked)
 
         let options = PHFetchOptions()
         options.predicate = NSPredicate(
@@ -58,10 +56,7 @@ final class PhotoSuggestionService {
         }
     }
 
-    private func timeWindow(dateWalked: Date, startTime: Date?, endTime: Date?) -> (Date, Date) {
-        if let start = startTime, let end = endTime {
-            return (start, end)
-        }
+    private func timeWindow(dateWalked: Date) -> (Date, Date) {
         var cal = Calendar.current
         cal.timeZone = TimeZone.current
         let dayStart = cal.startOfDay(for: dateWalked)

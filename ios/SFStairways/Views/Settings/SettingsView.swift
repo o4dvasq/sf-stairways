@@ -1,5 +1,4 @@
 import AuthenticationServices
-import HealthKit
 import Supabase
 import SwiftUI
 
@@ -8,9 +7,6 @@ struct SettingsView: View {
     @Environment(SyncStatusManager.self) private var syncManager
 
     @AppStorage("curatorModeActive") private var curatorModeActive = false
-
-    // nil = checking, true = authorized, false = not authorized
-    @State private var healthKitAuthorized: Bool? = nil
 
     var body: some View {
         NavigationStack {
@@ -26,9 +22,6 @@ struct SettingsView: View {
             }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
-            .task {
-                healthKitAuthorized = await HealthKitService.isAuthorized()
-            }
         }
     }
 
@@ -131,76 +124,6 @@ struct SettingsView: View {
                 }
             }
             .disabled(!authManager.isAuthenticated)
-
-            healthKitRow
-        }
-    }
-
-    @ViewBuilder
-    private var healthKitRow: some View {
-        if !HKHealthStore.isHealthDataAvailable() {
-            Label {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("HealthKit: Not Available")
-                        .font(.subheadline)
-                    Text("HealthKit is not supported on this device")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-            } icon: {
-                Image(systemName: "heart.slash")
-                    .foregroundStyle(.secondary)
-            }
-        } else if let authorized = healthKitAuthorized {
-            if authorized {
-                Label {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("HealthKit: Authorized")
-                            .font(.subheadline)
-                        Text("Steps and elevation captured during active walks")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                } icon: {
-                    Image(systemName: "heart.fill")
-                        .foregroundStyle(.green)
-                }
-            } else {
-                VStack(alignment: .leading, spacing: 8) {
-                    Label {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("HealthKit: Not Authorized")
-                                .font(.subheadline)
-                            Text("Walk stats won't be captured until access is granted")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                    } icon: {
-                        Image(systemName: "heart.slash")
-                            .foregroundStyle(Color.brandAmber)
-                    }
-
-                    Button {
-                        Task {
-                            await HealthKitService.requestAuthorization()
-                            healthKitAuthorized = await HealthKitService.isAuthorized()
-                        }
-                    } label: {
-                        Text("Request Permission")
-                            .font(.subheadline)
-                            .foregroundStyle(Color.forestGreen)
-                    }
-                }
-                .padding(.vertical, 4)
-            }
-        } else {
-            Label {
-                Text("HealthKit")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            } icon: {
-                ProgressView()
-            }
         }
     }
 

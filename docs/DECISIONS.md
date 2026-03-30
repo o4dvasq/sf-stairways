@@ -1,5 +1,18 @@
 # Architecture Decisions — sf-stairways
 
+## Remove HealthKit and active walk recording entirely
+**Date:** 2026-03-30
+
+The app dropped all HealthKit integration and the "Start Walk / End Walk" active session flow. The app is a stairway exploration tracker, not a fitness logger — walk data enrichment (elevation, step counts) will happen after the fact via curator override fields on the Mac admin dashboard.
+
+**WalkRecord schema fields retained.** `stepCount`, `elevationGain`, `walkStartTime`, `walkEndTime` remain as nullable SwiftData properties. Removing SwiftData properties that exist in CloudKit causes migration failures on devices that have already synced data. Existing values (from past active walks) are preserved and visible in the Mac detail panel labeled "Walk Data (legacy)." No new code writes to these fields.
+
+**"Mark Walked" is the sole logging action.** The hard mode proximity check, dateWalked stamping, and confirmation toast are fully preserved. Nothing about the manual walk flow changed.
+
+**`PhotoSuggestionService` simplified.** The `walkStartTime`/`walkEndTime` parameters that narrowed the photo suggestion time window to the active session are gone. The service now always uses the full calendar day of `dateWalked` as the search window. This is correct behavior: manual walks don't have a precise time, so a full-day window is the right default.
+
+**Data hygiene "Missing HealthKit Data" category removed.** This check flagged walked stairways with no stepCount or elevationGain. Since HealthKit no longer populates these fields, the category would flag every stairway — it was noise.
+
 ## Progress tab: neighborhood cards as hero content, StairwayStore as data source
 **Date:** 2026-03-29
 

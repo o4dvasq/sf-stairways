@@ -126,11 +126,11 @@ The following iOS source files are also compiled into the macOS target:
 
 | File | Purpose |
 |---|---|
-| `Views/StairwayBrowser.swift` | Three-column `NavigationSplitView`: sidebar with neighborhood walked/total counts + Tags section (per-tag counts, clickable filter); **fully sortable `Table`** (Name, Height, Steps, Elev. Gain, Photos, Date Walked — nil values sort to bottom in both directions via `nilLastSorted`); detail column; toolbar with Tags, Data Hygiene, Bulk Actions, and **Acknowledgements (info.circle)** buttons; `AcknowledgementsSheet` defined at bottom of file |
+| `Views/StairwayBrowser.swift` | Three-column `NavigationSplitView`: sidebar with neighborhood walked/total counts + Tags section (per-tag counts, clickable filter); **fully sortable `Table`** (Name, Height, Steps, Photos, Date Walked — nil values sort to bottom in both directions via `nilLastSorted`; Elev. Gain removed); detail column; toolbar with Tags, Data Hygiene, Bulk Actions, and **Acknowledgements (info.circle)** buttons; `AcknowledgementsSheet` defined at bottom of file |
 | `Views/TagManagerSheet.swift` | Full tag CRUD: preset tags (read-only list with assignment counts); custom tags (inline rename, delete with cascade confirmation, assignment counts); new-tag creation with slug ID generation and uniqueness validation |
 | `Views/StairwayDetailPanel.swift` | Catalog vs. walk data comparison grid; editable curator overrides (step count, height, description) with Save; notes → promote to curator description; tag add/remove via `Menu` with "Create & Assign…" inline option; local photo grid (NSImage from Data) with per-photo delete confirm; drag-drop + NSOpenPanel photo import |
-| `Views/DataHygieneView.swift` | Two-column issue browser: sidebar with issue type filter + counts, `Table` of flagged stairways; detects: missing height, missing coordinates, missing HealthKit data, promotion candidates (notes without curator description), proximity-unverified walks |
-| `Views/BulkOperationsSheet.swift` | Bulk tag assign (with "Create new tag…" inline option); **Remove Tag from All Selected** section (picker shows only tags on selected stairways); bulk mark walked with `DatePicker`; CSV export via `NSSavePanel` |
+| `Views/DataHygieneView.swift` | Two-column issue browser: sidebar with issue type filter + counts, `Table` of flagged stairways; detects: missing height, missing coordinates, promotion candidates (notes without curator description), proximity-unverified walks |
+| `Views/BulkOperationsSheet.swift` | Bulk tag assign (with "Create new tag…" inline option); **Remove Tag from All Selected** section (picker shows only tags on selected stairways); bulk mark walked with `DatePicker`; CSV export via `NSSavePanel` (name, neighborhood, height, walked, date walked) |
 
 ### macOS Data Flow
 
@@ -146,7 +146,7 @@ CloudKit ──► SwiftData (same container as iOS) ──► @Query in Stairwa
                                                BulkOperationsSheet (write)
 ```
 
-No Supabase, no HealthKit fetching on macOS. HealthKit data (stepCount, elevationGain) is read from CloudKit-synced `WalkRecord` fields only.
+No Supabase, no HealthKit on macOS. Legacy walk data fields (`stepCount`, `elevationGain`) from past active walks are displayed in the detail panel under "Walk Data (legacy)" for reference but are no longer actively populated.
 
 ---
 
@@ -168,7 +168,7 @@ Source at `ios/SFStairwaysAdmin/`. Separate iOS target in `SFStairways.xcodeproj
 |---|---|
 | `SFStairwaysAdminApp.swift` | App entry point; same schema + CloudKit setup as iOS and macOS (all six SwiftData models); falls back to local storage on CloudKit failure |
 | `Views/AdminBrowser.swift` | Root: searchable stairway list; filter chips (All/Walked/Unwalked/Has Override/Has Issues); sort menu (Name/Neighborhood/Date Walked); row shows walked icon, override indicator (pencil), tag count badge; toolbar: Tag Manager + Removed Stairways buttons |
-| `Views/AdminDetailView.swift` | Push-navigation detail: catalog data (read-only), walk record summary (read-only), editable override fields (step count, height ft, curator description) with Save/Cancel, tag chips with X-to-remove + Add Tag (picker + "Create Tag…" inline), "Remove Stairway" destructive action with optional reason field |
+| `Views/AdminDetailView.swift` | Push-navigation detail: catalog data (read-only), editable override fields (step count, height ft, curator description) with Save/Cancel, tag chips with X-to-remove + Add Tag (picker + "Create Tag…" inline), "Remove Stairway" destructive action with optional reason field |
 | `Views/AdminTagManager.swift` | Modal: preset tags (read-only, counts); custom tags (inline rename, delete with cascade count confirmation, create new) |
 | `Views/RemovedStairwaysView.swift` | Modal: list of StairwayDeletion records (name, date, reason); swipe to restore (deletes the record, stairway reappears everywhere) |
 
@@ -191,14 +191,14 @@ Source at `ios/SFStairways/`. iOS is the primary user-facing platform. Web app d
 
 ### Entry Point
 
-`SFStairwaysApp.swift` — creates `ModelContainer` (CloudKit-backed, falls back to local), creates `SyncStatusManager`, `AuthManager`, `ActiveWalkManager`, and `NeighborhoodStore`, injects all into the SwiftUI environment via `.environment()`.
+`SFStairwaysApp.swift` — creates `ModelContainer` (CloudKit-backed, falls back to local), creates `SyncStatusManager`, `AuthManager`, and `NeighborhoodStore`, injects all into the SwiftUI environment via `.environment()`.
 
 ### Services
 
 | File | Role |
 |---|---|
 | `SyncStatusManager.swift` | `@Observable` — listens to `NSPersistentCloudKitContainer.eventChangedNotification`, exposes `.state` enum |
-| `SeedDataService.swift` | Seeds `WalkRecord` data from `target_list.json` on first launch (key: `com.sfstairways.hasSeededData`); seeds preset `StairwayTag` records from `tags_preset.json` on first launch (key: `com.sfstairways.hasSeededTags`); deletes `WalkRecord` where `walked==false` once (key: `com.sfstairways.hasCleanedUnwalked`) to migrate away from the removed Saved state; all seed paths check existing record count first to handle CloudKit delivery |
+| `SeedDataService.swift` | Seeds `WalkRecord` data from `target_list.json` on first launch (key: `com.sfstairways.hasSeededData`); seeds preset `StairwayTag` records from `tags_preset.json` on first launch (key: `com.sfstairways.hasSeededTags`); deletes `WalkRecord` where `walked==false` once (key: `com.sfstairways.hasCleanedUnwalked`) to migrate away from the removed Saved state; all seed paths check existing record count first to handle CloudKit delivery; `cleanRetroactiveStatsIfNeeded` was removed after its one-time migration ran |
 | `LocationManager.swift` | CLLocationManager wrapper for current location; `isWithinRadius(_:ofLatitude:longitude:)` for Hard Mode proximity check |
 | `PhotoService.swift` | Photo capture, thumbnail generation; `CameraPicker.Coordinator` saves to system camera roll via `PHPhotoLibrary.performChanges` (fire-and-forget, silent failure on permission denial) |
 | `SupabaseManager.swift` | Singleton Supabase client; reads project URL + anon key from `Config/Supabase.plist` (gitignored); crashes with clear message if plist is missing |
@@ -209,7 +209,7 @@ Source at `ios/SFStairways/`. iOS is the primary user-facing platform. Web app d
 
 | Model | Key fields |
 |---|---|
-| `WalkRecord` | `stairwayID`, `walked`, `dateWalked`, `notes`, `stepCount`, `photos: [WalkPhoto]?`, `hardMode: Bool`, `proximityVerified: Bool?`; computed: `walkMethod: String` ("Active Walk" / "Active Walk (no HealthKit data)" / "Logged manually"), `canRetroactivelyPullStats: Bool` (walked && no startTime && no stats) |
+| `WalkRecord` | `stairwayID`, `walked`, `dateWalked`, `notes`, `stepCount`, `photos: [WalkPhoto]?`, `hardMode: Bool`, `proximityVerified: Bool?`; legacy fields retained for CloudKit schema compatibility: `elevationGain`, `walkStartTime`, `walkEndTime` (no longer populated or displayed in iOS) |
 | `WalkPhoto` | `imageData` (externalStorage), `thumbnailData` (externalStorage), `caption`, `walkRecord` |
 | `StairwayOverride` | `stairwayID`, `verifiedStepCount: Int?`, `verifiedHeightFt: Double?`, `stairwayDescription: String?`, `createdAt`, `updatedAt` |
 | `StairwayTag` | `id` (slug), `name`, `isPreset: Bool`, `createdAt` |
@@ -239,8 +239,8 @@ For any stat display (stair count, height): use `StairwayOverride` value if non-
 - `MapTab` — MapKit full-screen map (follows system light/dark — no forced color scheme), `brandAmber` top bar with leading gear (settings) and trailing Around Me + Tag Filter; filter pills (All/Walked/Nearby); floating `ProgressCard` (bottom-right, 120pt wide); launches at default city-wide view (latDelta ~0.06); tracks `mapSpan` via `.onMapCameraChange(frequency: .onEnd)`; annotation labels use `stairway.displayName` and are hidden when `mapSpan > 0.02`; **neighborhood polygon overlays** (`MapPolygon` per ring, drawn first in Map content below all annotations): fill 17% alpha light / 11% dark, stroke 30%/22%; dimmed to 3%/5% when Around Me active and neighborhood not highlighted; **centroid label annotations**: `caption2` Rounded font at 60% opacity, visible only when `mapSpan < 0.04`; tapping a label opens `NeighborhoodDetail` as a sheet (wrapped in `NavigationStack`); pin taps unaffected (polygon tap is visual-only per fallback strategy); consumes `NavigationCoordinator` from environment
 - `ListTab` — searchable, filterable stairway list (All/Walked); tap row → `StairwayBottomSheet` sheet; **section headers are `NavigationLink(value: group.name)`** → push `NeighborhoodDetail` onto the NavigationStack; `navigationDestination(for: String.self)` registered on the List
 - `ProgressTab` (tab label: "Stats") — compact ring (~80pt, `brandOrange` stroke, spring animation) in HStack alongside text block (walked/total in `.title3` Rounded, %+height ft + neighborhood count in `.subheadline` Rounded secondary); **2-column `LazyVGrid` of `NeighborhoodCard` views** for neighborhoods with ≥1 walk, sorted by completion % descending (tie-break: most recent `dateWalked`); card data derived by grouping `StairwayStore.stairways` by `.neighborhood` field; collapsible "Undiscovered" section (`@AppStorage("progress.undiscovered.collapsed")`) lists neighborhoods with 0 walks as tappable `NavigationLink` rows; all cards and undiscovered names navigate to `NeighborhoodDetail` via `NavigationLink(value: name)` + `.navigationDestination(for: String.self)`; toolbar has sync icon; height stat uses `resolvedHeightFt`; `StatCard` struct removed; `NeighborhoodCard.swift` in `Views/Progress/`
-- `SettingsView` — sheet from gear icon in ProgressTab toolbar; Account section (Sign in with Apple / signed-in state + Sign Out); iCloud Sync section (mirrors sync status); Walking section (Hard Mode toggle + HealthKit auth status row — green "Authorized" / amber "Not Authorized" + "Request Permission" button; checks `isAuthorized()` via `.task`); **Acknowledgements section** (SF Stairways credit + link, Urban Hiker SF credit + links, Buy a Matcha link with amber cup icon, book credit)
-- `StairwayBottomSheet` — **single detail surface for the whole app**; self-contained with `@Query`, `@Environment(\.modelContext)`, `@Environment(\.dismiss)`; two detent states: collapsed `.height(390)` and expanded `.large`; **neighborhood name in header is a tappable button** (chevron indicator) → opens `NeighborhoodDetail` as a sheet (wrapped in `NavigationStack`); walk status card shows walk method badge; retroactive HealthKit pull CTA; tags section; `mergedPhotos: [PhotoSource]` combines remote + local photos
+- `SettingsView` — sheet from gear icon in ProgressTab toolbar; Account section (Sign in with Apple / signed-in state + Sign Out); iCloud Sync section (mirrors sync status); Walking section (Hard Mode toggle only — no HealthKit); **Acknowledgements section** (SF Stairways credit + link, Urban Hiker SF credit + links, Buy a Matcha link with amber cup icon, book credit)
+- `StairwayBottomSheet` — **single detail surface for the whole app**; self-contained with `@Query`, `@Environment(\.modelContext)`, `@Environment(\.dismiss)`; two detent states: collapsed `.height(390)` and expanded `.large`; **neighborhood name in header is a tappable button** (chevron indicator) → opens `NeighborhoodDetail` as a sheet; "Mark Walked" is the only action for unwalked stairways (no Start Walk); walk status card shows walked date + proximity badge; tags section; `mergedPhotos: [PhotoSource]` combines remote + local photos; `PhotoSuggestionService` uses full calendar day of `dateWalked` as photo search window
 - `StairwayAnnotation` — delegates to `StairwayPin` with three-state + dimming + unverified badge support; accepts `scale: CGFloat` and passes through to `StairwayPin`
 - `TeardropPin` — `StairwayPin` view (colored circles, three-state colors + dimming); `TeardropShape` and `StairShape` structs kept for future use; `showUnverifiedBadge` amber overlay
 - `SearchPanel` — search UI with Name/Street/Neighborhood/Tags tabs; `isTabMode: Bool` parameter hides the dismiss button when used as a persistent tab; Tags tab shows pill grid of all assigned tags → tap to drill into stairway list; **Neighborhood tab rows are `NavigationLink(value:)`** → push `NeighborhoodDetail` onto the inner `NavigationStack` (replaces old fly-to-map behavior); `navigationDestination(for: String.self)` registered on the NavigationStack's VStack
@@ -261,7 +261,7 @@ Neighborhood data (centroids, adjacency) is computed at runtime from the GeoJSON
 ### CloudKit Setup
 
 - Container: `iCloud.com.o4dvasq.sfstairways`
-- Entitlements: `aps-environment: development`, iCloud container + CloudKit service, `com.apple.developer.applesignin`
+- Entitlements: `aps-environment: development`, iCloud container + CloudKit service, `com.apple.developer.applesignin` (HealthKit entitlement removed)
 - Required manual Xcode step: Background Modes → Remote Notifications (enables push-triggered sync); Sign in with Apple capability
 - Xcode project at `ios/SFStairways.xcodeproj` (in repo)
 
