@@ -7,7 +7,6 @@ struct SeedStairway: Codable {
     let neighborhood: String
     let lat: Double
     let lng: Double
-    let stepCount: Int?
     let walked: Bool
     let dateWalked: String?
     let notes: String?
@@ -15,7 +14,6 @@ struct SeedStairway: Codable {
 
     enum CodingKeys: String, CodingKey {
         case id, name, neighborhood, lat, lng, walked, notes
-        case stepCount = "step_count"
         case dateWalked = "date_walked"
         case photoURL = "photo_url"
     }
@@ -74,8 +72,7 @@ enum SeedDataService {
                 stairwayID: seed.id,
                 walked: seed.walked,
                 dateWalked: seed.dateWalked.flatMap { dateFormatter.date(from: $0) },
-                notes: seed.notes,
-                stepCount: seed.stepCount
+                notes: seed.notes
             )
             modelContext.insert(record)
         }

@@ -21,7 +21,6 @@ struct StairwayBottomSheet: View {
     @State private var editingDate = false
 
     // Curator fields (local StairwayOverride)
-    @State private var curatorStepCountText = ""
     @State private var curatorHeightText = ""
     @State private var curatorDescription = ""
     @State private var curatorDirty = false
@@ -43,7 +42,7 @@ struct StairwayBottomSheet: View {
     @State private var showNeighborhoodDetail = false
 
     private enum CuratorField: Hashable {
-        case stepCount, height, description
+        case height, description
     }
 
     private var walkRecord: WalkRecord? {
@@ -296,9 +295,6 @@ struct StairwayBottomSheet: View {
 
     private var statsRow: some View {
         HStack(spacing: 12) {
-            if let verifiedStairs = currentOverride?.verifiedStepCount {
-                verifiedStatText("\(verifiedStairs) stairs")
-            }
             if let verifiedHeight = currentOverride?.verifiedHeightFt {
                 verifiedStatText("\(Int(verifiedHeight)) ft")
             } else if let height = stairway.heightFt {
@@ -580,19 +576,6 @@ struct StairwayBottomSheet: View {
                 }
 
                 HStack {
-                    Text("Stair count")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                    Spacer()
-                    TextField("Add stair count", text: $curatorStepCountText)
-                        .keyboardType(.numberPad)
-                        .multilineTextAlignment(.trailing)
-                        .frame(width: 120)
-                        .focused($curatorFocus, equals: .stepCount)
-                        .onChange(of: curatorStepCountText) { _, _ in curatorDirty = true }
-                }
-
-                HStack {
                     Text("Height (ft)")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
@@ -748,19 +731,17 @@ struct StairwayBottomSheet: View {
 
     private func initCuratorFields() {
         guard let o = currentOverride else { return }
-        curatorStepCountText = o.verifiedStepCount.map(String.init) ?? ""
         curatorHeightText = o.verifiedHeightFt.map { "\($0)" } ?? ""
         curatorDescription = o.stairwayDescription ?? ""
     }
 
     private func saveCuratorData() {
         curatorDirty = false
-        let stepCount = Int(curatorStepCountText)
         let height = Double(curatorHeightText)
         let desc = curatorDescription.trimmingCharacters(in: .whitespacesAndNewlines)
         let descValue: String? = desc.isEmpty ? nil : desc
 
-        if stepCount == nil && height == nil && descValue == nil {
+        if height == nil && descValue == nil {
             if let existing = currentOverride {
                 modelContext.delete(existing)
                 try? modelContext.save()
@@ -775,7 +756,6 @@ struct StairwayBottomSheet: View {
             override = StairwayOverride(stairwayID: stairway.id)
             modelContext.insert(override)
         }
-        override.verifiedStepCount = stepCount
         override.verifiedHeightFt = height
         override.stairwayDescription = descValue
         override.updatedAt = Date()

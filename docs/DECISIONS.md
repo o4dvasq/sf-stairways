@@ -1,11 +1,18 @@
 # Architecture Decisions — sf-stairways
 
+## Remove step-count tracking entirely
+**Date:** 2026-03-31
+
+Step counts (both HealthKit-sourced and curator-entered) were removed from all models, views, and services. Steps proved unreliable and redundant — height (feet climbed) is the only meaningful physical metric. If a stairway has no height data, the count will be measured manually and height calculated outside the app.
+
+`WalkRecord.stepCount` and `StairwayOverride.verifiedStepCount` were removed from the SwiftData models. CloudKit handles schema evolution gracefully — existing records with the fields are simply ignored. No migration needed. The `step_count` field remains in the static JSON data files (untouched) but the app no longer reads it.
+
 ## Remove HealthKit and active walk recording entirely
 **Date:** 2026-03-30
 
-The app dropped all HealthKit integration and the "Start Walk / End Walk" active session flow. The app is a stairway exploration tracker, not a fitness logger — walk data enrichment (elevation, step counts) will happen after the fact via curator override fields on the Mac admin dashboard.
+The app dropped all HealthKit integration and the "Start Walk / End Walk" active session flow. The app is a stairway exploration tracker, not a fitness logger — walk data enrichment (elevation) will happen after the fact via curator override fields on the Mac admin dashboard.
 
-**WalkRecord schema fields retained.** `stepCount`, `elevationGain`, `walkStartTime`, `walkEndTime` remain as nullable SwiftData properties. Removing SwiftData properties that exist in CloudKit causes migration failures on devices that have already synced data. Existing values (from past active walks) are preserved and visible in the Mac detail panel labeled "Walk Data (legacy)." No new code writes to these fields.
+**WalkRecord schema fields retained.** `elevationGain`, `walkStartTime`, `walkEndTime` remain as nullable SwiftData properties. Removing SwiftData properties that exist in CloudKit causes migration failures on devices that have already synced data. Existing values (from past active walks) are preserved and visible in the Mac detail panel labeled "Walk Data (legacy)." No new code writes to these fields.
 
 **"Mark Walked" is the sole logging action.** The hard mode proximity check, dateWalked stamping, and confirmation toast are fully preserved. Nothing about the manual walk flow changed.
 

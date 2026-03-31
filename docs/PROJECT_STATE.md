@@ -1,6 +1,6 @@
 # Project State — sf-stairways
 
-_Last updated: 2026-03-30 (neighborhood-color-saturation)_
+_Last updated: 2026-03-31 (remove-steps-tracking)_
 
 ## Platforms
 
@@ -24,7 +24,7 @@ _Last updated: 2026-03-30 (neighborhood-color-saturation)_
 - Shares SwiftData model files with both iOS and macOS targets
 - **No map, no photo management, no HealthKit, no Supabase** — utility-only tool
 - `AdminBrowser` — searchable list of all stairways; filter chips (All/Walked/Unwalked/Has Override/Has Issues); sort by Name/Neighborhood/Date Walked; row indicators for walked status, override, tag count; toolbar: Tag Manager + Removed Stairways buttons
-- `AdminDetailView` — push-navigation detail: catalog data (read-only), editable overrides (step count, height, description) with Save/Cancel, tag chips with add/remove, "Remove Stairway" destructive action
+- `AdminDetailView` — push-navigation detail: catalog data (read-only), editable overrides (height, description) with Save/Cancel, tag chips with add/remove, "Remove Stairway" destructive action
 - `AdminTagManager` — modal sheet: preset tags read-only with counts, custom tags with inline rename and delete (cascade confirmation), create new tag
 - `RemovedStairwaysView` — modal sheet: list of `StairwayDeletion` records with name/date/reason; swipe to restore
 
@@ -35,7 +35,7 @@ _Last updated: 2026-03-30 (neighborhood-color-saturation)_
 - Three-column `NavigationSplitView`: sidebar (neighborhoods + tags filter) → sortable stairway table → detail panel
 - **Deletion filtering**: `StairwayBrowser` queries `StairwayDeletion` records and excludes matching stairways from the table
 - **Sidebar Tags section**: lists tags with assignment counts; clicking a tag filters table; intersects with neighborhood filter
-- **Table sorting**: Name, Height, Steps, Photos, Date Walked (nil values sort to bottom via `nilLastSorted`)
+- **Table sorting**: Name, Height, Photos, Date Walked (nil values sort to bottom via `nilLastSorted`)
 - **TagManagerSheet**: full tag CRUD — create custom tags, inline rename, delete with cascade confirmation, preset tags read-only
 - Detail panel: catalog vs. walk data comparison (labeled "Walk Data (legacy)"), editable curator overrides, notes editing, tag add/remove, photo grid with delete + Add Photos
 - Bulk Operations: bulk tag assign/remove, bulk mark walked, CSV export (name, neighborhood, height, walked, date walked)
@@ -59,9 +59,12 @@ _Last updated: 2026-03-30 (neighborhood-color-saturation)_
 
 ## Recent Completions
 
-### 2026-03-30 (this session)
+### 2026-03-31
+- **Remove Steps Tracking** — Removed `WalkRecord.stepCount` and `StairwayOverride.verifiedStepCount` from SwiftData models. Removed `resolvedStepCount()` from `StairwayStore`. Removed all step/stair count UI from iOS (ProgressCard, StairwayRow, StairwayBottomSheet curator section), macOS (Steps table column, StairwayBrowser, StairwayDetailPanel curator overrides), and Admin (AdminDetailView overrides section). Height (ft) is the only physical metric. `step_count` field retained in static JSON files (app no longer reads it). CloudKit handles schema evolution without migration.
+
+### 2026-03-30
 - **Neighborhood Color Saturation** — Increased polygon overlay opacity (fill 0.17→0.30 light / 0.11→0.20 dark; stroke 0.30→0.50 / 0.22→0.40; dimmed 0.03→0.05 fill / 0.05→0.10 stroke). Replaced the 12-color pastel palette in `NeighborhoodStore` with more saturated equivalents (same hue families, reduced high channels for contrast). Bumped `NeighborhoodDetail` polygon to fill 0.30 / stroke 0.60 to match new baseline.
-- **Remove HealthKit & Walk Recording** — Deleted `HealthKitService.swift` and `ActiveWalkManager.swift` entirely. Removed "Start Walk" / active session banner / "End Walk" / "Cancel" UI from `StairwayBottomSheet`. "Mark Walked" is now the only walk-logging action. Removed HealthKit authorization section from `SettingsView`. Removed `com.apple.developer.healthkit` from both `.entitlements` files. Removed `walkMethod` computed property from `WalkRecord`. Removed `cleanRetroactiveStatsIfNeeded()` from `SeedDataService`. Removed `walkStartTime`/`walkEndTime` params from `PhotoSuggestionService.fetch` (falls back to full-day window). Removed `missingHealthKit` issue category from `DataHygieneView`. Relabeled Mac detail panel "Walk Data" column to "Walk Data (legacy)"; removed Walk Method row. Removed Elev. Gain column from `StairwayBrowser` table. Removed elevation/steps from CSV export. Removed Walk Data section from `AdminDetailView`. WalkRecord fields (`stepCount`, `elevationGain`, `walkStartTime`, `walkEndTime`) retained in schema to avoid CloudKit migration issues — existing data preserved, just no longer displayed or populated.
+- **Remove HealthKit & Walk Recording** — Deleted `HealthKitService.swift` and `ActiveWalkManager.swift` entirely. Removed "Start Walk" / active session banner / "End Walk" / "Cancel" UI from `StairwayBottomSheet`. "Mark Walked" is now the only walk-logging action. Removed HealthKit authorization section from `SettingsView`. Removed `com.apple.developer.healthkit` from both `.entitlements` files. Removed `walkMethod` computed property from `WalkRecord`. Removed `cleanRetroactiveStatsIfNeeded()` from `SeedDataService`. Removed `walkStartTime`/`walkEndTime` params from `PhotoSuggestionService.fetch` (falls back to full-day window). Removed `missingHealthKit` issue category from `DataHygieneView`. Relabeled Mac detail panel "Walk Data" column to "Walk Data (legacy)"; removed Walk Method row. Removed Elev. Gain column from `StairwayBrowser` table. Removed elevation/steps from CSV export. Removed Walk Data section from `AdminDetailView`. WalkRecord fields (`elevationGain`, `walkStartTime`, `walkEndTime`) retained in schema to avoid CloudKit migration issues — existing data preserved, just no longer displayed or populated. (`stepCount` was subsequently removed in the remove-steps-tracking spec.)
 
 ### 2026-03-29
 - **Progress Tab Reframe** — Compact ring + 2-column `NeighborhoodCard` grid in `ProgressTab`; collapsible "Undiscovered" section. `StatCard` removed. `NeighborhoodCard.swift` created in `Views/Progress/`.

@@ -2,6 +2,7 @@
 
 | Description | Implemented | Spec File |
 |---|---|---|
+| Remove step count from all models, views, and services | 2026-03-31 | SPEC_remove-steps-tracking.md |
 | Increase polygon fill/stroke opacity; saturate 12-color palette | 2026-03-30 | SPEC_neighborhood-color-saturation.md |
 | Remove HealthKit, active walk recording, Start Walk button | 2026-03-30 | SPEC_remove-healthkit-walk-recording.md |
 | Progress tab: compact ring, neighborhood card grid, undiscovered section | 2026-03-29 | SPEC_neighborhood-progress-reframe.md |

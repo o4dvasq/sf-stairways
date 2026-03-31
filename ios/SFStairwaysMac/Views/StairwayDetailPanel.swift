@@ -13,7 +13,6 @@ struct StairwayDetailPanel: View {
     let tagAssignments: [TagAssignment]
 
     // Editable override fields — initialized from the existing override on appear.
-    @State private var editStepCount: String = ""
     @State private var editHeightFt: String = ""
     @State private var editDescription: String = ""
     @State private var overrideSaved = false
@@ -111,10 +110,6 @@ struct StairwayDetailPanel: View {
                     catalog: stairway.heightFt.map { "\(Int($0)) ft" } ?? "—",
                     walk: walkRecord?.elevationGain.map { "\(Int($0)) ft gained" } ?? "—"
                 )
-                dataRow("Step Count",
-                    catalog: "—",
-                    walk: walkRecord?.stepCount.map { "\($0) steps" } ?? "—"
-                )
                 dataRow("Coordinates",
                     catalog: stairway.hasValidCoordinate
                         ? String(format: "%.4f, %.4f", stairway.lat ?? 0, stairway.lng ?? 0)
@@ -196,14 +191,6 @@ struct StairwayDetailPanel: View {
     private var curatorOverridesSection: some View {
         GroupBox("Curator Overrides") {
             VStack(alignment: .leading, spacing: 12) {
-                HStack {
-                    Text("Verified Step Count")
-                        .font(.system(size: 13))
-                        .frame(width: 160, alignment: .leading)
-                    TextField("e.g. 148", text: $editStepCount)
-                        .textFieldStyle(.roundedBorder)
-                        .frame(width: 100)
-                }
                 HStack {
                     Text("Verified Height (ft)")
                         .font(.system(size: 13))
@@ -426,7 +413,6 @@ struct StairwayDetailPanel: View {
 
     private func loadOverrideFields() {
         overrideSaved = false
-        editStepCount = override?.verifiedStepCount.map { String($0) } ?? ""
         editHeightFt = override?.verifiedHeightFt.map { String($0) } ?? ""
         editDescription = override?.stairwayDescription ?? ""
     }
@@ -440,7 +426,6 @@ struct StairwayDetailPanel: View {
             modelContext.insert(target)
         }
 
-        target.verifiedStepCount = Int(editStepCount.trimmingCharacters(in: .whitespaces))
         target.verifiedHeightFt = Double(editHeightFt.trimmingCharacters(in: .whitespaces))
         let desc = editDescription.trimmingCharacters(in: .whitespacesAndNewlines)
         target.stairwayDescription = desc.isEmpty ? nil : desc

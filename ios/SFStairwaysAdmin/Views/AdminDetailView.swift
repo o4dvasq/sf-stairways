@@ -12,7 +12,6 @@ struct AdminDetailView: View {
     @Query private var allTags: [StairwayTag]
     @Query private var allAssignments: [TagAssignment]
 
-    @State private var stepCountText = ""
     @State private var heightText = ""
     @State private var descriptionText = ""
     @State private var showRemoveConfirmation = false
@@ -124,11 +123,6 @@ struct AdminDetailView: View {
 
     private var overridesSection: some View {
         Section {
-            LabeledContent("Step Count") {
-                TextField("e.g. 142", text: $stepCountText)
-                    .keyboardType(.numberPad)
-                    .multilineTextAlignment(.trailing)
-            }
             LabeledContent("Height (ft)") {
                 TextField("e.g. 85.5", text: $heightText)
                     .keyboardType(.decimalPad)
@@ -204,16 +198,14 @@ struct AdminDetailView: View {
 
     private func loadOverrideFields() {
         let o = existingOverride
-        stepCountText = o?.verifiedStepCount.map(String.init) ?? ""
         heightText = o?.verifiedHeightFt.map { String($0) } ?? ""
         descriptionText = o?.stairwayDescription ?? ""
     }
 
     private func saveOverride() {
-        let steps = Int(stepCountText.trimmingCharacters(in: .whitespaces))
         let height = Double(heightText.trimmingCharacters(in: .whitespaces))
         let desc = descriptionText.trimmingCharacters(in: .whitespacesAndNewlines)
-        let isEmpty = steps == nil && height == nil && desc.isEmpty
+        let isEmpty = height == nil && desc.isEmpty
 
         if isEmpty {
             if let existing = existingOverride {
@@ -231,7 +223,6 @@ struct AdminDetailView: View {
             modelContext.insert(override)
         }
 
-        override.verifiedStepCount = steps
         override.verifiedHeightFt = height
         override.stairwayDescription = desc.isEmpty ? nil : desc
         override.updatedAt = Date()

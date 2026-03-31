@@ -91,7 +91,6 @@ This is the **only write path** in the app. All user state flows through WalkRec
 | walked | Bool | false = Saved, true = Walked |
 | dateWalked | Date? | When the walk happened |
 | notes | String? | User notes |
-| stepCount | Int? | Steps recorded |
 | createdAt | Date | Auto-set |
 | updatedAt | Date | Auto-set on changes |
 | photos | [WalkPhoto]? | @Relationship, cascade delete |
@@ -199,15 +198,15 @@ Each result row: stairway name + neighborhood + distance (meters if <1km, km oth
 
 Searchable grouped list organized by neighborhood (alphabetical). Filter chips: All / Walked / Saved. Navigation to `StairwayDetail` on row tap.
 
-Row component (`StairwayRow`): stairway name, step/height stats, closed badge (red strikethrough), photo count badge, walked indicator (checkmark or circle outline).
+Row component (`StairwayRow`): stairway name, height stat, closed badge (red strikethrough), photo count badge, walked indicator (checkmark or circle outline).
 
 ### Detail View (StairwayDetail.swift)
 
-Photo carousel (220px height, TabView with page style), stats row (steps / feet / photos), walk toggle card (green background if walked, gray if not), date picker for walk date, editable notes field (min 80px), 3-column photo grid. Toolbar camera menu: "Take Photo" / "Choose from Library".
+Photo carousel (220px height, TabView with page style), stats row (feet / photos), walk toggle card (green background if walked, gray if not), date picker for walk date, editable notes field (min 80px), 3-column photo grid. Toolbar camera menu: "Take Photo" / "Choose from Library".
 
 ### Progress Tab (ProgressTab.swift)
 
-Completion ring (160px, green stroke), 2x2 stats grid (height climbed / steps / neighborhoods / walk days), neighborhood progress bars sorted by completion, recent walks list (last 5). Sync status cloud icon in toolbar.
+Compact ring + summary (height climbed, neighborhood count), neighborhood card grid sorted by completion %, collapsible undiscovered section. Sync status cloud icon in toolbar.
 
 ### Toast (ToastView.swift)
 

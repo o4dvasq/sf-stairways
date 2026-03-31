@@ -7,7 +7,6 @@ final class WalkRecord {
     var walked: Bool = false
     var dateWalked: Date?
     var notes: String?
-    var stepCount: Int?
     var createdAt: Date = Date()
     var updatedAt: Date = Date()
     // Deprecated — per-stairway hard mode replaced by user-level setting.
@@ -30,14 +29,12 @@ final class WalkRecord {
         stairwayID: String,
         walked: Bool = false,
         dateWalked: Date? = nil,
-        notes: String? = nil,
-        stepCount: Int? = nil
+        notes: String? = nil
     ) {
         self.stairwayID = stairwayID
         self.walked = walked
         self.dateWalked = dateWalked
         self.notes = notes
-        self.stepCount = stepCount
         self.createdAt = Date()
         self.updatedAt = Date()
         self.photos = []

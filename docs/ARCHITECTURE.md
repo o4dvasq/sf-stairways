@@ -126,9 +126,9 @@ The following iOS source files are also compiled into the macOS target:
 
 | File | Purpose |
 |---|---|
-| `Views/StairwayBrowser.swift` | Three-column `NavigationSplitView`: sidebar with neighborhood walked/total counts + Tags section (per-tag counts, clickable filter); **fully sortable `Table`** (Name, Height, Steps, Photos, Date Walked — nil values sort to bottom in both directions via `nilLastSorted`; Elev. Gain removed); detail column; toolbar with Tags, Data Hygiene, Bulk Actions, and **Acknowledgements (info.circle)** buttons; `AcknowledgementsSheet` defined at bottom of file |
+| `Views/StairwayBrowser.swift` | Three-column `NavigationSplitView`: sidebar with neighborhood walked/total counts + Tags section (per-tag counts, clickable filter); **fully sortable `Table`** (Name, Height, Photos, Date Walked — nil values sort to bottom in both directions via `nilLastSorted`); detail column; toolbar with Tags, Data Hygiene, Bulk Actions, and **Acknowledgements (info.circle)** buttons; `AcknowledgementsSheet` defined at bottom of file |
 | `Views/TagManagerSheet.swift` | Full tag CRUD: preset tags (read-only list with assignment counts); custom tags (inline rename, delete with cascade confirmation, assignment counts); new-tag creation with slug ID generation and uniqueness validation |
-| `Views/StairwayDetailPanel.swift` | Catalog vs. walk data comparison grid; editable curator overrides (step count, height, description) with Save; notes → promote to curator description; tag add/remove via `Menu` with "Create & Assign…" inline option; local photo grid (NSImage from Data) with per-photo delete confirm; drag-drop + NSOpenPanel photo import |
+| `Views/StairwayDetailPanel.swift` | Catalog vs. walk data comparison grid; editable curator overrides (height, description) with Save; notes → promote to curator description; tag add/remove via `Menu` with "Create & Assign…" inline option; local photo grid (NSImage from Data) with per-photo delete confirm; drag-drop + NSOpenPanel photo import |
 | `Views/DataHygieneView.swift` | Two-column issue browser: sidebar with issue type filter + counts, `Table` of flagged stairways; detects: missing height, missing coordinates, promotion candidates (notes without curator description), proximity-unverified walks |
 | `Views/BulkOperationsSheet.swift` | Bulk tag assign (with "Create new tag…" inline option); **Remove Tag from All Selected** section (picker shows only tags on selected stairways); bulk mark walked with `DatePicker`; CSV export via `NSSavePanel` (name, neighborhood, height, walked, date walked) |
 
@@ -146,7 +146,7 @@ CloudKit ──► SwiftData (same container as iOS) ──► @Query in Stairwa
                                                BulkOperationsSheet (write)
 ```
 
-No Supabase, no HealthKit on macOS. Legacy walk data fields (`stepCount`, `elevationGain`) from past active walks are displayed in the detail panel under "Walk Data (legacy)" for reference but are no longer actively populated.
+No Supabase, no HealthKit on macOS. Legacy walk data field (`elevationGain`) from past active walks is displayed in the detail panel under "Walk Data (legacy)" for reference but is no longer actively populated.
 
 ---
 
@@ -168,7 +168,7 @@ Source at `ios/SFStairwaysAdmin/`. Separate iOS target in `SFStairways.xcodeproj
 |---|---|
 | `SFStairwaysAdminApp.swift` | App entry point; same schema + CloudKit setup as iOS and macOS (all six SwiftData models); falls back to local storage on CloudKit failure |
 | `Views/AdminBrowser.swift` | Root: searchable stairway list; filter chips (All/Walked/Unwalked/Has Override/Has Issues); sort menu (Name/Neighborhood/Date Walked); row shows walked icon, override indicator (pencil), tag count badge; toolbar: Tag Manager + Removed Stairways buttons |
-| `Views/AdminDetailView.swift` | Push-navigation detail: catalog data (read-only), editable override fields (step count, height ft, curator description) with Save/Cancel, tag chips with X-to-remove + Add Tag (picker + "Create Tag…" inline), "Remove Stairway" destructive action with optional reason field |
+| `Views/AdminDetailView.swift` | Push-navigation detail: catalog data (read-only), editable override fields (height ft, curator description) with Save/Cancel, tag chips with X-to-remove + Add Tag (picker + "Create Tag…" inline), "Remove Stairway" destructive action with optional reason field |
 | `Views/AdminTagManager.swift` | Modal: preset tags (read-only, counts); custom tags (inline rename, delete with cascade count confirmation, create new) |
 | `Views/RemovedStairwaysView.swift` | Modal: list of StairwayDeletion records (name, date, reason); swipe to restore (deletes the record, stairway reappears everywhere) |
 
@@ -209,9 +209,9 @@ Source at `ios/SFStairways/`. iOS is the primary user-facing platform. Web app d
 
 | Model | Key fields |
 |---|---|
-| `WalkRecord` | `stairwayID`, `walked`, `dateWalked`, `notes`, `stepCount`, `photos: [WalkPhoto]?`, `hardMode: Bool`, `proximityVerified: Bool?`; legacy fields retained for CloudKit schema compatibility: `elevationGain`, `walkStartTime`, `walkEndTime` (no longer populated or displayed in iOS) |
+| `WalkRecord` | `stairwayID`, `walked`, `dateWalked`, `notes`, `photos: [WalkPhoto]?`, `hardMode: Bool`, `proximityVerified: Bool?`; legacy fields retained for CloudKit schema compatibility: `elevationGain`, `walkStartTime`, `walkEndTime` (no longer populated or displayed in iOS) |
 | `WalkPhoto` | `imageData` (externalStorage), `thumbnailData` (externalStorage), `caption`, `walkRecord` |
-| `StairwayOverride` | `stairwayID`, `verifiedStepCount: Int?`, `verifiedHeightFt: Double?`, `stairwayDescription: String?`, `createdAt`, `updatedAt` |
+| `StairwayOverride` | `stairwayID`, `verifiedHeightFt: Double?`, `stairwayDescription: String?`, `createdAt`, `updatedAt` |
 | `StairwayTag` | `id` (slug), `name`, `isPreset: Bool`, `createdAt` |
 | `TagAssignment` | `stairwayID`, `tagID`, `assignedAt` — many-to-many join; independent of `WalkRecord` |
 | `StairwayDeletion` | `stairwayID` (@Attribute(.unique)), `deletedAt`, `reason: String?` — inserted when a stairway is hidden/removed from the catalog; syncs via CloudKit; all targets (iOS, macOS, admin) filter stairways against this table via `StairwayStore.applyDeletions(_:)`; delete the record to restore |
@@ -231,7 +231,7 @@ Every stairway exists in one of three states, derived from `WalkRecord`:
 
 #### StairwayOverride Fallback Chain
 
-For any stat display (stair count, height): use `StairwayOverride` value if non-nil → else catalog value (`Stairway.heightFt`) → else nothing. The `StairwayStore` provides `resolvedStepCount(for:override:)` and `resolvedHeightFt(for:override:)` helpers. Views that display stats query `StairwayOverride` records and look up by `stairwayID`. Verified values render with a `checkmark.seal.fill` badge in `forestGreen`.
+For height display: use `StairwayOverride.verifiedHeightFt` if non-nil → else catalog value (`Stairway.heightFt`) → else nothing. The `StairwayStore` provides `resolvedHeightFt(for:override:)`. Views that display stats query `StairwayOverride` records and look up by `stairwayID`. Verified values render with a `checkmark.seal.fill` badge in `forestGreen`.
 
 ### Views
 
@@ -283,7 +283,7 @@ SwiftData (StairwayOverride) ◄──► CloudKit ──► synced across devic
 SwiftData (StairwayTag)      ◄──► CloudKit ──► synced across devices
 SwiftData (TagAssignment)    ◄──► CloudKit ──► synced across devices
          │
-         └──► resolvedStepCount / resolvedHeightFt ──► stats display everywhere
+         └──► resolvedHeightFt ──► stats display everywhere
 
 tags_preset.json ──► SeedDataService.seedTagsIfNeeded ──► StairwayTag (preset records, once)
 

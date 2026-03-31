@@ -100,8 +100,7 @@ struct MapTab: View {
             .overlay(alignment: .bottomTrailing) {
                 ProgressCard(
                     walkedCount: walkedCount,
-                    totalHeightFt: totalHeightFt,
-                    totalSteps: totalSteps
+                    totalHeightFt: totalHeightFt
                 )
                 .padding(.trailing, 12)
                 .padding(.bottom, 24)
@@ -321,10 +320,6 @@ struct MapTab: View {
         overrides.first { $0.stairwayID == stairway.id }
     }
 
-    private var totalSteps: Int {
-        walkRecords.filter(\.walked).compactMap(\.stepCount).reduce(0, +)
-    }
-
     /// Stairways passing the state filter only (no tag filter applied).
     private var stateFilteredStairways: [Stairway] {
         let valid = store.stairways.filter { $0.hasValidCoordinate }
@@ -377,7 +372,6 @@ struct MapTab: View {
 struct ProgressCard: View {
     let walkedCount: Int
     let totalHeightFt: Double
-    let totalSteps: Int
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -395,9 +389,6 @@ struct ProgressCard: View {
                     .font(.caption)
                     .fontWeight(.semibold)
                 Text(totalHeightFt > 0 ? "\(Int(totalHeightFt).formatted()) ft" : "—")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-                Text(totalSteps > 0 ? "\(totalSteps.formatted()) steps" : "—")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }

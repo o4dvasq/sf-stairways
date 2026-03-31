@@ -30,13 +30,6 @@ struct StairwayRow: View {
                 }
 
                 HStack(spacing: 6) {
-                    // Stair count: verified overrides pedometer steps
-                    if let verifiedStairs = override?.verifiedStepCount {
-                        verifiedStatText("\(verifiedStairs) stairs")
-                    } else if let steps = walkRecord?.stepCount {
-                        Text("\(steps) steps")
-                    }
-
                     // Height: verified overrides catalog
                     if let verifiedHeight = override?.verifiedHeightFt {
                         verifiedStatText("\(Int(verifiedHeight)) ft")
