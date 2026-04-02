@@ -3,1018 +3,481 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SF Stairways</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <title>SF Stairways — Climb every stairway in San Francisco</title>
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="SF Stairways — Climb every stairway in San Francisco" />
+  <meta property="og:description" content="Track your progress across 382 public stairways in San Francisco. Free beta." />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=1200&q=80" />
+  <meta property="og:url" content="https://o4dvasq.github.io/sf-stairways/" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="SF Stairways — Climb every stairway in San Francisco" />
+  <meta name="twitter:description" content="Track your progress across 382 public stairways in San Francisco. Free beta." />
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=1200&q=80" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
+
   <style>
+    /* ── Reset ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    :root {
+      --orange: #E8602C;
+      --orange-dark: #cc5225;
+      --white: #ffffff;
+      --off-white: #f8f5f0;
+      --text: #1a1a1a;
+      --muted: #6b6560;
+    }
+
+    html { scroll-behavior: smooth; }
+
     body {
-      font-family: system-ui, -apple-system, sans-serif;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      background: var(--off-white);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      min-height: 100svh;
       display: flex;
       flex-direction: column;
-      height: 100dvh;
-      overflow: hidden;
-    }
-
-    /* ── Header ── */
-    #header {
-      background: #1e293b;
-      color: #fff;
-      padding: 10px 14px 8px;
-      flex-shrink: 0;
-    }
-
-    #header-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 6px;
-    }
-
-    #header h1 {
-      font-size: 1.1rem;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-    }
-
-    #settings-btn {
-      background: none;
-      border: 1px solid rgba(255,255,255,0.3);
-      color: #fff;
-      border-radius: 6px;
-      padding: 4px 10px;
-      font-size: 0.8rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    #settings-btn:hover { background: rgba(255,255,255,0.1); }
-
-    #stats-bar {
-      font-size: 0.8rem;
-      color: #94a3b8;
-      margin-bottom: 8px;
-      min-height: 1.2em;
-    }
-
-    #retry-btn {
-      display: none;
-      margin-left: 8px;
-      background: #ef4444;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      padding: 2px 8px;
-      font-size: 0.75rem;
-      cursor: pointer;
-    }
-
-    /* ── Toggle ── */
-    #toggle-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    #view-toggle {
-      display: flex;
-      border-radius: 20px;
-      overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.25);
-    }
-
-    .toggle-btn {
-      background: none;
-      border: none;
-      color: rgba(255,255,255,0.6);
-      padding: 5px 14px;
-      font-size: 0.8rem;
-      cursor: pointer;
-      transition: background 0.15s, color 0.15s;
-    }
-    .toggle-btn.active {
-      background: #3b82f6;
-      color: #fff;
-    }
-    .toggle-btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    #legend {
-      font-size: 0.75rem;
-      color: #94a3b8;
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-    .legend-dot {
-      width: 10px; height: 10px;
-      border-radius: 50%;
-      display: inline-block;
-      margin-right: 3px;
-    }
-    .legend-dot.walked  { background: #22c55e; border: 1.5px solid #16a34a; }
-    .legend-dot.target  { background: #ef4444; border: 1.5px solid #dc2626; }
-    .legend-dot.all     { background: #94a3b8; border: 1.5px solid #64748b; }
-
-    /* ── Map ── */
-    #map { flex: 1; }
-
-    /* ── Error Banner ── */
-    #error-banner {
-      display: none;
-      background: #7f1d1d;
-      color: #fecaca;
-      padding: 8px 14px;
-      font-size: 0.82rem;
-      text-align: center;
-    }
-
-    /* ── Toast ── */
-    #toast {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: #1e293b;
-      color: #fff;
-      padding: 8px 18px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s, transform 0.2s;
-      z-index: 10000;
-    }
-    #toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    /* ── Modals ── */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.5);
-      z-index: 9999;
       align-items: center;
       justify-content: center;
-      padding: 16px;
-    }
-    .modal-overlay.open { display: flex; }
+      text-align: center;
+      padding: 2rem 1.5rem 5rem;
 
-    .modal {
-      background: #fff;
-      border-radius: 12px;
-      padding: 20px;
-      width: 100%;
-      max-width: 420px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      background-image: url('https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=1920&q=80');
+      background-size: cover;
+      background-position: center;
     }
 
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-    }
-    .modal-header h2 { font-size: 1rem; font-weight: 700; color: #1e293b; }
-
-    .modal-close {
-      background: none;
-      border: none;
-      font-size: 1.2rem;
-      cursor: pointer;
-      color: #64748b;
-      padding: 2px 6px;
+    /* Dark overlay for text legibility */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.52) 0%,
+        rgba(0, 0, 0, 0.38) 60%,
+        rgba(0, 0, 0, 0.62) 100%
+      );
     }
 
-    .modal p { font-size: 0.85rem; color: #475569; margin-bottom: 12px; line-height: 1.5; }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 580px;
+    }
 
-    .modal-section-label {
+    .hero-eyebrow {
+      font-family: 'DM Sans', sans-serif;
       font-size: 0.75rem;
-      font-weight: 700;
-      color: #94a3b8;
+      font-weight: 500;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin: 14px 0 8px;
-      padding-top: 14px;
-      border-top: 1px solid #e2e8f0;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 1rem;
     }
 
-    .modal-field {
-      margin-bottom: 8px;
-    }
-    .modal-field label {
-      display: block;
-      font-size: 0.78rem;
-      color: #64748b;
-      margin-bottom: 3px;
-    }
-    .modal-field input {
-      width: 100%;
-      border: 1px solid #cbd5e1;
-      border-radius: 6px;
-      padding: 7px 10px;
-      font-size: 0.85rem;
+    .hero h1 {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(3rem, 10vw, 5.5rem);
+      font-weight: 400;
+      color: var(--white);
+      line-height: 1.05;
+      margin-bottom: 1rem;
     }
 
-    .token-row {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 8px;
-    }
-    .token-row input {
-      flex: 1;
-      border: 1px solid #cbd5e1;
-      border-radius: 6px;
-      padding: 7px 10px;
-      font-size: 0.85rem;
-      font-family: monospace;
-    }
-    .token-row button {
-      background: #f1f5f9;
-      border: 1px solid #cbd5e1;
-      border-radius: 6px;
-      padding: 7px 10px;
-      cursor: pointer;
-      font-size: 0.9rem;
-    }
-
-    .modal-note {
-      font-size: 0.75rem;
-      color: #94a3b8;
-      margin-bottom: 8px;
+    .hero-tagline {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-size: clamp(1.1rem, 3.5vw, 1.4rem);
+      color: rgba(255, 255, 255, 0.88);
+      margin-bottom: 2.5rem;
       line-height: 1.4;
     }
 
-    .modal-actions {
+    .btn-primary {
+      display: inline-block;
+      background: var(--orange);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      text-decoration: none;
+      padding: 0.9rem 2.2rem;
+      border-radius: 50px;
+      transition: background 0.18s ease, transform 0.12s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-primary:hover {
+      background: var(--orange-dark);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    /* Scroll indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+      color: rgba(255, 255, 255, 0.55);
+      animation: bob 2s ease-in-out infinite;
+    }
+
+    .scroll-indicator svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    @keyframes bob {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* ── Features ── */
+    .features {
+      background: var(--white);
+      padding: 5rem 1.5rem;
+    }
+
+    .features-inner {
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 1rem;
+    }
+
+    .features h2 {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(1.8rem, 5vw, 2.6rem);
+      font-weight: 400;
+      line-height: 1.2;
+      margin-bottom: 3rem;
+      color: var(--text);
+    }
+
+    .feature-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 1.6rem;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .feature-icon {
+      flex-shrink: 0;
+      width: 2rem;
+      height: 2rem;
+      background: var(--off-white);
+      border-radius: 8px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      justify-content: center;
+      margin-top: 0.1rem;
+    }
+
+    .feature-icon svg {
+      width: 16px;
+      height: 16px;
+      color: var(--orange);
+    }
+
+    .feature-text strong {
+      display: block;
+      font-weight: 500;
+      font-size: 0.97rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .feature-text span {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ── Story ── */
+    .story {
+      background: var(--off-white);
+      padding: 5rem 1.5rem;
+    }
+
+    .story-inner {
+      max-width: 580px;
+      margin: 0 auto;
+    }
+
+    .story h2 {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(1.8rem, 5vw, 2.4rem);
+      font-weight: 400;
+      line-height: 1.25;
+      margin-bottom: 1.5rem;
+      color: var(--text);
+    }
+
+    .story p {
+      font-size: 1rem;
+      line-height: 1.75;
+      color: var(--muted);
+      margin-bottom: 1.2rem;
+    }
+
+    .story p:last-child {
+      margin-bottom: 0;
+    }
+
+    .story blockquote {
+      border-left: 3px solid var(--orange);
+      padding-left: 1.2rem;
+      margin: 2rem 0;
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-size: 1.2rem;
+      line-height: 1.5;
+      color: var(--text);
+    }
+
+    /* ── CTA strip ── */
+    .cta-strip {
+      background: var(--orange);
+      padding: 4rem 1.5rem;
+      text-align: center;
+    }
+
+    .cta-strip h2 {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(1.6rem, 5vw, 2.2rem);
+      font-weight: 400;
+      color: var(--white);
+      margin-bottom: 1.5rem;
+      line-height: 1.3;
+    }
+
+    .btn-secondary {
+      display: inline-block;
+      background: var(--white);
+      color: var(--orange);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      text-decoration: none;
+      padding: 0.9rem 2.2rem;
+      border-radius: 50px;
+      transition: opacity 0.15s ease, transform 0.12s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-secondary:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--white);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      border-top: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
       flex-wrap: wrap;
-      margin-top: 16px;
-    }
-
-    .btn-primary {
-      background: #3b82f6;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      padding: 8px 18px;
       font-size: 0.85rem;
-      cursor: pointer;
-      font-weight: 600;
+      color: var(--muted);
     }
-    .btn-primary:hover { background: #2563eb; }
 
-    .modal-link {
-      font-size: 0.8rem;
-      color: #3b82f6;
+    .footer-inner a {
+      color: var(--muted);
       text-decoration: none;
     }
-    .modal-link:hover { text-decoration: underline; }
 
-    #settings-status { font-size: 0.82rem; margin-left: 4px; }
-
-    /* ── Popup styles ── */
-    .popup-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 2px; }
-    .popup-sub   { font-size: 0.8rem; color: #64748b; margin-bottom: 6px; }
-    .popup-meta  { font-size: 0.82rem; color: #475569; margin-bottom: 8px; }
-
-    .popup-photo {
-      display: block;
-      width: 100%;
-      max-width: 220px;
-      border-radius: 6px;
-      margin-bottom: 8px;
-      cursor: pointer;
-      object-fit: cover;
+    .footer-inner a:hover {
+      color: var(--orange);
     }
 
-    .popup-form  { margin-top: 8px; }
-    .popup-form label { display: block; font-size: 0.78rem; color: #64748b; margin-bottom: 2px; margin-top: 6px; }
-    .popup-form input[type=date],
-    .popup-form input[type=number],
-    .popup-form input[type=text] {
-      width: 100%;
-      border: 1px solid #cbd5e1;
-      border-radius: 5px;
-      padding: 5px 8px;
-      font-size: 0.82rem;
+    .footer-divider {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--muted);
+      opacity: 0.4;
     }
 
-    .popup-btns { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
-
-    .pop-btn {
-      flex: 1;
-      border: none;
-      border-radius: 5px;
-      padding: 6px 10px;
-      font-size: 0.8rem;
-      cursor: pointer;
-      font-weight: 600;
+    /* ── Responsive ── */
+    @media (min-width: 640px) {
+      .feature-list {
+        gap: 2rem;
+      }
     }
-    .pop-btn.primary   { background: #22c55e; color: #fff; }
-    .pop-btn.primary:hover { background: #16a34a; }
-    .pop-btn.secondary { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
-    .pop-btn.secondary:hover { background: #e2e8f0; }
-    .pop-btn.edit      { background: #3b82f6; color: #fff; flex: none; }
-    .pop-btn.edit:hover { background: #2563eb; }
-    .pop-btn.photo     { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; flex: none; }
-    .pop-btn.photo:hover { background: #e2e8f0; }
-    .pop-btn.add       { background: #3b82f6; color: #fff; }
-    .pop-btn.add:hover { background: #2563eb; }
-
-    .pop-saving { font-size: 0.78rem; color: #64748b; margin-top: 6px; }
-
-    .leaflet-popup-content { min-width: 210px; }
   </style>
 </head>
 <body>
 
-<div id="error-banner"></div>
-
-<div id="header">
-  <div id="header-top">
-    <h1>🪜 SF Stairways</h1>
-    <button id="settings-btn">⚙ Settings</button>
-  </div>
-  <div id="stats-bar">
-    Loading…
-    <button id="retry-btn">Retry</button>
-  </div>
-  <div id="toggle-row">
-    <div id="view-toggle">
-      <button class="toggle-btn active" id="btn-target">🎯 Target List</button>
-      <button class="toggle-btn" id="btn-all">🗺 Show All SF</button>
-    </div>
-    <div id="legend">
-      <span><span class="legend-dot walked"></span>walked</span>
-      <span><span class="legend-dot target"></span>target</span>
-      <span id="legend-all" style="display:none"><span class="legend-dot all"></span>all SF</span>
-    </div>
-  </div>
-</div>
-
-<div id="map"></div>
-<div id="toast"></div>
-<input type="file" id="photo-file-input" accept="image/*" capture="environment" style="display:none" />
-
-<!-- Settings Modal -->
-<div class="modal-overlay" id="settings-modal">
-  <div class="modal">
-    <div class="modal-header">
-      <h2>⚙ Settings</h2>
-      <button class="modal-close" id="settings-close">✕</button>
+  <!-- ── Hero ── -->
+  <section class="hero">
+    <div class="hero-content">
+      <p class="hero-eyebrow">iOS App · Free Beta</p>
+      <h1>SF Stairways</h1>
+      <p class="hero-tagline">Climb every stairway in San Francisco</p>
+      <a class="btn-primary" href="https://testflight.apple.com/join/PLACEHOLDER">
+        Join the Beta
+      </a>
     </div>
 
-    <!-- GitHub token -->
-    <p>GitHub Personal Access Token with repo write access.</p>
-    <div class="token-row">
-      <input type="password" id="token-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" />
-      <button id="token-eye" title="Show/hide token">👁</button>
+    <div class="scroll-indicator" aria-hidden="true">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="4 8 10 14 16 8" />
+      </svg>
     </div>
-    <p class="modal-note">
-      Token stored in your browser only. Never shared or sent anywhere except GitHub.<br>
-      <a class="modal-link" href="https://github.com/settings/tokens/new?description=sf-stairways&scopes=repo" target="_blank" rel="noopener">How to create a token ↗</a>
-    </p>
+  </section>
 
-    <!-- Cloudinary -->
-    <div class="modal-section-label">📷 Photo Storage (Cloudinary)</div>
-    <div class="modal-field">
-      <label>Cloud Name</label>
-      <input type="text" id="cloudinary-cloud-name" placeholder="dny5gc6yz" autocomplete="off" />
+  <!-- ── Features ── -->
+  <section class="features">
+    <div class="features-inner">
+      <p class="section-label">What's inside</p>
+      <h2>Everything you need to explore SF on foot</h2>
+      <ul class="feature-list">
+
+        <li class="feature-item">
+          <div class="feature-icon">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="8" cy="7" r="4" />
+              <path d="M8 1v2M8 11v2M1 7h2M11 7h2" />
+            </svg>
+          </div>
+          <div class="feature-text">
+            <strong>382 stairways across 68 neighborhoods</strong>
+            <span>Every public stairway in San Francisco, mapped and ready to explore.</span>
+          </div>
+        </li>
+
+        <li class="feature-item">
+          <div class="feature-icon">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 13s-5-4.5-5-7.5a5 5 0 0110 0C13 8.5 8 13 8 13z" />
+              <circle cx="8" cy="5.5" r="1.5" />
+            </svg>
+          </div>
+          <div class="feature-text">
+            <strong>Around Me mode</strong>
+            <span>Discover stairways nearby, sorted by distance. Great for a spontaneous walk.</span>
+          </div>
+        </li>
+
+        <li class="feature-item">
+          <div class="feature-icon">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="5" height="5" rx="1" />
+              <rect x="9" y="2" width="5" height="5" rx="1" />
+              <rect x="2" y="9" width="5" height="5" rx="1" />
+              <path d="M9 11.5h5M11.5 9v5" />
+            </svg>
+          </div>
+          <div class="feature-text">
+            <strong>Log walks, add photos, track progress</strong>
+            <span>Mark stairways as walked, attach photos, and watch your neighborhood map fill in.</span>
+          </div>
+        </li>
+
+        <li class="feature-item">
+          <div class="feature-icon">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 1a7 7 0 100 14A7 7 0 008 1z" />
+              <path d="M8 5v3l2 2" />
+            </svg>
+          </div>
+          <div class="feature-text">
+            <strong>Hard Mode <em style="font-style:normal;font-weight:400;color:var(--muted)">— coming soon</em></strong>
+            <span>Proximity-verified walks. You actually have to be there to log it.</span>
+          </div>
+        </li>
+
+        <li class="feature-item">
+          <div class="feature-icon">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="12" height="12" rx="2" />
+              <path d="M5 8h6M5 5h6M5 11h3" />
+            </svg>
+          </div>
+          <div class="feature-text">
+            <strong>Your data stays yours</strong>
+            <span>Syncs privately to iCloud. No account required. Nothing collected.</span>
+          </div>
+        </li>
+
+      </ul>
     </div>
-    <div class="modal-field">
-      <label>Upload Preset</label>
-      <input type="text" id="cloudinary-upload-preset" placeholder="Stairways" autocomplete="off" />
+  </section>
+
+  <!-- ── Story ── -->
+  <section class="story">
+    <div class="story-inner">
+      <p class="section-label">The story</p>
+      <h2>Built by a 40-year San Francisco resident</h2>
+      <p>
+        I wanted to track the stairways I'd walked — and discover the hundreds I hadn't. SF has over 350 public stairways tucked into its hills, each one a portal into a different neighborhood. Most people walk past them without knowing they exist.
+      </p>
+      <blockquote>
+        "It's like a passport for SF's hidden vertical streets."
+      </blockquote>
+      <p>
+        Every stairway is a photo opportunity, a neighborhood, a story. This app is the tool I wanted but couldn't find — so I built it.
+      </p>
     </div>
-    <p class="modal-note">
-      Free account at <a class="modal-link" href="https://cloudinary.com" target="_blank" rel="noopener">cloudinary.com</a>.
-      Create an unsigned upload preset in Settings → Upload → Upload Presets.
-    </p>
+  </section>
 
-    <div class="modal-actions">
-      <button class="btn-primary" id="save-settings-btn">Save Settings</button>
-      <span id="settings-status"></span>
+  <!-- ── CTA Strip ── -->
+  <section class="cta-strip">
+    <h2>Ready to start climbing?</h2>
+    <a class="btn-secondary" href="https://testflight.apple.com/join/PLACEHOLDER">
+      Join the Beta — It's Free
+    </a>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <div class="footer-inner">
+      <span>SF Stairways &copy; 2026</span>
+      <span class="footer-divider" aria-hidden="true"></span>
+      <a href="/privacy.html">Privacy Policy</a>
     </div>
-  </div>
-</div>
+  </footer>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script>
-// ── Config ───────────────────────────────────────────────────────────────────
-const CONFIG = {
-  githubOwner:            'o4dvasq',
-  githubRepo:             'sf-stairways',
-  dataPath:               'data/target_list.json',
-  branch:                 'main',
-  defaultCloudName:       'dny5gc6yz',
-  defaultUploadPreset:    'Stairways'
-};
-
-// ── State ────────────────────────────────────────────────────────────────────
-let targetList   = [];
-let allStairways = [];
-let pendingChanges = false;
-let showingAll   = false;
-
-// ── Map init ─────────────────────────────────────────────────────────────────
-const map = L.map('map');
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-  maxZoom: 19
-}).addTo(map);
-
-map.createPane('walkedPane');
-map.createPane('targetPane');
-map.createPane('cityPane');
-map.getPane('walkedPane').style.zIndex = 650;
-map.getPane('targetPane').style.zIndex = 640;
-map.getPane('cityPane').style.zIndex   = 630;
-
-const targetMarkers = L.layerGroup().addTo(map);
-const cityLayer     = L.layerGroup();
-
-// ── Utility ──────────────────────────────────────────────────────────────────
-function today() {
-  return new Date().toISOString().split('T')[0];
-}
-
-function formatDate(iso) {
-  if (!iso) return '';
-  const d = new Date(iso + 'T00:00:00');
-  return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-}
-
-function showError(msg) {
-  const el = document.getElementById('error-banner');
-  el.textContent = msg;
-  el.style.display = msg ? 'block' : 'none';
-}
-
-let toastTimer = null;
-function showToast(msg) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
-}
-
-// ── Cloudinary helpers ────────────────────────────────────────────────────────
-function getCloudinaryConfig() {
-  return {
-    cloudName: localStorage.getItem('cloudinary_cloud_name') || CONFIG.defaultCloudName,
-    preset:    localStorage.getItem('cloudinary_upload_preset') || CONFIG.defaultUploadPreset
-  };
-}
-
-async function uploadToCloudinary(file) {
-  const { cloudName, preset } = getCloudinaryConfig();
-
-  if (file.size > 10 * 1024 * 1024) {
-    throw Object.assign(new Error('too-large'), { code: 'too-large' });
-  }
-
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('upload_preset', preset);
-  formData.append('folder', 'sf-stairways');
-
-  let res;
-  try {
-    res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-      method: 'POST',
-      body: formData
-    });
-  } catch {
-    throw Object.assign(new Error('no-connection'), { code: 'no-connection' });
-  }
-
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    throw Object.assign(new Error(body.error?.message || `Upload failed: ${res.status}`), { code: 'upload-failed' });
-  }
-
-  const data = await res.json();
-  return data.secure_url;
-}
-
-// ── Stats bar ─────────────────────────────────────────────────────────────────
-function renderStats() {
-  const walked     = targetList.filter(s => s.walked);
-  const stepsKnown = walked.filter(s => s.step_count != null);
-  const totalSteps = stepsKnown.reduce((sum, s) => sum + s.step_count, 0);
-
-  let text;
-  if (walked.length === 0) {
-    text = `0 of ${targetList.length} on target list  ·  Start climbing!`;
-  } else if (stepsKnown.length === 0) {
-    text = `${walked.length} of ${targetList.length} target walked`;
-  } else {
-    text = `${walked.length} of ${targetList.length} target walked  ·  ${totalSteps.toLocaleString()} steps climbed`;
-  }
-
-  document.getElementById('stats-bar').childNodes[0].textContent = text;
-}
-
-// ── GitHub API ────────────────────────────────────────────────────────────────
-async function saveTargetList(updatedList) {
-  const token = localStorage.getItem('gh_token');
-  if (!token) {
-    openSettingsModal(true);
-    return false;
-  }
-
-  const baseUrl = `https://api.github.com/repos/${CONFIG.githubOwner}/${CONFIG.githubRepo}/contents/${CONFIG.dataPath}`;
-  const headers = { Authorization: `token ${token}`, 'Content-Type': 'application/json' };
-
-  try {
-    const getRes = await fetch(baseUrl, { headers });
-    if (getRes.status === 401) {
-      localStorage.removeItem('gh_token');
-      openSettingsModal(true, 'Token rejected — please re-enter');
-      return false;
-    }
-    if (!getRes.ok) throw new Error(`GET failed: ${getRes.status}`);
-    const { sha } = await getRes.json();
-
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(updatedList, null, 2))));
-    const putRes = await fetch(baseUrl, {
-      method: 'PUT',
-      headers,
-      body: JSON.stringify({
-        message: `Log walk: ${today()}`,
-        content,
-        sha,
-        branch: CONFIG.branch
-      })
-    });
-
-    if (putRes.status === 401) {
-      localStorage.removeItem('gh_token');
-      openSettingsModal(true, 'Token rejected — please re-enter');
-      return false;
-    }
-    if (putRes.status === 409) {
-      showError('Someone else updated the file — please reload and try again');
-      return false;
-    }
-    if (!putRes.ok) throw new Error(`PUT failed: ${putRes.status}`);
-
-    pendingChanges = false;
-    document.getElementById('retry-btn').style.display = 'none';
-    showError('');
-    return true;
-
-  } catch (err) {
-    console.error('GitHub save error:', err);
-    pendingChanges = true;
-    document.getElementById('retry-btn').style.display = 'inline-block';
-    showError("Couldn't reach GitHub — change saved locally, retry when online");
-    return false;
-  }
-}
-
-// ── Cloudinary thumbnail URL ──────────────────────────────────────────────────
-// Inserts Cloudinary transform for a ~400px-wide thumbnail, leaves full URL for the link.
-function thumbUrl(url) {
-  if (!url) return null;
-  // Insert transform before /upload/ in the URL
-  return url.replace('/upload/', '/upload/c_fill,w_400,h_300/');
-}
-
-// ── Markers ──────────────────────────────────────────────────────────────────
-function makeTargetMarker(item) {
-  if (item.lat == null || item.lng == null) return null;
-
-  const marker = L.circleMarker([item.lat, item.lng], {
-    radius:      10,
-    fillColor:   item.walked ? '#22c55e' : '#ef4444',
-    color:       item.walked ? '#16a34a' : '#dc2626',
-    weight:      2,
-    fillOpacity: 0.9,
-    pane:        item.walked ? 'walkedPane' : 'targetPane'
-  });
-
-  marker.bindTooltip(item.name);
-  marker.bindPopup(() => buildTargetPopup(item, marker), { maxWidth: 280, minWidth: 210 });
-  return marker;
-}
-
-function buildTargetPopup(item, marker) {
-  const div = document.createElement('div');
-
-  if (item.walked) {
-    const photoHtml = item.photo_url
-      ? `<a href="${item.photo_url}" target="_blank" rel="noopener">
-           <img class="popup-photo" src="${thumbUrl(item.photo_url)}" alt="Photo of ${item.name}" />
-         </a>`
-      : '';
-
-    const photoLabel = item.photo_url ? '📷 Change Photo' : '📷 Add Photo';
-
-    div.innerHTML = `
-      <div class="popup-title">🟢 ${item.name}</div>
-      <div class="popup-sub">${item.neighborhood}</div>
-      <div class="popup-meta">
-        ✅ Walked: ${formatDate(item.date_walked)}<br>
-        ${item.step_count != null ? item.step_count + ' steps' : ''}
-      </div>
-      ${photoHtml}
-      <div class="popup-btns">
-        <button class="pop-btn edit" id="pp-edit-btn">✏️ Edit</button>
-        <button class="pop-btn photo" id="pp-photo-btn">${photoLabel}</button>
-      </div>
-      <div class="pop-saving" id="pp-photo-status"></div>
-      <div id="pp-form"></div>
-    `;
-
-    setTimeout(() => {
-      div.querySelector('#pp-edit-btn')
-         .addEventListener('click', () => showWalkForm(div, item, marker));
-      div.querySelector('#pp-photo-btn')
-         .addEventListener('click', () => triggerPhotoUpload(item, marker, div.querySelector('#pp-photo-status')));
-    }, 0);
-
-  } else {
-    div.innerHTML = `
-      <div class="popup-title">🔴 ${item.name}</div>
-      <div class="popup-sub">${item.neighborhood} · On your target list</div>
-      <div class="popup-meta">
-        ${item.step_count != null ? item.step_count + ' steps<br>' : ''}
-        ${item.notes ? item.notes : ''}
-      </div>
-      <div class="popup-btns">
-        <button class="pop-btn primary" id="pp-walk-btn">✅ Mark as Walked</button>
-      </div>
-      <div id="pp-form"></div>
-    `;
-    setTimeout(() => {
-      div.querySelector('#pp-walk-btn')
-         .addEventListener('click', () => showWalkForm(div, item, marker));
-    }, 0);
-  }
-
-  return div;
-}
-
-function showWalkForm(container, item, marker) {
-  const formDiv = container.querySelector('#pp-form');
-  const btnsDiv = container.querySelector('.popup-btns');
-  const statusEl = container.querySelector('#pp-photo-status');
-  if (btnsDiv) btnsDiv.style.display = 'none';
-  if (statusEl) statusEl.style.display = 'none';
-
-  formDiv.innerHTML = `
-    <div class="popup-form">
-      <label>Date</label>
-      <input type="date" id="pp-date" value="${item.date_walked || today()}" />
-      <label>Steps</label>
-      <input type="number" id="pp-steps" value="${item.step_count ?? ''}" placeholder="optional" min="0" />
-      <div class="popup-btns">
-        <button class="pop-btn primary" id="pp-save">Save</button>
-        <button class="pop-btn secondary" id="pp-cancel">Cancel</button>
-      </div>
-      <div class="pop-saving" id="pp-saving"></div>
-    </div>
-  `;
-
-  formDiv.querySelector('#pp-cancel').addEventListener('click', () => marker.closePopup());
-
-  formDiv.querySelector('#pp-save').addEventListener('click', async () => {
-    const date   = formDiv.querySelector('#pp-date').value;
-    const steps  = formDiv.querySelector('#pp-steps').value;
-    const saving = formDiv.querySelector('#pp-saving');
-
-    saving.textContent = 'Saving…';
-    formDiv.querySelector('#pp-save').disabled = true;
-
-    item.walked      = true;
-    item.date_walked = date || today();
-    item.step_count  = steps ? parseInt(steps, 10) : item.step_count;
-
-    const ok = await saveTargetList(targetList);
-    if (ok || pendingChanges) {
-      renderStats();
-      refreshTargetMarkers();
-      marker.closePopup();
-    } else {
-      saving.textContent = 'Save failed — check settings';
-      formDiv.querySelector('#pp-save').disabled = false;
-      item.walked      = false;
-      item.date_walked = null;
-    }
-  });
-}
-
-// ── Photo upload ──────────────────────────────────────────────────────────────
-function triggerPhotoUpload(item, marker, statusEl) {
-  const { cloudName, preset } = getCloudinaryConfig();
-  if (!cloudName || !preset) {
-    statusEl.textContent = 'Set up Cloudinary in ⚙ Settings first.';
-    return;
-  }
-
-  const fileInput = document.getElementById('photo-file-input');
-  fileInput.value = '';
-
-  const handleFile = async (e) => {
-    fileInput.removeEventListener('change', handleFile);
-    const file = e.target.files[0];
-    if (!file) return;
-
-    statusEl.textContent = 'Uploading…';
-
-    try {
-      const url = await uploadToCloudinary(file);
-      item.photo_url = url;
-      await saveTargetList(targetList);
-      showToast('Photo saved ✅');
-      // Reopen popup to show thumbnail
-      marker.closePopup();
-      setTimeout(() => marker.openPopup(), 50);
-    } catch (err) {
-      if (err.code === 'too-large') {
-        statusEl.textContent = 'Photo is too large. Please use a compressed image.';
-      } else if (err.code === 'no-connection') {
-        statusEl.textContent = 'No connection — try again when online';
-      } else {
-        statusEl.textContent = 'Photo upload failed — check your Cloudinary settings';
-      }
-    }
-  };
-
-  fileInput.addEventListener('change', handleFile);
-  fileInput.click();
-}
-
-// ── City markers ──────────────────────────────────────────────────────────────
-function makeCityMarker(stairway) {
-  if (stairway.lat == null || stairway.lng == null) return null;
-
-  const marker = L.circleMarker([stairway.lat, stairway.lng], {
-    radius:      6,
-    fillColor:   '#94a3b8',
-    color:       '#64748b',
-    weight:      1.5,
-    fillOpacity: 0.75,
-    pane:        'cityPane'
-  });
-
-  marker.bindTooltip(stairway.name);
-  marker.bindPopup(() => buildCityPopup(stairway, marker), { maxWidth: 280, minWidth: 210 });
-  return marker;
-}
-
-function buildCityPopup(stairway, marker) {
-  const div = document.createElement('div');
-  const heightStr = stairway.height_ft != null ? `↕ ${stairway.height_ft} ft` : '';
-  const subParts  = [stairway.neighborhood, heightStr].filter(Boolean);
-
-  div.innerHTML = `
-    <div class="popup-title">${stairway.name}</div>
-    <div class="popup-sub">${subParts.join(' · ')}</div>
-    <div class="popup-btns">
-      <button class="pop-btn add" id="pp-add-btn">+ Add to Target List</button>
-      ${stairway.source_url ? `<a href="${stairway.source_url}" target="_blank" rel="noopener" style="font-size:0.78rem;color:#3b82f6;align-self:center;margin-left:4px;">sfstairways.com ↗</a>` : ''}
-    </div>
-    <div id="pp-form"></div>
-  `;
-
-  setTimeout(() => {
-    div.querySelector('#pp-add-btn')
-       .addEventListener('click', () => showAddForm(div, stairway, marker));
-  }, 0);
-
-  return div;
-}
-
-function showAddForm(container, stairway, marker) {
-  const formDiv = container.querySelector('#pp-form');
-  const btnsDiv = container.querySelector('.popup-btns');
-  if (btnsDiv) btnsDiv.style.display = 'none';
-
-  formDiv.innerHTML = `
-    <div class="popup-form">
-      <label>Steps (if known)</label>
-      <input type="number" id="pp-steps" placeholder="" min="0" />
-      <label>Notes</label>
-      <input type="text" id="pp-notes" placeholder="" />
-      <div class="popup-btns">
-        <button class="pop-btn add" id="pp-add">Add</button>
-        <button class="pop-btn secondary" id="pp-cancel">Cancel</button>
-      </div>
-      <div class="pop-saving" id="pp-saving"></div>
-    </div>
-  `;
-
-  formDiv.querySelector('#pp-cancel').addEventListener('click', () => marker.closePopup());
-
-  formDiv.querySelector('#pp-add').addEventListener('click', async () => {
-    const steps  = formDiv.querySelector('#pp-steps').value;
-    const notes  = formDiv.querySelector('#pp-notes').value.trim();
-    const saving = formDiv.querySelector('#pp-saving');
-
-    saving.textContent = 'Saving…';
-    formDiv.querySelector('#pp-add').disabled = true;
-
-    const newItem = {
-      id:           stairway.id,
-      name:         stairway.name,
-      neighborhood: stairway.neighborhood || '',
-      lat:          stairway.lat,
-      lng:          stairway.lng,
-      step_count:   steps ? parseInt(steps, 10) : null,
-      walked:       false,
-      date_walked:  null,
-      photo_url:    null,
-      notes:        notes || null
-    };
-
-    targetList.push(newItem);
-    const ok = await saveTargetList(targetList);
-    if (ok || pendingChanges) {
-      renderStats();
-      addTargetMarker(newItem);
-      marker.closePopup();
-    } else {
-      saving.textContent = 'Save failed — check settings';
-      formDiv.querySelector('#pp-add').disabled = false;
-      targetList.pop();
-    }
-  });
-}
-
-// ── Render layers ─────────────────────────────────────────────────────────────
-function refreshTargetMarkers() {
-  targetMarkers.clearLayers();
-  for (const item of targetList) {
-    const m = makeTargetMarker(item);
-    if (m) targetMarkers.addLayer(m);
-  }
-}
-
-function addTargetMarker(item) {
-  const m = makeTargetMarker(item);
-  if (m) targetMarkers.addLayer(m);
-}
-
-function renderCityLayer() {
-  cityLayer.clearLayers();
-  const targetIds = new Set(targetList.map(t => t.id));
-  for (const s of allStairways) {
-    if (s.closed) continue;
-    if (targetIds.has(s.id)) continue;
-    const m = makeCityMarker(s);
-    if (m) cityLayer.addLayer(m);
-  }
-}
-
-// ── Toggle ────────────────────────────────────────────────────────────────────
-document.getElementById('btn-target').addEventListener('click', () => {
-  showingAll = false;
-  document.getElementById('btn-target').classList.add('active');
-  document.getElementById('btn-all').classList.remove('active');
-  map.removeLayer(cityLayer);
-  document.getElementById('legend-all').style.display = 'none';
-});
-
-document.getElementById('btn-all').addEventListener('click', () => {
-  showingAll = true;
-  document.getElementById('btn-all').classList.add('active');
-  document.getElementById('btn-target').classList.remove('active');
-  renderCityLayer();
-  cityLayer.addTo(map);
-  document.getElementById('legend-all').style.display = '';
-});
-
-// ── Retry ─────────────────────────────────────────────────────────────────────
-document.getElementById('retry-btn').addEventListener('click', async () => {
-  const ok = await saveTargetList(targetList);
-  if (ok) showError('');
-});
-
-// ── Settings Modal ────────────────────────────────────────────────────────────
-function openSettingsModal(auto = false, message = null) {
-  document.getElementById('settings-modal').classList.add('open');
-
-  // GitHub token
-  const stored = localStorage.getItem('gh_token');
-  if (stored) document.getElementById('token-input').value = stored;
-
-  // Cloudinary — use stored value, or fall back to hardcoded defaults
-  const cloudName = localStorage.getItem('cloudinary_cloud_name') || CONFIG.defaultCloudName;
-  const preset    = localStorage.getItem('cloudinary_upload_preset') || CONFIG.defaultUploadPreset;
-  document.getElementById('cloudinary-cloud-name').value    = cloudName;
-  document.getElementById('cloudinary-upload-preset').value = preset;
-
-  const status = document.getElementById('settings-status');
-  status.textContent = message || '';
-  status.style.color = message ? '#ef4444' : '';
-}
-
-document.getElementById('settings-btn').addEventListener('click', () => openSettingsModal());
-
-document.getElementById('settings-close').addEventListener('click', () => {
-  document.getElementById('settings-modal').classList.remove('open');
-});
-
-document.getElementById('settings-modal').addEventListener('click', (e) => {
-  if (e.target === document.getElementById('settings-modal')) {
-    document.getElementById('settings-modal').classList.remove('open');
-  }
-});
-
-document.getElementById('token-eye').addEventListener('click', () => {
-  const input = document.getElementById('token-input');
-  input.type = input.type === 'password' ? 'text' : 'password';
-});
-
-document.getElementById('save-settings-btn').addEventListener('click', async () => {
-  const token     = document.getElementById('token-input').value.trim();
-  const cloudName = document.getElementById('cloudinary-cloud-name').value.trim();
-  const preset    = document.getElementById('cloudinary-upload-preset').value.trim();
-  const status    = document.getElementById('settings-status');
-
-  // Save Cloudinary settings immediately (no validation needed — unsigned)
-  if (cloudName) localStorage.setItem('cloudinary_cloud_name', cloudName);
-  if (preset)    localStorage.setItem('cloudinary_upload_preset', preset);
-
-  // Validate and save GitHub token
-  if (!token) {
-    status.textContent = '❌ Please enter a GitHub token'; status.style.color = '#ef4444'; return;
-  }
-
-  status.textContent = 'Validating…'; status.style.color = '#64748b';
-
-  try {
-    const res = await fetch(
-      `https://api.github.com/repos/${CONFIG.githubOwner}/${CONFIG.githubRepo}`,
-      { headers: { Authorization: `token ${token}` } }
-    );
-    if (res.status === 401) {
-      status.textContent = '❌ Invalid token'; status.style.color = '#ef4444'; return;
-    }
-    localStorage.setItem('gh_token', token);
-    status.textContent = '✅ Settings saved'; status.style.color = '#16a34a';
-    setTimeout(() => document.getElementById('settings-modal').classList.remove('open'), 800);
-  } catch {
-    localStorage.setItem('gh_token', token);
-    status.textContent = '⚠️ Network error — settings saved anyway'; status.style.color = '#d97706';
-    setTimeout(() => document.getElementById('settings-modal').classList.remove('open'), 1200);
-  }
-});
-
-// ── Bootstrap ─────────────────────────────────────────────────────────────────
-async function init() {
-  const [targetResult, cityResult] = await Promise.allSettled([
-    fetch('./data/target_list.json').then(r => { if (!r.ok) throw new Error(); return r.json(); }),
-    fetch('./data/all_stairways.json').then(r => { if (!r.ok) throw new Error(); return r.json(); })
-  ]);
-
-  if (targetResult.status === 'rejected') {
-    document.getElementById('stats-bar').childNodes[0].textContent = 'Failed to load target list.';
-    const banner = document.getElementById('error-banner');
-    banner.textContent = 'Could not load target_list.json — map unavailable';
-    banner.style.display = 'block';
-    return;
-  }
-
-  targetList = targetResult.value;
-  // Migrate any legacy entries that lack photo_url
-  for (const item of targetList) {
-    if (!('photo_url' in item)) item.photo_url = null;
-  }
-
-  if (cityResult.status === 'rejected' || cityResult.value.length === 0) {
-    const allBtn = document.getElementById('btn-all');
-    allBtn.disabled = true;
-    allBtn.title = 'Run scripts/scrape_stairways.py to generate city data';
-    allStairways = [];
-  } else {
-    allStairways = cityResult.value;
-  }
-
-  renderStats();
-  refreshTargetMarkers();
-
-  const validTargets = targetList.filter(t => t.lat != null && t.lng != null);
-  if (validTargets.length > 0) {
-    map.fitBounds(L.latLngBounds(validTargets.map(t => [t.lat, t.lng])), { padding: [30, 30] });
-  } else {
-    map.setView([37.7749, -122.4194], 13);
-  }
-}
-
-init();
-</script>
 </body>
 </html>

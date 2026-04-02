@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SF Stairways</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    /* ── Header ── */
+    #header {
+      background: #1e293b;
+      color: #fff;
+      padding: 10px 14px 8px;
+      flex-shrink: 0;
+    }
+
+    #header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    #header h1 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    #settings-btn {
+      background: none;
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff;
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    #settings-btn:hover { background: rgba(255,255,255,0.1); }
+
+    #stats-bar {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      margin-bottom: 8px;
+      min-height: 1.2em;
+    }
+
+    #retry-btn {
+      display: none;
+      margin-left: 8px;
+      background: #ef4444;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+
+    /* ── Toggle ── */
+    #toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    #view-toggle {
+      display: flex;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+
+    .toggle-btn {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.6);
+      padding: 5px 14px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .toggle-btn.active {
+      background: #3b82f6;
+      color: #fff;
+    }
+    .toggle-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    #legend {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .legend-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 3px;
+    }
+    .legend-dot.walked  { background: #22c55e; border: 1.5px solid #16a34a; }
+    .legend-dot.target  { background: #ef4444; border: 1.5px solid #dc2626; }
+    .legend-dot.all     { background: #94a3b8; border: 1.5px solid #64748b; }
+
+    /* ── Map ── */
+    #map { flex: 1; }
+
+    /* ── Error Banner ── */
+    #error-banner {
+      display: none;
+      background: #7f1d1d;
+      color: #fecaca;
+      padding: 8px 14px;
+      font-size: 0.82rem;
+      text-align: center;
+    }
+
+    /* ── Toast ── */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #1e293b;
+      color: #fff;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s;
+      z-index: 10000;
+    }
+    #toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ── Modals ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .modal-header h2 { font-size: 1rem; font-weight: 700; color: #1e293b; }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: #64748b;
+      padding: 2px 6px;
+    }
+
+    .modal p { font-size: 0.85rem; color: #475569; margin-bottom: 12px; line-height: 1.5; }
+
+    .modal-section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 14px 0 8px;
+      padding-top: 14px;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .modal-field {
+      margin-bottom: 8px;
+    }
+    .modal-field label {
+      display: block;
+      font-size: 0.78rem;
+      color: #64748b;
+      margin-bottom: 3px;
+    }
+    .modal-field input {
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 7px 10px;
+      font-size: 0.85rem;
+    }
+
+    .token-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .token-row input {
+      flex: 1;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 7px 10px;
+      font-size: 0.85rem;
+      font-family: monospace;
+    }
+    .token-row button {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 7px 10px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .modal-note {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .modal-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .btn-primary {
+      background: #3b82f6;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 18px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn-primary:hover { background: #2563eb; }
+
+    .modal-link {
+      font-size: 0.8rem;
+      color: #3b82f6;
+      text-decoration: none;
+    }
+    .modal-link:hover { text-decoration: underline; }
+
+    #settings-status { font-size: 0.82rem; margin-left: 4px; }
+
+    /* ── Popup styles ── */
+    .popup-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 2px; }
+    .popup-sub   { font-size: 0.8rem; color: #64748b; margin-bottom: 6px; }
+    .popup-meta  { font-size: 0.82rem; color: #475569; margin-bottom: 8px; }
+
+    .popup-photo {
+      display: block;
+      width: 100%;
+      max-width: 220px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      object-fit: cover;
+    }
+
+    .popup-form  { margin-top: 8px; }
+    .popup-form label { display: block; font-size: 0.78rem; color: #64748b; margin-bottom: 2px; margin-top: 6px; }
+    .popup-form input[type=date],
+    .popup-form input[type=number],
+    .popup-form input[type=text] {
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      padding: 5px 8px;
+      font-size: 0.82rem;
+    }
+
+    .popup-btns { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+
+    .pop-btn {
+      flex: 1;
+      border: none;
+      border-radius: 5px;
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .pop-btn.primary   { background: #22c55e; color: #fff; }
+    .pop-btn.primary:hover { background: #16a34a; }
+    .pop-btn.secondary { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+    .pop-btn.secondary:hover { background: #e2e8f0; }
+    .pop-btn.edit      { background: #3b82f6; color: #fff; flex: none; }
+    .pop-btn.edit:hover { background: #2563eb; }
+    .pop-btn.photo     { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; flex: none; }
+    .pop-btn.photo:hover { background: #e2e8f0; }
+    .pop-btn.add       { background: #3b82f6; color: #fff; }
+    .pop-btn.add:hover { background: #2563eb; }
+
+    .pop-saving { font-size: 0.78rem; color: #64748b; margin-top: 6px; }
+
+    .leaflet-popup-content { min-width: 210px; }
+  </style>
+</head>
+<body>
+
+<div id="error-banner"></div>
+
+<div id="header">
+  <div id="header-top">
+    <h1>🪜 SF Stairways</h1>
+    <button id="settings-btn">⚙ Settings</button>
+  </div>
+  <div id="stats-bar">
+    Loading…
+    <button id="retry-btn">Retry</button>
+  </div>
+  <div id="toggle-row">
+    <div id="view-toggle">
+      <button class="toggle-btn active" id="btn-target">🎯 Target List</button>
+      <button class="toggle-btn" id="btn-all">🗺 Show All SF</button>
+    </div>
+    <div id="legend">
+      <span><span class="legend-dot walked"></span>walked</span>
+      <span><span class="legend-dot target"></span>target</span>
+      <span id="legend-all" style="display:none"><span class="legend-dot all"></span>all SF</span>
+    </div>
+  </div>
+</div>
+
+<div id="map"></div>
+<div id="toast"></div>
+<input type="file" id="photo-file-input" accept="image/*" capture="environment" style="display:none" />
+
+<!-- Settings Modal -->
+<div class="modal-overlay" id="settings-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>⚙ Settings</h2>
+      <button class="modal-close" id="settings-close">✕</button>
+    </div>
+
+    <!-- GitHub token -->
+    <p>GitHub Personal Access Token with repo write access.</p>
+    <div class="token-row">
+      <input type="password" id="token-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" />
+      <button id="token-eye" title="Show/hide token">👁</button>
+    </div>
+    <p class="modal-note">
+      Token stored in your browser only. Never shared or sent anywhere except GitHub.<br>
+      <a class="modal-link" href="https://github.com/settings/tokens/new?description=sf-stairways&scopes=repo" target="_blank" rel="noopener">How to create a token ↗</a>
+    </p>
+
+    <!-- Cloudinary -->
+    <div class="modal-section-label">📷 Photo Storage (Cloudinary)</div>
+    <div class="modal-field">
+      <label>Cloud Name</label>
+      <input type="text" id="cloudinary-cloud-name" placeholder="dny5gc6yz" autocomplete="off" />
+    </div>
+    <div class="modal-field">
+      <label>Upload Preset</label>
+      <input type="text" id="cloudinary-upload-preset" placeholder="Stairways" autocomplete="off" />
+    </div>
+    <p class="modal-note">
+      Free account at <a class="modal-link" href="https://cloudinary.com" target="_blank" rel="noopener">cloudinary.com</a>.
+      Create an unsigned upload preset in Settings → Upload → Upload Presets.
+    </p>
+
+    <div class="modal-actions">
+      <button class="btn-primary" id="save-settings-btn">Save Settings</button>
+      <span id="settings-status"></span>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// ── Config ───────────────────────────────────────────────────────────────────
+const CONFIG = {
+  githubOwner:            'o4dvasq',
+  githubRepo:             'sf-stairways',
+  dataPath:               'data/target_list.json',
+  branch:                 'main',
+  defaultCloudName:       'dny5gc6yz',
+  defaultUploadPreset:    'Stairways'
+};
+
+// ── State ────────────────────────────────────────────────────────────────────
+let targetList   = [];
+let allStairways = [];
+let pendingChanges = false;
+let showingAll   = false;
+
+// ── Map init ─────────────────────────────────────────────────────────────────
+const map = L.map('map');
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  maxZoom: 19
+}).addTo(map);
+
+map.createPane('walkedPane');
+map.createPane('targetPane');
+map.createPane('cityPane');
+map.getPane('walkedPane').style.zIndex = 650;
+map.getPane('targetPane').style.zIndex = 640;
+map.getPane('cityPane').style.zIndex   = 630;
+
+const targetMarkers = L.layerGroup().addTo(map);
+const cityLayer     = L.layerGroup();
+
+// ── Utility ──────────────────────────────────────────────────────────────────
+function today() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function formatDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso + 'T00:00:00');
+  return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+}
+
+function showError(msg) {
+  const el = document.getElementById('error-banner');
+  el.textContent = msg;
+  el.style.display = msg ? 'block' : 'none';
+}
+
+let toastTimer = null;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+// ── Cloudinary helpers ────────────────────────────────────────────────────────
+function getCloudinaryConfig() {
+  return {
+    cloudName: localStorage.getItem('cloudinary_cloud_name') || CONFIG.defaultCloudName,
+    preset:    localStorage.getItem('cloudinary_upload_preset') || CONFIG.defaultUploadPreset
+  };
+}
+
+async function uploadToCloudinary(file) {
+  const { cloudName, preset } = getCloudinaryConfig();
+
+  if (file.size > 10 * 1024 * 1024) {
+    throw Object.assign(new Error('too-large'), { code: 'too-large' });
+  }
+
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', preset);
+  formData.append('folder', 'sf-stairways');
+
+  let res;
+  try {
+    res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+      method: 'POST',
+      body: formData
+    });
+  } catch {
+    throw Object.assign(new Error('no-connection'), { code: 'no-connection' });
+  }
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw Object.assign(new Error(body.error?.message || `Upload failed: ${res.status}`), { code: 'upload-failed' });
+  }
+
+  const data = await res.json();
+  return data.secure_url;
+}
+
+// ── Stats bar ─────────────────────────────────────────────────────────────────
+function renderStats() {
+  const walked     = targetList.filter(s => s.walked);
+  const stepsKnown = walked.filter(s => s.step_count != null);
+  const totalSteps = stepsKnown.reduce((sum, s) => sum + s.step_count, 0);
+
+  let text;
+  if (walked.length === 0) {
+    text = `0 of ${targetList.length} on target list  ·  Start climbing!`;
+  } else if (stepsKnown.length === 0) {
+    text = `${walked.length} of ${targetList.length} target walked`;
+  } else {
+    text = `${walked.length} of ${targetList.length} target walked  ·  ${totalSteps.toLocaleString()} steps climbed`;
+  }
+
+  document.getElementById('stats-bar').childNodes[0].textContent = text;
+}
+
+// ── GitHub API ────────────────────────────────────────────────────────────────
+async function saveTargetList(updatedList) {
+  const token = localStorage.getItem('gh_token');
+  if (!token) {
+    openSettingsModal(true);
+    return false;
+  }
+
+  const baseUrl = `https://api.github.com/repos/${CONFIG.githubOwner}/${CONFIG.githubRepo}/contents/${CONFIG.dataPath}`;
+  const headers = { Authorization: `token ${token}`, 'Content-Type': 'application/json' };
+
+  try {
+    const getRes = await fetch(baseUrl, { headers });
+    if (getRes.status === 401) {
+      localStorage.removeItem('gh_token');
+      openSettingsModal(true, 'Token rejected — please re-enter');
+      return false;
+    }
+    if (!getRes.ok) throw new Error(`GET failed: ${getRes.status}`);
+    const { sha } = await getRes.json();
+
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(updatedList, null, 2))));
+    const putRes = await fetch(baseUrl, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify({
+        message: `Log walk: ${today()}`,
+        content,
+        sha,
+        branch: CONFIG.branch
+      })
+    });
+
+    if (putRes.status === 401) {
+      localStorage.removeItem('gh_token');
+      openSettingsModal(true, 'Token rejected — please re-enter');
+      return false;
+    }
+    if (putRes.status === 409) {
+      showError('Someone else updated the file — please reload and try again');
+      return false;
+    }
+    if (!putRes.ok) throw new Error(`PUT failed: ${putRes.status}`);
+
+    pendingChanges = false;
+    document.getElementById('retry-btn').style.display = 'none';
+    showError('');
+    return true;
+
+  } catch (err) {
+    console.error('GitHub save error:', err);
+    pendingChanges = true;
+    document.getElementById('retry-btn').style.display = 'inline-block';
+    showError("Couldn't reach GitHub — change saved locally, retry when online");
+    return false;
+  }
+}
+
+// ── Cloudinary thumbnail URL ──────────────────────────────────────────────────
+// Inserts Cloudinary transform for a ~400px-wide thumbnail, leaves full URL for the link.
+function thumbUrl(url) {
+  if (!url) return null;
+  // Insert transform before /upload/ in the URL
+  return url.replace('/upload/', '/upload/c_fill,w_400,h_300/');
+}
+
+// ── Markers ──────────────────────────────────────────────────────────────────
+function makeTargetMarker(item) {
+  if (item.lat == null || item.lng == null) return null;
+
+  const marker = L.circleMarker([item.lat, item.lng], {
+    radius:      10,
+    fillColor:   item.walked ? '#22c55e' : '#ef4444',
+    color:       item.walked ? '#16a34a' : '#dc2626',
+    weight:      2,
+    fillOpacity: 0.9,
+    pane:        item.walked ? 'walkedPane' : 'targetPane'
+  });
+
+  marker.bindTooltip(item.name);
+  marker.bindPopup(() => buildTargetPopup(item, marker), { maxWidth: 280, minWidth: 210 });
+  return marker;
+}
+
+function buildTargetPopup(item, marker) {
+  const div = document.createElement('div');
+
+  if (item.walked) {
+    const photoHtml = item.photo_url
+      ? `<a href="${item.photo_url}" target="_blank" rel="noopener">
+           <img class="popup-photo" src="${thumbUrl(item.photo_url)}" alt="Photo of ${item.name}" />
+         </a>`
+      : '';
+
+    const photoLabel = item.photo_url ? '📷 Change Photo' : '📷 Add Photo';
+
+    div.innerHTML = `
+      <div class="popup-title">🟢 ${item.name}</div>
+      <div class="popup-sub">${item.neighborhood}</div>
+      <div class="popup-meta">
+        ✅ Walked: ${formatDate(item.date_walked)}<br>
+        ${item.step_count != null ? item.step_count + ' steps' : ''}
+      </div>
+      ${photoHtml}
+      <div class="popup-btns">
+        <button class="pop-btn edit" id="pp-edit-btn">✏️ Edit</button>
+        <button class="pop-btn photo" id="pp-photo-btn">${photoLabel}</button>
+      </div>
+      <div class="pop-saving" id="pp-photo-status"></div>
+      <div id="pp-form"></div>
+    `;
+
+    setTimeout(() => {
+      div.querySelector('#pp-edit-btn')
+         .addEventListener('click', () => showWalkForm(div, item, marker));
+      div.querySelector('#pp-photo-btn')
+         .addEventListener('click', () => triggerPhotoUpload(item, marker, div.querySelector('#pp-photo-status')));
+    }, 0);
+
+  } else {
+    div.innerHTML = `
+      <div class="popup-title">🔴 ${item.name}</div>
+      <div class="popup-sub">${item.neighborhood} · On your target list</div>
+      <div class="popup-meta">
+        ${item.step_count != null ? item.step_count + ' steps<br>' : ''}
+        ${item.notes ? item.notes : ''}
+      </div>
+      <div class="popup-btns">
+        <button class="pop-btn primary" id="pp-walk-btn">✅ Mark as Walked</button>
+      </div>
+      <div id="pp-form"></div>
+    `;
+    setTimeout(() => {
+      div.querySelector('#pp-walk-btn')
+         .addEventListener('click', () => showWalkForm(div, item, marker));
+    }, 0);
+  }
+
+  return div;
+}
+
+function showWalkForm(container, item, marker) {
+  const formDiv = container.querySelector('#pp-form');
+  const btnsDiv = container.querySelector('.popup-btns');
+  const statusEl = container.querySelector('#pp-photo-status');
+  if (btnsDiv) btnsDiv.style.display = 'none';
+  if (statusEl) statusEl.style.display = 'none';
+
+  formDiv.innerHTML = `
+    <div class="popup-form">
+      <label>Date</label>
+      <input type="date" id="pp-date" value="${item.date_walked || today()}" />
+      <label>Steps</label>
+      <input type="number" id="pp-steps" value="${item.step_count ?? ''}" placeholder="optional" min="0" />
+      <div class="popup-btns">
+        <button class="pop-btn primary" id="pp-save">Save</button>
+        <button class="pop-btn secondary" id="pp-cancel">Cancel</button>
+      </div>
+      <div class="pop-saving" id="pp-saving"></div>
+    </div>
+  `;
+
+  formDiv.querySelector('#pp-cancel').addEventListener('click', () => marker.closePopup());
+
+  formDiv.querySelector('#pp-save').addEventListener('click', async () => {
+    const date   = formDiv.querySelector('#pp-date').value;
+    const steps  = formDiv.querySelector('#pp-steps').value;
+    const saving = formDiv.querySelector('#pp-saving');
+
+    saving.textContent = 'Saving…';
+    formDiv.querySelector('#pp-save').disabled = true;
+
+    item.walked      = true;
+    item.date_walked = date || today();
+    item.step_count  = steps ? parseInt(steps, 10) : item.step_count;
+
+    const ok = await saveTargetList(targetList);
+    if (ok || pendingChanges) {
+      renderStats();
+      refreshTargetMarkers();
+      marker.closePopup();
+    } else {
+      saving.textContent = 'Save failed — check settings';
+      formDiv.querySelector('#pp-save').disabled = false;
+      item.walked      = false;
+      item.date_walked = null;
+    }
+  });
+}
+
+// ── Photo upload ──────────────────────────────────────────────────────────────
+function triggerPhotoUpload(item, marker, statusEl) {
+  const { cloudName, preset } = getCloudinaryConfig();
+  if (!cloudName || !preset) {
+    statusEl.textContent = 'Set up Cloudinary in ⚙ Settings first.';
+    return;
+  }
+
+  const fileInput = document.getElementById('photo-file-input');
+  fileInput.value = '';
+
+  const handleFile = async (e) => {
+    fileInput.removeEventListener('change', handleFile);
+    const file = e.target.files[0];
+    if (!file) return;
+
+    statusEl.textContent = 'Uploading…';
+
+    try {
+      const url = await uploadToCloudinary(file);
+      item.photo_url = url;
+      await saveTargetList(targetList);
+      showToast('Photo saved ✅');
+      // Reopen popup to show thumbnail
+      marker.closePopup();
+      setTimeout(() => marker.openPopup(), 50);
+    } catch (err) {
+      if (err.code === 'too-large') {
+        statusEl.textContent = 'Photo is too large. Please use a compressed image.';
+      } else if (err.code === 'no-connection') {
+        statusEl.textContent = 'No connection — try again when online';
+      } else {
+        statusEl.textContent = 'Photo upload failed — check your Cloudinary settings';
+      }
+    }
+  };
+
+  fileInput.addEventListener('change', handleFile);
+  fileInput.click();
+}
+
+// ── City markers ──────────────────────────────────────────────────────────────
+function makeCityMarker(stairway) {
+  if (stairway.lat == null || stairway.lng == null) return null;
+
+  const marker = L.circleMarker([stairway.lat, stairway.lng], {
+    radius:      6,
+    fillColor:   '#94a3b8',
+    color:       '#64748b',
+    weight:      1.5,
+    fillOpacity: 0.75,
+    pane:        'cityPane'
+  });
+
+  marker.bindTooltip(stairway.name);
+  marker.bindPopup(() => buildCityPopup(stairway, marker), { maxWidth: 280, minWidth: 210 });
+  return marker;
+}
+
+function buildCityPopup(stairway, marker) {
+  const div = document.createElement('div');
+  const heightStr = stairway.height_ft != null ? `↕ ${stairway.height_ft} ft` : '';
+  const subParts  = [stairway.neighborhood, heightStr].filter(Boolean);
+
+  div.innerHTML = `
+    <div class="popup-title">${stairway.name}</div>
+    <div class="popup-sub">${subParts.join(' · ')}</div>
+    <div class="popup-btns">
+      <button class="pop-btn add" id="pp-add-btn">+ Add to Target List</button>
+      ${stairway.source_url ? `<a href="${stairway.source_url}" target="_blank" rel="noopener" style="font-size:0.78rem;color:#3b82f6;align-self:center;margin-left:4px;">sfstairways.com ↗</a>` : ''}
+    </div>
+    <div id="pp-form"></div>
+  `;
+
+  setTimeout(() => {
+    div.querySelector('#pp-add-btn')
+       .addEventListener('click', () => showAddForm(div, stairway, marker));
+  }, 0);
+
+  return div;
+}
+
+function showAddForm(container, stairway, marker) {
+  const formDiv = container.querySelector('#pp-form');
+  const btnsDiv = container.querySelector('.popup-btns');
+  if (btnsDiv) btnsDiv.style.display = 'none';
+
+  formDiv.innerHTML = `
+    <div class="popup-form">
+      <label>Steps (if known)</label>
+      <input type="number" id="pp-steps" placeholder="" min="0" />
+      <label>Notes</label>
+      <input type="text" id="pp-notes" placeholder="" />
+      <div class="popup-btns">
+        <button class="pop-btn add" id="pp-add">Add</button>
+        <button class="pop-btn secondary" id="pp-cancel">Cancel</button>
+      </div>
+      <div class="pop-saving" id="pp-saving"></div>
+    </div>
+  `;
+
+  formDiv.querySelector('#pp-cancel').addEventListener('click', () => marker.closePopup());
+
+  formDiv.querySelector('#pp-add').addEventListener('click', async () => {
+    const steps  = formDiv.querySelector('#pp-steps').value;
+    const notes  = formDiv.querySelector('#pp-notes').value.trim();
+    const saving = formDiv.querySelector('#pp-saving');
+
+    saving.textContent = 'Saving…';
+    formDiv.querySelector('#pp-add').disabled = true;
+
+    const newItem = {
+      id:           stairway.id,
+      name:         stairway.name,
+      neighborhood: stairway.neighborhood || '',
+      lat:          stairway.lat,
+      lng:          stairway.lng,
+      step_count:   steps ? parseInt(steps, 10) : null,
+      walked:       false,
+      date_walked:  null,
+      photo_url:    null,
+      notes:        notes || null
+    };
+
+    targetList.push(newItem);
+    const ok = await saveTargetList(targetList);
+    if (ok || pendingChanges) {
+      renderStats();
+      addTargetMarker(newItem);
+      marker.closePopup();
+    } else {
+      saving.textContent = 'Save failed — check settings';
+      formDiv.querySelector('#pp-add').disabled = false;
+      targetList.pop();
+    }
+  });
+}
+
+// ── Render layers ─────────────────────────────────────────────────────────────
+function refreshTargetMarkers() {
+  targetMarkers.clearLayers();
+  for (const item of targetList) {
+    const m = makeTargetMarker(item);
+    if (m) targetMarkers.addLayer(m);
+  }
+}
+
+function addTargetMarker(item) {
+  const m = makeTargetMarker(item);
+  if (m) targetMarkers.addLayer(m);
+}
+
+function renderCityLayer() {
+  cityLayer.clearLayers();
+  const targetIds = new Set(targetList.map(t => t.id));
+  for (const s of allStairways) {
+    if (s.closed) continue;
+    if (targetIds.has(s.id)) continue;
+    const m = makeCityMarker(s);
+    if (m) cityLayer.addLayer(m);
+  }
+}
+
+// ── Toggle ────────────────────────────────────────────────────────────────────
+document.getElementById('btn-target').addEventListener('click', () => {
+  showingAll = false;
+  document.getElementById('btn-target').classList.add('active');
+  document.getElementById('btn-all').classList.remove('active');
+  map.removeLayer(cityLayer);
+  document.getElementById('legend-all').style.display = 'none';
+});
+
+document.getElementById('btn-all').addEventListener('click', () => {
+  showingAll = true;
+  document.getElementById('btn-all').classList.add('active');
+  document.getElementById('btn-target').classList.remove('active');
+  renderCityLayer();
+  cityLayer.addTo(map);
+  document.getElementById('legend-all').style.display = '';
+});
+
+// ── Retry ─────────────────────────────────────────────────────────────────────
+document.getElementById('retry-btn').addEventListener('click', async () => {
+  const ok = await saveTargetList(targetList);
+  if (ok) showError('');
+});
+
+// ── Settings Modal ────────────────────────────────────────────────────────────
+function openSettingsModal(auto = false, message = null) {
+  document.getElementById('settings-modal').classList.add('open');
+
+  // GitHub token
+  const stored = localStorage.getItem('gh_token');
+  if (stored) document.getElementById('token-input').value = stored;
+
+  // Cloudinary — use stored value, or fall back to hardcoded defaults
+  const cloudName = localStorage.getItem('cloudinary_cloud_name') || CONFIG.defaultCloudName;
+  const preset    = localStorage.getItem('cloudinary_upload_preset') || CONFIG.defaultUploadPreset;
+  document.getElementById('cloudinary-cloud-name').value    = cloudName;
+  document.getElementById('cloudinary-upload-preset').value = preset;
+
+  const status = document.getElementById('settings-status');
+  status.textContent = message || '';
+  status.style.color = message ? '#ef4444' : '';
+}
+
+document.getElementById('settings-btn').addEventListener('click', () => openSettingsModal());
+
+document.getElementById('settings-close').addEventListener('click', () => {
+  document.getElementById('settings-modal').classList.remove('open');
+});
+
+document.getElementById('settings-modal').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('settings-modal')) {
+    document.getElementById('settings-modal').classList.remove('open');
+  }
+});
+
+document.getElementById('token-eye').addEventListener('click', () => {
+  const input = document.getElementById('token-input');
+  input.type = input.type === 'password' ? 'text' : 'password';
+});
+
+document.getElementById('save-settings-btn').addEventListener('click', async () => {
+  const token     = document.getElementById('token-input').value.trim();
+  const cloudName = document.getElementById('cloudinary-cloud-name').value.trim();
+  const preset    = document.getElementById('cloudinary-upload-preset').value.trim();
+  const status    = document.getElementById('settings-status');
+
+  // Save Cloudinary settings immediately (no validation needed — unsigned)
+  if (cloudName) localStorage.setItem('cloudinary_cloud_name', cloudName);
+  if (preset)    localStorage.setItem('cloudinary_upload_preset', preset);
+
+  // Validate and save GitHub token
+  if (!token) {
+    status.textContent = '❌ Please enter a GitHub token'; status.style.color = '#ef4444'; return;
+  }
+
+  status.textContent = 'Validating…'; status.style.color = '#64748b';
+
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${CONFIG.githubOwner}/${CONFIG.githubRepo}`,
+      { headers: { Authorization: `token ${token}` } }
+    );
+    if (res.status === 401) {
+      status.textContent = '❌ Invalid token'; status.style.color = '#ef4444'; return;
+    }
+    localStorage.setItem('gh_token', token);
+    status.textContent = '✅ Settings saved'; status.style.color = '#16a34a';
+    setTimeout(() => document.getElementById('settings-modal').classList.remove('open'), 800);
+  } catch {
+    localStorage.setItem('gh_token', token);
+    status.textContent = '⚠️ Network error — settings saved anyway'; status.style.color = '#d97706';
+    setTimeout(() => document.getElementById('settings-modal').classList.remove('open'), 1200);
+  }
+});
+
+// ── Bootstrap ─────────────────────────────────────────────────────────────────
+async function init() {
+  const [targetResult, cityResult] = await Promise.allSettled([
+    fetch('./data/target_list.json').then(r => { if (!r.ok) throw new Error(); return r.json(); }),
+    fetch('./data/all_stairways.json').then(r => { if (!r.ok) throw new Error(); return r.json(); })
+  ]);
+
+  if (targetResult.status === 'rejected') {
+    document.getElementById('stats-bar').childNodes[0].textContent = 'Failed to load target list.';
+    const banner = document.getElementById('error-banner');
+    banner.textContent = 'Could not load target_list.json — map unavailable';
+    banner.style.display = 'block';
+    return;
+  }
+
+  targetList = targetResult.value;
+  // Migrate any legacy entries that lack photo_url
+  for (const item of targetList) {
+    if (!('photo_url' in item)) item.photo_url = null;
+  }
+
+  if (cityResult.status === 'rejected' || cityResult.value.length === 0) {
+    const allBtn = document.getElementById('btn-all');
+    allBtn.disabled = true;
+    allBtn.title = 'Run scripts/scrape_stairways.py to generate city data';
+    allStairways = [];
+  } else {
+    allStairways = cityResult.value;
+  }
+
+  renderStats();
+  refreshTargetMarkers();
+
+  const validTargets = targetList.filter(t => t.lat != null && t.lng != null);
+  if (validTargets.length > 0) {
+    map.fitBounds(L.latLngBounds(validTargets.map(t => [t.lat, t.lng])), { padding: [30, 30] });
+  } else {
+    map.setView([37.7749, -122.4194], 13);
+  }
+}
+
+init();
+</script>
+</body>
+</html>

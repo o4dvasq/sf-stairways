@@ -1,5 +1,20 @@
 # Architecture Decisions — sf-stairways
 
+## Landing page replaces deprecated web app at repo root
+**Date:** 2026-04-02
+
+The Leaflet-based web app (`index.html`) was moved to `legacy/index.html` and replaced with a static marketing landing page targeting TestFlight beta signups.
+
+**Single HTML file per page, no JS.** The landing page and privacy policy are pure HTML + inline CSS. No framework, no bundler, no JavaScript (not even scroll polyfills). Google Fonts CDN is the only external dependency. This keeps load time minimal for the primary audience: iPhone users tapping a shared link.
+
+**Instrument Serif + DM Sans typography.** Per spec, system-default fonts (Inter, Roboto, system-ui) were explicitly excluded. Instrument Serif (display/headlines) + DM Sans (body) give the page a distinctive editorial feel that matches the app's warm aesthetic.
+
+**TestFlight CTA is a placeholder.** The "Join the Beta" button links to `https://testflight.apple.com/join/PLACEHOLDER`. Oscar will update this manually once the TestFlight public link is live — no code change needed.
+
+**Hero image served from Unsplash CDN.** Using an external CDN URL keeps the repo lean (no binary assets committed). Oscar will replace with original SF stairway photography at a later date.
+
+**Privacy policy required for external TestFlight.** Apple requires a reachable privacy policy URL for external TestFlight distribution. `privacy.html` accurately reflects the app's data practices: local SwiftData, iCloud CloudKit sync, optional Supabase auth token, no analytics, no server-side photo storage.
+
 ## Remove step-count tracking entirely
 **Date:** 2026-03-31
 

@@ -1,6 +1,6 @@
 # Project State — sf-stairways
 
-_Last updated: 2026-03-31 (remove-steps-tracking)_
+_Last updated: 2026-04-02 (landing-page)_
 
 ## Platforms
 
@@ -10,7 +10,7 @@ _Last updated: 2026-03-31 (remove-steps-tracking)_
 - `SyncStatusManager` tracks live CloudKit event notifications; cloud icon in Stats tab shows sync state
 - Supabase SDK integrated; `AuthManager` manages Sign in with Apple session
 - Photo capture with thumbnails, location services, seed data import
-- Tags are **read-only** on iOS (display + filter only) — all tag CRUD is macOS-only
+- Tags: display, filter, add, and create on iOS; full CRUD (rename, delete) on macOS/Admin only
 - `StairwayStore` filters out deleted stairways via `applyDeletions(_:)` — map, list, search, progress all respect deletions
 - **Visual design: light-first** — warm terracotta `brandOrange`, SF Pro Rounded for display text, `surfaceCardElevated` stat cards, orange progress ring
 - **Neighborhoods: SF 311 Neighborhoods** — 117 granular neighborhoods (68 with stairways); powered by `NeighborhoodStore` (GeoJSON-backed, computes centroids + adjacency at startup)
@@ -44,9 +44,14 @@ _Last updated: 2026-03-31 (remove-steps-tracking)_
 - **Acknowledgements**: `info.circle` toolbar button opens `AcknowledgementsSheet`
 - No Supabase, no HealthKit on macOS
 
-### Web App (deprecated)
-- `index.html` remains in the repo for historical reference
-- No further development — see DECISIONS.md for rationale
+### Web (GitHub Pages)
+- **Landing page** — `index.html` at repo root; static HTML, no JS dependencies
+  - Hero: full-viewport SF photo (Unsplash CDN), Instrument Serif display type, brand orange CTA
+  - Features section (5 items), Story section, second CTA strip, footer
+  - Google Fonts: Instrument Serif + DM Sans
+  - TestFlight button links to `https://testflight.apple.com/join/PLACEHOLDER` — update when TestFlight is live
+- **Privacy policy** — `privacy.html`; required for Apple external TestFlight distribution
+- **Deprecated web app** — moved to `legacy/index.html` for historical reference
 
 ## Current Data
 
@@ -58,6 +63,9 @@ _Last updated: 2026-03-31 (remove-steps-tracking)_
 | SF 311 Neighborhoods | **117** total, **68** with stairways |
 
 ## Recent Completions
+
+### 2026-04-02
+- **Landing Page + Privacy Policy** — New `index.html` landing page (Instrument Serif + DM Sans, full-viewport hero with SF Unsplash photo, brand orange CTA linking to TestFlight placeholder, features + story sections). `privacy.html` covering SwiftData local storage, iCloud CloudKit, optional Supabase auth, no analytics, no server photo uploads. OG/Twitter meta tags on both pages. Deprecated Leaflet web app moved to `legacy/index.html`. Oscar will swap hero photo with original photography and update TestFlight URL when live.
 
 ### 2026-03-31
 - **Remove Steps Tracking** — Removed `WalkRecord.stepCount` and `StairwayOverride.verifiedStepCount` from SwiftData models. Removed `resolvedStepCount()` from `StairwayStore`. Removed all step/stair count UI from iOS (ProgressCard, StairwayRow, StairwayBottomSheet curator section), macOS (Steps table column, StairwayBrowser, StairwayDetailPanel curator overrides), and Admin (AdminDetailView overrides section). Height (ft) is the only physical metric. `step_count` field retained in static JSON files (app no longer reads it). CloudKit handles schema evolution without migration.

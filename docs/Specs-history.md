@@ -2,6 +2,9 @@
 
 | Description | Implemented | Spec File |
 |---|---|---|
+| Landing page + privacy policy; TestFlight CTA | 2026-04-02 | SPEC_landing-page.md |
+| iOS tag editor sheet + post-photo mark-walked prompt | 2026-04-01 | SPEC_ios-tag-editor-photo-walked.md |
+| Tag checklist popover; macOS table column reordering | 2026-03-31 | SPEC_macos-tag-popover-and-table-ux.md |
 | Remove step count from all models, views, and services | 2026-03-31 | SPEC_remove-steps-tracking.md |
 | Increase polygon fill/stroke opacity; saturate 12-color palette | 2026-03-30 | SPEC_neighborhood-color-saturation.md |
 | Remove HealthKit, active walk recording, Start Walk button | 2026-03-30 | SPEC_remove-healthkit-walk-recording.md |
