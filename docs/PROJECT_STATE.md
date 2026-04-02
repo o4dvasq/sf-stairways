@@ -1,6 +1,6 @@
 # Project State — sf-stairways
 
-_Last updated: 2026-04-02 (landing-page)_
+_Last updated: 2026-04-02 (share-card)_
 
 ## Platforms
 
@@ -15,6 +15,7 @@ _Last updated: 2026-04-02 (landing-page)_
 - **Visual design: light-first** — warm terracotta `brandOrange`, SF Pro Rounded for display text, `surfaceCardElevated` stat cards, orange progress ring
 - **Neighborhoods: SF 311 Neighborhoods** — 117 granular neighborhoods (68 with stairways); powered by `NeighborhoodStore` (GeoJSON-backed, computes centroids + adjacency at startup)
 - **No HealthKit, no active walk recording** — "Mark Walked" is the only walk-logging action
+- **Share card** — walked stairways show a share button (`square.and.arrow.up`, brandOrange) in the bottom sheet header; tapping generates a 1080×1920 portrait card via `ImageRenderer` and opens the native iOS share sheet
 - Successfully archived in Xcode on 2026-03-23
 - See `docs/IOS_REFERENCE.md` for full build details
 
@@ -65,6 +66,7 @@ _Last updated: 2026-04-02 (landing-page)_
 ## Recent Completions
 
 ### 2026-04-02
+- **Share Card** — `ShareCardView.swift` (new) renders a 1080×1920 portrait card via `ImageRenderer` at 3× scale. Two layouts: photo-backed (top 60% user photo, cream bottom text panel) and text-only (brand orange background, white text). Card shows stairway name, neighborhood, height pill, "Walked ✓" pill, tagline, and `sfstairways.app` URL. Share button (`square.and.arrow.up`, brandOrange) appears in `StairwayBottomSheet` header for walked stairways only. `ActivityShareSheet` wraps `UIActivityViewController`; shares both image and "Climb every stairway in SF — sfstairways.app" text. Photo is sourced from the first local `WalkPhoto` if available.
 - **Landing Page + Privacy Policy** — New `index.html` landing page (Instrument Serif + DM Sans, full-viewport hero with SF Unsplash photo, brand orange CTA linking to TestFlight placeholder, features + story sections). `privacy.html` covering SwiftData local storage, iCloud CloudKit, optional Supabase auth, no analytics, no server photo uploads. OG/Twitter meta tags on both pages. Deprecated Leaflet web app moved to `legacy/index.html`. Oscar will swap hero photo with original photography and update TestFlight URL when live.
 
 ### 2026-03-31
@@ -94,6 +96,7 @@ _Last updated: 2026-04-02 (landing-page)_
 - **Sign in with Apple:** `signInError` display is temporary for debugging.
 - **Supabase Apple provider** config not yet manually verified.
 - **Admin app Xcode target**: file memberships and capabilities must be manually verified in Xcode after pulling — the target config is in `project.pbxproj` but CloudKit + Background Modes capabilities require Signing & Capabilities UI.
+- **ShareCardView.swift**: new file must be added to the `SFStairways` iOS target in Xcode (drag into project navigator, check iOS target only).
 
 ## Repository
 

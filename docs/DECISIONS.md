@@ -1,5 +1,16 @@
 # Architecture Decisions — sf-stairways
 
+## Share card: ImageRenderer + UIActivityViewController, no direct social posting
+**Date:** 2026-04-02
+
+Share cards are generated entirely on-device via SwiftUI `ImageRenderer` at 3× scale (360×640pt → 1080×1920px, 9:16 for Instagram Stories). No backend, no image uploads, no network requests.
+
+**`UIActivityViewController` over `ShareLink`.** SwiftUI's `ShareLink` doesn't cleanly support sharing both a `UIImage` and a plain string in a single item array — it's designed for `Transferable` types. Wrapping `UIActivityViewController` gives full control over `activityItems` and lets us pass image + text together so apps like Messages receive both.
+
+**Photo source: first local `WalkPhoto` only.** Remote Supabase photos require async loading and could delay card generation. The spec says "fall back to no-photo variant rather than blocking." Using the first local `WalkPhoto.imageData` (synchronously available from SwiftData external storage) achieves instant card generation. In practice, most walks with photos will have at least one local photo.
+
+**Card color uses light-mode `brandOrange` value (`#D4724E`) rather than spec's `#E8602C`.** The spec cited a hex that doesn't match the app's established color tokens. The actual `brandOrange` (light mode: `#D4724E`) is what users see in the running app, so the card matches the app rather than an abstract spec color.
+
 ## Landing page replaces deprecated web app at repo root
 **Date:** 2026-04-02
 

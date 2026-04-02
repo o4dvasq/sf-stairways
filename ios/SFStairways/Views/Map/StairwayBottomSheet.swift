@@ -40,6 +40,11 @@ struct StairwayBottomSheet: View {
     @State private var toastMessage: String? = nil
     @State private var failedPhotoIDs: Set<PersistentIdentifier> = []
     @State private var showNeighborhoodDetail = false
+    @State private var showTagEditor = false
+    @State private var showPhotoWalkedAlert = false
+    @State private var photoWalkedPromptShown = false
+    @State private var shareImage: UIImage? = nil
+    @State private var showShareSheet = false
 
     private enum CuratorField: Hashable {
         case height, description
@@ -199,6 +204,25 @@ struct StairwayBottomSheet: View {
             CameraPicker { imageData in addPhoto(imageData: imageData) }
                 .ignoresSafeArea()
         }
+        .sheet(isPresented: $showTagEditor) {
+            TagEditorSheet(stairwayID: stairway.id)
+                .presentationDetents([.medium, .large])
+        }
+        .sheet(isPresented: $showShareSheet) {
+            if let image = shareImage {
+                ActivityShareSheet(activityItems: [
+                    image,
+                    "Climb every stairway in SF — sfstairways.app"
+                ])
+                .presentationDetents([.medium, .large])
+            }
+        }
+        .alert("Mark as Walked?", isPresented: $showPhotoWalkedAlert) {
+            Button("Mark Walked") { attemptMarkWalked() }
+            Button("Not Now", role: .cancel) { }
+        } message: {
+            Text("You just added a photo. Would you like to mark this stairway as walked?")
+        }
         .onAppear {
             notesText = walkRecord?.notes ?? ""
             editingNotes = false
@@ -276,6 +300,15 @@ struct StairwayBottomSheet: View {
                 }
             }
             Spacer()
+            if isWalked {
+                Button {
+                    generateShareCard()
+                } label: {
+                    Image(systemName: "square.and.arrow.up")
+                        .font(.system(size: 18))
+                        .foregroundStyle(Color.brandOrange)
+                }
+            }
             Menu {
                 Button { showCamera = true } label: {
                     Label("Take Photo", systemImage: "camera")
@@ -287,6 +320,7 @@ struct StairwayBottomSheet: View {
                 Image(systemName: "camera.fill")
                     .font(.system(size: 18))
                     .foregroundStyle(Color.forestGreen)
+                    .padding(.leading, 8)
             }
         }
     }
@@ -505,22 +539,32 @@ struct StairwayBottomSheet: View {
                 .font(.subheadline)
                 .fontWeight(.medium)
 
-            if stairwayTags.isEmpty {
-                Text("No tags assigned.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            } else {
-                FlowLayout(spacing: 8) {
-                    ForEach(stairwayTags) { tag in
-                        Text(tag.name)
-                            .font(.subheadline)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 6)
-                            .foregroundStyle(Color.forestGreen)
-                            .clipShape(Capsule())
-                            .overlay(Capsule().stroke(Color.forestGreen, lineWidth: 1))
-                    }
+            FlowLayout(spacing: 8) {
+                ForEach(stairwayTags) { tag in
+                    Text(tag.name)
+                        .font(.subheadline)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .foregroundStyle(Color.forestGreen)
+                        .clipShape(Capsule())
+                        .overlay(Capsule().stroke(Color.forestGreen, lineWidth: 1))
                 }
+                Button {
+                    showTagEditor = true
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: "plus")
+                            .font(.system(size: 11, weight: .semibold))
+                        Text("Add Tag")
+                            .font(.subheadline)
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .foregroundStyle(Color.forestGreen.opacity(0.7))
+                    .clipShape(Capsule())
+                    .overlay(Capsule().stroke(Color.forestGreen.opacity(0.5), style: StrokeStyle(lineWidth: 1, dash: [4, 3])))
+                }
+                .buttonStyle(.plain)
             }
         }
     }
@@ -615,6 +659,28 @@ struct StairwayBottomSheet: View {
         }
     }
 
+    // MARK: - Share Card
+
+    @MainActor
+    private func generateShareCard() {
+        let photoImage = walkRecord?.photoArray.first.flatMap { UIImage(data: $0.imageData ?? Data()) }
+        let heightFt = currentOverride?.verifiedHeightFt ?? stairway.heightFt
+
+        let cardView = ShareCardView(
+            stairwayName: stairway.name,
+            neighborhood: stairway.neighborhood,
+            heightFt: heightFt,
+            photoImage: photoImage
+        )
+
+        let renderer = ImageRenderer(content: cardView)
+        renderer.scale = 3.0
+
+        guard let image = renderer.uiImage else { return }
+        shareImage = image
+        showShareSheet = true
+    }
+
     // MARK: - Walk Record Actions
 
     private func attemptMarkWalked() {
@@ -666,6 +732,11 @@ struct StairwayBottomSheet: View {
         if record.photos == nil { record.photos = [] }
         record.photos?.append(photo)
         try? modelContext.save()
+
+        if !isWalked && !photoWalkedPromptShown {
+            photoWalkedPromptShown = true
+            showPhotoWalkedAlert = true
+        }
 
         guard let userId = authManager.userId else {
             print("[StairwayBottomSheet] Photo upload skipped — user not authenticated")
