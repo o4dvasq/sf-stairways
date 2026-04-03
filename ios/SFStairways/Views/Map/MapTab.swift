@@ -42,13 +42,15 @@ struct MapTab: View {
                 // Neighborhood polygon overlays (drawn first, beneath all annotations)
                 ForEach(neighborhoodStore.neighborhoods) { hood in
                     let isDimmed = aroundMe.isDimmed(neighborhood: hood.name)
-                    let fillOpacity = isDimmed ? 0.05 : (colorScheme == .dark ? 0.20 : 0.30)
-                    let strokeOpacity = isDimmed ? 0.10 : (colorScheme == .dark ? 0.40 : 0.50)
+                    let isComplete = completedNeighborhoodNames.contains(hood.name)
+                    let fillColor = isComplete ? Color.walkedGreen : hood.color
+                    let fillOpacity = isDimmed ? 0.05 : (isComplete ? 0.35 : (colorScheme == .dark ? 0.20 : 0.30))
+                    let strokeOpacity = isDimmed ? 0.10 : (isComplete ? 0.65 : (colorScheme == .dark ? 0.40 : 0.50))
 
                     ForEach(Array(hood.polygons.enumerated()), id: \.offset) { _, ring in
                         MapPolygon(coordinates: ring)
-                            .foregroundStyle(hood.color.opacity(fillOpacity))
-                            .stroke(hood.color.opacity(strokeOpacity), lineWidth: 1)
+                            .foregroundStyle(fillColor.opacity(fillOpacity))
+                            .stroke(fillColor.opacity(strokeOpacity), lineWidth: isComplete ? 1.5 : 1)
                     }
                 }
 
@@ -239,17 +241,15 @@ struct MapTab: View {
     // MARK: - Filter Row
 
     private var filterRow: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                ForEach(StairwayFilter.allCases, id: \.self) { f in
-                    FilterChip(title: f.rawValue, isActive: filter == f) {
-                        withAnimation { filter = f }
-                    }
+        HStack(spacing: 8) {
+            ForEach(StairwayFilter.allCases, id: \.self) { f in
+                FilterChip(title: f.rawValue, isActive: filter == f) {
+                    withAnimation { filter = f }
                 }
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 8)
         }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 8)
     }
 
     // MARK: - Around Me
@@ -302,6 +302,14 @@ struct MapTab: View {
 
     /// Static pin scale — no dynamic resizing for performance.
     private var pinScale: CGFloat { 1.0 }
+
+    private var completedNeighborhoodNames: Set<String> {
+        let walkedIDs = walkedStairwayIDs
+        let grouped = Dictionary(grouping: store.stairways, by: \.neighborhood)
+        return Set(grouped.compactMap { name, stairways in
+            stairways.allSatisfy { walkedIDs.contains($0.id) } ? name : nil
+        })
+    }
 
     private var walkedStairwayIDs: Set<String> {
         Set(walkRecords.filter(\.walked).map(\.stairwayID))

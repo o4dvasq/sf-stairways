@@ -12,6 +12,7 @@ struct NeighborhoodDetail: View {
     @State private var locationManager = LocationManager()
     @State private var selectedStairway: Stairway?
     @State private var selectedPhoto: WalkPhoto?
+    @State private var nuggets = NuggetProvider()
 
     var body: some View {
         ScrollView {
@@ -46,16 +47,30 @@ struct NeighborhoodDetail: View {
         let walkedCount = walkedStairways.count
         let total = neighborhoodStairways.count
         let fraction = total > 0 ? Double(walkedCount) / Double(total) : 0
+        let isComplete = total > 0 && walkedCount == total
 
         return VStack(alignment: .leading, spacing: 6) {
             HStack {
-                Text("\(walkedCount) of \(total) walked")
-                    .font(.system(.subheadline, design: .rounded))
-                    .foregroundStyle(.secondary)
+                if isComplete {
+                    Label("All \(total) stairways walked", systemImage: "checkmark.seal.fill")
+                        .font(.system(.subheadline, design: .rounded))
+                        .foregroundStyle(Color.walkedGreen)
+                } else {
+                    Text("\(walkedCount) of \(total) walked")
+                        .font(.system(.subheadline, design: .rounded))
+                        .foregroundStyle(.secondary)
+                }
                 Spacer()
             }
             ProgressView(value: fraction)
-                .tint(Color.brandOrange)
+                .tint(isComplete ? Color.walkedGreen : Color.brandOrange)
+
+            if let nugget = nuggets.fact(for: neighborhoodName) {
+                Text(nugget)
+                    .font(.system(.caption, design: .rounded))
+                    .foregroundStyle(.tertiary)
+                    .padding(.top, 2)
+            }
         }
     }
 

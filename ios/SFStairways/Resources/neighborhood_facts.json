@@ -1,0 +1,142 @@
+[
+  {
+    "id": "russian-hill",
+    "neighborhood": "Russian Hill",
+    "fact": "Russian Hill has 36 public stairways — more than any other neighborhood in San Francisco. Many were built in the early 1900s to connect its steep residential streets."
+  },
+  {
+    "id": "bernal-heights",
+    "neighborhood": "Bernal Heights",
+    "fact": "Bernal Heights has 31 stairways, second most in the city. They wind through one of SF's most beloved hilltop neighborhoods, known for its tight-knit community and sweeping views."
+  },
+  {
+    "id": "golden-gate-heights",
+    "neighborhood": "Golden Gate Heights",
+    "fact": "Golden Gate Heights has 23 stairways, many climbing toward unobstructed views of the Pacific Ocean and the Marin headlands."
+  },
+  {
+    "id": "telegraph-hill",
+    "neighborhood": "Telegraph Hill",
+    "fact": "The Filbert Steps and Greenwich Steps are among the most celebrated stairways in the city, descending through lush private gardens to the Embarcadero below. Wild parrots nest along the route."
+  },
+  {
+    "id": "eureka-valley",
+    "neighborhood": "Eureka Valley",
+    "fact": "Eureka Valley has 18 stairways tucked into the hillside above the Castro, connecting the neighborhood's Victorian streets to Market Street below."
+  },
+  {
+    "id": "peralta-heights",
+    "neighborhood": "Peralta Heights",
+    "fact": "Peralta Heights is a quiet hilltop enclave in the southeast with 17 stairways — more than most people expect from this lesser-known neighborhood."
+  },
+  {
+    "id": "potrero-hill",
+    "neighborhood": "Potrero Hill",
+    "fact": "Potrero Hill's 16 stairways offer some of the sunniest walks in the city — the hill sits in a rain shadow and records more sunny days than almost anywhere else in San Francisco."
+  },
+  {
+    "id": "pacific-heights",
+    "neighborhood": "Pacific Heights",
+    "fact": "Pacific Heights has 15 stairways descending from its ridge toward Cow Hollow and the Marina, with views stretching from the bay to the Golden Gate."
+  },
+  {
+    "id": "dolores-heights",
+    "neighborhood": "Dolores Heights",
+    "fact": "Dolores Heights has 13 stairways on the hillside above Dolores Park. The neighborhood sits at the intersection of the Mission and Castro, with a distinct character all its own."
+  },
+  {
+    "id": "noe-valley",
+    "neighborhood": "Noe Valley",
+    "fact": "Noe Valley has 12 stairways, most on its eastern and western slopes. The neighborhood is one of the sunniest in San Francisco, sheltered from the fog by Twin Peaks to the north."
+  },
+  {
+    "id": "forest-hill",
+    "neighborhood": "Forest Hill",
+    "fact": "Forest Hill has 10 stairways within a compact area — one of the densest stairway clusters in the city. The neighborhood was designed in the 1910s as a planned residential community."
+  },
+  {
+    "id": "buena-vista",
+    "neighborhood": "Buena Vista",
+    "fact": "Buena Vista Park, established in 1867, is San Francisco's oldest park. The 10 stairways in this neighborhood climb through eucalyptus and oak to panoramic views above the Haight."
+  },
+  {
+    "id": "clarendon-heights",
+    "neighborhood": "Clarendon Heights",
+    "fact": "Clarendon Heights has 10 stairways on the steep slopes between Twin Peaks and Cole Valley. This quiet neighborhood is often missed by visitors but beloved by locals."
+  },
+  {
+    "id": "north-beach",
+    "neighborhood": "North Beach",
+    "fact": "North Beach has 8 stairways connecting the flat neighborhood to Telegraph Hill and Russian Hill above. The area has been the heart of San Francisco's Italian-American community since the 1800s."
+  },
+  {
+    "id": "corona-heights",
+    "neighborhood": "Corona Heights",
+    "fact": "Corona Heights has 7 stairways around its dramatic rocky outcrop. The summit offers one of the best 360° views in the city, with almost no tourists."
+  },
+  {
+    "id": "diamond-heights",
+    "neighborhood": "Diamond Heights",
+    "fact": "Diamond Heights has 8 stairways on its steep western face. Developed in the 1960s on land that was previously too rugged to build on, it still feels remote despite being near the geographic center of the city."
+  },
+  {
+    "id": "nob-hill",
+    "neighborhood": "Nob Hill",
+    "fact": "Nob Hill has 9 stairways descending from one of the city's wealthiest ridges. The neighborhood was home to the railroad barons of the Gilded Age, and its cable car lines were built specifically to serve them."
+  },
+  {
+    "id": "upper-market",
+    "neighborhood": "Upper Market",
+    "fact": "Upper Market has 9 stairways climbing the hillside above the Castro. Many were carved into the hill before the streets were graded in the early 20th century."
+  },
+  {
+    "id": "global-1",
+    "neighborhood": null,
+    "fact": "San Francisco has 382 mapped public stairways — more per square mile than almost any other American city. Most were built before 1950, when hillside lots were too steep for roads."
+  },
+  {
+    "id": "global-2",
+    "neighborhood": null,
+    "fact": "Russian Hill has the most stairways of any neighborhood with 36, followed by Bernal Heights with 31 and Golden Gate Heights with 23."
+  },
+  {
+    "id": "global-3",
+    "neighborhood": null,
+    "fact": "The Filbert Steps on Telegraph Hill are considered the most scenic stairway in San Francisco, passing through private gardens tended by neighbors and frequented by the city's famous wild parrots."
+  },
+  {
+    "id": "global-4",
+    "neighborhood": null,
+    "fact": "Many of San Francisco's stairways are technically city streets — they appear on official street maps with names and addresses, but are passable only on foot."
+  },
+  {
+    "id": "global-5",
+    "neighborhood": null,
+    "fact": "The 16th Avenue Tiled Steps in Golden Gate Heights took over two years and 300 volunteers to complete. The mosaic runs 163 steps from Moraga to Noriega Street."
+  },
+  {
+    "id": "global-6",
+    "neighborhood": null,
+    "fact": "Adah Bakalinsky, a San Francisco nurse, spent decades documenting the city's public stairways and published the first comprehensive guide in 1995. Her work inspired a generation of stairway walkers."
+  },
+  {
+    "id": "global-7",
+    "neighborhood": null,
+    "fact": "The steepest streets in San Francisco — like Filbert between Hyde and Leavenworth — have a 31.5% grade. Most stairways climb hills too steep even for those streets."
+  },
+  {
+    "id": "global-8",
+    "neighborhood": null,
+    "fact": "San Francisco's hills were formed by a mix of serpentine rock, chert, and sandstone. The city's topography made stairways a practical necessity long before they became a point of civic pride."
+  },
+  {
+    "id": "global-9",
+    "neighborhood": null,
+    "fact": "Some of San Francisco's oldest stairways date to the 1850s and 1860s, when the city was growing so fast that hillside access couldn't wait for proper roads to be graded."
+  },
+  {
+    "id": "global-10",
+    "neighborhood": null,
+    "fact": "Forest Hill, Golden Gate Heights, and Clarendon Heights form a stairway-rich corridor in the center of the city — walk all three and you'll cover some of SF's least-visited terrain."
+  }
+]

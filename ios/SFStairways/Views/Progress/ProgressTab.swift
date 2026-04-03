@@ -10,6 +10,7 @@ struct ProgressTab: View {
     @State private var store = StairwayStore()
     @State private var showSyncDetails = false
     @AppStorage("progress.undiscovered.collapsed") private var undiscoveredCollapsed = true
+    @State private var nuggets = NuggetProvider()
 
     private struct NeighborhoodCardData: Identifiable {
         var id: String { name }
@@ -53,6 +54,11 @@ struct ProgressTab: View {
         overrides.first { $0.stairwayID == stairway.id }
     }
 
+    private var dailyNugget: String? {
+        let seed = Calendar.current.ordinality(of: .day, in: .year, for: Date()) ?? 1
+        return nuggets.globalFact(seed: seed)
+    }
+
     private var allNeighborhoodCards: [NeighborhoodCardData] {
         let walkedIDs = Set(walkedRecords.map(\.stairwayID))
         let grouped = Dictionary(grouping: store.stairways, by: \.neighborhood)
@@ -93,6 +99,12 @@ struct ProgressTab: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     compactSummary
+                    if let nugget = dailyNugget {
+                        Text(nugget)
+                            .font(.system(.caption, design: .rounded))
+                            .foregroundStyle(.tertiary)
+                            .padding(.top, -8)
+                    }
                     Divider()
                     yourNeighborhoodsSection
                     undiscoveredSection

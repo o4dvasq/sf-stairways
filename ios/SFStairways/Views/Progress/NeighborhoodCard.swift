@@ -7,13 +7,23 @@ struct NeighborhoodCard: View {
 
     private var fraction: Double { total > 0 ? Double(walked) / Double(total) : 0 }
 
+    private var isComplete: Bool { total > 0 && walked == total }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(name)
-                .font(.system(.subheadline, design: .rounded))
-                .foregroundStyle(.primary)
-                .lineLimit(2)
-                .minimumScaleFactor(0.85)
+            HStack(alignment: .top, spacing: 4) {
+                Text(name)
+                    .font(.system(.subheadline, design: .rounded))
+                    .foregroundStyle(.primary)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.85)
+                Spacer(minLength: 0)
+                if isComplete {
+                    Image(systemName: "checkmark.seal.fill")
+                        .font(.system(size: 14))
+                        .foregroundStyle(Color.walkedGreen)
+                }
+            }
 
             Spacer(minLength: 0)
 
