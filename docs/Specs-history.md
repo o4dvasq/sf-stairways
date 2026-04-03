@@ -2,6 +2,7 @@
 
 | Description | Implemented | Spec File |
 |---|---|---|
+| Neighborhood badges (completion seal) + discovery nuggets (facts per hood + daily global) | 2026-04-02 | SPEC_neighborhood-rewards.md |
 | Hard Mode: UserDefaults-only, remove Supabase sync, verified count in Progress | 2026-04-02 | SPEC_hard-mode-simplification.md |
 | Share card redesign: amber frame, logo overlay, neighborhood progress | 2026-04-02 | SPEC_share-card-redesign.md |
 | Share card: 1080×1920 portrait image + native share sheet | 2026-04-02 | SPEC_share-card.md |

@@ -1,5 +1,16 @@
 # Architecture Decisions — sf-stairways
 
+## Neighborhood rewards: derived badge state, static fact JSON, no persistence
+**Date:** 2026-04-02
+
+**Badge state is derived, not stored.** A neighborhood is "complete" when walked stairway count equals total stairway count. This is already computed in `ProgressTab` and `NeighborhoodDetail` — no new SwiftData model, no migration, no CloudKit schema changes needed. The badge is a presentation layer concern only.
+
+**Static JSON for fact content.** `neighborhood_facts.json` is a bundle resource with 28 manually-curated facts (18 neighborhood-specific, 10 global). The hybrid approach the spec considered — dynamic computed facts vs. static trivia — was resolved by noting that the most interesting facts are historical and architectural, not derivable from the stairway catalog. Computed facts like "N of M in this neighborhood" are already shown by the progress bar, so nuggets should add new information, not restate what's already visible.
+
+**Day-of-year seed for global rotation.** The global fact in `ProgressTab` rotates daily using `Calendar.current.ordinality(of: .day, in: .year, for: Date())` as a seed into the global facts array. This is stable within a session (no flash/change on redraw), changes every day, and requires no persistent state. A `@State` variable or `@AppStorage` counter would add complexity for no benefit.
+
+**Map polygon treatment: color swap, not overlay.** Completed neighborhoods replace the neighborhood's assigned color with `Color.walkedGreen` entirely, rather than adding a separate overlay layer. This is simpler (one ForEach, no Z-stacking), avoids color mixing artifacts, and makes the "done" state visually unambiguous. The 35%/65% fill/stroke opacities for completed neighborhoods are slightly higher than the base 30%/50% to ensure the green reads clearly without dominating the map.
+
 ## Hard Mode: UserDefaults-only, Supabase sync removed
 **Date:** 2026-04-02
 
