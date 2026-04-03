@@ -1,11 +1,14 @@
 import SwiftUI
 #if canImport(UIKit)
 import UIKit
+#else
+import AppKit
 #endif
 
 extension Color {
     // MARK: - Brand (warm terracotta, light/dark adaptive)
 
+    #if canImport(UIKit)
     static let brandOrange = Color(UIColor { traits in
         traits.userInterfaceStyle == .dark
             ? UIColor(red: 0xE0/255, green: 0x7A/255, blue: 0x52/255, alpha: 1) // #E07A52
@@ -16,6 +19,18 @@ extension Color {
             ? UIColor(red: 0xC4/255, green: 0x68/255, blue: 0x42/255, alpha: 1) // #C46842
             : UIColor(red: 0xB8/255, green: 0x5A/255, blue: 0x38/255, alpha: 1) // #B85A38
     })
+    #else
+    static let brandOrange = Color(NSColor(name: nil) { appearance in
+        appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+            ? NSColor(red: 0xE0/255, green: 0x7A/255, blue: 0x52/255, alpha: 1) // #E07A52
+            : NSColor(red: 0xD4/255, green: 0x72/255, blue: 0x4E/255, alpha: 1) // #D4724E
+    })
+    static let brandOrangeDark = Color(NSColor(name: nil) { appearance in
+        appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+            ? NSColor(red: 0xC4/255, green: 0x68/255, blue: 0x42/255, alpha: 1) // #C46842
+            : NSColor(red: 0xB8/255, green: 0x5A/255, blue: 0x38/255, alpha: 1) // #B85A38
+    })
+    #endif
 
     // accentAmber: secondary warm accent, unchanged across light/dark
     static let accentAmber = Color(red: 0xE8/255, green: 0xA8/255, blue: 0x38/255) // #E8A838
@@ -37,6 +52,7 @@ extension Color {
 
     // MARK: - Surface Tokens (light/dark adaptive, warm-tinted)
 
+    #if canImport(UIKit)
     static let surfaceBackground = Color(UIColor { traits in
         traits.userInterfaceStyle == .dark
             ? UIColor.systemBackground
@@ -52,9 +68,37 @@ extension Color {
             ? UIColor(red: 0x3A/255, green: 0x3A/255, blue: 0x3C/255, alpha: 1) // #3A3A3C
             : UIColor(red: 0xF5/255, green: 0xF2/255, blue: 0xED/255, alpha: 1) // #F5F2ED
     })
+    static let surfaceWalked = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 28/255, green: 46/255, blue: 30/255, alpha: 1)        // dark forest tint
+            : UIColor(red: 240/255, green: 250/255, blue: 241/255, alpha: 1)     // #F0FAF1
+    })
+    #else
+    static let surfaceBackground = Color(NSColor(name: nil) { appearance in
+        appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+            ? NSColor.windowBackgroundColor
+            : NSColor(red: 0xFA/255, green: 0xFA/255, blue: 0xF7/255, alpha: 1) // #FAFAF7
+    })
+    static let surfaceCard = Color(NSColor(name: nil) { appearance in
+        appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+            ? NSColor(red: 0x2C/255, green: 0x2C/255, blue: 0x2E/255, alpha: 1) // #2C2C2E
+            : NSColor.white
+    })
+    static let surfaceCardElevated = Color(NSColor(name: nil) { appearance in
+        appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+            ? NSColor(red: 0x3A/255, green: 0x3A/255, blue: 0x3C/255, alpha: 1) // #3A3A3C
+            : NSColor(red: 0xF5/255, green: 0xF2/255, blue: 0xED/255, alpha: 1) // #F5F2ED
+    })
+    static let surfaceWalked = Color(NSColor(name: nil) { appearance in
+        appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+            ? NSColor(red: 28/255, green: 46/255, blue: 30/255, alpha: 1)        // dark forest tint
+            : NSColor(red: 240/255, green: 250/255, blue: 241/255, alpha: 1)     // #F0FAF1
+    })
+    #endif
 
     // MARK: - Text Tokens (adaptive)
 
+    #if canImport(UIKit)
     static let textPrimary = Color(UIColor { traits in
         traits.userInterfaceStyle == .dark
             ? UIColor(red: 0xF5/255, green: 0xF5/255, blue: 0xF5/255, alpha: 1) // #F5F5F5
@@ -65,14 +109,34 @@ extension Color {
             ? UIColor(red: 0xA0/255, green: 0xA0/255, blue: 0xA0/255, alpha: 1) // #A0A0A0
             : UIColor(red: 0x6B/255, green: 0x6B/255, blue: 0x6B/255, alpha: 1) // #6B6B6B
     })
+    #else
+    static let textPrimary = Color(NSColor(name: nil) { appearance in
+        appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+            ? NSColor(red: 0xF5/255, green: 0xF5/255, blue: 0xF5/255, alpha: 1) // #F5F5F5
+            : NSColor(red: 0x1A/255, green: 0x1A/255, blue: 0x1A/255, alpha: 1) // #1A1A1A
+    })
+    static let textSecondary = Color(NSColor(name: nil) { appearance in
+        appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+            ? NSColor(red: 0xA0/255, green: 0xA0/255, blue: 0xA0/255, alpha: 1) // #A0A0A0
+            : NSColor(red: 0x6B/255, green: 0x6B/255, blue: 0x6B/255, alpha: 1) // #6B6B6B
+    })
+    #endif
 
     // MARK: - Structural Tokens (adaptive)
 
+    #if canImport(UIKit)
     static let divider = Color(UIColor { traits in
         traits.userInterfaceStyle == .dark
             ? UIColor(red: 0x3A/255, green: 0x3A/255, blue: 0x3C/255, alpha: 1) // #3A3A3C
             : UIColor(red: 0xE8/255, green: 0xE4/255, blue: 0xDF/255, alpha: 1) // #E8E4DF
     })
+    #else
+    static let divider = Color(NSColor(name: nil) { appearance in
+        appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+            ? NSColor(red: 0x3A/255, green: 0x3A/255, blue: 0x3C/255, alpha: 1) // #3A3A3C
+            : NSColor(red: 0xE8/255, green: 0xE4/255, blue: 0xDF/255, alpha: 1) // #E8E4DF
+    })
+    #endif
 
     // MARK: - UI Tokens
 
@@ -100,6 +164,7 @@ extension ShapeStyle where Self == Color {
     static var surfaceBackground: Color { .surfaceBackground }
     static var surfaceCard: Color { .surfaceCard }
     static var surfaceCardElevated: Color { .surfaceCardElevated }
+    static var surfaceWalked: Color { .surfaceWalked }
     static var textPrimary: Color { .textPrimary }
     static var textSecondary: Color { .textSecondary }
     static var divider: Color { .divider }

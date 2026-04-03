@@ -1,5 +1,16 @@
 # Architecture Decisions — sf-stairways
 
+## Mark Walked celebration: animation-via-withAnimation, symbolEffect, surfaceWalked token
+**Date:** 2026-04-02
+
+**`withAnimation` wrapping `modelContext.save()` to drive SwiftData-triggered view animations.** `@Query` delivers updates synchronously on the main thread when `modelContext.save()` is called. Wrapping the save in `withAnimation(.easeInOut(duration: 0.4))` places that update inside an animation transaction, which the `.animation(_, value: isWalked)` modifiers pick up. This is the correct pattern for animating SwiftData state changes — calling `withAnimation` on the save site, not at the observation site.
+
+**Background color on the ScrollView, not `.presentationBackground()`.** `.presentationBackground()` is not animatable (it's a view preference). Applying `.background(color.ignoresSafeArea())` directly to the ScrollView gives the same full-sheet visual result and supports smooth animation via `.animation(_, value: isWalked)`. The grab handle pill area (a few pixels at the top) may remain system-colored, but it's imperceptible in practice.
+
+**`.symbolEffect(.bounce, value: isWalked)` for checkmark animation.** iOS 17's symbol effects are the idiomatic way to animate SF Symbols. The bounce fires when `isWalked` changes to true (the symbol just appeared, so the effect plays on insertion). On unmark, the symbol disappears via transition so no reverse bounce occurs. No manual scale state needed.
+
+**`surfaceWalked` as an AppColors token, not an inline literal.** Adding `#F0FAF1` / dark forest tint as a named token keeps the color system consistent and makes it easy to tune across the app. The dark mode value (`28/46/30` RGB) is a very dark green tint — subtle enough to be legible but clearly different from the system background.
+
 ## Neighborhood rewards: derived badge state, static fact JSON, no persistence
 **Date:** 2026-04-02
 

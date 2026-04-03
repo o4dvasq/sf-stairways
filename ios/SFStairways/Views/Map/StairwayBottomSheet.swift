@@ -168,6 +168,11 @@ struct StairwayBottomSheet: View {
             .padding(20)
         }
         .scrollDismissesKeyboard(.interactively)
+        .background(
+            (isWalked ? Color.surfaceWalked : Color(.systemBackground))
+                .animation(.easeInOut(duration: 0.4), value: isWalked)
+                .ignoresSafeArea()
+        )
         .overlay(alignment: .top) {
             if let msg = toastMessage {
                 Text(msg)
@@ -366,6 +371,7 @@ struct StairwayBottomSheet: View {
                             Image(systemName: "checkmark.circle.fill")
                                 .font(.title3)
                                 .foregroundStyle(Color.walkedGreen)
+                                .symbolEffect(.bounce, value: isWalked)
                             VStack(alignment: .leading, spacing: 1) {
                                 HStack(spacing: 4) {
                                     Text("Walked")
@@ -383,6 +389,7 @@ struct StairwayBottomSheet: View {
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
                                 }
+                                neighborhoodProgressLine
                             }
                             Spacer()
                         }
@@ -425,6 +432,20 @@ struct StairwayBottomSheet: View {
                 .datePickerStyle(.compact)
                 .padding(.horizontal, 4)
             }
+        }
+    }
+
+    // MARK: - Neighborhood Progress Line
+
+    @ViewBuilder
+    private var neighborhoodProgressLine: some View {
+        let neighborhoodIDs = Set(store.stairways(in: stairway.neighborhood).map(\.id))
+        let total = neighborhoodIDs.count
+        let walkedCount = walkRecords.filter { neighborhoodIDs.contains($0.stairwayID) && $0.walked }.count
+        if total > 1 {
+            Text("\(walkedCount) of \(total) in \(stairway.neighborhood)")
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
     }
 
@@ -705,6 +726,7 @@ struct StairwayBottomSheet: View {
     }
 
     private func markWalked(proximityVerified: Bool? = nil) {
+        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         if let record = walkRecord {
             record.walked = true
             record.dateWalked = record.dateWalked ?? Date()
@@ -717,7 +739,9 @@ struct StairwayBottomSheet: View {
             record.proximityVerified = proximityVerified
             modelContext.insert(record)
         }
-        try? modelContext.save()
+        withAnimation(.easeInOut(duration: 0.4)) {
+            try? modelContext.save()
+        }
     }
 
     private func removeRecord() {
