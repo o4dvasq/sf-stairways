@@ -2,6 +2,7 @@
 
 | Description | Implemented | Spec File |
 |---|---|---|
+| Share card redesign: amber frame, logo overlay, neighborhood progress | 2026-04-02 | SPEC_share-card-redesign.md |
 | Share card: 1080×1920 portrait image + native share sheet | 2026-04-02 | SPEC_share-card.md |
 | Landing page + privacy policy; TestFlight CTA | 2026-04-02 | SPEC_landing-page.md |
 | iOS tag editor sheet + post-photo mark-walked prompt | 2026-04-01 | SPEC_ios-tag-editor-photo-walked.md |

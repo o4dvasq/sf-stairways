@@ -34,6 +34,8 @@ struct StairwayBottomSheet: View {
 
     @AppStorage("curatorModeActive") private var curatorModeActive = false
 
+    @State private var store = StairwayStore()
+
     @State private var triggerCuratorPromote = false
     @State private var showHardModeAlert = false
     @State private var showRemoveWalkAlert = false
@@ -666,11 +668,17 @@ struct StairwayBottomSheet: View {
         let photoImage = walkRecord?.photoArray.first.flatMap { UIImage(data: $0.imageData ?? Data()) }
         let heightFt = currentOverride?.verifiedHeightFt ?? stairway.heightFt
 
+        let neighborhoodIDs = Set(store.stairways(in: stairway.neighborhood).map(\.id))
+        let neighborhoodTotal = neighborhoodIDs.count
+        let neighborhoodWalked = walkRecords.filter { neighborhoodIDs.contains($0.stairwayID) && $0.walked }.count
+
         let cardView = ShareCardView(
             stairwayName: stairway.name,
             neighborhood: stairway.neighborhood,
             heightFt: heightFt,
-            photoImage: photoImage
+            photoImage: photoImage,
+            neighborhoodWalked: neighborhoodWalked,
+            neighborhoodTotal: neighborhoodTotal
         )
 
         let renderer = ImageRenderer(content: cardView)

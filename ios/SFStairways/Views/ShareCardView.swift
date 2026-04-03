@@ -12,128 +12,173 @@ struct ShareCardView: View {
     let neighborhood: String
     let heightFt: Double?
     let photoImage: UIImage?
+    let neighborhoodWalked: Int
+    let neighborhoodTotal: Int
 
     private let cardWidth: CGFloat = 360
     private let cardHeight: CGFloat = 640
-    private let photoFraction: CGFloat = 0.60
+    private let frameWidth: CGFloat = 16
+    private let photoSectionFraction: CGFloat = 0.58
+
+    private var photoSectionHeight: CGFloat { cardHeight * photoSectionFraction }
+    private var textSectionHeight: CGFloat { cardHeight * (1 - photoSectionFraction) }
+    private var photoInsetWidth: CGFloat { cardWidth - frameWidth * 2 }
+    private var photoInsetHeight: CGFloat { photoSectionHeight - frameWidth * 2 }
 
     var body: some View {
-        ZStack {
+        VStack(spacing: 0) {
             if let photo = photoImage {
-                withPhotoLayout(photo: photo)
+                withPhotoTopSection(photo: photo)
             } else {
-                noPhotoLayout
+                noPhotoTopSection
             }
+            bottomPanel
         }
         .frame(width: cardWidth, height: cardHeight)
     }
 
-    // MARK: - With Photo Layout
+    // MARK: - With Photo: Top Section
 
-    private func withPhotoLayout(photo: UIImage) -> some View {
-        let photoHeight = cardHeight * photoFraction
-        let textHeight = cardHeight * (1 - photoFraction)
-
-        return VStack(spacing: 0) {
+    private func withPhotoTopSection(photo: UIImage) -> some View {
+        ZStack {
+            Color.brandAmber
             Image(uiImage: photo)
                 .resizable()
                 .scaledToFill()
-                .frame(width: cardWidth, height: photoHeight)
+                .frame(width: photoInsetWidth, height: photoInsetHeight)
                 .clipped()
+                .overlay(alignment: .topLeading) {
+                    logoOverlay.padding(12)
+                }
+                .overlay(alignment: .bottomTrailing) {
+                    progressPill(compact: true).padding(12)
+                }
+        }
+        .frame(width: cardWidth, height: photoSectionHeight)
+    }
 
-            VStack(alignment: .leading, spacing: 0) {
+    // MARK: - No Photo: Top Section
+
+    private var noPhotoTopSection: some View {
+        ZStack {
+            Color.brandAmber
+            ZStack {
+                // Fixed brandOrange — no light/dark adaptive, card is a static image
+                Color(red: 0xD4/255, green: 0x72/255, blue: 0x4E/255)
+                VStack(alignment: .leading, spacing: 0) {
+                    logoOverlay
+                        .padding(.top, 14)
+                        .padding(.leading, 14)
+                    Spacer()
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text(stairwayName)
+                            .font(.system(size: 26, weight: .semibold, design: .rounded))
+                            .foregroundStyle(.white)
+                            .lineLimit(3)
+                        Text(neighborhood)
+                            .font(.system(size: 15))
+                            .foregroundStyle(.white.opacity(0.85))
+                    }
+                    .padding(.horizontal, 18)
+                    Spacer()
+                    progressPill(compact: false)
+                        .padding(.horizontal, 18)
+                        .padding(.bottom, 16)
+                }
+                .frame(width: photoInsetWidth, height: photoInsetHeight, alignment: .topLeading)
+            }
+            .frame(width: photoInsetWidth, height: photoInsetHeight)
+        }
+        .frame(width: cardWidth, height: photoSectionHeight)
+    }
+
+    // MARK: - Bottom Panel
+
+    private var bottomPanel: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            if photoImage != nil {
                 Spacer()
-
                 Text(stairwayName)
                     .font(.system(size: 22, weight: .semibold, design: .rounded))
                     .foregroundStyle(Color(red: 0x1A/255, green: 0x1A/255, blue: 0x1A/255))
                     .lineLimit(2)
-
                 Text(neighborhood)
-                    .font(.system(size: 14))
+                    .font(.system(size: 13))
                     .foregroundStyle(Color(red: 0x6B/255, green: 0x6B/255, blue: 0x6B/255))
-                    .padding(.top, 4)
-
-                HStack(spacing: 8) {
-                    if let h = heightFt {
-                        CardStatPill(text: "\(Int(h)) ft", onDark: false)
-                    }
-                    CardStatPill(text: "Walked ✓", onDark: false)
-                }
-                .padding(.top, 12)
-
+                    .padding(.top, 3)
+                statPills.padding(.top, 10)
                 Spacer()
-
-                Text("Climb every stairway\nin San Francisco")
-                    .font(.system(size: 12))
-                    .foregroundStyle(Color(red: 0x6B/255, green: 0x6B/255, blue: 0x6B/255))
-                    .lineSpacing(2)
-
-                HStack {
-                    Text("sfstairways.app")
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(Color(red: 0xD4/255, green: 0x72/255, blue: 0x4E/255))
-                    Spacer()
-                    Text("SF Stairways")
-                        .font(.system(size: 11, weight: .medium, design: .rounded))
-                        .foregroundStyle(Color(red: 0xD4/255, green: 0x72/255, blue: 0x4E/255))
-                }
-                .padding(.top, 6)
+            } else {
+                Spacer()
+                statPills
+                Spacer()
             }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 16)
-            .frame(width: cardWidth, height: textHeight)
-            .background(Color(red: 0xFA/255, green: 0xFA/255, blue: 0xF7/255))
+            Text("Climb every stairway in San Francisco")
+                .font(.system(size: 11))
+                .foregroundStyle(Color(red: 0x6B/255, green: 0x6B/255, blue: 0x6B/255))
+            Text("sfstairways.app")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(Color(red: 0xD4/255, green: 0x72/255, blue: 0x4E/255))
+                .padding(.top, 4)
+        }
+        .padding(.horizontal, 20)
+        .padding(.vertical, 14)
+        .frame(width: cardWidth, height: textSectionHeight, alignment: .leading)
+        .background(Color(red: 0xFA/255, green: 0xFA/255, blue: 0xF7/255))
+    }
+
+    private var statPills: some View {
+        HStack(spacing: 8) {
+            if let h = heightFt {
+                CardStatPill(text: "\(Int(h)) ft")
+            }
+            CardStatPill(text: "Walked ✓")
         }
     }
 
-    // MARK: - No Photo Layout
+    // MARK: - Logo Overlay
 
-    private var noPhotoLayout: some View {
-        ZStack {
-            Color(red: 0xD4/255, green: 0x72/255, blue: 0x4E/255)
+    private var logoOverlay: some View {
+        HStack(spacing: 5) {
+            StairShape()
+                .fill(Color.white)
+                .frame(width: 15, height: 15)
+            Text("SF Stairways")
+                .font(.system(size: 13, weight: .medium, design: .rounded))
+                .foregroundStyle(.white)
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 6)
+        .background(Color.black.opacity(0.42))
+        .clipShape(Capsule())
+        .shadow(color: .black.opacity(0.3), radius: 4)
+    }
 
-            VStack(alignment: .leading, spacing: 0) {
-                Spacer()
+    // MARK: - Progress Pill
 
-                Text(stairwayName)
-                    .font(.system(size: 28, weight: .semibold, design: .rounded))
+    @ViewBuilder
+    private func progressPill(compact: Bool) -> some View {
+        if compact {
+            Text("\(neighborhoodWalked) of \(neighborhoodTotal)")
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(.white)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 5)
+                .background(Color.black.opacity(0.42))
+                .clipShape(Capsule())
+        } else {
+            VStack(alignment: .leading, spacing: 2) {
+                Text("\(neighborhoodWalked) of \(neighborhoodTotal) in")
+                    .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(.white)
-                    .lineLimit(3)
-
                 Text(neighborhood)
-                    .font(.system(size: 16))
-                    .foregroundStyle(.white.opacity(0.82))
-                    .padding(.top, 6)
-
-                HStack(spacing: 8) {
-                    if let h = heightFt {
-                        CardStatPill(text: "\(Int(h)) ft", onDark: true)
-                    }
-                    CardStatPill(text: "Walked ✓", onDark: true)
-                }
-                .padding(.top, 16)
-
-                Spacer()
-
-                Text("Climb every stairway\nin San Francisco")
-                    .font(.system(size: 13))
-                    .foregroundStyle(.white.opacity(0.75))
-                    .lineSpacing(2)
-
-                HStack {
-                    Text("sfstairways.app")
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(.white)
-                    Spacer()
-                    Text("SF Stairways")
-                        .font(.system(size: 12, weight: .medium, design: .rounded))
-                        .foregroundStyle(.white.opacity(0.85))
-                }
-                .padding(.top, 8)
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(.white)
             }
-            .padding(.horizontal, 28)
-            .padding(.vertical, 32)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .background(Color.white.opacity(0.18))
+            .clipShape(RoundedRectangle(cornerRadius: 8))
         }
     }
 }
@@ -142,15 +187,14 @@ struct ShareCardView: View {
 
 private struct CardStatPill: View {
     let text: String
-    let onDark: Bool
 
     var body: some View {
         Text(text)
             .font(.system(size: 12, weight: .medium))
-            .foregroundStyle(onDark ? Color.white : Color(red: 0x1A/255, green: 0x1A/255, blue: 0x1A/255))
+            .foregroundStyle(Color(red: 0x1A/255, green: 0x1A/255, blue: 0x1A/255))
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
-            .background(onDark ? Color.white.opacity(0.22) : Color(red: 0xE8/255, green: 0xE4/255, blue: 0xDF/255))
+            .background(Color(red: 0xE8/255, green: 0xE4/255, blue: 0xDF/255))
             .clipShape(Capsule())
     }
 }

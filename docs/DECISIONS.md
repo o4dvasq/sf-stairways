@@ -1,5 +1,20 @@
 # Architecture Decisions — sf-stairways
 
+## Share card redesign: brand-on-photo approach, neighborhood progress as hook
+**Date:** 2026-04-02
+
+The share card redesign prioritises making every card look intentional and branded, even when the photo is mediocre.
+
+**Amber frame as brand signal, not decoration.** A 16pt `brandAmber` border around the inset photo creates a deliberate framing that reads as "this came from an app" rather than a raw screenshot. The same amber tone is used across the app (pins, badge, header), so it communicates the brand without extra copy.
+
+**Logo overlay on photo rather than a separate logo strip.** Instead of allocating vertical space for a header logo row, the `StairShape` + "SF Stairways" text sits directly on the photo at top-left behind a semi-transparent dark pill. This follows Strava's card convention: brand marks the image, not a separate panel. The dark pill at 42% opacity is legible on both dark and light photos without evaluating the photo contents.
+
+**Neighborhood progress as the shareable hook.** The "N of M in [Neighborhood]" element turns a personal photo share into a mission update — "I'm working through Bernal Heights." Without it the card communicates only "I went somewhere." With it, it communicates commitment and progress, which is why someone would actually share.
+
+**Per-stairway `StairwayStore` instance in `StairwayBottomSheet`.** The neighborhood count computation requires `StairwayStore.stairways(in:)`. Rather than passing the store down through call sites or adding it to the environment, `StairwayBottomSheet` creates its own `@State private var store = StairwayStore()` — consistent with the pattern used by `ListTab`, `ProgressTab`, and others. Instantiating multiple stores is cheap (reads a ~50KB JSON file once).
+
+**No-photo layout promotes stairway name to the orange content area.** When there's no photo, the orange/amber section has nothing to show. Moving the stairway name and neighborhood into that area (white text on orange) gives the card a headline-poster feel and keeps the bottom panel consistent and compact across both variants.
+
 ## Share card: ImageRenderer + UIActivityViewController, no direct social posting
 **Date:** 2026-04-02
 
