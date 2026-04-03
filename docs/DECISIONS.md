@@ -1,5 +1,18 @@
 # Architecture Decisions — sf-stairways
 
+## Walked card: banner approach replaces sheet tint + inline card
+**Date:** 2026-04-03
+
+**Full-width green banner instead of `surfaceWalked` tint + small walked card.** The previous approach (green tint across the whole sheet background, small checkmark badge inline in the card) was subtle — easily missed at a glance. The new banner makes the walked state unmistakable: solid `walkedGreen` block occupying the full header width. The sheet background reverts to plain `systemBackground` — simpler, no adaptive color logic needed.
+
+**Banner uses negative padding (`-.padding(.horizontal, -20).padding(.top, -20)`) to escape VStack padding.** The VStack has a uniform 20pt padding, but the banner should be edge-to-edge. Applying negative margins is the idiomatic SwiftUI approach when you can't restructure the layout hierarchy without larger refactoring. The banner then re-applies its own `padding(.horizontal, 20)` and `padding(.vertical, 16)` internally, so content sits correctly.
+
+**`neighborhoodProgressLine` inlined into `walkedBanner`, property deleted.** The progress line previously lived in `walkStatusCard`. With the card gone, the logic (fetch neighborhood IDs, count walked) moved directly into the banner's computed property. There's no reuse elsewhere, so a separate property would be dead weight. The same computation exists in `walkedBanner` and `generateShareCard()` — both are self-contained and the neighborhood query is cheap.
+
+**Remove alert triggered by tapping the banner, not a separate button.** Matching the existing tap-to-remove affordance from the old `walkStatusCard`. The banner is visually distinct enough that an accidental tap is unlikely. The confirmation alert still guards the destructive action.
+
+**Section headings ("My Notes", "Tags") removed from both states for consistency.** The headings were redundant — the content (note text, tag pills, + Add buttons) is self-describing. Removing them makes both states feel consistent and reduces visual noise in the expanded sheet.
+
 ## Tag pill colors: persisted colorIndex on model, shared palette in AppColors
 **Date:** 2026-04-03
 
