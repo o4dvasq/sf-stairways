@@ -123,7 +123,6 @@ struct SettingsView: View {
                         .foregroundStyle(Color.forestGreen)
                 }
             }
-            .disabled(!authManager.isAuthenticated)
         }
     }
 

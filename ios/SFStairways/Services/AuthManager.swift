@@ -30,20 +30,6 @@ final class AuthManager: NSObject {
     func setHardMode(_ enabled: Bool) {
         hardModeEnabled = enabled
         UserDefaults.standard.set(enabled, forKey: "hardModeEnabled")
-        Task { await syncHardModeToSupabase() }
-    }
-
-    private func syncHardModeToSupabase() async {
-        guard let userId else { return }
-        do {
-            try await SupabaseManager.shared.client
-                .from("user_profiles")
-                .update(["hard_mode_enabled": hardModeEnabled])
-                .eq("id", value: userId.uuidString)
-                .execute()
-        } catch {
-            print("[AuthManager] Failed to sync hard mode: \(error)")
-        }
     }
 
     // MARK: - Profile
@@ -61,9 +47,6 @@ final class AuthManager: NSObject {
             if let profile = profiles.first {
                 await MainActor.run {
                     self.userProfile = profile
-                    // Supabase is the source of truth for hard mode on sign-in
-                    self.hardModeEnabled = profile.hardModeEnabled
-                    UserDefaults.standard.set(profile.hardModeEnabled, forKey: "hardModeEnabled")
                 }
             }
         } catch {

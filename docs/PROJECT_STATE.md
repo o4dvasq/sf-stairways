@@ -1,6 +1,6 @@
 # Project State — sf-stairways
 
-_Last updated: 2026-04-02 (share-card-redesign)_
+_Last updated: 2026-04-02 (hard-mode-simplification)_
 
 ## Platforms
 
@@ -15,6 +15,7 @@ _Last updated: 2026-04-02 (share-card-redesign)_
 - **Visual design: light-first** — warm terracotta `brandOrange`, SF Pro Rounded for display text, `surfaceCardElevated` stat cards, orange progress ring
 - **Neighborhoods: SF 311 Neighborhoods** — 117 granular neighborhoods (68 with stairways); powered by `NeighborhoodStore` (GeoJSON-backed, computes centroids + adjacency at startup)
 - **No HealthKit, no active walk recording** — "Mark Walked" is the only walk-logging action
+- **Hard Mode** — UserDefaults-only preference (no Supabase sync); toggle always enabled in Settings regardless of auth state; proximity check (150m) enforced at mark time; "Mark Anyway" override logs `proximityVerified = false`; Progress tab shows verified count only when > 0
 - **Share card** — walked stairways show a share button (`square.and.arrow.up`, brandOrange) in the bottom sheet header; tapping generates a 1080×1920 portrait card via `ImageRenderer` and opens the native iOS share sheet. Card is branded: brandAmber frame around inset photo, white `StairShape` + "SF Stairways" logo overlay (dark pill) top-left, neighborhood progress pill ("N of M") bottom-right. No-photo variant uses brandOrange solid content area with stairway name + progress in white.
 - Successfully archived in Xcode on 2026-03-23
 - See `docs/IOS_REFERENCE.md` for full build details
@@ -66,6 +67,7 @@ _Last updated: 2026-04-02 (share-card-redesign)_
 ## Recent Completions
 
 ### 2026-04-02
+- **Hard Mode Simplification** — Decoupled Hard Mode from Supabase auth. `setHardMode()` now only writes to UserDefaults — no Supabase network call. `loadProfile()` no longer overwrites the local Hard Mode preference from Supabase on sign-in. Hard Mode toggle in Settings has `.disabled(!authManager.isAuthenticated)` removed — always interactive. `ProgressTab` now computes `verifiedCount` from existing `walkRecords` query and appends "· N verified" to the neighborhood stats line when the user has at least one proximity-verified walk.
 - **Share Card Redesign** — Full brand overhaul of `ShareCardView`. With-photo layout: 16pt brandAmber frame around inset photo; white `StairShape` + "SF Stairways" logo overlay on photo (dark pill for legibility on any background); neighborhood progress pill ("N of M") bottom-right corner of photo. No-photo layout: amber frame around brandOrange solid content area; stairway name + neighborhood in white inside the orange area; larger "N of M in [Neighborhood]" progress block. Bottom text panel (cream `#FAFAF7`): stairway name + neighborhood (photo variant only), height pill, "Walked ✓" pill, tagline, `sfstairways.app` URL in brandOrange. `StairwayBottomSheet` now holds a `StairwayStore` and computes `neighborhoodWalked` / `neighborhoodTotal` counts before rendering the card. `CardStatPill` simplified (removed `onDark` flag — bottom panel is always light-mode cream).
 - **Share Card** — `ShareCardView.swift` (new) renders a 1080×1920 portrait card via `ImageRenderer` at 3× scale. Two layouts: photo-backed (top 60% user photo, cream bottom text panel) and text-only (brand orange background, white text). Card shows stairway name, neighborhood, height pill, "Walked ✓" pill, tagline, and `sfstairways.app` URL. Share button (`square.and.arrow.up`, brandOrange) appears in `StairwayBottomSheet` header for walked stairways only. `ActivityShareSheet` wraps `UIActivityViewController`; shares both image and "Climb every stairway in SF — sfstairways.app" text. Photo is sourced from the first local `WalkPhoto` if available.
 - **Landing Page + Privacy Policy** — New `index.html` landing page (Instrument Serif + DM Sans, full-viewport hero with SF Unsplash photo, brand orange CTA linking to TestFlight placeholder, features + story sections). `privacy.html` covering SwiftData local storage, iCloud CloudKit, optional Supabase auth, no analytics, no server photo uploads. OG/Twitter meta tags on both pages. Deprecated Leaflet web app moved to `legacy/index.html`. Oscar will swap hero photo with original photography and update TestFlight URL when live.

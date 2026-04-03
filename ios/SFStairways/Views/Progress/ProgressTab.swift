@@ -27,6 +27,10 @@ struct ProgressTab: View {
         walkRecords.filter(\.walked)
     }
 
+    private var verifiedCount: Int {
+        walkRecords.filter { $0.proximityVerified == true }.count
+    }
+
     private var totalStairways: Int { store.stairways.count }
     private var walkedCount: Int { walkedRecords.count }
 
@@ -149,7 +153,10 @@ struct ProgressTab: View {
                     .font(.system(.subheadline, design: .rounded))
                     .foregroundStyle(.secondary)
                 let n = activeNeighborhoodCards.count
-                Text("\(n) neighborhood\(n == 1 ? "" : "s")")
+                let neighborhoodLine = verifiedCount > 0
+                    ? "\(n) neighborhood\(n == 1 ? "" : "s") · \(verifiedCount) verified"
+                    : "\(n) neighborhood\(n == 1 ? "" : "s")"
+                Text(neighborhoodLine)
                     .font(.system(.subheadline, design: .rounded))
                     .foregroundStyle(.secondary)
             }

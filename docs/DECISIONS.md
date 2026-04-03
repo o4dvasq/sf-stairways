@@ -1,5 +1,16 @@
 # Architecture Decisions — sf-stairways
 
+## Hard Mode: UserDefaults-only, Supabase sync removed
+**Date:** 2026-04-02
+
+**Hard Mode was never a social or cloud-dependent feature.** The original implementation synced the `hardModeEnabled` preference to `user_profiles.hard_mode_enabled` in Supabase and blocked the toggle behind auth. This added friction with no benefit — the setting is a personal preference, not something other users or the server needs to know. It also silently failed for signed-out users (toggle was grayed out).
+
+**UserDefaults is the correct store.** Preferences that gate local app behavior (`hardModeEnabled`) belong in `UserDefaults`, not a remote database. The proximity check at mark time is entirely local — `LocationManager.isWithinRadius`. Syncing a boolean that only affects one device to a server was over-engineering.
+
+**`loadProfile()` no longer overwrites the local preference.** Previously, signing in would clobber the user's current Hard Mode state with whatever was in Supabase. This meant a user who had Hard Mode on, signed in, and found the preference reset had no explanation. Removing that overwrite makes the preference stable across auth state changes.
+
+**Verified count in Progress tab rewards without shaming.** Showing a "N verified" count only when `verifiedCount > 0` means Hard Mode users see a quiet acknowledgment of precision walks. Users who never use Hard Mode see nothing different. "0 verified" would be confusing or punitive for the latter group.
+
 ## Share card redesign: brand-on-photo approach, neighborhood progress as hook
 **Date:** 2026-04-02
 

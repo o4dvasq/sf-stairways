@@ -2,6 +2,7 @@
 
 | Description | Implemented | Spec File |
 |---|---|---|
+| Hard Mode: UserDefaults-only, remove Supabase sync, verified count in Progress | 2026-04-02 | SPEC_hard-mode-simplification.md |
 | Share card redesign: amber frame, logo overlay, neighborhood progress | 2026-04-02 | SPEC_share-card-redesign.md |
 | Share card: 1080×1920 portrait image + native share sheet | 2026-04-02 | SPEC_share-card.md |
 | Landing page + privacy policy; TestFlight CTA | 2026-04-02 | SPEC_landing-page.md |
