@@ -2,6 +2,7 @@
 
 | Description | Implemented | Spec File |
 |---|---|---|
+| Splash image swap to branded PNG; old assets removed | 2026-04-03 | SPEC_splash-image-update.md |
 | Share card logo overlay moved to bottom-left for crop safety | 2026-04-03 | SPEC_share-card-crop-safe.md |
 | Progress count bugfix + neighborhoods visited in map card | 2026-04-02 | SPEC_progress-count-bugfix.md |
 | Mark Walked: haptic, green sheet tint, progress line, bounce animation | 2026-04-02 | SPEC_mark-walked-celebration.md |

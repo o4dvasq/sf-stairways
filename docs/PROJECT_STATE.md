@@ -1,6 +1,6 @@
 # Project State — sf-stairways
 
-_Last updated: 2026-04-03 (share-card-crop-safe + asset cleanup)_
+_Last updated: 2026-04-03 (splash-image-update)_
 
 ## Platforms
 
@@ -69,6 +69,7 @@ _Last updated: 2026-04-03 (share-card-crop-safe + asset cleanup)_
 ## Recent Completions
 
 ### 2026-04-03
+- **Splash Image Update** — `splash.imageset` now references `splash_with_text.png` (new branded illustration with "SF Stairways" title and tagline baked in). Deleted `splash_image.jpeg` and `Gemini_Generated_Image_cfnhajcfnhajcfnh.png`. Font `.ttf` files (DM Sans, Instrument Serif variants) moved from `Assets.xcassets/` to `fonts/` at project root — they're web/design references, not iOS app resources. `SplashView.swift` unchanged.
 - **Share Card Crop-Safe Layout** — Logo overlay moved from `.topLeading` to `.bottomLeading` in `ShareCardView`. Both the logo pill and progress pill now sit at the bottom of the photo inset (logo left, progress right), keeping all branding within the safe zone for Messages (square crop) and Instagram Posts (4:5 crop). No-photo layout unchanged.
 - **Asset Cleanup** — `splash.imageset/Contents.json` updated to reference `splash_with_text.png` (was pointing to non-existent `splash_image.jpeg`). Deleted `Gemini_Generated_Image_cfnhajcfnhajcfnh.png`. Moved 4 `.ttf` font files (DM Sans, Instrument Serif variants) out of `Assets.xcassets` into `fonts/` at the project root — they're web font references, not iOS app resources.
 
