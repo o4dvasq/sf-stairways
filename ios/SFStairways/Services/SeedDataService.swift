@@ -114,8 +114,9 @@ enum SeedDataService {
             return
         }
 
-        for preset in presets {
+        for (index, preset) in presets.enumerated() {
             let tag = StairwayTag(id: preset.id, name: preset.name, isPreset: true)
+            tag.colorIndex = index % 12
             modelContext.insert(tag)
         }
 

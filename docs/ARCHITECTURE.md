@@ -152,7 +152,7 @@ Source at `ios/SFStairways/`. iOS is the primary user-facing platform. Web app d
 | `WalkRecord` | `stairwayID`, `walked`, `dateWalked`, `notes`, `photos: [WalkPhoto]?`, `hardMode: Bool`, `proximityVerified: Bool?`; legacy fields retained for CloudKit schema compatibility: `elevationGain`, `walkStartTime`, `walkEndTime` (no longer populated or displayed in iOS) |
 | `WalkPhoto` | `imageData` (externalStorage), `thumbnailData` (externalStorage), `caption`, `walkRecord` |
 | `StairwayOverride` | `stairwayID`, `verifiedHeightFt: Double?`, `stairwayDescription: String?`, `createdAt`, `updatedAt` |
-| `StairwayTag` | `id` (slug), `name`, `isPreset: Bool`, `createdAt` |
+| `StairwayTag` | `id` (slug), `name`, `isPreset: Bool`, `createdAt`, `colorIndex: Int` (default 0; random on user creation, sequential 0–11 for preset seeds; indexes into `Color.tagPalette` in `AppColors`) |
 | `TagAssignment` | `stairwayID`, `tagID`, `assignedAt` — many-to-many join; independent of `WalkRecord` |
 | `StairwayDeletion` | `stairwayID` (@Attribute(.unique)), `deletedAt`, `reason: String?` — inserted when a stairway is hidden/removed from the catalog; syncs via CloudKit; all targets (iOS, macOS, admin) filter stairways against this table via `StairwayStore.applyDeletions(_:)`; delete the record to restore |
 | `Stairway` | Value type loaded from `all_stairways.json` bundle resource; computed `displayName` truncates to first 4 words, stripping trailing `.,;` from each word (no ellipsis) — used for map annotation labels only; full `name` used everywhere else |

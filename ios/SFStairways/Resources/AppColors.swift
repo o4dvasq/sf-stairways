@@ -138,6 +138,23 @@ extension Color {
     })
     #endif
 
+    // MARK: - Tag Palette (12-color palette for tag pills)
+
+    static let tagPalette: [Color] = [
+        Color(red: 0.92, green: 0.55, blue: 0.55),  // rose
+        Color(red: 0.52, green: 0.75, blue: 0.92),  // sky blue
+        Color(red: 0.55, green: 0.90, blue: 0.55),  // mint green
+        Color(red: 0.78, green: 0.72, blue: 0.32),  // warm yellow (darkened 15% for white text contrast)
+        Color(red: 0.72, green: 0.52, blue: 0.92),  // lavender
+        Color(red: 0.92, green: 0.62, blue: 0.42),  // peach
+        Color(red: 0.38, green: 0.88, blue: 0.80),  // aqua
+        Color(red: 0.85, green: 0.48, blue: 0.76),  // pink-purple
+        Color(red: 0.48, green: 0.85, blue: 0.48),  // sage
+        Color(red: 0.92, green: 0.58, blue: 0.32),  // apricot
+        Color(red: 0.45, green: 0.65, blue: 0.92),  // cornflower
+        Color(red: 0.75, green: 0.75, blue: 0.30),  // lemon (darkened 15% for white text contrast)
+    ]
+
     // MARK: - UI Tokens
 
     static let pillActive = Color(red: 212/255, green: 136/255, blue: 43/255)         // #D4882B

@@ -195,6 +195,7 @@ struct SearchPanel: View {
                 FlowLayout(spacing: 8) {
                     ForEach(tagsWithAssignments) { tag in
                         let count = allAssignments.filter { $0.tagID == tag.id }.count
+                        let tagColor = Color.tagPalette[tag.colorIndex % Color.tagPalette.count]
                         Button {
                             selectedTag = tag
                         } label: {
@@ -204,12 +205,12 @@ struct SearchPanel: View {
                                     .fontWeight(.medium)
                                 Text("\(count)")
                                     .font(.caption2)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(.white.opacity(0.75))
                             }
                             .padding(.horizontal, 16)
                             .padding(.vertical, 10)
-                            .background(Color(.systemGray6))
-                            .foregroundStyle(.primary)
+                            .foregroundStyle(.white)
+                            .background(tagColor)
                             .clipShape(Capsule())
                         }
                         .buttonStyle(.plain)

@@ -2,6 +2,9 @@
 
 | Description | Implemented | Spec File |
 |---|---|---|
+| Fix celebration animation: celebrationTrigger, Mark Anyway delay | 2026-04-03 | SPEC_celebration-bug.md |
+| Tag pills: filled color palette, white text, random color per tag | 2026-04-03 | SPEC_tag-pill-colors.md |
+| Public app rename: SF Stairways → SF Stairs across iOS + web | 2026-04-03 | SPEC_sf-stairs-rebrand.md |
 | Splash image swap to branded PNG; old assets removed | 2026-04-03 | SPEC_splash-image-update.md |
 | Share card logo overlay moved to bottom-left for crop safety | 2026-04-03 | SPEC_share-card-crop-safe.md |
 | Progress count bugfix + neighborhoods visited in map card | 2026-04-02 | SPEC_progress-count-bugfix.md |

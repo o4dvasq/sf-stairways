@@ -30,7 +30,7 @@ struct TagFilterSheet: View {
                 } else {
                     FlowLayout(spacing: 8) {
                         ForEach(tagsWithAssignments) { tag in
-                            FilterTagPill(name: tag.name, isActive: activeTagID == tag.id) {
+                            FilterTagPill(name: tag.name, colorIndex: tag.colorIndex, isActive: activeTagID == tag.id) {
                                 if activeTagID == tag.id {
                                     activeTagID = nil
                                 } else {
@@ -110,22 +110,24 @@ struct FlowLayout: Layout {
 
 private struct FilterTagPill: View {
     let name: String
+    let colorIndex: Int
     let isActive: Bool
     let action: () -> Void
 
     var body: some View {
-        Button(action: action) {
+        let tagColor = Color.tagPalette[colorIndex % Color.tagPalette.count]
+        return Button(action: action) {
             Text(name)
                 .font(.subheadline)
                 .fontWeight(.medium)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 8)
-                .background(isActive ? Color.brandAmber : Color(.systemBackground))
-                .foregroundStyle(isActive ? .white : .primary)
+                .foregroundStyle(.white)
+                .background(tagColor)
                 .clipShape(Capsule())
                 .overlay(
                     Capsule()
-                        .stroke(isActive ? Color.clear : Color(.separator), lineWidth: 0.5)
+                        .stroke(isActive ? Color.white.opacity(0.6) : Color.clear, lineWidth: 2)
                 )
         }
     }

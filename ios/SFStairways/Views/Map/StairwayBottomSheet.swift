@@ -47,6 +47,7 @@ struct StairwayBottomSheet: View {
     @State private var photoWalkedPromptShown = false
     @State private var shareImage: UIImage? = nil
     @State private var showShareSheet = false
+    @State private var celebrationTrigger = 0
 
     private enum CuratorField: Hashable {
         case height, description
@@ -82,10 +83,40 @@ struct StairwayBottomSheet: View {
 
                 // ── Collapsed content (fits at .height(390)) ──────────────
 
-                headerSection
-                statsRow
-                walkStatusCard
-                actionButtons
+                if isWalked {
+                    walkedBanner
+                        .padding(.horizontal, -20)
+                        .padding(.top, -20)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+
+                    walkedIconsRow
+
+                    if editingDate, let record = walkRecord {
+                        DatePicker(
+                            "Date walked",
+                            selection: Binding(
+                                get: { record.dateWalked ?? Date() },
+                                set: {
+                                    record.dateWalked = $0
+                                    record.updatedAt = Date()
+                                    try? modelContext.save()
+                                }
+                            ),
+                            displayedComponents: .date
+                        )
+                        .datePickerStyle(.compact)
+                        .padding(.horizontal, 4)
+                    }
+                } else {
+                    headerSection
+                    statsRow
+                    Text("Not yet walked")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, 4)
+                    actionButtons
+                }
 
                 // ── Expanded content (revealed by dragging to .large) ─────
 
@@ -168,11 +199,8 @@ struct StairwayBottomSheet: View {
             .padding(20)
         }
         .scrollDismissesKeyboard(.interactively)
-        .background(
-            (isWalked ? Color.surfaceWalked : Color(.systemBackground))
-                .animation(.easeInOut(duration: 0.4), value: isWalked)
-                .ignoresSafeArea()
-        )
+        .animation(.easeInOut(duration: 0.4), value: isWalked)
+        .background(Color(.systemBackground).ignoresSafeArea())
         .overlay(alignment: .top) {
             if let msg = toastMessage {
                 Text(msg)
@@ -194,7 +222,11 @@ struct StairwayBottomSheet: View {
         }
         .alert("Mark as walked?", isPresented: $showHardModeAlert) {
             Button("Cancel", role: .cancel) { }
-            Button("Mark Anyway") { markWalked(proximityVerified: false) }
+            Button("Mark Anyway") {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    markWalked(proximityVerified: false)
+                }
+            }
         } message: {
             Text("You're not near this stairway. You can still log it, but it won't count as proximity-verified.")
         }
@@ -219,7 +251,7 @@ struct StairwayBottomSheet: View {
             if let image = shareImage {
                 ActivityShareSheet(activityItems: [
                     image,
-                    "Climb every stairway in SF — sfstairways.app"
+                    "Climb every stair in SF — sfstairways.app"
                 ])
                 .presentationDetents([.medium, .large])
             }
@@ -357,81 +389,85 @@ struct StairwayBottomSheet: View {
         .foregroundStyle(.secondary)
     }
 
-    // MARK: - Walk Status Card
+    // MARK: - Walked Banner
 
-    private var walkStatusCard: some View {
-        VStack(spacing: 10) {
-            if isWalked {
-                HStack {
-                    // Tapping the walked banner prompts to remove the walk record.
-                    Button {
-                        showRemoveWalkAlert = true
-                    } label: {
-                        HStack {
-                            Image(systemName: "checkmark.circle.fill")
-                                .font(.title3)
-                                .foregroundStyle(Color.walkedGreen)
-                                .symbolEffect(.bounce, value: isWalked)
-                            VStack(alignment: .leading, spacing: 1) {
-                                HStack(spacing: 4) {
-                                    Text("Walked")
-                                        .font(.subheadline)
-                                        .fontWeight(.medium)
-                                        .foregroundStyle(Color.walkedGreen)
-                                    if walkRecord?.proximityVerified == false {
-                                        Image(systemName: "xmark.seal.fill")
-                                            .font(.caption)
-                                            .foregroundStyle(Color.brandAmber)
-                                    }
-                                }
-                                if let date = walkRecord?.dateWalked {
-                                    Text(date.formatted(date: .long, time: .omitted))
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-                                neighborhoodProgressLine
-                            }
-                            Spacer()
-                        }
-                    }
-                    .buttonStyle(.plain)
+    private var walkedBanner: some View {
+        let neighborhoodIDs = Set(store.stairways(in: stairway.neighborhood).map(\.id))
+        let total = neighborhoodIDs.count
+        let walkedCount = walkRecords.filter { neighborhoodIDs.contains($0.stairwayID) && $0.walked }.count
 
-                    Button {
-                        editingDate = true
-                    } label: {
-                        Image(systemName: "pencil")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+        return Button {
+            showRemoveWalkAlert = true
+        } label: {
+            HStack(alignment: .center) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(stairway.name)
+                        .font(.title3)
+                        .fontWeight(.bold)
+                        .foregroundStyle(.white)
+                    if total > 1 {
+                        Text("\(stairway.neighborhood) · \(walkedCount) of \(total)")
+                            .font(.subheadline)
+                            .foregroundStyle(.white)
+                    } else {
+                        Text(stairway.neighborhood)
+                            .font(.subheadline)
+                            .foregroundStyle(.white)
                     }
                 }
-                .padding(14)
-                .background(Color.walkedGreen.opacity(0.1))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-            } else {
-                // No action button here — "Start Walk" and "Mark Walked" live in actionButtons below.
-                Text("Not yet walked")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 4)
+                Spacer()
+                HStack(spacing: 6) {
+                    if walkRecord?.proximityVerified == false {
+                        Image(systemName: "xmark.seal.fill")
+                            .font(.system(size: 20))
+                            .foregroundStyle(Color.brandAmber)
+                    }
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: 44))
+                        .foregroundStyle(.white)
+                        .symbolEffect(.bounce, value: celebrationTrigger)
+                }
             }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 16)
+            .frame(maxWidth: .infinity)
+            .background(Color.walkedGreen)
+        }
+        .buttonStyle(.plain)
+    }
 
-            if editingDate, let record = walkRecord {
-                DatePicker(
-                    "Date walked",
-                    selection: Binding(
-                        get: { record.dateWalked ?? Date() },
-                        set: {
-                            record.dateWalked = $0
-                            record.updatedAt = Date()
-                            try? modelContext.save()
-                        }
-                    ),
-                    displayedComponents: .date
-                )
-                .datePickerStyle(.compact)
-                .padding(.horizontal, 4)
+    // MARK: - Walked Icons Row
+
+    private var walkedIconsRow: some View {
+        HStack(spacing: 16) {
+            Button {
+                generateShareCard()
+            } label: {
+                Image(systemName: "square.and.arrow.up")
+                    .font(.system(size: 18))
+                    .foregroundStyle(Color.brandOrange)
             }
+            Menu {
+                Button { showCamera = true } label: {
+                    Label("Take Photo", systemImage: "camera")
+                }
+                Button { showPhotoPicker = true } label: {
+                    Label("Choose from Library", systemImage: "photo.on.rectangle")
+                }
+            } label: {
+                Image(systemName: "camera.fill")
+                    .font(.system(size: 18))
+                    .foregroundStyle(Color.forestGreen)
+            }
+            Button {
+                editingDate = true
+            } label: {
+                Image(systemName: "pencil")
+                    .font(.system(size: 16))
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            statsRow
         }
     }
 
@@ -465,12 +501,9 @@ struct StairwayBottomSheet: View {
 
     private var notesSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text("My Notes")
-                    .font(.subheadline)
-                    .fontWeight(.medium)
-                Spacer()
-                if authManager.isCurator && curatorModeActive && !notesText.isEmpty {
+            if authManager.isCurator && curatorModeActive && !notesText.isEmpty {
+                HStack {
+                    Spacer()
                     Button {
                         triggerCuratorPromote = true
                     } label: {
@@ -558,19 +591,16 @@ struct StairwayBottomSheet: View {
 
     private var tagsSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Tags")
-                .font(.subheadline)
-                .fontWeight(.medium)
-
             FlowLayout(spacing: 8) {
                 ForEach(stairwayTags) { tag in
                     Text(tag.name)
                         .font(.subheadline)
+                        .fontWeight(.medium)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 6)
-                        .foregroundStyle(Color.forestGreen)
+                        .foregroundStyle(.white)
+                        .background(Color.tagPalette[tag.colorIndex % Color.tagPalette.count])
                         .clipShape(Capsule())
-                        .overlay(Capsule().stroke(Color.forestGreen, lineWidth: 1))
                 }
                 Button {
                     showTagEditor = true
@@ -726,7 +756,6 @@ struct StairwayBottomSheet: View {
     }
 
     private func markWalked(proximityVerified: Bool? = nil) {
-        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         if let record = walkRecord {
             record.walked = true
             record.dateWalked = record.dateWalked ?? Date()
@@ -739,8 +768,12 @@ struct StairwayBottomSheet: View {
             record.proximityVerified = proximityVerified
             modelContext.insert(record)
         }
+        try? modelContext.save()
+
+        // Fire celebration after save so the animation context is clean of any SwiftData update.
+        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         withAnimation(.easeInOut(duration: 0.4)) {
-            try? modelContext.save()
+            celebrationTrigger += 1
         }
     }
 

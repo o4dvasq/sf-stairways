@@ -1,5 +1,18 @@
 # Architecture Decisions — sf-stairways
 
+## Tag pill colors: persisted colorIndex on model, shared palette in AppColors
+**Date:** 2026-04-03
+
+**`colorIndex: Int` persisted on `StairwayTag`, not computed at render time.** The alternative — deriving a color from the tag's string ID or name (e.g. `abs(name.hash) % 12`) — would give stable colors without a new property. But it couples the color to the slug/name and makes reassignment impossible. Persisting the index on the model is the correct SwiftData pattern: the color is a data attribute, not a view concern.
+
+**Default value of `0` (rose) for existing tags — no migration script.** SwiftData lightweight migration handles adding a property with a default value. Existing tags will all appear rose initially; the spec notes this is acceptable since users likely have few custom tags. A one-time migration to randomize existing tags was considered and rejected — it adds complexity and the problem self-heals when users next open the TagEditorSheet (they can see the pill color before assigning).
+
+**Warm yellow and lemon darkened ~15% in the palette definition.** Rather than computing a brightness-adjusted variant at render time, the darkened values are baked directly into `tagPalette`. This keeps the rendering code simple (just index lookup, no Color manipulation), and the adjustment is a one-time design decision — not something that needs to be dynamically recalculated.
+
+**`Color.tagPalette` defined in `AppColors.swift`, not pulled from `NeighborhoodStore`.** The spec considered reusing `NeighborhoodStore`'s palette directly, but that would couple the tag system to the neighborhood system at the type level. Duplicating (or re-defining) the 12 colors in `AppColors` keeps the two concerns independent. The colors happen to be the same visual palette, but their purpose and ownership are different.
+
+**Active state in `TagFilterSheet` shown via white stroke overlay, not color change.** The fill color is the tag's identity — changing it on selection would break the color-as-identity contract. A white `Capsule()` stroke at 0.6 opacity reads clearly against any of the 12 palette colors while preserving the tag's color identity.
+
 ## Mark Walked celebration: animation-via-withAnimation, symbolEffect, surfaceWalked token
 **Date:** 2026-04-02
 
