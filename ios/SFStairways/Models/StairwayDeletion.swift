@@ -3,8 +3,10 @@ import SwiftData
 
 @Model
 final class StairwayDeletion {
-    @Attribute(.unique) var stairwayID: String
-    var deletedAt: Date
+    // Note: .unique removed — CloudKit does not support unique constraints.
+    // Uniqueness is enforced in app logic (check before insert).
+    var stairwayID: String = ""
+    var deletedAt: Date = Date()
     var reason: String?
 
     init(stairwayID: String, deletedAt: Date = Date(), reason: String? = nil) {

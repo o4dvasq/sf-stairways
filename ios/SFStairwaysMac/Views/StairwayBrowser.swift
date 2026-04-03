@@ -69,6 +69,8 @@ struct StairwayBrowser: View {
     @State private var sortOrder: [KeyPathComparator<StairwayRow>] = [
         .init(\.name, order: .forward)
     ]
+    @AppStorage("macStairwayTableColumnOrder")
+    private var columnCustomization = TableColumnCustomization<StairwayRow>()
 
     // MARK: - Derived Data
 
@@ -302,7 +304,7 @@ struct StairwayBrowser: View {
 
     @ViewBuilder
     private var stairwayTable: some View {
-        Table(sortedRows, selection: $selectedIDs, sortOrder: $sortOrder) {
+        Table(sortedRows, selection: $selectedIDs, sortOrder: $sortOrder, columnCustomization: $columnCustomization) {
             TableColumn("Name", value: \.name) { row in
                 HStack(spacing: 6) {
                     if row.walked {
@@ -319,6 +321,7 @@ struct StairwayBrowser: View {
                 }
             }
             .width(min: 160)
+            .customizationID("name")
 
             TableColumn("Height", value: \.heightSortKey) { row in
                 if let h = row.heightFt {
@@ -328,6 +331,7 @@ struct StairwayBrowser: View {
                 }
             }
             .width(65)
+            .customizationID("height")
 
             TableColumn("Photos", value: \.photoCount) { row in
                 if row.photoCount > 0 {
@@ -338,6 +342,7 @@ struct StairwayBrowser: View {
                 }
             }
             .width(60)
+            .customizationID("photos")
 
             TableColumn("Notes") { row in
                 if row.hasNotes && row.hasCuratorDescription {
@@ -376,6 +381,7 @@ struct StairwayBrowser: View {
                 }
             }
             .width(150)
+            .customizationID("notes")
 
             TableColumn("Date Walked", value: \.dateWalkedSortKey) { row in
                 if let date = row.dateWalked {
@@ -386,6 +392,7 @@ struct StairwayBrowser: View {
                 }
             }
             .width(95)
+            .customizationID("dateWalked")
         }
         .navigationTitle(selectedNeighborhood ?? "All Stairways")
         .navigationSubtitle("\(sortedRows.count) stairways · \(sortedRows.filter(\.walked).count) walked")

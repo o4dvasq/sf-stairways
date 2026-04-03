@@ -409,7 +409,7 @@ struct ProgressCard: View {
                     .font(.caption2)
                     .foregroundStyle(.secondary)
                 if neighborhoodsVisited > 0 {
-                    Text("\(neighborhoodsVisited) hoods")
+                    Text("\(neighborhoodsVisited) 'hoods")
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }

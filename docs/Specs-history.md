@@ -2,6 +2,7 @@
 
 | Description | Implemented | Spec File |
 |---|---|---|
+| Walked card: green banner, remove section headings, icons row below | 2026-04-03 | SPEC_walked-card-redesign.md |
 | Fix celebration animation: celebrationTrigger, Mark Anyway delay | 2026-04-03 | SPEC_celebration-bug.md |
 | Tag pills: filled color palette, white text, random color per tag | 2026-04-03 | SPEC_tag-pill-colors.md |
 | Public app rename: SF Stairways → SF Stairs across iOS + web | 2026-04-03 | SPEC_sf-stairs-rebrand.md |
