@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SF Stairways — Climb every stairway in San Francisco</title>
+  <title>SF Stairs — Climb every stair in San Francisco</title>
 
   <!-- Open Graph -->
-  <meta property="og:title" content="SF Stairways — Climb every stairway in San Francisco" />
+  <meta property="og:title" content="SF Stairs — Climb every stair in San Francisco" />
   <meta property="og:description" content="Track your progress across 382 public stairways in San Francisco. Free beta." />
   <meta property="og:image" content="https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=1200&q=80" />
-  <meta property="og:url" content="https://o4dvasq.github.io/sf-stairways/" />
+  <meta property="og:url" content="https://sfstairways.app" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="SF Stairways — Climb every stairway in San Francisco" />
+  <meta name="twitter:title" content="SF Stairs — Climb every stair in San Francisco" />
   <meta name="twitter:description" content="Track your progress across 382 public stairways in San Francisco. Free beta." />
   <meta name="twitter:image" content="https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=1200&q=80" />
 
@@ -154,10 +154,23 @@
       50% { transform: translateX(-50%) translateY(6px); }
     }
 
+    /* ── Logo divider ── */
+    .logo-divider {
+      background: var(--white);
+      padding: 3rem 1.5rem 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    .logo-divider svg {
+      width: 36px;
+      height: 36px;
+    }
+
     /* ── Features ── */
     .features {
       background: var(--white);
-      padding: 5rem 1.5rem;
+      padding: 3rem 1.5rem 5rem;
     }
 
     .features-inner {
@@ -353,8 +366,8 @@
   <section class="hero">
     <div class="hero-content">
       <p class="hero-eyebrow">iOS App · Free Beta</p>
-      <h1>SF Stairways</h1>
-      <p class="hero-tagline">Climb every stairway in San Francisco</p>
+      <h1>SF Stairs</h1>
+      <p class="hero-tagline">Climb every stair in San Francisco</p>
       <a class="btn-primary" href="https://testflight.apple.com/join/PLACEHOLDER">
         Join the Beta
       </a>
@@ -366,6 +379,13 @@
       </svg>
     </div>
   </section>
+
+  <!-- ── Logo ── -->
+  <div class="logo-divider" aria-hidden="true">
+    <svg viewBox="0 0 3 3" fill="var(--orange)">
+      <path d="M0 3 L0 2 L1 2 L1 1 L2 1 L2 0 L3 0 L3 3 Z" />
+    </svg>
+  </div>
 
   <!-- ── Features ── -->
   <section class="features">
@@ -423,7 +443,7 @@
             </svg>
           </div>
           <div class="feature-text">
-            <strong>Hard Mode <em style="font-style:normal;font-weight:400;color:var(--muted)">— coming soon</em></strong>
+            <strong>Hard Mode</strong>
             <span>Proximity-verified walks. You actually have to be there to log it.</span>
           </div>
         </li>
@@ -451,13 +471,13 @@
       <p class="section-label">The story</p>
       <h2>Built by a 40-year San Francisco resident</h2>
       <p>
-        I wanted to track the stairways I'd walked — and discover the hundreds I hadn't. SF has over 350 public stairways tucked into its hills, each one a portal into a different neighborhood. Most people walk past them without knowing they exist.
+        I wanted to track the stairways I'd walked and discover the hundreds I hadn't. SF has over 350 public stairways tucked into its hills, each one a portal into a different neighborhood. Most people walk past them without knowing they exist.
       </p>
       <blockquote>
         "It's like a passport for SF's hidden vertical streets."
       </blockquote>
       <p>
-        Every stairway is a photo opportunity, a neighborhood, a story. This app is the tool I wanted but couldn't find — so I built it.
+        Every stairway is a photo opportunity, a neighborhood, a story. This app is the tool I wanted but couldn't find, so I built it.
       </p>
     </div>
   </section>
@@ -466,14 +486,14 @@
   <section class="cta-strip">
     <h2>Ready to start climbing?</h2>
     <a class="btn-secondary" href="https://testflight.apple.com/join/PLACEHOLDER">
-      Join the Beta — It's Free
+      Join the Beta, It's Free
     </a>
   </section>
 
   <!-- ── Footer ── -->
   <footer>
     <div class="footer-inner">
-      <span>SF Stairways &copy; 2026</span>
+      <span>SF Stairs &copy; 2026</span>
       <span class="footer-divider" aria-hidden="true"></span>
       <a href="/privacy.html">Privacy Policy</a>
     </div>

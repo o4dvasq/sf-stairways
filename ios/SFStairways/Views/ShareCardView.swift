@@ -113,7 +113,7 @@ struct ShareCardView: View {
                 statPills
                 Spacer()
             }
-            Text("Climb every stairway in San Francisco")
+            Text("Climb every stair in San Francisco")
                 .font(.system(size: 11))
                 .foregroundStyle(Color(red: 0x6B/255, green: 0x6B/255, blue: 0x6B/255))
             Text("sfstairways.app")
@@ -143,7 +143,7 @@ struct ShareCardView: View {
             StairShape()
                 .fill(Color.white)
                 .frame(width: 15, height: 15)
-            Text("SF Stairways")
+            Text("SF Stairs")
                 .font(.system(size: 13, weight: .medium, design: .rounded))
                 .foregroundStyle(.white)
         }

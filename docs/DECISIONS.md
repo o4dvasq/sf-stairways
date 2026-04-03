@@ -621,3 +621,14 @@ The original 12-color neighborhood palette used pastel RGB values (dominant chan
 Two changes together fix this: opacity levels were raised (fill 0.30/0.20 light/dark, stroke 0.50/0.40) and the palette was shifted toward more saturated colors (dominant channels ~0.88–0.92, recessive channels ~0.32–0.55). The hue families are preserved — each color is recognizably in the same family as its pastel predecessor — so the visual identity is maintained. Fully saturated primaries were avoided; the target was "clearly colored" rather than "neon."
 
 `NeighborhoodDetail` fill/stroke bumped to 0.30/0.60 to remain consistent with the new map baseline.
+
+## Celebration animation: celebrationTrigger @State replaces isWalked-driven effects
+**Date:** 2026-04-03
+
+The original `markWalked()` implementation (2026-04-02) wrapped only `modelContext.save()` in `withAnimation`, assuming that save triggers the `@Query` update. In practice SwiftData propagates `@Model` mutations immediately on property set (`record.walked = true`), so the view update (and `isWalked` flip) happened before the `withAnimation` block opened. The celebration effects tied to `isWalked` — background color transition and `symbolEffect(.bounce)` — fired without an animation context and were invisible.
+
+**Fix: explicit `celebrationTrigger: Int` @State var.** `markWalked()` now saves first, then fires haptic, then calls `withAnimation { celebrationTrigger += 1 }`. This is a known-good animation trigger that fires after the SwiftData update is settled.
+
+**`symbolEffect(.bounce, value: celebrationTrigger)` instead of `value: isWalked`.** When `isWalked` flips from false to true, the checkmark icon is inserted into the view hierarchy for the first time. The SwiftUI diffing engine has no "before" state to compare — the symbol effect sees the icon as new and doesn't bounce. `celebrationTrigger` exists independently of the conditional rendering, so it always has a prior value to compare against, making the bounce reliable.
+
+**Hard Mode "Mark Anyway" delay (0.3s).** The alert is mid-dismiss when the button fires. SwiftUI's alert dismissal runs its own animation transaction that overrides the celebration. `DispatchQueue.main.asyncAfter(deadline: .now() + 0.3)` lets the alert fully leave the screen before `markWalked()` fires. 0.3s is long enough for a standard dismiss (≈0.25s) but short enough to feel instant to the user.

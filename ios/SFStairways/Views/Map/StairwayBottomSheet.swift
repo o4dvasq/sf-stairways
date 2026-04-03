@@ -339,15 +339,6 @@ struct StairwayBottomSheet: View {
                 }
             }
             Spacer()
-            if isWalked {
-                Button {
-                    generateShareCard()
-                } label: {
-                    Image(systemName: "square.and.arrow.up")
-                        .font(.system(size: 18))
-                        .foregroundStyle(Color.brandOrange)
-                }
-            }
             Menu {
                 Button { showCamera = true } label: {
                     Label("Take Photo", systemImage: "camera")
@@ -468,20 +459,6 @@ struct StairwayBottomSheet: View {
             }
             Spacer()
             statsRow
-        }
-    }
-
-    // MARK: - Neighborhood Progress Line
-
-    @ViewBuilder
-    private var neighborhoodProgressLine: some View {
-        let neighborhoodIDs = Set(store.stairways(in: stairway.neighborhood).map(\.id))
-        let total = neighborhoodIDs.count
-        let walkedCount = walkRecords.filter { neighborhoodIDs.contains($0.stairwayID) && $0.walked }.count
-        if total > 1 {
-            Text("\(walkedCount) of \(total) in \(stairway.neighborhood)")
-                .font(.caption)
-                .foregroundStyle(.secondary)
         }
     }
 
