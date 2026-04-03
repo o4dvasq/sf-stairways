@@ -47,7 +47,7 @@ struct ShareCardView: View {
                 .scaledToFill()
                 .frame(width: photoInsetWidth, height: photoInsetHeight)
                 .clipped()
-                .overlay(alignment: .topLeading) {
+                .overlay(alignment: .bottomLeading) {
                     logoOverlay.padding(12)
                 }
                 .overlay(alignment: .bottomTrailing) {

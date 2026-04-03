@@ -1,6 +1,6 @@
 # Project State — sf-stairways
 
-_Last updated: 2026-04-02 (progress-count-bugfix)_
+_Last updated: 2026-04-03 (share-card-crop-safe + asset cleanup)_
 
 ## Platforms
 
@@ -16,7 +16,7 @@ _Last updated: 2026-04-02 (progress-count-bugfix)_
 - **Neighborhoods: SF 311 Neighborhoods** — 117 granular neighborhoods (68 with stairways); powered by `NeighborhoodStore` (GeoJSON-backed, computes centroids + adjacency at startup)
 - **No HealthKit, no active walk recording** — "Mark Walked" is the only walk-logging action; tapping it fires a medium haptic, animates the sheet background to soft green (`surfaceWalked`), bounces the checkmark icon, and reveals a "N of M in [neighborhood]" progress line in the walked status card
 - **Hard Mode** — UserDefaults-only preference (no Supabase sync); toggle always enabled in Settings regardless of auth state; proximity check (150m) enforced at mark time; "Mark Anyway" override logs `proximityVerified = false`; Progress tab shows verified count only when > 0
-- **Share card** — walked stairways show a share button (`square.and.arrow.up`, brandOrange) in the bottom sheet header; tapping generates a 1080×1920 portrait card via `ImageRenderer` and opens the native iOS share sheet. Card is branded: brandAmber frame around inset photo, white `StairShape` + "SF Stairways" logo overlay (dark pill) top-left, neighborhood progress pill ("N of M") bottom-right. No-photo variant uses brandOrange solid content area with stairway name + progress in white.
+- **Share card** — walked stairways show a share button (`square.and.arrow.up`, brandOrange) in the bottom sheet header; tapping generates a 1080×1920 portrait card via `ImageRenderer` and opens the native iOS share sheet. Card is branded: brandAmber frame around inset photo, white `StairShape` + "SF Stairways" logo overlay (dark pill) **bottom-left**, neighborhood progress pill ("N of M") bottom-right — both pills are in the bottom portion of the photo, safe from Messages and Instagram Post center crops. No-photo variant uses brandOrange solid content area with stairway name + progress in white.
 - **Neighborhood badges** — `NeighborhoodCard` shows a `checkmark.seal.fill` (walkedGreen) badge when the neighborhood is 100% complete. `NeighborhoodDetail` progress section shows "All X stairways walked" label in walkedGreen + walkedGreen tinted `ProgressView` on completion. Completed neighborhoods on the map get a green polygon fill + slightly heavier stroke.
 - **Discovery nuggets** — `NuggetProvider` loads `neighborhood_facts.json` (18 neighborhood-specific + 10 global facts). `NeighborhoodDetail` shows a per-neighborhood fact in tertiary text below the progress bar. `ProgressTab` shows a daily-rotating global fact (seeded by day-of-year) below the summary ring.
 - Successfully archived in Xcode on 2026-03-23
@@ -67,6 +67,10 @@ _Last updated: 2026-04-02 (progress-count-bugfix)_
 | SF 311 Neighborhoods | **117** total, **68** with stairways |
 
 ## Recent Completions
+
+### 2026-04-03
+- **Share Card Crop-Safe Layout** — Logo overlay moved from `.topLeading` to `.bottomLeading` in `ShareCardView`. Both the logo pill and progress pill now sit at the bottom of the photo inset (logo left, progress right), keeping all branding within the safe zone for Messages (square crop) and Instagram Posts (4:5 crop). No-photo layout unchanged.
+- **Asset Cleanup** — `splash.imageset/Contents.json` updated to reference `splash_with_text.png` (was pointing to non-existent `splash_image.jpeg`). Deleted `Gemini_Generated_Image_cfnhajcfnhajcfnh.png`. Moved 4 `.ttf` font files (DM Sans, Instrument Serif variants) out of `Assets.xcassets` into `fonts/` at the project root — they're web font references, not iOS app resources.
 
 ### 2026-04-02
 - **Progress Count Bugfix + Neighborhoods Visited** — `ProgressTab` now filters `walkedRecords` against `validStairwayIDs` (a `Set<String>` derived from `store.stairways`, which has deletions applied). This fixes the walked count (was showing 76 including deleted stairways; now matches the map's correct count). `verifiedCount` uses the same filter. All downstream stats (height, neighborhood cards, completion ring) are automatically correct since they derive from `walkedRecords`. Map `ProgressCard` now shows a "X hoods" line (only when > 0) counting neighborhoods with at least one walked stairway, computed from `store.stairways` grouped by neighborhood. Permission strings in `project.pbxproj` were already correct ("SF Stairways" with space) — no change needed.
