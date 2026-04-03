@@ -102,7 +102,8 @@ struct MapTab: View {
             .overlay(alignment: .bottomTrailing) {
                 ProgressCard(
                     walkedCount: walkedCount,
-                    totalHeightFt: totalHeightFt
+                    totalHeightFt: totalHeightFt,
+                    neighborhoodsVisited: neighborhoodsVisited
                 )
                 .padding(.trailing, 12)
                 .padding(.bottom, 24)
@@ -317,6 +318,13 @@ struct MapTab: View {
 
     private var walkedCount: Int { walkedStairwayIDs.count }
 
+    private var neighborhoodsVisited: Int {
+        let grouped = Dictionary(grouping: store.stairways, by: \.neighborhood)
+        return grouped.filter { _, stairways in
+            stairways.contains { walkedStairwayIDs.contains($0.id) }
+        }.count
+    }
+
     private var totalHeightFt: Double {
         store.stairways
             .filter { walkedStairwayIDs.contains($0.id) }
@@ -380,6 +388,7 @@ struct MapTab: View {
 struct ProgressCard: View {
     let walkedCount: Int
     let totalHeightFt: Double
+    let neighborhoodsVisited: Int
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -399,6 +408,11 @@ struct ProgressCard: View {
                 Text(totalHeightFt > 0 ? "\(Int(totalHeightFt).formatted()) ft" : "—")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
+                if neighborhoodsVisited > 0 {
+                    Text("\(neighborhoodsVisited) hoods")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
             }
             .padding(.horizontal, 10)
             .padding(.vertical, 8)

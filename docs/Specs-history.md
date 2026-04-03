@@ -2,6 +2,7 @@
 
 | Description | Implemented | Spec File |
 |---|---|---|
+| Progress count bugfix + neighborhoods visited in map card | 2026-04-02 | SPEC_progress-count-bugfix.md |
 | Mark Walked: haptic, green sheet tint, progress line, bounce animation | 2026-04-02 | SPEC_mark-walked-celebration.md |
 | Neighborhood badges (completion seal) + discovery nuggets (facts per hood + daily global) | 2026-04-02 | SPEC_neighborhood-rewards.md |
 | Hard Mode: UserDefaults-only, remove Supabase sync, verified count in Progress | 2026-04-02 | SPEC_hard-mode-simplification.md |

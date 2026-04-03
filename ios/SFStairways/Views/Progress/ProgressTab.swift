@@ -24,12 +24,18 @@ struct ProgressTab: View {
 
     // MARK: - Computed Properties
 
+    private var validStairwayIDs: Set<String> {
+        Set(store.stairways.map(\.id))
+    }
+
     private var walkedRecords: [WalkRecord] {
-        walkRecords.filter(\.walked)
+        let valid = validStairwayIDs
+        return walkRecords.filter { $0.walked && valid.contains($0.stairwayID) }
     }
 
     private var verifiedCount: Int {
-        walkRecords.filter { $0.proximityVerified == true }.count
+        let valid = validStairwayIDs
+        return walkRecords.filter { $0.proximityVerified == true && valid.contains($0.stairwayID) }.count
     }
 
     private var totalStairways: Int { store.stairways.count }
