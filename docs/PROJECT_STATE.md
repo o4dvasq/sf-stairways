@@ -1,6 +1,6 @@
 # Project State — sf-stairways
 
-_Last updated: 2026-04-03 (walked-card-polish complete)_
+_Last updated: 2026-04-03 (domain-update complete)_
 
 ## Platforms
 
