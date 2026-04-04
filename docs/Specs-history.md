@@ -2,6 +2,9 @@
 
 | Description | Implemented | Spec File |
 |---|---|---|
+| Domain update: sfstairways.app → sfstairs.app | 2026-04-03 | SPEC_domain-update.md |
+| Nearby filter recenters map on user location | 2026-04-03 | SPEC_nearby-recenter.md |
+| Walked banner: date + hood count, remove pencil, remove Photos heading | 2026-04-03 | SPEC_walked-card-polish.md |
 | Walked card: green banner, remove section headings, icons row below | 2026-04-03 | SPEC_walked-card-redesign.md |
 | Fix celebration animation: celebrationTrigger, Mark Anyway delay | 2026-04-03 | SPEC_celebration-bug.md |
 | Tag pills: filled color palette, white text, random color per tag | 2026-04-03 | SPEC_tag-pill-colors.md |

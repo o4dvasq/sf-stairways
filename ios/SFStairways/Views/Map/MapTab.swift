@@ -173,8 +173,11 @@ struct MapTab: View {
         .onChange(of: activeTagFilter) { _, newTagID in
             showTagDroppedToastIfNeeded(for: newTagID)
         }
-        .onChange(of: filter) { _, _ in
+        .onChange(of: filter) { _, newValue in
             showTagDroppedToastIfNeeded(for: activeTagFilter)
+            if newValue == .nearby, let location = locationManager.currentLocation {
+                flyToUserLocation(location)
+            }
         }
         .onAppear {
             store.applyDeletions(deletions.map(\.stairwayID))
