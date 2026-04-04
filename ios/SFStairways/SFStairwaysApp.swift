@@ -7,6 +7,7 @@ struct SFStairwaysApp: App {
     let syncStatusManager: SyncStatusManager
     let authManager: AuthManager
     let neighborhoodStore = NeighborhoodStore()
+    let communityService = CommunityService()
 
     init() {
         let schema = Schema([WalkRecord.self, WalkPhoto.self, StairwayOverride.self, StairwayTag.self, TagAssignment.self, StairwayDeletion.self])
@@ -68,6 +69,7 @@ struct SFStairwaysApp: App {
                         SeedDataService.seedIfNeeded(modelContext: modelContainer.mainContext)
                         SeedDataService.seedTagsIfNeeded(modelContext: modelContainer.mainContext)
                         SeedDataService.cleanUnwalkedRecordsIfNeeded(modelContext: modelContainer.mainContext)
+                        Task { await communityService.fetchClimbCounts() }
                     }
 
                 if showSplash {
@@ -87,5 +89,6 @@ struct SFStairwaysApp: App {
         .environment(syncStatusManager)
         .environment(authManager)
         .environment(neighborhoodStore)
+        .environment(communityService)
     }
 }

@@ -2,6 +2,9 @@
 
 | Description | Implemented | Spec File |
 |---|---|---|
+| Curator/user separation: read-only tags, community climb counts | 2026-04-04 | SPEC_curator-user-separation.md |
+| Admin app: map tab with color-coded pins, filter menu, TabView | 2026-04-04 | SPEC_admin-app-map-and-editing.md |
+| Celebration v3: instant banner, confetti, heavy haptic | 2026-04-04 | SPEC_celebration-v3.md |
 | Celebration haptic prepare + bounce via onAppear fix | 2026-04-03 | SPEC_celebration-fix-v2.md |
 | Tag dedup: unique constraint, one-time migration, BulkOps fix | 2026-04-03 | SPEC_tag_deduplication.md |
 | Domain update: sfstairways.app → sfstairs.app | 2026-04-03 | SPEC_domain-update.md |

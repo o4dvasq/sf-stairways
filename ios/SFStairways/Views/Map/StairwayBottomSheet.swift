@@ -9,6 +9,7 @@ struct StairwayBottomSheet: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(AuthManager.self) private var authManager
+    @Environment(CommunityService.self) private var communityService
     @Query private var walkRecords: [WalkRecord]
     @Query private var overrides: [StairwayOverride]
     @Query private var allTags: [StairwayTag]
@@ -41,12 +42,13 @@ struct StairwayBottomSheet: View {
     @State private var toastMessage: String? = nil
     @State private var failedPhotoIDs: Set<PersistentIdentifier> = []
     @State private var showNeighborhoodDetail = false
-    @State private var showTagEditor = false
     @State private var showPhotoWalkedAlert = false
     @State private var photoWalkedPromptShown = false
     @State private var shareImage: UIImage? = nil
     @State private var showShareSheet = false
     @State private var celebrationTrigger = 0
+    @State private var showWalkedBanner = false
+    @State private var showConfetti = false
 
     private enum CuratorField: Hashable {
         case height, description
@@ -69,12 +71,6 @@ struct StairwayBottomSheet: View {
         return (remote + local).sorted { $0.createdAt > $1.createdAt }
     }
 
-    private enum StairwayState { case unwalked, walked }
-
-    private var state: StairwayState {
-        isWalked ? .walked : .unwalked
-    }
-
     var body: some View {
         ScrollViewReader { proxy in
         ScrollView {
@@ -82,7 +78,7 @@ struct StairwayBottomSheet: View {
 
                 // ── Collapsed content (fits at .height(390)) ──────────────
 
-                if isWalked {
+                if showWalkedBanner {
                     walkedBanner
                         .padding(.horizontal, -20)
                         .padding(.top, -20)
@@ -181,8 +177,16 @@ struct StairwayBottomSheet: View {
             .padding(20)
         }
         .scrollDismissesKeyboard(.interactively)
-        .animation(.easeInOut(duration: 0.4), value: isWalked)
+        .animation(.easeInOut(duration: 0.4), value: showWalkedBanner)
         .background(Color(.systemBackground).ignoresSafeArea())
+        .overlay {
+            if showConfetti {
+                ConfettiView()
+                    .allowsHitTesting(false)
+                    .transition(.opacity)
+            }
+        }
+        .animation(.easeInOut(duration: 0.4), value: showConfetti)
         .overlay(alignment: .top) {
             if let msg = toastMessage {
                 Text(msg)
@@ -225,10 +229,6 @@ struct StairwayBottomSheet: View {
             CameraPicker { imageData in addPhoto(imageData: imageData) }
                 .ignoresSafeArea()
         }
-        .sheet(isPresented: $showTagEditor) {
-            TagEditorSheet(stairwayID: stairway.id)
-                .presentationDetents([.medium, .large])
-        }
         .sheet(isPresented: $showShareSheet) {
             if let image = shareImage {
                 ActivityShareSheet(activityItems: [
@@ -245,6 +245,7 @@ struct StairwayBottomSheet: View {
             Text("You just added a photo. Would you like to mark this stairway as walked?")
         }
         .onAppear {
+            showWalkedBanner = walkRecord?.walked ?? false
             notesText = walkRecord?.notes ?? ""
             editingNotes = false
             initCuratorFields()
@@ -348,6 +349,31 @@ struct StairwayBottomSheet: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
+            climberCountBadge
+        }
+    }
+
+    @ViewBuilder
+    private var climberCountBadge: some View {
+        let count = communityService.climberCount(for: stairway.id)
+        if count > 0 {
+            if count == 1 && isWalked {
+                HStack(spacing: 4) {
+                    Image(systemName: "person.2.fill")
+                        .font(.system(size: 10))
+                    Text("You're the first!")
+                        .font(.caption)
+                }
+                .foregroundStyle(Color.brandOrange)
+            } else {
+                HStack(spacing: 4) {
+                    Image(systemName: "person.2.fill")
+                        .font(.system(size: 10))
+                    Text(count == 1 ? "1 climber" : "\(count) climbers")
+                        .font(.caption)
+                }
+                .foregroundStyle(.secondary)
+            }
         }
     }
 
@@ -449,14 +475,8 @@ struct StairwayBottomSheet: View {
 
     // MARK: - Action Buttons
 
-    @ViewBuilder
     private var actionButtons: some View {
-        switch state {
-        case .unwalked:
-            ActionButton(title: "Mark Walked", icon: "checkmark.circle", color: Color.walkedGreen, action: attemptMarkWalked)
-        case .walked:
-            EmptyView()
-        }
+        ActionButton(title: "Mark Walked", icon: "checkmark.circle", color: Color.walkedGreen, action: attemptMarkWalked)
     }
 
     // MARK: - Notes Section
@@ -551,35 +571,22 @@ struct StairwayBottomSheet: View {
             .sorted { $0.name.lowercased() < $1.name.lowercased() }
     }
 
+    @ViewBuilder
     private var tagsSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            FlowLayout(spacing: 8) {
-                ForEach(stairwayTags) { tag in
-                    Text(tag.name)
-                        .font(.subheadline)
-                        .fontWeight(.medium)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
-                        .foregroundStyle(.white)
-                        .background(Color.tagPalette[tag.colorIndex % Color.tagPalette.count])
-                        .clipShape(Capsule())
-                }
-                Button {
-                    showTagEditor = true
-                } label: {
-                    HStack(spacing: 4) {
-                        Image(systemName: "plus")
-                            .font(.system(size: 11, weight: .semibold))
-                        Text("Add Tag")
+        if !stairwayTags.isEmpty {
+            VStack(alignment: .leading, spacing: 8) {
+                FlowLayout(spacing: 8) {
+                    ForEach(stairwayTags) { tag in
+                        Text(tag.name)
                             .font(.subheadline)
+                            .fontWeight(.medium)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .foregroundStyle(.white)
+                            .background(Color.tagPalette[tag.colorIndex % Color.tagPalette.count])
+                            .clipShape(Capsule())
                     }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                    .foregroundStyle(Color.forestGreen.opacity(0.7))
-                    .clipShape(Capsule())
-                    .overlay(Capsule().stroke(Color.forestGreen.opacity(0.5), style: StrokeStyle(lineWidth: 1, dash: [4, 3])))
                 }
-                .buttonStyle(.plain)
             }
         }
     }
@@ -718,7 +725,7 @@ struct StairwayBottomSheet: View {
     }
 
     private func markWalked(proximityVerified: Bool? = nil) {
-        let haptic = UIImpactFeedbackGenerator(style: .medium)
+        let haptic = UIImpactFeedbackGenerator(style: .heavy)
         haptic.prepare()
 
         if let record = walkRecord {
@@ -734,16 +741,41 @@ struct StairwayBottomSheet: View {
             modelContext.insert(record)
         }
         try? modelContext.save()
+
+        if authManager.isAuthenticated, let userID = authManager.userId {
+            Task { await communityService.reportWalk(stairwayID: stairway.id, userID: userID) }
+        }
+
+        // Immediate celebration — don't wait for SwiftData @Query to re-evaluate.
         haptic.impactOccurred()
-        // celebrationTrigger is incremented in walkedBanner's .onAppear, after the checkmark
-        // is in the view hierarchy — so .symbolEffect(.bounce) has an old value to compare against.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        }
+        withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+            showWalkedBanner = true
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            showConfetti = true
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+            withAnimation { showConfetti = false }
+        }
     }
 
     private func removeRecord() {
         guard let record = walkRecord else { return }
+        withAnimation(.easeInOut(duration: 0.3)) {
+            showWalkedBanner = false
+        }
+        if authManager.isAuthenticated, let userID = authManager.userId {
+            let stairwayID = stairway.id
+            Task { await communityService.reportUnwalk(stairwayID: stairwayID, userID: userID) }
+        }
         modelContext.delete(record)
         try? modelContext.save()
-        dismiss()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            dismiss()
+        }
     }
 
     private func addPhoto(imageData: Data) {

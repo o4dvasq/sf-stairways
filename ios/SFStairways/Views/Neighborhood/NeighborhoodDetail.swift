@@ -6,6 +6,7 @@ struct NeighborhoodDetail: View {
     let neighborhoodName: String
 
     @Environment(NeighborhoodStore.self) private var neighborhoodStore
+    @Environment(CommunityService.self) private var communityService
     @Environment(\.modelContext) private var modelContext
     @Query private var allWalkRecords: [WalkRecord]
     @State private var store = StairwayStore()
@@ -64,6 +65,14 @@ struct NeighborhoodDetail: View {
             }
             ProgressView(value: fraction)
                 .tint(isComplete ? Color.walkedGreen : Color.brandOrange)
+
+            if neighborhoodTotalClimbers > 0 {
+                let stairwaysWithClimbers = neighborhoodStairways.filter { communityService.climberCount(for: $0.id) > 0 }.count
+                Text("\(neighborhoodTotalClimbers) total climbers across \(stairwaysWithClimbers) stairway\(stairwaysWithClimbers == 1 ? "" : "s")")
+                    .font(.system(.caption, design: .rounded))
+                    .foregroundStyle(.secondary)
+                    .padding(.top, 1)
+            }
 
             if let nugget = nuggets.fact(for: neighborhoodName) {
                 Text(nugget)
@@ -251,6 +260,10 @@ struct NeighborhoodDetail: View {
             center: CLLocationCoordinate2D(latitude: 37.76, longitude: -122.44),
             span: MKCoordinateSpan(latitudeDelta: 0.02, longitudeDelta: 0.02)
         )
+    }
+
+    private var neighborhoodTotalClimbers: Int {
+        neighborhoodStairways.reduce(0) { $0 + communityService.climberCount(for: $1.id) }
     }
 
     private func walkRecord(for stairway: Stairway) -> WalkRecord? {

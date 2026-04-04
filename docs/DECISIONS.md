@@ -1,5 +1,20 @@
 # Architecture Decisions — sf-stairways
 
+## Tags are curator-only: Add Tag removed from main app, not gated behind curator flag
+**Date:** 2026-04-04
+
+**Removed `showTagEditor` and the TagEditorSheet sheet from `StairwayBottomSheet` entirely — no curator-mode gate.** An alternative would have been to show Add Tag only when `authManager.isCurator && curatorModeActive`. We didn't do that because tag management is now an Admin/macOS workflow; the curator working on the iOS main app should use the Admin app for tags. Gating with a curator flag would keep dead UI paths in the codebase and could confuse the UI hierarchy later. Cleaner to simply remove it. `TagEditorSheet.swift` still exists and is used by the Admin app target.
+
+## CommunityService is fire-and-forget: no offline queue in beta
+**Date:** 2026-04-04
+
+**Walk events are reported to Supabase as fire-and-forget Tasks with no retry or offline queue.** If Supabase is unreachable when marking walked, the local SwiftData walk succeeds and the community count silently goes unreported. This is acceptable for beta: the primary walk record (CloudKit) is never at risk, and the community count is an eventually-consistent nice-to-have. Adding an offline queue (Core Data staging + background sync) would be a meaningful engineering investment better deferred to post-beta community features.
+
+## climberCountBadge "You're the first!" gate: count==1 && isWalked
+**Date:** 2026-04-04
+
+**"You're the first!" shows only when `climberCount == 1` AND the current user has walked the stairway.** If another user hasn't walked it and sees count==1, they see "1 climber" — not "You're the first!" (which would be incorrect). We don't have access to which specific user constitutes that count (counts are anonymous aggregates), but if count==1 and the current user has walked it, it's a safe inference that the current user is that climber. False positive risk: if a user marks walked, another marks walked (count=2), then the first removes (count=1 again) — the first user would see "1 climber" rather than "You're the first!" which is correct.
+
 ## TagAssignment.compoundKey: @Attribute(.unique) deferred
 **Date:** 2026-04-03
 
