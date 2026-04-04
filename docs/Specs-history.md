@@ -2,6 +2,8 @@
 
 | Description | Implemented | Spec File |
 |---|---|---|
+| Celebration haptic prepare + bounce via onAppear fix | 2026-04-03 | SPEC_celebration-fix-v2.md |
+| Tag dedup: unique constraint, one-time migration, BulkOps fix | 2026-04-03 | SPEC_tag_deduplication.md |
 | Domain update: sfstairways.app → sfstairs.app | 2026-04-03 | SPEC_domain-update.md |
 | Nearby filter recenters map on user location | 2026-04-03 | SPEC_nearby-recenter.md |
 | Walked banner: date + hood count, remove pencil, remove Photos heading | 2026-04-03 | SPEC_walked-card-polish.md |

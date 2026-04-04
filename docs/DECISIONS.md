@@ -1,5 +1,12 @@
 # Architecture Decisions — sf-stairways
 
+## Celebration bounce: trigger in .onAppear, not in markWalked()
+**Date:** 2026-04-03
+
+**`celebrationTrigger` is incremented in the checkmark's `.onAppear`, not in `markWalked()`.** `.symbolEffect(.bounce, value:)` fires only when the value *changes* — it compares old vs. new. When `isWalked` flips to true, the banner (including the checkmark) is inserted into the view hierarchy for the first time. SwiftUI sees the current `celebrationTrigger` value on first render and has no "before" to compare against, so the effect silently does nothing. The fix: let the view appear first, then increment after a 0.15s delay. Now `.symbolEffect` observes a real change and fires the bounce.
+
+**`UIImpactFeedbackGenerator` must call `prepare()` before `impactOccurred()`.** Without `prepare()`, the Taptic Engine may not be ready in time and the haptic is silently dropped. `prepare()` is called at the top of `markWalked()`, before any model writes, giving the engine time to warm up.
+
 ## Walked card: banner approach replaces sheet tint + inline card
 **Date:** 2026-04-03
 

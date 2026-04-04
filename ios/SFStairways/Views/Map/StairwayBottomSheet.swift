@@ -404,6 +404,11 @@ struct StairwayBottomSheet: View {
                         .font(.system(size: 44))
                         .foregroundStyle(.white)
                         .symbolEffect(.bounce, value: celebrationTrigger)
+                        .onAppear {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                                celebrationTrigger += 1
+                            }
+                        }
                 }
             }
             .padding(.horizontal, 20)
@@ -713,6 +718,9 @@ struct StairwayBottomSheet: View {
     }
 
     private func markWalked(proximityVerified: Bool? = nil) {
+        let haptic = UIImpactFeedbackGenerator(style: .medium)
+        haptic.prepare()
+
         if let record = walkRecord {
             record.walked = true
             record.dateWalked = record.dateWalked ?? Date()
@@ -726,12 +734,9 @@ struct StairwayBottomSheet: View {
             modelContext.insert(record)
         }
         try? modelContext.save()
-
-        // Fire celebration after save so the animation context is clean of any SwiftData update.
-        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-        withAnimation(.easeInOut(duration: 0.4)) {
-            celebrationTrigger += 1
-        }
+        haptic.impactOccurred()
+        // celebrationTrigger is incremented in walkedBanner's .onAppear, after the checkmark
+        // is in the view hierarchy — so .symbolEffect(.bounce) has an old value to compare against.
     }
 
     private func removeRecord() {
