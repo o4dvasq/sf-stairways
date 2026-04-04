@@ -335,19 +335,28 @@ struct StairwayDetailPanel: View {
         VStack(alignment: .leading, spacing: 0) {
             let assignedTagIDs = Set(tagAssignments.filter { $0.stairwayID == stairway.id }.map(\.tagID))
             var seenChecklist = Set<String>()
-            let sortedTags = tags
+            let allDeduped = tags
                 .filter { seenChecklist.insert($0.id).inserted }
                 .sorted { $0.name.lowercased() < $1.name.lowercased() }
+            let filteredTags = inlineTagName.isEmpty
+                ? allDeduped
+                : allDeduped.filter { $0.name.localizedCaseInsensitiveContains(inlineTagName) }
+            let exactMatch = allDeduped.first { $0.name.lowercased() == inlineTagName.trimmingCharacters(in: .whitespaces).lowercased() }
 
-            if sortedTags.isEmpty {
+            if allDeduped.isEmpty {
                 Text("No tags. Create one below.")
+                    .font(.system(size: 12))
+                    .foregroundStyle(.secondary)
+                    .padding(12)
+            } else if filteredTags.isEmpty {
+                Text("No matches — press Add to create.")
                     .font(.system(size: 12))
                     .foregroundStyle(.secondary)
                     .padding(12)
             } else {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 0) {
-                        ForEach(sortedTags) { tag in
+                        ForEach(filteredTags) { tag in
                             Toggle(isOn: Binding(
                                 get: { assignedTagIDs.contains(tag.id) },
                                 set: { isOn in
@@ -368,10 +377,10 @@ struct StairwayDetailPanel: View {
             Divider()
 
             HStack(spacing: 6) {
-                TextField("Tag name…", text: $inlineTagName)
+                TextField("Search or create tag…", text: $inlineTagName)
                     .textFieldStyle(.roundedBorder)
                     .onSubmit { createAndAssignInlineTag() }
-                Button("Add") { createAndAssignInlineTag() }
+                Button(exactMatch != nil ? "Assign" : "Add") { createAndAssignInlineTag() }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.small)
                     .disabled(inlineTagName.trimmingCharacters(in: .whitespaces).isEmpty)
@@ -483,6 +492,17 @@ struct StairwayDetailPanel: View {
     private func createAndAssignInlineTag() {
         let name = inlineTagName.trimmingCharacters(in: .whitespaces)
         guard !name.isEmpty else { return }
+
+        // If a tag with this name already exists, assign it rather than creating a duplicate.
+        if let existing = tags.first(where: { $0.name.lowercased() == name.lowercased() }) {
+            let alreadyAssigned = tagAssignments.contains { $0.stairwayID == stairway.id && $0.tagID == existing.id }
+            if !alreadyAssigned {
+                addTag(tagID: existing.id)
+            }
+            inlineTagName = ""
+            return
+        }
+
         let slug = name.lowercased()
             .replacingOccurrences(of: " ", with: "-")
             .filter { $0.isLetter || $0.isNumber || $0 == "-" }
