@@ -3,7 +3,11 @@ import SwiftData
 
 @Model
 class StairwayTag {
-    @Attribute(.unique) var id: String = ""
+    // @Attribute(.unique) intentionally absent: SwiftData refuses to open an existing store
+    // that has duplicate id values when this constraint is present. The one-time dedup migration
+    // (runTagDedupMigrationIfNeeded) must run first to collapse duplicates. Once that migration
+    // has shipped and all devices have run it, this constraint can be re-added safely.
+    var id: String = ""
     var name: String = ""
     var isPreset: Bool = false
     var createdAt: Date = Date()
