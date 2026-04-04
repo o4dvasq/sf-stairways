@@ -116,7 +116,7 @@ struct ShareCardView: View {
             Text("Climb every stair in San Francisco")
                 .font(.system(size: 11))
                 .foregroundStyle(Color(red: 0x6B/255, green: 0x6B/255, blue: 0x6B/255))
-            Text("sfstairways.app")
+            Text("sfstairs.app")
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(Color(red: 0xD4/255, green: 0x72/255, blue: 0x4E/255))
                 .padding(.top, 4)

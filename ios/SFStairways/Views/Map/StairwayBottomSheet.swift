@@ -18,7 +18,6 @@ struct StairwayBottomSheet: View {
     @State private var showCamera = false
     @State private var editingNotes = false
     @State private var notesText = ""
-    @State private var editingDate = false
 
     // Curator fields (local StairwayOverride)
     @State private var curatorHeightText = ""
@@ -90,23 +89,6 @@ struct StairwayBottomSheet: View {
                         .transition(.move(edge: .top).combined(with: .opacity))
 
                     walkedIconsRow
-
-                    if editingDate, let record = walkRecord {
-                        DatePicker(
-                            "Date walked",
-                            selection: Binding(
-                                get: { record.dateWalked ?? Date() },
-                                set: {
-                                    record.dateWalked = $0
-                                    record.updatedAt = Date()
-                                    try? modelContext.save()
-                                }
-                            ),
-                            displayedComponents: .date
-                        )
-                        .datePickerStyle(.compact)
-                        .padding(.horizontal, 4)
-                    }
                 } else {
                     headerSection
                     statsRow
@@ -251,7 +233,7 @@ struct StairwayBottomSheet: View {
             if let image = shareImage {
                 ActivityShareSheet(activityItems: [
                     image,
-                    "Climb every stair in SF — sfstairways.app"
+                    "Climb every stair in SF — sfstairs.app"
                 ])
                 .presentationDetents([.medium, .large])
             }
@@ -397,12 +379,17 @@ struct StairwayBottomSheet: View {
                         .fontWeight(.bold)
                         .foregroundStyle(.white)
                     if total > 1 {
-                        Text("\(stairway.neighborhood) · \(walkedCount) of \(total)")
+                        Text("\(stairway.neighborhood) · \(walkedCount) of \(total) walked")
                             .font(.subheadline)
                             .foregroundStyle(.white)
                     } else {
                         Text(stairway.neighborhood)
                             .font(.subheadline)
+                            .foregroundStyle(.white)
+                    }
+                    if let dateWalked = walkRecord?.dateWalked {
+                        Text(dateWalked.formatted(date: .long, time: .omitted))
+                            .font(.caption)
                             .foregroundStyle(.white)
                     }
                 }
@@ -449,13 +436,6 @@ struct StairwayBottomSheet: View {
                 Image(systemName: "camera.fill")
                     .font(.system(size: 18))
                     .foregroundStyle(Color.forestGreen)
-            }
-            Button {
-                editingDate = true
-            } label: {
-                Image(systemName: "pencil")
-                    .font(.system(size: 16))
-                    .foregroundStyle(.secondary)
             }
             Spacer()
             statsRow

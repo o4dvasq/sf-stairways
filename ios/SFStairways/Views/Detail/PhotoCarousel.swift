@@ -16,17 +16,6 @@ struct PhotoCarousel: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                Text("Photos")
-                    .font(.subheadline)
-                    .fontWeight(.medium)
-                if !photos.isEmpty {
-                    Text("(\(photos.count))")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-            }
-
             if photos.isEmpty {
                 emptyState
             } else {

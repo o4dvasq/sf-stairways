@@ -110,9 +110,6 @@ struct NeighborhoodDetail: View {
 
     private var photoSection: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Photos")
-                .font(.system(.subheadline, design: .rounded, weight: .medium))
-
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(spacing: 10) {
                     ForEach(neighborhoodPhotos) { photo in

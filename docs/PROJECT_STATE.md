@@ -1,6 +1,6 @@
 # Project State — sf-stairways
 
-_Last updated: 2026-04-03 (nearby-recenter complete)_
+_Last updated: 2026-04-03 (walked-card-polish complete)_
 
 ## Platforms
 
@@ -14,7 +14,8 @@ _Last updated: 2026-04-03 (nearby-recenter complete)_
 - `StairwayStore` filters out deleted stairways via `applyDeletions(_:)` — map, list, search, progress all respect deletions
 - **Visual design: light-first** — warm terracotta `brandOrange`, SF Pro Rounded for display text, `surfaceCardElevated` stat cards, orange progress ring
 - **Neighborhoods: SF 311 Neighborhoods** — 117 granular neighborhoods (68 with stairways); powered by `NeighborhoodStore` (GeoJSON-backed, computes centroids + adjacency at startup)
-- **No HealthKit, no active walk recording** — "Mark Walked" is the only walk-logging action. Tapping it fires a medium haptic and animates in a bold green banner at the top of the bottom sheet. Banner shows stairway name (white bold .title3), neighborhood · N of M progress (white .subheadline), and a large white checkmark (size 44, bounce animation driven by `celebrationTrigger`). Banner slides in via `.move(edge: .top).combined(with: .opacity)`. Tapping the banner triggers the "Remove Walk" alert. Below the banner: share icon, camera menu, pencil (date edit), and height stat in one icons row. The Hard Mode "Mark Anyway" path delays 0.3s after alert dismiss before firing celebration. The whole-sheet `surfaceWalked` green tint has been replaced by the banner.
+- **No HealthKit, no active walk recording** — "Mark Walked" is the only walk-logging action. Tapping it fires a medium haptic and animates in a bold green banner at the top of the bottom sheet. Banner shows stairway name (white bold .title3), neighborhood · N of M walked (.subheadline, white), date walked (.caption, white), and a large white checkmark (size 44, bounce animation driven by `celebrationTrigger`). Banner slides in via `.move(edge: .top).combined(with: .opacity)`. Tapping the banner triggers the "Remove Walk" alert. Below the banner: share icon and camera menu in one icons row (no date-edit pencil). The Hard Mode "Mark Anyway" path delays 0.3s after alert dismiss before firing celebration. The whole-sheet `surfaceWalked` green tint has been replaced by the banner.
+- **Photo carousel** — no "Photos" section heading; content (thumbnails + "Add a photo" button) renders directly. Same in `NeighborhoodDetail`.
 - **Hard Mode** — UserDefaults-only preference (no Supabase sync); toggle always enabled in Settings regardless of auth state; proximity check (150m) enforced at mark time; "Mark Anyway" override logs `proximityVerified = false`; Progress tab shows verified count only when > 0
 - **Share card** — walked stairways show a share button (`square.and.arrow.up`, brandOrange) in the bottom sheet header; tapping generates a 1080×1920 portrait card via `ImageRenderer` and opens the native iOS share sheet. Card is branded: brandAmber frame around inset photo, white `StairShape` + "SF Stairs" logo overlay (dark pill) **bottom-left**, neighborhood progress pill ("N of M") bottom-right — both pills are in the bottom portion of the photo, safe from Messages and Instagram Post center crops. No-photo variant uses brandOrange solid content area with stairway name + progress in white.
 - **Neighborhood badges** — `NeighborhoodCard` shows a `checkmark.seal.fill` (walkedGreen) badge when the neighborhood is 100% complete. `NeighborhoodDetail` progress section shows "All X stairways walked" label in walkedGreen + walkedGreen tinted `ProgressView` on completion. Completed neighborhoods on the map get a green polygon fill + slightly heavier stroke.
@@ -54,6 +55,7 @@ _Last updated: 2026-04-03 (nearby-recenter complete)_
   - Features section (5 items), Story section, second CTA strip, footer
   - Google Fonts: Instrument Serif + DM Sans
   - TestFlight button links to `https://testflight.apple.com/join/PLACEHOLDER` — update when TestFlight is live
+- **Domain** — `sfstairs.app` (GitHub Pages CNAME); og:url in `index.html` updated
 - **Privacy policy** — `privacy.html`; required for Apple external TestFlight distribution
 - **Deprecated web app** — moved to `legacy/index.html` for historical reference
 
@@ -69,6 +71,9 @@ _Last updated: 2026-04-03 (nearby-recenter complete)_
 ## Recent Completions
 
 ### 2026-04-03
+- **Walked Card Polish** — Banner now shows date walked (`.caption`, white) below the neighborhood line. Neighborhood line updated to "Ashbury Heights · 2 of 10 walked" format. Pencil / edit-date button removed from icons row. `editingDate` state var and DatePicker block removed. "Photos" section heading removed from `PhotoCarousel.swift` (visible in `StairwayBottomSheet`) and from `NeighborhoodDetail.swift`.
+- **Domain Update** — All `sfstairways.app` references updated to `sfstairs.app`: `ShareCardView.swift` (share card URL text), `StairwayBottomSheet.swift` (share sheet text), `index.html` (og:url), `CNAME` (GitHub Pages custom domain). External steps (DNS, App Store Connect) are Oscar's manual tasks.
+
 - **Nearby Filter Recenters Map** — Tapping the "Nearby" filter pill now also moves the camera to the user's current location at span 0.025 (covers the 1500m filter radius). Implemented by extending the existing `.onChange(of: filter)` handler in `MapTab.swift` to call `flyToUserLocation(_:)` when `newValue == .nearby`. If location is unavailable the guard fails silently — no crash, no camera move. Switching to "All" or "Walked" does not move the camera.
 
 - **Walked Card Redesign** — `StairwayBottomSheet` walked state now uses a bold full-width green banner instead of the previous inline card + sheet-tint approach. Banner: `Color.walkedGreen` background, white stairway name (.title3 bold), neighborhood · N of M progress (.subheadline), large white `checkmark.circle.fill` (size 44) right-aligned. Proximity-unverified walks show an amber `xmark.seal.fill` next to the checkmark. Tapping the banner prompts to remove the walk. Below the banner: icons row (share, camera menu, pencil for date edit, height stat). Section headings "My Notes" and "Tags" removed in both walked and unwalked states; `+ Add Note` and `+ Add Tag` actions remain. `surfaceWalked` whole-sheet tint removed. Banner animates in with `.move(edge: .top).combined(with: .opacity)` on mark, driven by `.animation(.easeInOut(duration: 0.4), value: isWalked)`. Removed `walkStatusCard` and `neighborhoodProgressLine` computed properties (inlined into banner).
