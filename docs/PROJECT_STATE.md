@@ -1,6 +1,6 @@
 # Project State — sf-stairways
 
-_Last updated: 2026-04-03 (celebration-fix-v2 complete)_
+_Last updated: 2026-04-03 (tag-dedup complete)_
 
 ## Platforms
 
@@ -72,6 +72,7 @@ _Last updated: 2026-04-03 (celebration-fix-v2 complete)_
 
 ### 2026-04-03
 - **Celebration Haptic + Bounce Fix v2** — Fixed both bugs in `StairwayBottomSheet`. (1) Haptic: `UIImpactFeedbackGenerator` now calls `prepare()` before the save and `impactOccurred()` after — Taptic Engine is primed and fires reliably. (2) Bounce: `celebrationTrigger += 1` moved from `markWalked()` to `.onAppear` on the checkmark `Image` (with 0.15s `DispatchQueue` delay). The root cause was that when `isWalked` flips to true, the banner (and its checkmark) enters the view hierarchy for the first time — `.symbolEffect(.bounce, value:)` sees the current value on first render and does nothing because there's no "before" to compare against. By incrementing *after* the view appears, the effect observes a real value change and fires.
+- **Tag Deduplication** — `StairwayTag.id` gains `@Attribute(.unique)`; CloudKit sync upserts on id collision. `TagAssignment` gains `compoundKey: String` set by `init`; `@Attribute(.unique)` deferred (adding with new field conflicts all existing rows at `""`). `SeedDataService.runTagDedupMigrationIfNeeded()` purges duplicates (keeps earliest), backfills `compoundKey`; gated by `hasRunTagDedupMigration_v1`; called in `onAppear` on both iOS and macOS. Mac app inlines migration (SeedDataService not in Mac target). `BulkOperationsSheet` Picker uses `dedupedTags`. `StairwayDetailPanel` guards unchanged.
 - **Walked Card Polish** — Banner now shows date walked (`.caption`, white) below the neighborhood line. Neighborhood line updated to "Ashbury Heights · 2 of 10 walked" format. Pencil / edit-date button removed from icons row. `editingDate` state var and DatePicker block removed. "Photos" section heading removed from `PhotoCarousel.swift` (visible in `StairwayBottomSheet`) and from `NeighborhoodDetail.swift`.
 - **Domain Update** — All `sfstairways.app` references updated to `sfstairs.app`: `ShareCardView.swift` (share card URL text), `StairwayBottomSheet.swift` (share sheet text), `index.html` (og:url), `CNAME` (GitHub Pages custom domain). External steps (DNS, App Store Connect) are Oscar's manual tasks.
 

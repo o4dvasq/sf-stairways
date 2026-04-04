@@ -1,5 +1,15 @@
 # Architecture Decisions — sf-stairways
 
+## TagAssignment.compoundKey: @Attribute(.unique) deferred
+**Date:** 2026-04-03
+
+**`@Attribute(.unique)` is NOT on `compoundKey` yet.** Adding a new field and a unique constraint in the same SwiftData schema update is unsafe: all existing records get the field's default value (`""`), so SwiftData's migration would immediately see N rows with the same unique value and fail to open the store. The safe sequence is: (1) add the field with no constraint, (2) backfill all rows (done by `runTagDedupMigrationIfNeeded` on first launch), (3) in a future update, add `@Attribute(.unique)` once all rows have distinct values. Current protection against duplicate assignments: code-level `alreadyAssigned` guards at every call site + view-layer dedup in `ForEach`.
+
+## SeedDataService not shared to Mac target: inline migration
+**Date:** 2026-04-03
+
+**`SeedDataService.swift` is iOS-only (not in Mac target membership).** Rather than editing `project.pbxproj` to add it, the Mac app inlines `runTagDedupMigrationIfNeeded` as a private method on `SFStairwaysMacApp`. Both implementations use the same `hasRunTagDedupMigration_v1` UserDefaults key, so whichever platform runs first marks it done — the other will skip it harmlessly.
+
 ## Celebration bounce: trigger in .onAppear, not in markWalked()
 **Date:** 2026-04-03
 

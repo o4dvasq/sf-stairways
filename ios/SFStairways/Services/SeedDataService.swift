@@ -23,6 +23,59 @@ enum SeedDataService {
     private static let hasSeededKey = "com.sfstairways.hasSeededData"
     private static let hasSeededTagsKey = "com.sfstairways.hasSeededTags"
     private static let hasCleanedUnwalkedKey = "com.sfstairways.hasCleanedUnwalked"
+    private static let hasRunTagDedupKey = "hasRunTagDedupMigration_v1"
+    /// One-time migration: deduplicate StairwayTag and TagAssignment records, and backfill
+    /// TagAssignment.compoundKey. Must run after the ModelContainer is created but before
+    /// any tag-related UI is shown.
+    static func runTagDedupMigrationIfNeeded(modelContext: ModelContext) {
+        guard !UserDefaults.standard.bool(forKey: hasRunTagDedupKey) else { return }
+
+        // Dedup StairwayTag — keep the earliest by createdAt for each id.
+        let allTags = (try? modelContext.fetch(FetchDescriptor<StairwayTag>())) ?? []
+        var keepByTagID: [String: StairwayTag] = [:]
+        var tagsToDelete: [StairwayTag] = []
+        for tag in allTags {
+            if let existing = keepByTagID[tag.id] {
+                if tag.createdAt < existing.createdAt {
+                    tagsToDelete.append(existing)
+                    keepByTagID[tag.id] = tag
+                } else {
+                    tagsToDelete.append(tag)
+                }
+            } else {
+                keepByTagID[tag.id] = tag
+            }
+        }
+        tagsToDelete.forEach { modelContext.delete($0) }
+
+        // Dedup TagAssignment — keep the earliest by assignedAt for each (stairwayID, tagID) pair.
+        // Also backfill compoundKey for records created before this field existed.
+        let allAssignments = (try? modelContext.fetch(FetchDescriptor<TagAssignment>())) ?? []
+        var keepByCompoundKey: [String: TagAssignment] = [:]
+        var assignmentsToDelete: [TagAssignment] = []
+        for assignment in allAssignments {
+            if assignment.compoundKey.isEmpty {
+                assignment.compoundKey = "\(assignment.stairwayID)::\(assignment.tagID)"
+            }
+            let key = assignment.compoundKey
+            if let existing = keepByCompoundKey[key] {
+                if assignment.assignedAt < existing.assignedAt {
+                    assignmentsToDelete.append(existing)
+                    keepByCompoundKey[key] = assignment
+                } else {
+                    assignmentsToDelete.append(assignment)
+                }
+            } else {
+                keepByCompoundKey[key] = assignment
+            }
+        }
+        assignmentsToDelete.forEach { modelContext.delete($0) }
+
+        try? modelContext.save()
+        print("[SeedDataService] Tag dedup: removed \(tagsToDelete.count) duplicate tags, \(assignmentsToDelete.count) duplicate assignments; backfilled compoundKey on \(allAssignments.count) records")
+        UserDefaults.standard.set(true, forKey: hasRunTagDedupKey)
+    }
+
     /// One-time migration: delete any WalkRecord where walked == false.
     /// These were "saved but not walked" records from the old Saved concept, now orphaned.
     static func cleanUnwalkedRecordsIfNeeded(modelContext: ModelContext) {

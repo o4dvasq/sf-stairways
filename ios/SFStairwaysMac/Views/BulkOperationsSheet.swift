@@ -30,6 +30,13 @@ struct BulkOperationsSheet: View {
         return dict
     }
 
+    private var dedupedTags: [StairwayTag] {
+        var seen = Set<String>()
+        return tags
+            .filter { seen.insert($0.id).inserted }
+            .sorted { $0.name.lowercased() < $1.name.lowercased() }
+    }
+
     private var tagsOnSelectedStairways: [StairwayTag] {
         let stairwayIDs = Set(selectedStairways.map(\.id))
         let assignedTagIDs = Set(
@@ -117,7 +124,7 @@ struct BulkOperationsSheet: View {
             VStack(alignment: .leading, spacing: 10) {
                 Picker("Tag", selection: $selectedTagID) {
                     Text("Choose a tag…").tag(nil as String?)
-                    ForEach(tags) { tag in
+                    ForEach(dedupedTags) { tag in
                         Text(tag.name).tag(tag.id as String?)
                     }
                 }

@@ -51,8 +51,60 @@ struct SFStairwaysMacApp: App {
     var body: some Scene {
         WindowGroup {
             StairwayBrowser()
+                .onAppear {
+                    runTagDedupMigrationIfNeeded(modelContext: modelContainer.mainContext)
+                }
         }
         .modelContainer(modelContainer)
         .defaultSize(width: 1200, height: 720)
+    }
+
+    // Mirrors SeedDataService.runTagDedupMigrationIfNeeded — inlined here because
+    // SeedDataService.swift is not in the Mac target membership.
+    private func runTagDedupMigrationIfNeeded(modelContext: ModelContext) {
+        let migrationKey = "hasRunTagDedupMigration_v1"
+        guard !UserDefaults.standard.bool(forKey: migrationKey) else { return }
+
+        let allTags = (try? modelContext.fetch(FetchDescriptor<StairwayTag>())) ?? []
+        var keepByTagID: [String: StairwayTag] = [:]
+        var tagsToDelete: [StairwayTag] = []
+        for tag in allTags {
+            if let existing = keepByTagID[tag.id] {
+                if tag.createdAt < existing.createdAt {
+                    tagsToDelete.append(existing)
+                    keepByTagID[tag.id] = tag
+                } else {
+                    tagsToDelete.append(tag)
+                }
+            } else {
+                keepByTagID[tag.id] = tag
+            }
+        }
+        tagsToDelete.forEach { modelContext.delete($0) }
+
+        let allAssignments = (try? modelContext.fetch(FetchDescriptor<TagAssignment>())) ?? []
+        var keepByKey: [String: TagAssignment] = [:]
+        var assignmentsToDelete: [TagAssignment] = []
+        for assignment in allAssignments {
+            if assignment.compoundKey.isEmpty {
+                assignment.compoundKey = "\(assignment.stairwayID)::\(assignment.tagID)"
+            }
+            let key = assignment.compoundKey
+            if let existing = keepByKey[key] {
+                if assignment.assignedAt < existing.assignedAt {
+                    assignmentsToDelete.append(existing)
+                    keepByKey[key] = assignment
+                } else {
+                    assignmentsToDelete.append(assignment)
+                }
+            } else {
+                keepByKey[key] = assignment
+            }
+        }
+        assignmentsToDelete.forEach { modelContext.delete($0) }
+
+        try? modelContext.save()
+        print("[SFStairwaysMac] Tag dedup: removed \(tagsToDelete.count) duplicate tags, \(assignmentsToDelete.count) duplicate assignments")
+        UserDefaults.standard.set(true, forKey: migrationKey)
     }
 }

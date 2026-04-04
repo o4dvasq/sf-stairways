@@ -3,7 +3,7 @@ import SwiftData
 
 @Model
 class StairwayTag {
-    var id: String = ""
+    @Attribute(.unique) var id: String = ""
     var name: String = ""
     var isPreset: Bool = false
     var createdAt: Date = Date()

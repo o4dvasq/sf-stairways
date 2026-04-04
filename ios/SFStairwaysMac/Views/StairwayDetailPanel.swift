@@ -289,7 +289,9 @@ struct StairwayDetailPanel: View {
         GroupBox("Tags") {
             VStack(alignment: .leading, spacing: 8) {
                 let assignedTagIDs = Set(tagAssignments.filter { $0.stairwayID == stairway.id }.map(\.tagID))
-                let assignedTags = tags.filter { assignedTagIDs.contains($0.id) }
+                var seenAssigned = Set<String>()
+                let assignedTags = tags
+                    .filter { assignedTagIDs.contains($0.id) && seenAssigned.insert($0.id).inserted }
 
                 if assignedTags.isEmpty {
                     Text("No tags assigned.")
@@ -332,7 +334,10 @@ struct StairwayDetailPanel: View {
     private var tagChecklist: some View {
         VStack(alignment: .leading, spacing: 0) {
             let assignedTagIDs = Set(tagAssignments.filter { $0.stairwayID == stairway.id }.map(\.tagID))
-            let sortedTags = tags.sorted { $0.name.lowercased() < $1.name.lowercased() }
+            var seenChecklist = Set<String>()
+            let sortedTags = tags
+                .filter { seenChecklist.insert($0.id).inserted }
+                .sorted { $0.name.lowercased() < $1.name.lowercased() }
 
             if sortedTags.isEmpty {
                 Text("No tags. Create one below.")

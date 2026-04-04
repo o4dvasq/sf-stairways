@@ -64,6 +64,7 @@ struct SFStairwaysApp: App {
                         print("[SFStairways] ContentView appeared")
                         let store = StairwayStore()
                         print("[SFStairways] Store loaded \(store.stairways.count) stairways")
+                        SeedDataService.runTagDedupMigrationIfNeeded(modelContext: modelContainer.mainContext)
                         SeedDataService.seedIfNeeded(modelContext: modelContainer.mainContext)
                         SeedDataService.seedTagsIfNeeded(modelContext: modelContainer.mainContext)
                         SeedDataService.cleanUnwalkedRecordsIfNeeded(modelContext: modelContainer.mainContext)
