@@ -47,7 +47,7 @@ struct SFStairwaysAdminApp: App {
 
     var body: some Scene {
         WindowGroup {
-            AdminBrowser()
+            AdminContentView()
         }
         .modelContainer(modelContainer)
         .environment(syncStatusManager)

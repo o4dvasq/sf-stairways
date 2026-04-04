@@ -1,5 +1,10 @@
 # Architecture Decisions — sf-stairways
 
+## Admin map: simple self-contained pins, not reused from main app annotation stack
+**Date:** 2026-04-04
+
+**`AdminMapTab` uses plain `Circle()` pins defined inline, not `StairwayAnnotation`/`StairwayPin`/`TeardropPin` from the main app.** The main app's pin stack has zoom-scaling, dimming, selected/unselected states, dark stroke overlays, and unverified badges — all tuned for a public UX. The Admin map needs only color to communicate maintenance state (issues/override/walked/default). Importing the main app's pin views would pull in the `scale: CGFloat` zoom logic and unnecessary complexity. The 4-state Admin color scheme is also incompatible with the main app's 2-state scheme (brandAmber/walkedGreen). Keeping the Admin map self-contained means it can evolve independently without risking the main app's annotation behavior.
+
 ## Tags are curator-only: Add Tag removed from main app, not gated behind curator flag
 **Date:** 2026-04-04
 

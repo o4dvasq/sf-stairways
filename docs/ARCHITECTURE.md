@@ -91,7 +91,7 @@ No Supabase, no HealthKit on macOS. Legacy walk data field (`elevationGain`) fro
 
 ## iOS Admin App
 
-Source at `ios/SFStairwaysAdmin/`. Separate iOS target in `SFStairways.xcodeproj`, bundle ID `com.o4dvasq.SFStairways.admin`. Field maintenance tool for catalog corrections, deletion, and tag management. No map, no photo management, no HealthKit, no Supabase.
+Source at `ios/SFStairwaysAdmin/`. Separate iOS target in `SFStairways.xcodeproj`, bundle ID `com.o4dvasq.SFStairways.admin`. Field maintenance tool for catalog corrections, deletion, tag management, and spatial review. No photo management, no HealthKit, no Supabase.
 
 ### Shared Code (admin target membership)
 
@@ -105,20 +105,23 @@ Source at `ios/SFStairwaysAdmin/`. Separate iOS target in `SFStairways.xcodeproj
 
 | File | Purpose |
 |---|---|
-| `SFStairwaysAdminApp.swift` | App entry point; same schema + CloudKit setup as iOS and macOS (all six SwiftData models); falls back to local storage on CloudKit failure |
-| `Views/AdminBrowser.swift` | Root: searchable stairway list; filter chips (All/Walked/Unwalked/Has Override/Has Issues); sort menu (Name/Neighborhood/Date Walked); row shows walked icon, override indicator (pencil), tag count badge; toolbar: Tag Manager + Removed Stairways buttons |
-| `Views/AdminDetailView.swift` | Push-navigation detail: catalog data (read-only), editable override fields (height ft, curator description) with Save/Cancel, tag chips with X-to-remove + Add Tag (picker + "Create Tag…" inline), "Remove Stairway" destructive action with optional reason field |
+| `SFStairwaysAdminApp.swift` | App entry point; same schema + CloudKit setup as iOS and macOS; root view is `AdminContentView` |
+| `Views/AdminContentView.swift` | Root `TabView`: Map tab (`AdminMapTab`) + List tab (`AdminBrowser`) |
+| `Views/AdminMapTab.swift` | Full-screen MapKit map; default center SF (37.76, -122.44) span 0.06; all stairways as colored circle pins with 4-state priority: red/0.8 (has issues) > blue/0.8 (has override) > `walkedGreen` (walked) > `brandAmber` (default); `AdminMapFilter` enum (All/Has Issues/Has Overrides/Unwalked/Walked); labels at span < 0.02; tap pin → `AdminDetailView` sheet; `MapUserLocationButton`; Tag Manager toolbar button |
+| `Views/AdminBrowser.swift` | Searchable stairway list; filter chips (All/Walked/Unwalked/Has Override/Has Issues); sort menu (Name/Neighborhood/Date Walked); row shows walked icon, override indicator, tag count badge; toolbar: Tag Manager + Removed Stairways |
+| `Views/AdminDetailView.swift` | Detail (push-navigation or sheet): catalog data (read-only), editable override fields (height ft, curator description) with Save/Cancel, tag chips with X-to-remove + Add Tag, "Remove Stairway" destructive action |
 | `Views/AdminTagManager.swift` | Modal: preset tags (read-only, counts); custom tags (inline rename, delete with cascade count confirmation, create new) |
 | `Views/RemovedStairwaysView.swift` | Modal: list of StairwayDeletion records (name, date, reason); swipe to restore (deletes the record, stairway reappears everywhere) |
 
 ### Admin Data Flow
 
 ```
-all_stairways.json ──► StairwayStore ──► AdminBrowser (all stairways)
+all_stairways.json ──► StairwayStore ──► AdminMapTab (map pins)
+                                      ──► AdminBrowser (list)
                                               │
                               StairwayDeletion (CloudKit) ──► applyDeletions → filtered out
-                              WalkRecord (CloudKit, read-only) ──► walked state + detail
-                              StairwayOverride (CloudKit, read+write) ──► override fields
+                              WalkRecord (CloudKit, read-only) ──► walked state (pin color + list badge)
+                              StairwayOverride (CloudKit, read+write) ──► pin color + override fields
                               StairwayTag + TagAssignment (CloudKit, read+write) ──► tag management
 ```
 
