@@ -1,6 +1,6 @@
 # Project State — sf-stairways
 
-_Last updated: 2026-04-04 (curator-user-separation complete)_
+_Last updated: 2026-04-11 (multi-user walk visibility bug fix)_
 
 ## Platforms
 
@@ -9,7 +9,7 @@ _Last updated: 2026-04-04 (curator-user-separation complete)_
 - SwiftData + CloudKit — container init with CloudKit configured; falls back to local-only with detailed error logging if CloudKit fails
 - `SyncStatusManager` tracks live CloudKit event notifications; cloud icon in Stats tab shows sync state
 - Supabase SDK integrated; `AuthManager` manages Sign in with Apple session
-- Photo capture with thumbnails, location services, seed data import
+- Photo capture with thumbnails, location services
 - Tags: **read-only pills for all users** (Add Tag removed from main app); full tag CRUD (add, rename, delete) is Admin/macOS-only; tag pills use a 12-color filled palette (`Color.tagPalette` in `AppColors`) with white text; each tag has a stable `colorIndex: Int`; `StairwayTag.id` has `@Attribute(.unique)` — CloudKit sync upserts instead of duplicating; `TagAssignment` has `compoundKey` field; one-time `runTagDedupMigrationIfNeeded` migration purges duplicates on first launch
 - `StairwayStore` filters out deleted stairways via `applyDeletions(_:)` — map, list, search, progress all respect deletions
 - **Visual design: light-first** — warm terracotta `brandOrange`, SF Pro Rounded for display text, `surfaceCardElevated` stat cards, orange progress ring
@@ -62,6 +62,9 @@ _Last updated: 2026-04-04 (curator-user-separation complete)_
 | SF 311 Neighborhoods | **117** total, **68** with stairways |
 
 ## Recent Completions
+
+### 2026-04-11
+- **Multi-user walk visibility bug fix** — New test users were seeing Oscar's walked stairways pre-loaded on first launch. Root cause: `SeedDataService.seedIfNeeded()` loaded `target_list.json` (Oscar's personal walk history, bundled in the app binary) and inserted it as `WalkRecord` entries into any empty CloudKit private database. Fix: removed `seedIfNeeded()` call from `SFStairwaysApp.swift` and deleted the method + `SeedStairway` struct from `SeedDataService.swift`. New users now start with zero walk records. Oscar's data is unaffected (his CloudKit private database has the full history; `seedIfNeeded` was already skipping him because `existingCount > 0`). Also removed orphaned `hasSeededKey` constant.
 
 ### 2026-04-04
 - **Curator/User Feature Separation** — Tags are now read-only for all users in the main iOS app. "Add Tag" button and `showTagEditor` state removed from `StairwayBottomSheet`; `tagsSection` only renders when the stairway has tags (no empty state). `CommunityService` new `@Observable` service: fetches `stairway_climb_counts` view from Supabase on launch, reports walk/unwalk events to `stairway_walk_events` table. `climberCountBadge` added to `statsRow`: shows "N climbers" for > 0, "You're the first!" (brandOrange) when count == 1 and current user has walked it. `NeighborhoodDetail` shows aggregate community stat below progress bar. `CommunityService` injected via `.environment()` from `SFStairwaysApp`. Supabase schema: `stairway_walk_events` table + `stairway_climb_counts` view + RLS policies (manual setup required). Admin app and macOS tag management unchanged.
