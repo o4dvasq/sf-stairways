@@ -1,6 +1,6 @@
 # Project State — sf-stairways
 
-_Last updated: 2026-04-11 (multi-user walk visibility bug fix)_
+_Last updated: 2026-04-11 (community photo sharing + anonymous auth)_
 
 ## Platforms
 
@@ -64,6 +64,7 @@ _Last updated: 2026-04-11 (multi-user walk visibility bug fix)_
 ## Recent Completions
 
 ### 2026-04-11
+- **Community photo sharing + anonymous auth** — Photos taken by any user are now uploaded to Supabase and visible to all users. Root cause of prior failure: `addPhoto()` was gated on `authManager.userId`, which was nil for users who never signed in with Apple — uploads silently skipped. Fix: `AuthManager.signInAnonymously()` signs the user into Supabase anonymously (real UUID, no email/name) before upload. Anonymous auth is fire-and-forget; if it fails, photo stays local. One-time privacy consent dialog ("Share with SF Stairs Community? / No information identifying you will be shared.") shown on first photo, persisted via `@AppStorage("photoSharingConsented")`. Subsequent photos for a consented user skip the dialog. **Requires anonymous auth enabled in Supabase dashboard** (Authentication → Sign In / Providers → Anonymous sign-ins).
 - **Multi-user walk visibility bug fix** — New test users were seeing Oscar's walked stairways pre-loaded on first launch. Root cause: `SeedDataService.seedIfNeeded()` loaded `target_list.json` (Oscar's personal walk history, bundled in the app binary) and inserted it as `WalkRecord` entries into any empty CloudKit private database. Fix: removed `seedIfNeeded()` call from `SFStairwaysApp.swift` and deleted the method + `SeedStairway` struct from `SeedDataService.swift`. New users now start with zero walk records. Oscar's data is unaffected (his CloudKit private database has the full history; `seedIfNeeded` was already skipping him because `existingCount > 0`). Also removed orphaned `hasSeededKey` constant.
 
 ### 2026-04-04
@@ -100,6 +101,7 @@ _Last updated: 2026-04-11 (multi-user walk visibility bug fix)_
 - **supabase-swift** package not confirmed added to Xcode target membership.
 - **Sign in with Apple:** `signInError` display is temporary for debugging.
 - **Supabase schema (community):** `stairway_walk_events` table + `stairway_climb_counts` view + RLS policies must be created manually in Supabase SQL editor. Seed script for Oscar's 8 existing walks not yet run.
+- **Anonymous auth must be enabled in Supabase dashboard** (Authentication → Sign In / Providers → Anonymous sign-ins) for community photo uploads to work for non-Apple-signed-in users.
 - **Admin app Xcode target**: file memberships and capabilities must be manually verified in Xcode after pulling.
 
 ## Repository

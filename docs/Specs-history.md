@@ -2,6 +2,8 @@
 
 | Description | Implemented | Spec File |
 |---|---|---|
+| Community photo sharing: anonymous auth, one-time consent, all users see all photos | 2026-04-11 | (no spec — bug fix + feature) |
+| Remove height overrides, rename curator/override language, admin photos | 2026-04-04 | SPEC_remove-overrides-and-language-cleanup.md |
 | Curator/user separation: read-only tags, community climb counts | 2026-04-04 | SPEC_curator-user-separation.md |
 | Admin app: map tab with color-coded pins, filter menu, TabView | 2026-04-04 | SPEC_admin-app-map-and-editing.md |
 | Celebration v3: instant banner, confetti, heavy haptic | 2026-04-04 | SPEC_celebration-v3.md |

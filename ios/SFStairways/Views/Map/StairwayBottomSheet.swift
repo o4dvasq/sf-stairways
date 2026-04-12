@@ -21,7 +21,6 @@ struct StairwayBottomSheet: View {
     @State private var notesText = ""
 
     // Curator fields (local StairwayOverride)
-    @State private var curatorHeightText = ""
     @State private var curatorDescription = ""
     @State private var curatorDirty = false
     @FocusState private var curatorFocus: CuratorField?
@@ -50,8 +49,14 @@ struct StairwayBottomSheet: View {
     @State private var showWalkedBanner = false
     @State private var showConfetti = false
 
+    // Photo sharing consent (one-time, persisted)
+    @AppStorage("photoSharingConsented") private var photoSharingConsented = false
+    @State private var showPhotoSharingConsent = false
+    @State private var pendingPhotoData: Data? = nil
+    @State private var pendingPhotoObject: WalkPhoto? = nil
+
     private enum CuratorField: Hashable {
-        case height, description
+        case description
     }
 
     private var walkRecord: WalkRecord? {
@@ -244,6 +249,22 @@ struct StairwayBottomSheet: View {
         } message: {
             Text("You just added a photo. Would you like to mark this stairway as walked?")
         }
+        .alert("Share with SF Stairs Community?", isPresented: $showPhotoSharingConsent) {
+            Button("Share Photo") {
+                photoSharingConsented = true
+                if let data = pendingPhotoData, let photo = pendingPhotoObject {
+                    uploadPhotoToCloud(imageData: data, photo: photo)
+                }
+                pendingPhotoData = nil
+                pendingPhotoObject = nil
+            }
+            Button("Keep Private", role: .cancel) {
+                pendingPhotoData = nil
+                pendingPhotoObject = nil
+            }
+        } message: {
+            Text("Your photo will be visible to all SF Stairs users on this stairway. No other information identifying you will be shared.")
+        }
         .onAppear {
             showWalkedBanner = walkRecord?.walked ?? false
             notesText = walkRecord?.notes ?? ""
@@ -342,9 +363,7 @@ struct StairwayBottomSheet: View {
 
     private var statsRow: some View {
         HStack(spacing: 12) {
-            if let verifiedHeight = currentOverride?.verifiedHeightFt {
-                verifiedStatText("\(Int(verifiedHeight)) ft")
-            } else if let height = stairway.heightFt {
+            if let height = stairway.heightFt {
                 Text("\(Int(height)) ft")
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -375,17 +394,6 @@ struct StairwayBottomSheet: View {
                 .foregroundStyle(.secondary)
             }
         }
-    }
-
-    private func verifiedStatText(_ text: String) -> some View {
-        HStack(spacing: 2) {
-            Text(text)
-            Image(systemName: "checkmark.seal.fill")
-                .font(.system(size: 8))
-                .foregroundStyle(Color.forestGreen)
-        }
-        .font(.caption)
-        .foregroundStyle(.secondary)
     }
 
     // MARK: - Walked Banner
@@ -630,51 +638,26 @@ struct StairwayBottomSheet: View {
             VStack(alignment: .leading, spacing: 12) {
                 Divider()
 
-                HStack(spacing: 6) {
-                    Text("Stairway Info")
-                        .font(.subheadline)
-                        .fontWeight(.semibold)
-                    if currentOverride?.hasAnyValue == true {
-                        Image(systemName: "checkmark.seal.fill")
-                            .font(.system(size: 12))
-                            .foregroundStyle(Color.forestGreen)
-                    }
-                }
+                Text("Description")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
 
-                HStack {
-                    Text("Height (ft)")
+                ZStack(alignment: .topLeading) {
+                    TextEditor(text: $curatorDescription)
                         .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                    Spacer()
-                    TextField("Add height", text: $curatorHeightText)
-                        .keyboardType(.decimalPad)
-                        .multilineTextAlignment(.trailing)
-                        .frame(width: 120)
-                        .focused($curatorFocus, equals: .height)
-                        .onChange(of: curatorHeightText) { _, _ in curatorDirty = true }
-                }
-
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("Description")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                    ZStack(alignment: .topLeading) {
-                        TextEditor(text: $curatorDescription)
+                        .frame(minHeight: 60)
+                        .padding(8)
+                        .background(Color(.systemGray6))
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .focused($curatorFocus, equals: .description)
+                        .onChange(of: curatorDescription) { _, _ in curatorDirty = true }
+                    if curatorDescription.isEmpty {
+                        Text("Add description...")
                             .font(.subheadline)
-                            .frame(minHeight: 60)
-                            .padding(8)
-                            .background(Color(.systemGray6))
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                            .focused($curatorFocus, equals: .description)
-                            .onChange(of: curatorDescription) { _, _ in curatorDirty = true }
-                        if curatorDescription.isEmpty {
-                            Text("Add description...")
-                                .font(.subheadline)
-                                .foregroundStyle(.tertiary)
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 16)
-                                .allowsHitTesting(false)
-                        }
+                            .foregroundStyle(.tertiary)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 16)
+                            .allowsHitTesting(false)
                     }
                 }
             }
@@ -686,7 +669,7 @@ struct StairwayBottomSheet: View {
     @MainActor
     private func generateShareCard() {
         let photoImage = walkRecord?.photoArray.first.flatMap { UIImage(data: $0.imageData ?? Data()) }
-        let heightFt = currentOverride?.verifiedHeightFt ?? stairway.heightFt
+        let heightFt = stairway.heightFt
 
         let neighborhoodIDs = Set(store.stairways(in: stairway.neighborhood).map(\.id))
         let neighborhoodTotal = neighborhoodIDs.count
@@ -797,11 +780,26 @@ struct StairwayBottomSheet: View {
             showPhotoWalkedAlert = true
         }
 
-        guard let userId = authManager.userId else {
-            print("[StairwayBottomSheet] Photo upload skipped — user not authenticated")
-            return
+        if photoSharingConsented {
+            uploadPhotoToCloud(imageData: imageData, photo: photo)
+        } else {
+            // Ask once — store the pending photo and show consent dialog
+            pendingPhotoData = imageData
+            pendingPhotoObject = photo
+            showPhotoSharingConsent = true
         }
+    }
+
+    private func uploadPhotoToCloud(imageData: Data, photo: WalkPhoto) {
         Task { @MainActor in
+            // Ensure there is a user ID, signing in anonymously if needed
+            if !authManager.isAuthenticated {
+                await authManager.signInAnonymously()
+            }
+            guard let userId = authManager.userId else {
+                print("[StairwayBottomSheet] Photo upload skipped — could not obtain user ID")
+                return
+            }
             do {
                 try await photoLikeService.uploadPhoto(
                     stairwayId: stairway.id,
@@ -860,18 +858,15 @@ struct StairwayBottomSheet: View {
     // MARK: - Curator Override Actions
 
     private func initCuratorFields() {
-        guard let o = currentOverride else { return }
-        curatorHeightText = o.verifiedHeightFt.map { "\($0)" } ?? ""
-        curatorDescription = o.stairwayDescription ?? ""
+        curatorDescription = currentOverride?.stairwayDescription ?? ""
     }
 
     private func saveCuratorData() {
         curatorDirty = false
-        let height = Double(curatorHeightText)
         let desc = curatorDescription.trimmingCharacters(in: .whitespacesAndNewlines)
         let descValue: String? = desc.isEmpty ? nil : desc
 
-        if height == nil && descValue == nil {
+        if descValue == nil {
             if let existing = currentOverride {
                 modelContext.delete(existing)
                 try? modelContext.save()
@@ -886,7 +881,6 @@ struct StairwayBottomSheet: View {
             override = StairwayOverride(stairwayID: stairway.id)
             modelContext.insert(override)
         }
-        override.verifiedHeightFt = height
         override.stairwayDescription = descValue
         override.updatedAt = Date()
         try? modelContext.save()

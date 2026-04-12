@@ -1,5 +1,15 @@
 # Architecture Decisions — sf-stairways
 
+## Community photos use anonymous Supabase auth, not Apple ID requirement
+**Date:** 2026-04-11
+
+**Photo uploads require a Supabase user ID, but requiring Apple Sign-In to share a photo is a big ask.** We use `signInAnonymously()` before upload: Supabase issues a persistent UUID with no email or name. The UUID is stored in the Supabase session (survives app restarts via token refresh). The existing RLS policies (`auth.uid() = user_id`) work identically for anonymous users since they have a real `auth.uid()`. If anonymous sign-in fails (no network, feature not enabled in dashboard), the upload is skipped and the photo stays local — same graceful fallback as before. Curator photo management still works because curators use real Apple ID sessions with elevated RLS privileges.
+
+## One-time photo consent via @AppStorage, not per-photo confirmation
+**Date:** 2026-04-11
+
+**Privacy consent for photo sharing is shown once, not on every photo.** A per-photo confirmation would add friction to a workflow that's already multi-step (picker → crop → upload). The consent text is explicit: "Your photo will be visible to all SF Stairs users on this stairway. No other information identifying you will be shared." After consent, `@AppStorage("photoSharingConsented")` persists the decision across sessions. Users who decline keep their photos local; they can consent later by tapping the camera again (the alert re-appears if consent is not yet given). There is no "revoke consent" UI yet — a future settings toggle could clear the key.
+
 ## Admin map: simple self-contained pins, not reused from main app annotation stack
 **Date:** 2026-04-04
 

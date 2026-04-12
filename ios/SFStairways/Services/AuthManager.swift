@@ -137,6 +137,20 @@ final class AuthManager: NSObject {
             }
         }
     }
+
+    // MARK: - Anonymous sign-in
+
+    /// Signs in anonymously so unauthenticated users can upload community photos.
+    /// No-ops if the user is already authenticated.
+    func signInAnonymously() async {
+        guard session == nil else { return }
+        do {
+            let session = try await SupabaseManager.shared.client.auth.signInAnonymously()
+            await MainActor.run { self.session = session }
+        } catch {
+            print("[AuthManager] Anonymous sign-in failed: \(error)")
+        }
+    }
 }
 
 // MARK: - ASAuthorizationControllerDelegate
