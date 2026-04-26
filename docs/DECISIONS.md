@@ -1,5 +1,14 @@
 # Architecture Decisions — sf-stairways
 
+## Sign-in prompt: ZStack sibling, not modal sheet, to match splash pattern
+**Date:** 2026-04-26
+
+**`SignInPromptView` is a ZStack sibling in `SFStairwaysApp.body`, not a `.sheet` or `.fullScreenCover` presented from `ContentView`.** The existing brand splash uses the same ZStack-overlay approach: `if showSplash { SplashView() }`. Matching that pattern keeps the launch-sequence state (splash → prompt → main app) all in one place (`SFStairwaysApp`) rather than splitting it between the App struct and a sheet presentation inside `ContentView`. A sheet would also require passing auth state down to `ContentView` purely to drive the presentation, adding coupling where none is needed.
+
+**`showSignInPrompt` is a separate `@State var`, not a computed property from auth state.** A computed condition (`!isAuthenticated && !isLoading && !hasSeenSignInPrompt`) would always be `false` after sign-in, which is correct, but it can't carry a `withAnimation` call — the transition would be instant. A `@State var` lets the two dismissal paths (sign-in success via `onChange`, "Maybe later" via callback) each call `withAnimation` to fade out cleanly.
+
+**Two `onChange` handlers cover the auth-check-timing edge case.** The splash dismisses at 2.5s; `AuthManager.restoreSession()` does a Supabase network call that may take longer. If `isLoading` is still `true` at 2.5s, the splash-onAppear block skips the prompt. The `onChange(of: authManager.isLoading)` handler fires when the check completes and shows the prompt if the splash has already gone.
+
 ## Community photos use anonymous Supabase auth, not Apple ID requirement
 **Date:** 2026-04-11
 

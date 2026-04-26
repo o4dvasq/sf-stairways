@@ -56,19 +56,40 @@ struct SFStairwaysApp: App {
     }
 
     @State private var showSplash = true
+    @State private var showSignInPrompt = false
+    @AppStorage("hasSeenSignInPrompt") private var hasSeenSignInPrompt = false
 
     var body: some Scene {
         WindowGroup {
             ZStack {
                 ContentView()
+                    .preferredColorScheme(.light)
                     .onAppear {
                         print("[SFStairways] ContentView appeared")
                         let store = StairwayStore()
                         print("[SFStairways] Store loaded \(store.stairways.count) stairways")
                         SeedDataService.runTagDedupMigrationIfNeeded(modelContext: modelContainer.mainContext)
+                        SeedDataService.deduplicateWalkRecordsIfNeeded(modelContext: modelContainer.mainContext)
                         SeedDataService.seedTagsIfNeeded(modelContext: modelContainer.mainContext)
                         SeedDataService.cleanUnwalkedRecordsIfNeeded(modelContext: modelContainer.mainContext)
                         Task { await communityService.fetchClimbCounts() }
+                    }
+                    .onChange(of: authManager.isLoading) { _, loading in
+                        // Edge case: auth check finishes after the splash has already dismissed.
+                        if !loading && !showSplash && !authManager.isAuthenticated && !hasSeenSignInPrompt {
+                            withAnimation(.easeInOut(duration: 0.4)) {
+                                showSignInPrompt = true
+                            }
+                        }
+                    }
+                    .onChange(of: authManager.isAuthenticated) { _, authenticated in
+                        // Dismiss the prompt as soon as sign-in succeeds.
+                        if authenticated && showSignInPrompt {
+                            hasSeenSignInPrompt = true
+                            withAnimation(.easeInOut(duration: 0.4)) {
+                                showSignInPrompt = false
+                            }
+                        }
                     }
 
                 if showSplash {
@@ -79,8 +100,27 @@ struct SFStairwaysApp: App {
                                 withAnimation(.easeInOut(duration: 0.4)) {
                                     showSplash = false
                                 }
+                                // Show sign-in prompt after the splash fades if auth check is
+                                // already done and the user is not signed in.
+                                if !authManager.isLoading && !authManager.isAuthenticated && !hasSeenSignInPrompt {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                        withAnimation(.easeInOut(duration: 0.4)) {
+                                            showSignInPrompt = true
+                                        }
+                                    }
+                                }
                             }
                         }
+                }
+
+                if showSignInPrompt {
+                    SignInPromptView(onMaybeLater: {
+                        hasSeenSignInPrompt = true
+                        withAnimation(.easeInOut(duration: 0.4)) {
+                            showSignInPrompt = false
+                        }
+                    })
+                    .transition(.opacity)
                 }
             }
         }

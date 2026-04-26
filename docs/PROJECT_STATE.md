@@ -1,6 +1,6 @@
 # Project State — sf-stairways
 
-_Last updated: 2026-04-11 (community photo sharing + anonymous auth)_
+_Last updated: 2026-04-26 (first-launch sign-in prompt)_
 
 ## Platforms
 
@@ -21,6 +21,7 @@ _Last updated: 2026-04-11 (community photo sharing + anonymous auth)_
 - **Share card** — walked stairways show share button; tapping generates 1080×1920 portrait card via `ImageRenderer` at 3× scale; logo bottom-left, progress pill bottom-right
 - **Neighborhood badges** — `NeighborhoodCard` shows `checkmark.seal.fill` badge when 100% complete. Completed neighborhoods on map get green polygon fill.
 - **Discovery nuggets** — `NuggetProvider` loads `neighborhood_facts.json` (18 neighborhood-specific + 10 global facts). `NeighborhoodDetail` shows per-neighborhood fact below progress bar. `ProgressTab` shows daily-rotating global fact.
+- **First-launch sign-in prompt** — `SignInPromptView` shown once per install (after brand splash), before the main app, for unauthenticated users. Shows three benefits (photo sync, achievements, community), privacy commitment, `SignInWithAppleButton`, and "Maybe later". Persisted via `@AppStorage("hasSeenSignInPrompt")`. Identity-merge for photos taken before signing in is a **known open follow-on** (separate spec needed).
 - Successfully archived in Xcode on 2026-03-23
 - See `docs/IOS_REFERENCE.md` for full build details
 
@@ -63,32 +64,23 @@ _Last updated: 2026-04-11 (community photo sharing + anonymous auth)_
 
 ## Recent Completions
 
+### 2026-04-26
+- **First-launch sign-in prompt** — New `SignInPromptView` shown once per install (after brand splash, before main TabView) for unauthenticated users. Three benefit rows (photo sync / achievements / community), privacy commitment text, `SignInWithAppleButton` (primary), "Maybe later" (secondary). `@AppStorage("hasSeenSignInPrompt")` persists flag. Sign-in success auto-dismisses via `onChange(of: authManager.isAuthenticated)`. Edge case handled: `onChange(of: authManager.isLoading)` shows prompt if auth check completes after splash dismisses. Cancelling Apple sheet returns user to prompt without setting flag. `SFStairwaysApp.swift` now carries `showSignInPrompt` and `hasSeenSignInPrompt` state.
+
 ### 2026-04-11
 - **Community photo sharing + anonymous auth** — Photos taken by any user are now uploaded to Supabase and visible to all users. Root cause of prior failure: `addPhoto()` was gated on `authManager.userId`, which was nil for users who never signed in with Apple — uploads silently skipped. Fix: `AuthManager.signInAnonymously()` signs the user into Supabase anonymously (real UUID, no email/name) before upload. Anonymous auth is fire-and-forget; if it fails, photo stays local. One-time privacy consent dialog ("Share with SF Stairs Community? / No information identifying you will be shared.") shown on first photo, persisted via `@AppStorage("photoSharingConsented")`. Subsequent photos for a consented user skip the dialog. **Requires anonymous auth enabled in Supabase dashboard** (Authentication → Sign In / Providers → Anonymous sign-ins).
-- **Multi-user walk visibility bug fix** — New test users were seeing Oscar's walked stairways pre-loaded on first launch. Root cause: `SeedDataService.seedIfNeeded()` loaded `target_list.json` (Oscar's personal walk history, bundled in the app binary) and inserted it as `WalkRecord` entries into any empty CloudKit private database. Fix: removed `seedIfNeeded()` call from `SFStairwaysApp.swift` and deleted the method + `SeedStairway` struct from `SeedDataService.swift`. New users now start with zero walk records. Oscar's data is unaffected (his CloudKit private database has the full history; `seedIfNeeded` was already skipping him because `existingCount > 0`). Also removed orphaned `hasSeededKey` constant.
+- **Multi-user walk visibility bug fix** — New test users were seeing Oscar's walked stairways pre-loaded on first launch. Root cause: `SeedDataService.seedIfNeeded()` loaded `target_list.json` (Oscar's personal walk history, bundled in the app binary) and inserted it as `WalkRecord` entries into any empty CloudKit private database. Fix: removed `seedIfNeeded()` call from `SFStairwaysApp.swift` and deleted the method + `SeedStairway` struct from `SeedDataService.swift`.
 
 ### 2026-04-04
-- **Curator/User Feature Separation** — Tags are now read-only for all users in the main iOS app. "Add Tag" button and `showTagEditor` state removed from `StairwayBottomSheet`; `tagsSection` only renders when the stairway has tags (no empty state). `CommunityService` new `@Observable` service: fetches `stairway_climb_counts` view from Supabase on launch, reports walk/unwalk events to `stairway_walk_events` table. `climberCountBadge` added to `statsRow`: shows "N climbers" for > 0, "You're the first!" (brandOrange) when count == 1 and current user has walked it. `NeighborhoodDetail` shows aggregate community stat below progress bar. `CommunityService` injected via `.environment()` from `SFStairwaysApp`. Supabase schema: `stairway_walk_events` table + `stairway_climb_counts` view + RLS policies (manual setup required). Admin app and macOS tag management unchanged.
-- **Admin App Map & Editing Upgrade** — `AdminContentView` (TabView) is now the root; Map tab (`AdminMapTab`) + List tab (`AdminBrowser`). Map shows all stairways as colored circle pins: red (has issues) > blue (has override) > walkedGreen (walked) > brandAmber (default). Filter menu (All/Has Issues/Has Overrides/Unwalked/Walked) with filled icon when active. Labels at span < 0.02. Tap pin → `AdminDetailView` sheet. Tag Manager in both tab toolbars. Admin app icon updated: wrench-badge in light/dark/tinted variants; `Contents.json` references `AdminIcon.png/.._dark.png/.._tinted.png`.
+- **Curator/User Feature Separation** — Tags read-only for all users in main app; `CommunityService` climb counts; `climberCountBadge` in stats row.
+- **Admin App Map & Editing Upgrade** — `AdminContentView` (TabView) root; 4-state color pins; filter menu; admin app icon updated.
 
 ### 2026-04-03
 - **Celebration v3** — instant banner + confetti + heavy haptic
-- **Celebration Haptic + Bounce Fix v2** — `prepare()` before save, `impactOccurred()` after; bounce from `.onAppear` with 0.15s delay
-- **Tag Deduplication** — `@Attribute(.unique)` on `StairwayTag.id`; dedup migration; BulkOps fix
-- **Walked Card Polish** — date walked in banner; neighborhood · N of M format; pencil removed; "Photos" heading removed
-- **Domain Update** — `sfstairways.app` → `sfstairs.app` everywhere
-- **Nearby Filter Recenters Map** — tapping "Nearby" pill moves camera to user location
-- **Walked Card Redesign** — bold full-width green banner replaces sheet tint + inline card
-- **Celebration Animation Bug Fix** — `celebrationTrigger` state; Hard Mode 0.3s delay
-- **Tag Pill Colors** — 12-color `tagPalette`; `colorIndex` on `StairwayTag`; filled pills across all surfaces
-- **SF Stairs Public Rebrand** — "SF Stairways" → "SF Stairs" in all user-visible surfaces
-- **Splash Image Update**, **Share Card Crop-Safe Layout**
+- **Tag Deduplication**, **Walked Card Polish**, **Domain Update** (sfstairs.app), **Nearby Filter Recenters Map**, **Walked Card Redesign**, **Tag Pill Colors**, **SF Stairs Rebrand**, **Splash Image Update**
 
 ### 2026-04-02
-- **Progress Count Bugfix**, **Mark Walked Celebration**, **Neighborhood Rewards (Badges + Discovery Nuggets)**, **Hard Mode Simplification**, **Share Card Redesign**
-
-### 2026-03-31
-- **Remove Steps Tracking** — `stepCount` removed from models
+- **Progress Count Bugfix**, **Mark Walked Celebration**, **Neighborhood Rewards**, **Hard Mode Simplification**, **Share Card Redesign**
 
 ### Earlier sessions
 - **iOS Admin App**, **Visual refresh**, **Map label cleanup**, **UX fixes**, **Attribution & acknowledgements**, **macOS tag management**, **Urban Hiker SF data import**, **macOS Admin Dashboard**, **Photo sync**, **Neighborhood 311 Migration**, **Neighborhood Map Overlays**, **Progress Tab Reframe**
@@ -100,8 +92,9 @@ _Last updated: 2026-04-11 (community photo sharing + anonymous auth)_
 - **CKErrorDomain error 2** (not authenticated) surfaces as red error icon on Stats tab.
 - **supabase-swift** package not confirmed added to Xcode target membership.
 - **Sign in with Apple:** `signInError` display is temporary for debugging.
-- **Supabase schema (community):** `stairway_walk_events` table + `stairway_climb_counts` view + RLS policies must be created manually in Supabase SQL editor. Seed script for Oscar's 8 existing walks not yet run.
+- **Supabase schema (community):** `stairway_walk_events` table + `stairway_climb_counts` view + RLS policies must be created manually in Supabase SQL editor.
 - **Anonymous auth must be enabled in Supabase dashboard** (Authentication → Sign In / Providers → Anonymous sign-ins) for community photo uploads to work for non-Apple-signed-in users.
+- **Anonymous-user photo identity merge** — photos uploaded before a user signs in with Apple are owned by their anonymous Supabase UUID. If they later sign in with Apple, those photos remain under the old identity. Migrating ownership requires Supabase-side identity linking — open follow-on spec (`SPEC_anonymous_to_apple_identity_upgrade`).
 - **Admin app Xcode target**: file memberships and capabilities must be manually verified in Xcode after pulling.
 
 ## Repository

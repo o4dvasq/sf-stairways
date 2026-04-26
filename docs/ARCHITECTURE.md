@@ -135,6 +135,11 @@ Source at `ios/SFStairways/`. iOS is the primary user-facing platform. Web app d
 
 `SFStairwaysApp.swift` — creates `ModelContainer` (CloudKit-backed, falls back to local), creates `SyncStatusManager`, `AuthManager`, `NeighborhoodStore`, and `CommunityService`, injects all into the SwiftUI environment via `.environment()`. On `ContentView.onAppear`, calls `communityService.fetchClimbCounts()` to prime the cache.
 
+**Launch sequence** (ZStack layers, highest on top):
+1. `ContentView` — always present; all tabs available underneath
+2. `SplashView` (`showSplash = true`) — brand splash, fades after 2.5s
+3. `SignInPromptView` (`showSignInPrompt`) — shown once per install for unauthenticated users, after the splash fades; `@AppStorage("hasSeenSignInPrompt")` gates and persists; dismissed by "Maybe later" or successful Apple sign-in
+
 ### Services
 
 | File | Role |
@@ -179,6 +184,7 @@ For height display: use `StairwayOverride.verifiedHeightFt` if non-nil → else 
 
 ### Views
 
+- `SignInPromptView` — full-screen onboarding shown once per install after brand splash; `SignInWithAppleButton` (primary), "Maybe later" (secondary); three benefit rows (photo sync / achievements / community); inline `authManager.signInError` display; dismissed to main app on sign-in success or "Maybe later"; `@AppStorage("hasSeenSignInPrompt")` persists the flag
 - `ContentView` — `TabView` (Map / List / Stats / Search); holds `NavigationCoordinator` in `@State` and injects via `.environment(coordinator)`; `SearchTab` inner view wraps `SearchPanel` with `isTabMode: true` and its own `StairwayStore` + `LocationManager`; cross-tab navigation via coordinator + 0.1s `asyncAfter` to allow tab switch before map fly-to; calls `applyRoundedNavBarAppearance()` on appear to set `UINavigationBarAppearance` globally with SF Pro Rounded large-title and inline-title fonts
 - `MapTab` — MapKit full-screen map (follows system light/dark — no forced color scheme), `brandAmber` top bar with leading gear (settings) and trailing Around Me + Tag Filter; filter pills (All/Walked/Nearby); floating `ProgressCard` (bottom-right, 120pt wide); launches at default city-wide view (latDelta ~0.06); tracks `mapSpan` via `.onMapCameraChange(frequency: .onEnd)`; annotation labels use `stairway.displayName` and are hidden when `mapSpan > 0.02`; **neighborhood polygon overlays** (`MapPolygon` per ring, drawn first in Map content below all annotations): completed neighborhoods use `Color.walkedGreen` fill (35% alpha) + stroke (65%) + 1.5pt lineWidth; incomplete neighborhoods use their assigned color at 30%/20% fill / 50%/40% stroke (light/dark); dimmed to 5%/10% when Around Me active and neighborhood not highlighted; `completedNeighborhoodNames: Set<String>` is a computed property derived from `walkedStairwayIDs` + `store.stairways`; **centroid label annotations**: `caption2` Rounded font at 60% opacity, visible only when `mapSpan < 0.04`; tapping a label opens `NeighborhoodDetail` as a sheet (wrapped in `NavigationStack`); pin taps unaffected (polygon tap is visual-only per fallback strategy); consumes `NavigationCoordinator` from environment
 - `ListTab` — searchable, filterable stairway list (All/Walked); tap row → `StairwayBottomSheet` sheet; **section headers are `NavigationLink(value: group.name)`** → push `NeighborhoodDetail` onto the NavigationStack; `navigationDestination(for: String.self)` registered on the List
