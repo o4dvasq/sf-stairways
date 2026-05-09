@@ -702,6 +702,19 @@ The original `markWalked()` implementation (2026-04-02) wrapped only `modelConte
 
 **Hard Mode "Mark Anyway" delay (0.3s).** The alert is mid-dismiss when the button fires. SwiftUI's alert dismissal runs its own animation transaction that overrides the celebration. `DispatchQueue.main.asyncAfter(deadline: .now() + 0.3)` lets the alert fully leave the screen before `markWalked()` fires. 0.3s is long enough for a standard dismiss (≈0.25s) but short enough to feel instant to the user.
 
+## Seed-bug cleanup: targeted CloudKit deletion over wholesale wipe
+**Date:** 2026-05-09
+
+**The `seedIfNeeded()` removal (2026-04-11) stopped the bug from occurring, but the ghost records it already wrote to CloudKit were still there for any Apple ID that had run a pre-fix build.** CloudKit's private database persists data across app uninstalls — the records reappear as green pins on every new install until explicitly deleted.
+
+**Targeted deletion, not a wholesale walk reset.** A "Reset all walks" option would delete legitimate user data — any stairways the user actually walked and logged before or after the bug. The correct approach is to delete only the records that exactly match the seed JSON's fingerprint: `walked == true`, `stairwayID` in the 8 original targets, `dateWalked` exactly 2026-03-09 or 2026-03-10. This three-way AND has near-zero false-positive risk — a real user collision requires walking one of those 8 stairways on one of those two specific past dates, and having already synced that to iCloud before the bug fix shipped.
+
+**`SwiftData.modelContext.delete()` propagates to CloudKit automatically.** The migration doesn't call any CloudKit API directly — it deletes via `ModelContext`, which propagates to CloudKit on `save()` and then fans out to other devices on the same Apple ID (Mac app, other iOS devices) via CloudKit's normal sync.
+
+**`target_list.json` deleted from repo.** The file was still present at `ios/SFStairways/Resources/` and `data/` even though the code that read it was removed in April. Because the iOS target uses a `PBXFileSystemSynchronizedRootGroup`, the file would have been included in the app bundle by default — wasted bytes and a potential source of confusion. The file had no reference in `project.pbxproj`, so deletion from disk was sufficient.
+
+**Mac app mirrors the migration inline.** `SeedDataService.swift` is not in the Mac target membership; all migrations must be inlined in `SFStairwaysMacApp.swift`. Both platforms use the same UserDefaults key (`hasCleanedSeedBugRecords_v1`) so whichever runs first marks it done — the other skips harmlessly on next launch.
+
 ## SeedDataService.seedIfNeeded removed: personal walk data must not be bundled
 **Date:** 2026-04-11
 

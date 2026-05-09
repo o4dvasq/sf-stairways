@@ -6,6 +6,18 @@ enum SeedDataService {
     private static let hasCleanedUnwalkedKey = "com.sfstairways.hasCleanedUnwalked"
     private static let hasRunTagDedupKey = "hasRunTagDedupMigration_v1"
     private static let hasRunWalkRecordDedupKey = "hasRunWalkRecordDedupMigration_v1"
+    private static let hasCleanedSeedBugRecordsKey = "hasCleanedSeedBugRecords_v1"
+
+    private static let seedBugStairwayIDs: Set<String> = [
+        "16th-avenue-tiled-steps",
+        "hidden-garden-steps",
+        "lincoln-park-steps",
+        "vulcan-stairway",
+        "saturn-street-west-of-ord-street",
+        "pemberton-place-clayton-street-to-villa-terrace",
+        "filbert-street-sansome-street-to-montgomery-street",
+        "greenwich-street-sansome-street-to-montgomery-street"
+    ]
 
     /// One-time migration: for each stairwayID, keep the WalkRecord with the earliest
     /// createdAt and delete the rest. Cleans up duplicates introduced by CloudKit sync.
@@ -34,6 +46,45 @@ enum SeedDataService {
         print("[SeedDataService] WalkRecord dedup: removed \(toDelete.count) duplicates")
         UserDefaults.standard.set(true, forKey: hasRunWalkRecordDedupKey)
     }
+    /// One-time migration: delete the eight WalkRecords injected by the old seedIfNeeded()
+    /// function. Fingerprint: walked == true, stairwayID in seedBugStairwayIDs, dateWalked
+    /// is 2026-03-09 or 2026-03-10. Deletions propagate to CloudKit and other devices.
+    static func cleanupSeedBugRecordsIfNeeded(modelContext: ModelContext) {
+        guard !UserDefaults.standard.bool(forKey: hasCleanedSeedBugRecordsKey) else { return }
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+
+        guard let seedDate1 = formatter.date(from: "2026-03-09"),
+              let seedDate2 = formatter.date(from: "2026-03-10") else {
+            UserDefaults.standard.set(true, forKey: hasCleanedSeedBugRecordsKey)
+            return
+        }
+
+        let calendar = Calendar.current
+        let descriptor = FetchDescriptor<WalkRecord>(predicate: #Predicate { $0.walked })
+        let walkedRecords = (try? modelContext.fetch(descriptor)) ?? []
+
+        var toDelete: [WalkRecord] = []
+        for record in walkedRecords {
+            guard seedBugStairwayIDs.contains(record.stairwayID),
+                  let dateWalked = record.dateWalked else { continue }
+            if calendar.isDate(dateWalked, inSameDayAs: seedDate1) ||
+               calendar.isDate(dateWalked, inSameDayAs: seedDate2) {
+                toDelete.append(record)
+            }
+        }
+
+        toDelete.forEach { modelContext.delete($0) }
+        if !toDelete.isEmpty {
+            try? modelContext.save()
+        }
+
+        print("[SeedDataService] Seed bug cleanup: removed \(toDelete.count) records")
+        UserDefaults.standard.set(true, forKey: hasCleanedSeedBugRecordsKey)
+    }
+
     /// One-time migration: deduplicate StairwayTag and TagAssignment records, and backfill
     /// TagAssignment.compoundKey. Must run after the ModelContainer is created but before
     /// any tag-related UI is shown.

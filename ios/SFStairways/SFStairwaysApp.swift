@@ -70,6 +70,7 @@ struct SFStairwaysApp: App {
                         print("[SFStairways] Store loaded \(store.stairways.count) stairways")
                         SeedDataService.runTagDedupMigrationIfNeeded(modelContext: modelContainer.mainContext)
                         SeedDataService.deduplicateWalkRecordsIfNeeded(modelContext: modelContainer.mainContext)
+                        SeedDataService.cleanupSeedBugRecordsIfNeeded(modelContext: modelContainer.mainContext)
                         SeedDataService.seedTagsIfNeeded(modelContext: modelContainer.mainContext)
                         SeedDataService.cleanUnwalkedRecordsIfNeeded(modelContext: modelContainer.mainContext)
                         Task { await communityService.fetchClimbCounts() }

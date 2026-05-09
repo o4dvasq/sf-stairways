@@ -2,6 +2,7 @@
 
 | Description | Implemented | Spec File |
 |---|---|---|
+| Seed-bug WalkRecord cleanup + target_list.json removal | 2026-05-09 | SPEC_seed-bug-cleanup-0509-0856.md |
 | ConfettiView + WalkRecord dedup: fix missing symbols blocking Archive | 2026-05-08 19:30 | SPEC_confetti-and-walk-dedup-0508-1923.md |
 | First-launch sign-in prompt: onboarding screen, Apple sign-in, Maybe later | 2026-04-26 | SPEC_first_launch_signin_prompt-0426-1058.md |
 | Community photo sharing: anonymous auth, one-time consent, all users see all photos | 2026-04-11 | (no spec — bug fix + feature) |

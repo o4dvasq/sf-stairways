@@ -1,6 +1,6 @@
 # Project State — sf-stairways
 
-_Last updated: 2026-05-08 (confetti + walk dedup — Archive blocker fixed)_
+_Last updated: 2026-05-09 (seed-bug WalkRecord cleanup + target_list.json removal)_
 
 ## Platforms
 
@@ -13,6 +13,7 @@ _Last updated: 2026-05-08 (confetti + walk dedup — Archive blocker fixed)_
 - Tags: **read-only pills for all users** (Add Tag removed from main app); full tag CRUD (add, rename, delete) is Admin/macOS-only; tag pills use a 12-color filled palette (`Color.tagPalette` in `AppColors`) with white text; each tag has a stable `colorIndex: Int`; `StairwayTag.id` has `@Attribute(.unique)` — CloudKit sync upserts instead of duplicating; `TagAssignment` has `compoundKey` field; one-time `runTagDedupMigrationIfNeeded` migration purges duplicates on first launch
 - `StairwayStore` filters out deleted stairways via `applyDeletions(_:)` — map, list, search, progress all respect deletions
 - **WalkRecord dedup migration** — `SeedDataService.deduplicateWalkRecordsIfNeeded` runs once per install (gate key `hasRunWalkRecordDedupMigration_v1`); keeps the earliest `WalkRecord` per `stairwayID`, deletes duplicates introduced by CloudKit sync; logs `[SeedDataService] WalkRecord dedup: removed N duplicates`
+- **Seed-bug cleanup migration** — `SeedDataService.cleanupSeedBugRecordsIfNeeded` runs once per install (gate key `hasCleanedSeedBugRecords_v1`); deletes ghost `WalkRecord` rows left behind by the old `seedIfNeeded()` function (walked=true, stairwayID in the 8 original targets, dateWalked exactly 2026-03-09 or 2026-03-10); deletions propagate to CloudKit; Mac mirrors the same logic inline in `SFStairwaysMacApp`; `ios/SFStairways/Resources/target_list.json` and `data/target_list.json` deleted from repo
 - **Visual design: light-first** — warm terracotta `brandOrange`, SF Pro Rounded for display text, `surfaceCardElevated` stat cards, orange progress ring
 - **Neighborhoods: SF 311 Neighborhoods** — 117 granular neighborhoods (68 with stairways); powered by `NeighborhoodStore` (GeoJSON-backed, computes centroids + adjacency at startup)
 - **No HealthKit, no active walk recording** — "Mark Walked" is the only walk-logging action. Tapping it fires a medium haptic and animates in a bold green banner. Banner shows stairway name (white bold .title3), neighborhood · N of M walked (.subheadline), date walked (.caption), large white checkmark (size 44, bounce animation). Tapping banner prompts to remove walk. Below banner: share icon and camera menu. The Hard Mode "Mark Anyway" path delays 0.3s before firing celebration.
@@ -65,6 +66,9 @@ _Last updated: 2026-05-08 (confetti + walk dedup — Archive blocker fixed)_
 | SF 311 Neighborhoods | **117** total, **68** with stairways |
 
 ## Recent Completions
+
+### 2026-05-09
+- **Seed-bug WalkRecord cleanup + target_list.json removal** — Added `SeedDataService.cleanupSeedBugRecordsIfNeeded(modelContext:)`: one-time `UserDefaults`-gated migration (key `hasCleanedSeedBugRecords_v1`) that deletes the 8 ghost `WalkRecord` rows injected by the old `seedIfNeeded()` function. Fingerprint: `walked == true`, `stairwayID` in the original 8 target IDs, `dateWalked` is exactly 2026-03-09 or 2026-03-10 (from the seed JSON). Deletions propagate to CloudKit. Wired into `SFStairwaysApp.swift` `.onAppear` after `deduplicateWalkRecordsIfNeeded`. Mirrored inline in `SFStairwaysMacApp.swift`. Deleted `ios/SFStairways/Resources/target_list.json` and `data/target_list.json` from repo.
 
 ### 2026-05-08
 - **ConfettiView + WalkRecord dedup** — Restored two missing implementations that were blocking `xcodebuild archive`. Added `ios/SFStairways/Views/Components/ConfettiView.swift`: pure SwiftUI `TimelineView` + `Canvas` confetti animation, 60 particles, 5-color palette, gravity + drift + alpha fade, ~2.4s, no hit-testing. Added `SeedDataService.deduplicateWalkRecordsIfNeeded(modelContext:)`: one-time `UserDefaults`-gated migration that keeps the earliest `WalkRecord` per `stairwayID` and deletes duplicates from CloudKit sync. Both `SFStairways` and `SFStairwaysAdmin` targets now build and archive cleanly.
