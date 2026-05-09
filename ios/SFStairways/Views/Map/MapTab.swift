@@ -224,16 +224,8 @@ struct MapTab: View {
                             .clipShape(Circle())
                     }
 
-                    Button {
-                        showTagFilter = true
-                    } label: {
-                        Image(systemName: activeTagFilter != nil ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle")
-                            .font(.system(size: 15, weight: .semibold))
-                            .foregroundStyle(activeTagFilter != nil ? Color.brandAmber : .white)
-                            .frame(width: 32, height: 32)
-                            .background(activeTagFilter != nil ? Color.brandAmber.opacity(0.25) : Color.white.opacity(0.2))
-                            .clipShape(Circle())
-                    }
+                    // Tag filter button — hidden, keep piping intact
+                    // Button { showTagFilter = true } ...
                 }
             }
             .padding(.horizontal, 16)

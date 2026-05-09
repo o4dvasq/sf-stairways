@@ -113,7 +113,7 @@ struct StairwayBottomSheet: View {
 
                 notesSection
 
-                tagsSection
+                // tagsSection — hidden, keep piping intact
 
                 // Curator editor (curator mode only — below notes)
                 if authManager.isCurator && curatorModeActive, let userId = authManager.userId {

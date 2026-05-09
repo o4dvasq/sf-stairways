@@ -55,7 +55,7 @@ struct SearchPanel: View {
 
                 // Tab pills
                 HStack(spacing: 8) {
-                    ForEach(SearchTab.allCases, id: \.self) { tab in
+                    ForEach(SearchTab.allCases.filter { $0 != .tags }, id: \.self) { tab in
                         Button {
                             withAnimation { activeTab = tab }
                         } label: {
@@ -83,8 +83,6 @@ struct SearchPanel: View {
                 // Results
                 if activeTab == .neighborhood {
                     neighborhoodResults
-                } else if activeTab == .tags {
-                    tagsResults
                 } else {
                     stairwayResults
                 }
