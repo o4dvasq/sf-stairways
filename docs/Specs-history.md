@@ -2,6 +2,7 @@
 
 | Description | Implemented | Spec File |
 |---|---|---|
+| ConfettiView + WalkRecord dedup: fix missing symbols blocking Archive | 2026-05-08 19:30 | SPEC_confetti-and-walk-dedup-0508-1923.md |
 | First-launch sign-in prompt: onboarding screen, Apple sign-in, Maybe later | 2026-04-26 | SPEC_first_launch_signin_prompt-0426-1058.md |
 | Community photo sharing: anonymous auth, one-time consent, all users see all photos | 2026-04-11 | (no spec — bug fix + feature) |
 | Remove height overrides, rename curator/override language, admin photos | 2026-04-04 | SPEC_remove-overrides-and-language-cleanup.md |

@@ -1,6 +1,6 @@
 # Project State — sf-stairways
 
-_Last updated: 2026-04-26 (first-launch sign-in prompt)_
+_Last updated: 2026-05-08 (confetti + walk dedup — Archive blocker fixed)_
 
 ## Platforms
 
@@ -12,6 +12,7 @@ _Last updated: 2026-04-26 (first-launch sign-in prompt)_
 - Photo capture with thumbnails, location services
 - Tags: **read-only pills for all users** (Add Tag removed from main app); full tag CRUD (add, rename, delete) is Admin/macOS-only; tag pills use a 12-color filled palette (`Color.tagPalette` in `AppColors`) with white text; each tag has a stable `colorIndex: Int`; `StairwayTag.id` has `@Attribute(.unique)` — CloudKit sync upserts instead of duplicating; `TagAssignment` has `compoundKey` field; one-time `runTagDedupMigrationIfNeeded` migration purges duplicates on first launch
 - `StairwayStore` filters out deleted stairways via `applyDeletions(_:)` — map, list, search, progress all respect deletions
+- **WalkRecord dedup migration** — `SeedDataService.deduplicateWalkRecordsIfNeeded` runs once per install (gate key `hasRunWalkRecordDedupMigration_v1`); keeps the earliest `WalkRecord` per `stairwayID`, deletes duplicates introduced by CloudKit sync; logs `[SeedDataService] WalkRecord dedup: removed N duplicates`
 - **Visual design: light-first** — warm terracotta `brandOrange`, SF Pro Rounded for display text, `surfaceCardElevated` stat cards, orange progress ring
 - **Neighborhoods: SF 311 Neighborhoods** — 117 granular neighborhoods (68 with stairways); powered by `NeighborhoodStore` (GeoJSON-backed, computes centroids + adjacency at startup)
 - **No HealthKit, no active walk recording** — "Mark Walked" is the only walk-logging action. Tapping it fires a medium haptic and animates in a bold green banner. Banner shows stairway name (white bold .title3), neighborhood · N of M walked (.subheadline), date walked (.caption), large white checkmark (size 44, bounce animation). Tapping banner prompts to remove walk. Below banner: share icon and camera menu. The Hard Mode "Mark Anyway" path delays 0.3s before firing celebration.
@@ -22,7 +23,8 @@ _Last updated: 2026-04-26 (first-launch sign-in prompt)_
 - **Neighborhood badges** — `NeighborhoodCard` shows `checkmark.seal.fill` badge when 100% complete. Completed neighborhoods on map get green polygon fill.
 - **Discovery nuggets** — `NuggetProvider` loads `neighborhood_facts.json` (18 neighborhood-specific + 10 global facts). `NeighborhoodDetail` shows per-neighborhood fact below progress bar. `ProgressTab` shows daily-rotating global fact.
 - **First-launch sign-in prompt** — `SignInPromptView` shown once per install (after brand splash), before the main app, for unauthenticated users. Shows three benefits (photo sync, achievements, community), privacy commitment, `SignInWithAppleButton`, and "Maybe later". Persisted via `@AppStorage("hasSeenSignInPrompt")`. Identity-merge for photos taken before signing in is a **known open follow-on** (separate spec needed).
-- Successfully archived in Xcode on 2026-03-23
+- **`ConfettiView`** — pure SwiftUI `TimelineView` + `Canvas` particle animation (60 particles, 5-color palette: forest green / gold / coral / sky blue / lavender); emitted from top with gravity + horizontal drift; alpha fades to 0 as particles reach bottom; ~2.4s total duration; no hit-testing; no persistent state
+- Successfully archived in Xcode; both `SFStairways` and `SFStairwaysAdmin` build clean as of 2026-05-08
 - See `docs/IOS_REFERENCE.md` for full build details
 
 ### iOS Admin App (`SFStairwaysAdmin`)
@@ -63,6 +65,9 @@ _Last updated: 2026-04-26 (first-launch sign-in prompt)_
 | SF 311 Neighborhoods | **117** total, **68** with stairways |
 
 ## Recent Completions
+
+### 2026-05-08
+- **ConfettiView + WalkRecord dedup** — Restored two missing implementations that were blocking `xcodebuild archive`. Added `ios/SFStairways/Views/Components/ConfettiView.swift`: pure SwiftUI `TimelineView` + `Canvas` confetti animation, 60 particles, 5-color palette, gravity + drift + alpha fade, ~2.4s, no hit-testing. Added `SeedDataService.deduplicateWalkRecordsIfNeeded(modelContext:)`: one-time `UserDefaults`-gated migration that keeps the earliest `WalkRecord` per `stairwayID` and deletes duplicates from CloudKit sync. Both `SFStairways` and `SFStairwaysAdmin` targets now build and archive cleanly.
 
 ### 2026-04-26
 - **First-launch sign-in prompt** — New `SignInPromptView` shown once per install (after brand splash, before main TabView) for unauthenticated users. Three benefit rows (photo sync / achievements / community), privacy commitment text, `SignInWithAppleButton` (primary), "Maybe later" (secondary). `@AppStorage("hasSeenSignInPrompt")` persists flag. Sign-in success auto-dismisses via `onChange(of: authManager.isAuthenticated)`. Edge case handled: `onChange(of: authManager.isLoading)` shows prompt if auth check completes after splash dismisses. Cancelling Apple sheet returns user to prompt without setting flag. `SFStairwaysApp.swift` now carries `showSignInPrompt` and `hasSeenSignInPrompt` state.

@@ -5,6 +5,35 @@ enum SeedDataService {
     private static let hasSeededTagsKey = "com.sfstairways.hasSeededTags"
     private static let hasCleanedUnwalkedKey = "com.sfstairways.hasCleanedUnwalked"
     private static let hasRunTagDedupKey = "hasRunTagDedupMigration_v1"
+    private static let hasRunWalkRecordDedupKey = "hasRunWalkRecordDedupMigration_v1"
+
+    /// One-time migration: for each stairwayID, keep the WalkRecord with the earliest
+    /// createdAt and delete the rest. Cleans up duplicates introduced by CloudKit sync.
+    static func deduplicateWalkRecordsIfNeeded(modelContext: ModelContext) {
+        guard !UserDefaults.standard.bool(forKey: hasRunWalkRecordDedupKey) else { return }
+
+        let allRecords = (try? modelContext.fetch(FetchDescriptor<WalkRecord>())) ?? []
+        var keepByStairwayID: [String: WalkRecord] = [:]
+        var toDelete: [WalkRecord] = []
+        for record in allRecords {
+            if let existing = keepByStairwayID[record.stairwayID] {
+                if record.createdAt < existing.createdAt {
+                    toDelete.append(existing)
+                    keepByStairwayID[record.stairwayID] = record
+                } else {
+                    toDelete.append(record)
+                }
+            } else {
+                keepByStairwayID[record.stairwayID] = record
+            }
+        }
+        toDelete.forEach { modelContext.delete($0) }
+        if !toDelete.isEmpty {
+            try? modelContext.save()
+        }
+        print("[SeedDataService] WalkRecord dedup: removed \(toDelete.count) duplicates")
+        UserDefaults.standard.set(true, forKey: hasRunWalkRecordDedupKey)
+    }
     /// One-time migration: deduplicate StairwayTag and TagAssignment records, and backfill
     /// TagAssignment.compoundKey. Must run after the ModelContainer is created but before
     /// any tag-related UI is shown.
