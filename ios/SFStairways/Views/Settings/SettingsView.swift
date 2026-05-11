@@ -7,6 +7,7 @@ struct SettingsView: View {
     @Environment(SyncStatusManager.self) private var syncManager
 
     @AppStorage("curatorModeActive") private var curatorModeActive = false
+    @AppStorage("hasSeenSignInPrompt") private var hasSeenSignInPrompt = false
 
     var body: some View {
         NavigationStack {
@@ -19,6 +20,9 @@ struct SettingsView: View {
                 iCloudSection
                 buildSection
                 acknowledgementsSection
+                #if DEBUG
+                simulateNewUserSection
+                #endif
             }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
@@ -327,6 +331,35 @@ struct SettingsView: View {
             .padding(.vertical, 4)
         }
     }
+
+    // MARK: - Debug (DEBUG builds only)
+
+    #if DEBUG
+    @State private var simulateNewUserDone = false
+
+    private var simulateNewUserSection: some View {
+        Section("Testing") {
+            if simulateNewUserDone {
+                Label("Done — force-quit and reopen to see the intro", systemImage: "checkmark.circle.fill")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } else {
+                VStack(alignment: .leading, spacing: 8) {
+                    Button("Simulate New User") {
+                        authManager.signOut()
+                        hasSeenSignInPrompt = false
+                        simulateNewUserDone = true
+                    }
+                    .foregroundStyle(.red)
+                    Text("Signs out and resets the first-launch intro. Force-quit the app, then reopen to see the splash + sign-in prompt.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.vertical, 4)
+            }
+        }
+    }
+    #endif
 
     private var syncDetail: String {
         switch syncManager.state {

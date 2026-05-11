@@ -3,13 +3,16 @@ import SwiftUI
 struct SplashView: View {
     var body: some View {
         ZStack {
-            Color.brandOrange
-                .ignoresSafeArea()
+            Color.brandOrange.ignoresSafeArea()
 
-            Image("splash")
-                .resizable()
-                .scaledToFill()
-                .ignoresSafeArea()
+            GeometryReader { geo in
+                Image("splash")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: geo.size.width, height: geo.size.height)
+                    .clipped()
+            }
+            .ignoresSafeArea()
         }
     }
 }

@@ -115,12 +115,12 @@ struct SFStairwaysApp: App {
                 }
 
                 if showSignInPrompt {
-                    SignInPromptView(onMaybeLater: {
+                    OnboardingView {
                         hasSeenSignInPrompt = true
                         withAnimation(.easeInOut(duration: 0.4)) {
                             showSignInPrompt = false
                         }
-                    })
+                    }
                     .transition(.opacity)
                 }
             }

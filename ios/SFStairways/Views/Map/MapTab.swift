@@ -108,6 +108,11 @@ struct MapTab: View {
                 .padding(.trailing, 12)
                 .padding(.bottom, 24)
             }
+            .overlay(alignment: .bottomLeading) {
+                mapLegend
+                    .padding(.leading, 12)
+                    .padding(.bottom, 24)
+            }
 
             // Top bar + filter pills + neighborhood chip stacked from the top
             VStack(spacing: 0) {
@@ -376,6 +381,33 @@ struct MapTab: View {
     private func walkRecord(for stairway: Stairway) -> WalkRecord? {
         walkRecords.first { $0.stairwayID == stairway.id }
     }
+
+    // MARK: - Map Legend
+
+    private var mapLegend: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            legendRow(color: Color.walkedGreen, label: "Walked")
+            legendRow(color: Color.brandAmber, label: "Not yet")
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 8)
+        .background(.ultraThinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .allowsHitTesting(false)
+    }
+
+    private func legendRow(color: Color, label: String) -> some View {
+        HStack(spacing: 6) {
+            Circle()
+                .fill(color)
+                .overlay(Circle().stroke(Color.black.opacity(0.25), lineWidth: 0.5))
+                .frame(width: 10, height: 10)
+            Text(label)
+                .font(.caption2)
+                .fontWeight(.medium)
+                .foregroundStyle(.primary)
+        }
+    }
 }
 
 // MARK: - Progress Card
@@ -397,10 +429,10 @@ struct ProgressCard: View {
                 .background(Color.brandAmber)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(walkedCount > 0 ? "\(walkedCount) stairways" : "—")
+                Text("\(walkedCount) stairways")
                     .font(.caption)
                     .fontWeight(.semibold)
-                Text(totalHeightFt > 0 ? "\(Int(totalHeightFt).formatted()) ft" : "—")
+                Text(totalHeightFt > 0 ? "\(Int(totalHeightFt).formatted()) ft" : "0 ft")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
                 if neighborhoodsVisited > 0 {
@@ -411,9 +443,9 @@ struct ProgressCard: View {
             }
             .padding(.horizontal, 10)
             .padding(.vertical, 8)
-            .background(.ultraThinMaterial)
         }
         .frame(width: 120)
+        .background(.ultraThinMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .allowsHitTesting(false)
     }
