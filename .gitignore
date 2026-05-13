@@ -27,3 +27,6 @@ ios/SFStairways.xcodeproj/xcuserdata/
 
 # Supabase credentials (never commit)
 ios/SFStairways/Config/Supabase.plist
+
+# Specs live in Dropbox, not git
+/docs/specs/
