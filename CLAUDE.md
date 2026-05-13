@@ -53,6 +53,10 @@ sf-stairways/
 
 iOS: Open `ios/SFStairways.xcodeproj` in Xcode, run on device or simulator
 
+## Configuration Inventory
+
+`docs/CONFIG_INVENTORY.md` — canonical list of hosting, build steps, and source files for this repo (minimal inventory; no backend, no secrets).
+
 ## Workflow
 
 - Specs live in `docs/specs/` (pending) and `docs/specs/implemented/` (done)
